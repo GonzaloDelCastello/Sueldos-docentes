@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,53 +9,79 @@
     <link rel="stylesheet" type="text/css" media="screen" href="css/main.css">
     <script src="js/main.js"></script>
 </head>
+
 <body>
     <div id="calculoSalarial">
         <div id="formularioCalculo">
-            <h4> Calcular sueldo <u>Líquido</u> en Chile</h4>
-            <form id="formularioSueldo">
+            <h4> Calculo de sueldo docente San Luis</h4>
+            <!-- <form id="formularioSueldo">
                 <label for="sueldoBase">Ingresa tu Sueldo Base:</label>
                 <input type="number" id="sueldoBase" name="sueldoBase" >
-            <br>
-                <label for="gratificacion">Gratificación:</label>
+            <br> -->
+            <form id="formSueldo">
+                <fieldset>
+                    <legend>sueldoPorCargo</legend>
+                    <label for="cargo">Tipo de cargo</label>
+                    <select id="cargo" name="cargo">
+                        <option value="1">Hs. en Secundario</option>
+                        <option value="2">Cargo primaria</option>
+                    </select>
+                    <br>
+                    <label for="cantHs">Cantidad de hs</label>
+                    <input type="number" id="cantHs" name="cantHs">
+                    <br>
+                    <label for="zona">Bonificación por zona</label>
+                    <select id="zona" name="zona">
+                        <option value="0">0%</option>
+                        <option value="20">20%</option>
+                    </select>
+                </fieldset> <!--Fin del form por cargo-->
+
+                <fieldset> <!--  separado porque la antiguedad es la misma para todos los cargos -->
+                    <label for="antiguedad">Antiguedad docente</label>
+                    <input type="number" id="antiguedad" name="antiguedad">
+                </fieldset>
+
+                <!-- <label for="gratificacion">Gratificación:</label>
                 <select name="gratificacion" id="gratificacion">
-                        <option value="si">SI</option>
-                        <option value="no">NO</option>
+                    <option value="si">SI</option>
+                    <option value="no">NO</option>
                 </select required>
-            <br>
+                <br>
                 <label for="bonoMovilizacion">Bono de Movilización:</label>
                 <input type="number" id="bonoMovilizacion" name="bonoMovilizacion">
-            <br>
+                <br>
                 <label for="bonoColacion">Bono de Colación:</label>
                 <input type="number" id="bonoColacion" name="bonoColacion">
-            <br>
+                <br>
                 <label for="afp">AFP:</label>
                 <select name="afp" id="afp">
-                    <option value="144" name="afpCapital" >Capital</option>
-                    <option value="144" name="afpCuprum" >Cuprum</option>
-                    <option value="127" name="afpHabitat" >Habitat</option>
-                    <option value="058" name="afpModelo" >Modelo</option>
-                    <option value="116" name="afpPlanVital" >Planvital</option>
-                    <option value="145" name="afpProvida" >Provida</option>
-                    <option value="049" name="afpUno" >Uno</option>
+                    <option value="144" name="afpCapital">Capital</option>
+                    <option value="144" name="afpCuprum">Cuprum</option>
+                    <option value="127" name="afpHabitat">Habitat</option>
+                    <option value="058" name="afpModelo">Modelo</option>
+                    <option value="116" name="afpPlanVital">Planvital</option>
+                    <option value="145" name="afpProvida">Provida</option>
+                    <option value="049" name="afpUno">Uno</option>
                 </select required>
-            <br>
+                <br>
                 <label for="prevision">Previsión:</label>
                 <select name="prevision" id="prevision">
                     <option value="fonasa">FONASA</option>
                     <option value="isapre">ISAPRE</option>
                 </select required>
-            <br>
+                <br>
                 <label for="tipocontrato">Tipo de Contrato:</label>
                 <select name="tipocontrato" id="tipocontrato">
                     <option value="plazoFijo">Plazo Fijo</option>
                     <option value="indefinido">Indefinido</option>
                 </select required>
-            <br>
-            <br>
+                <br>
+                <br> -->
                 <button type="button" class="boton" onclick="mostrarResultado()">Calcular</button>
             </form>
-        </div>
+        </div> 
+        <!-- Fin del div del form -->
         <div id="resultados" style="display:none;">
             <h2>Resultados:</h2>
             <p id="resultadoLiquido"></p>
@@ -63,4 +90,5 @@
         </div>
     </div>
 </body>
+
 </html>
