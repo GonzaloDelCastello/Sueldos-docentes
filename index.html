@@ -2,47 +2,47 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Calculadora Salarial</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="css/main.css">
-    <script src="js/main.js"></script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Calculadora Salarial</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" media="screen" href="css/main.css">
+  <script src="js/main.js"></script>
 </head>
 
 <body>
-    <div id="calculoSalarial">
-        <div id="formularioCalculo">
-            <h4> Calculo de sueldo docente San Luis</h4>
-            <!-- <form id="formularioSueldo">
+  <div id="calculoSalarial">
+    <div id="formularioCalculo">
+      <h4> Calculo de sueldo docente San Luis</h4>
+      <!-- <form id="formularioSueldo">
                 <label for="sueldoBase">Ingresa tu Sueldo Base:</label>
                 <input type="number" id="sueldoBase" name="sueldoBase" >
             <br> -->
-            <form id="formSueldo">
-                <fieldset>
-                    <legend>sueldoPorCargo</legend>
-                    <label for="cargo">Tipo de cargo</label>
-                    <select id="cargo" name="cargo">
-                        <option value="1">Hs. en Secundario</option>
-                        <option value="2">Cargo primaria</option>
-                    </select>
-                    <br>
-                    <label for="cantHs">Cantidad de hs</label>
-                    <input type="number" id="cantHs" name="cantHs">
-                    <br>
-                    <label for="zona">Bonificación por zona</label>
-                    <select id="zona" name="zona">
-                        <option value="0">0%</option>
-                        <option value="20">20%</option>
-                    </select>
-                </fieldset> <!--Fin del form por cargo-->
+      <form id="formSueldo">
+        <fieldset>
+          <legend>sueldoPorCargo</legend>
+          <label for="cargo">Tipo de cargo</label>
+          <select id="cargo" name="cargo">
+            <option value="1">Hs. en Secundario</option>
+            <option value="2">Cargo primaria</option>
+          </select>
+          <br>
+          <label for="cantHs">Cantidad de hs</label>
+          <input type="number" id="cantHs" name="cantHs">
+          <br>
+          <label for="zona">Bonificación por zona</label>
+          <select id="zona" name="zona">
+            <option value="1">0%</option>
+            <option value="2">20%</option>
+          </select>
+        </fieldset> <!--Fin del form por cargo-->
 
-                <fieldset> <!--  separado porque la antiguedad es la misma para todos los cargos -->
-                    <label for="antiguedad">Antiguedad docente</label>
-                    <input type="number" id="antiguedad" name="antiguedad">
-                </fieldset>
+        <fieldset> <!--  separado porque la antiguedad es la misma para todos los cargos -->
+          <label for="antiguedad">Antiguedad docente</label>
+          <input type="number" id="antiguedad" name="antiguedad">
+        </fieldset>
 
-                <!-- <label for="gratificacion">Gratificación:</label>
+        <!-- <label for="gratificacion">Gratificación:</label>
                 <select name="gratificacion" id="gratificacion">
                     <option value="si">SI</option>
                     <option value="no">NO</option>
@@ -78,17 +78,17 @@
                 </select required>
                 <br>
                 <br> -->
-                <button type="button" class="boton" onclick="mostrarResultado()">Calcular</button>
-            </form>
-        </div> 
-        <!-- Fin del div del form -->
-        <div id="resultados" style="display:none;">
-            <h2>Resultados:</h2>
-            <p id="resultadoLiquido"></p>
-            <p id="resultadoSueldo"></p>
-            <p id="resultadoDescuentos"></p>
-        </div>
+        <button type="button" class="boton" onclick="mostrarResultado()">Calcular</button>
+      </form>
     </div>
+    <!-- Fin del div del form -->
+    <div id="resultados" style="display:none;">
+      <h2>Resultados:</h2>
+      <p id="resultadoLiquido"></p>
+      <p id="resultadoSueldo"></p>
+      <p id="resultadoDescuentos"></p>
+    </div>
+  </div>
 </body>
 
 </html>
