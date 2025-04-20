@@ -17,6 +17,7 @@ html {
   box-sizing: inherit;
 }
 body {
+  margin: 0;
   background-color: var(--secundario);
   font-size: 1.6rem;
   line-height: 1.5;
@@ -27,7 +28,6 @@ p {
     
 }
 a {
-    color: var(--negro);
     text-decoration: none;
 }
 img {
@@ -52,26 +52,32 @@ h3 {
 }
 
 .header{
-   
-    display: block;
-    background-image: url(../img/BannerLibreos2.jpeg) ;
-    height: 30rem;
+    width: 100vw;
+    background-image: url(../img/Pizarron2.jpg) ;
+    height: 60rem;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
 }
 .header__texto{
-    
+    color: var(--blanco);
+}
+.header__texto2{
+  color: var(--blanco);
+  padding-top: 20rem;
+  font-size: 8rem;
 }
 .barra{
+    margin-left: 5rem;
     display: flex;  
     align-items: center;
     justify-content: space-between; 
 }
-.navegacion{
+.navegacion, a{
     display: flex;
     text-align: center;
     gap: 3rem;
+    color: var(--blanco);
 }
 #calculoSalarial {
   max-width: 500px;
