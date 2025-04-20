@@ -7,7 +7,9 @@ function mostrarResultado() {
   document.getElementById("resultadoSueldo").textContent =
     "Sueldo básico por hs $" + resultados.imponible;
   document.getElementById("resultadoDescuentos").textContent = 
-    "Pago por Zona: " + bonificacionZona;
+    "Pago por Zona: " + resultados.pagoDeZona;
+  document.getElementById("resultadoLiquido").textContent = 
+    "Pago por Antiguedad: " + resultados.pagoAntiguedad;
   // document.getElementById("resultadoDescuentos").textContent = "Descuentos Legales: $" + resultados.descuentos
   // document.getElementById("resultadoLiquido").textContent = "Tu Sueldo líquido es de $" + resultados.liquido
 }
@@ -31,17 +33,33 @@ function calcularSalario() {
   function calculoZona() {
     switch (document.getElementById("zona").value) {
       case "1":
-        return { pagoXZona: 0 };
+        return  0;
       case "2":
-        return { pagoXZona: 20 };
+        return  0.2;
       case "3":
-        return { pagoXZona: 40 };
+        return  0.4;
       case "4":
-        return { pagoXZona: 60 };
+        return  0.6;
       case "5":
-        return { pagoXZona: 80 };
+        return  0.8;
       default:
-        return { pagoXHs: 0 };
+        return  0;
+    }
+  }
+  function calculoAntiguedad(){
+    switch (document.getElementById("antiguedad").value) {
+      case "1":
+        return  0;
+      case "2":
+        return  0.1;
+      case "3":
+        return  0.4;
+      case "4":
+        return  0.6;
+      case "5":
+        return  0.8;
+      default:
+        return  0;
     }
   }
 
@@ -56,8 +74,9 @@ function calcularSalario() {
   //   var prevision = document.getElementById("prevision").value;
   //   var contrato = document.getElementById("tipocontrato").value;
 
-  var basicoXHs = cantHs * calculoBasico.pagoXHs;
-  let bonificacionZona = basicoXHs * calculoZona.bonificacionZona;
+  let basicoXHs = cantHs * calculoBasico.pagoXHs;
+  let bonificacionZona = basicoXHs * calculoZona();
+  let bonificacionAntiguedad = calculoAntiguedad();
   //   var descuentosLegales = basicoXHs * afp + basicoXHs * 0.07;
   //   var sueldoLiquido = parseInt(basicoXHs - descuentosLegales);
   //   if (sueldoLiquido < 100000) {
@@ -68,6 +87,8 @@ function calcularSalario() {
 
   return {
     imponible: basicoXHs,
+    pagoDeZona: bonificacionZona,
+    pagoAntiguedad: bonificacionAntiguedad
     // descuentos: descuentosLegales,
     // liquido: sueldoLiquido
   };

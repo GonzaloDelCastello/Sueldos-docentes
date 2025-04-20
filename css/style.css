@@ -78,6 +78,7 @@ h3 {
     text-align: center;
     gap: 3rem;
     color: var(--blanco);
+    font-size: 2rem;
 }
 #calculoSalarial {
   max-width: 500px;

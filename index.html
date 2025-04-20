@@ -23,12 +23,12 @@
           <a href="/recursos.html">Recursos</a>
         </div>
       </div>
-      <h2 class="header__texto2">Bienvenidxs</h2>
+      <h2 class="header__texto2"></h2>
     </div>
   </header>
   <div id="calculoSalarial">
     <div id="formularioCalculo">
-      <h3> Calculo de sueldo docente San Luis</h4>
+      <h3> Calculo de sueldo docente San Luis</h3>
       <!-- <form id="formularioSueldo">
                 <label for="sueldoBase">Ingresa tu Sueldo Base:</label>
                 <input type="number" id="sueldoBase" name="sueldoBase" >
@@ -54,7 +54,11 @@
 
         <fieldset> <!--  separado porque la antiguedad es la misma para todos los cargos -->
           <label for="antiguedad">Antiguedad docente</label>
-          <input type="number" id="antiguedad" name="antiguedad">
+          <select id="antiguedad" name="antiguedad">
+            <option value="0">0 años</option>
+            <option value="1">1 a 3 años</option>
+            <option value="2">3 a 5 años</option>
+          </select>
         </fieldset>
 
         <!-- <label for="gratificacion">Gratificación:</label>
