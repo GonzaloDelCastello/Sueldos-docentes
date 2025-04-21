@@ -5,6 +5,8 @@
   --secundarioOscuro: #ff9149;
   --blanco: #fff;
   --negro: #000;
+  --fuenteTitulo: "Fredericka the Great", serif;
+  
 }
 
 html {
@@ -18,67 +20,73 @@ html {
 }
 body {
   margin: 0;
-  background-color: var(--secundario);
+  background-color: var(--blanco);
   font-size: 1.6rem;
   line-height: 1.5;
 }
 p {
-    font-size: 1.8rem;
-    font-family: Arial, Helvetica, sans-serif;
-    
+  font-size: 1.8rem;
+  font-family: Arial, Helvetica, sans-serif;
 }
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
 img {
-    
 }
 .contenedor {
-    max-width: 120rem;
-    margin: auto;
+  max-width: 120rem;
+  margin: auto;
 }
-h1, h2, h3 {
-    text-align: center;
-    font-family: var(--fuentePrincipal);
+h1,
+h2,
+h3 {
+  text-align: center;
+  font-family: var(--fuentePrincipal);
 }
 h1 {
-    font-size: 4rem;
+  font-size: 4rem;
 }
 h2 {
-    font-size: 3.2rem;
+  font-size: 3.2rem;
 }
 h3 {
-    font-size: 2.4rem;
+  font-size: 2.4rem;
 }
 
-.header{
-    width: 100vw;
-    background-image: url(../img/Pizarron2.jpg) ;
-    height: 60rem;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
+.header {
+  background-image: url(../img/PizarraNegra.jpg);
+  height: 14rem;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
 }
-.header__texto{
-    color: var(--blanco);
+.header__texto {
+  margin-top: 2rem;
+  margin-left: 6rem;
+  color: var(--blanco);
+  font-family: var(--fuenteTitulo);
+  font-weight: 400;
 }
-.header__texto2{
+.header__texto2 {
   color: var(--blanco);
   padding-top: 20rem;
   font-size: 8rem;
 }
-.barra{
-    margin-left: 5rem;
-    display: flex;  
-    align-items: center;
-    justify-content: space-between; 
+.barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-.navegacion, a{
-    display: flex;
-    text-align: center;
-    gap: 3rem;
-    color: var(--blanco);
-    font-size: 2rem;
+.navegacion,
+a {
+  margin-top: 0.5rem;
+  margin-right: 2rem;
+  font-family: var(--fuenteTitulo);
+  display: flex;
+  text-align: center;
+  gap: 3rem;
+  color: var(--blanco);
+  font-size: 2.1rem;
 }
 #calculoSalarial {
   max-width: 500px;

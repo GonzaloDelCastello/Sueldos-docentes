@@ -48,16 +48,30 @@ function calcularSalario() {
   }
   function calculoAntiguedad(){
     switch (document.getElementById("antiguedad").value) {
-      case "1":
+      case "0":
         return  0;
-      case "2":
+      case "1":
         return  0.1;
+      case "2":
+        return  0.15;
       case "3":
-        return  0.4;
+        return  0.30;
       case "4":
-        return  0.6;
+        return  0.40;
       case "5":
-        return  0.8;
+        return  0.50;
+      case "6":
+        return  0.60;
+      case "7":
+        return  0.70;
+      case "8":
+        return  0.80;
+      case "9":
+        return  1.0;
+      case "10":
+        return  1.10;
+      case "11":
+        return  1.20;
       default:
         return  0;
     }
@@ -76,7 +90,7 @@ function calcularSalario() {
 
   let basicoXHs = cantHs * calculoBasico.pagoXHs;
   let bonificacionZona = basicoXHs * calculoZona();
-  let bonificacionAntiguedad = calculoAntiguedad();
+  let bonificacionAntiguedad = basicoXHs * calculoAntiguedad();
   //   var descuentosLegales = basicoXHs * afp + basicoXHs * 0.07;
   //   var sueldoLiquido = parseInt(basicoXHs - descuentosLegales);
   //   if (sueldoLiquido < 100000) {
