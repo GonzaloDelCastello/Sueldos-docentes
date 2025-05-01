@@ -30,10 +30,6 @@
   <div id="calculoSalarial">
     <div id="formularioCalculo">
       <h3> Calculo de sueldo docente San Luis</h3>
-      <!-- <form id="formularioSueldo">
-                <label for="sueldoBase">Ingresa tu Sueldo Base:</label>
-                <input type="number" id="sueldoBase" name="sueldoBase" >
-            <br> -->
       <form id="formSueldo">
         <fieldset>
           <legend>sueldoPorCargo</legend>
@@ -50,10 +46,11 @@
           <select id="zona" name="zona">
             <option value="1">0%</option>
             <option value="2">20%</option>
-            <option value="2">20%</option>
-            <option value="2">20%</option>
-            <option value="2">20%</option>
-
+            <option value="3">40%</option>
+            <option value="4">60%</option>
+            <option value="5">80%</option>
+            <option value="6">100%</option>
+            
           </select>
         </fieldset> <!--Fin del form por cargo-->
 
@@ -75,51 +72,16 @@
           </select>
         </fieldset>
 
-        <!-- <label for="gratificacion">Gratificación:</label>
-                <select name="gratificacion" id="gratificacion">
-                    <option value="si">SI</option>
-                    <option value="no">NO</option>
-                </select required>
-                <br>
-                <label for="bonoMovilizacion">Bono de Movilización:</label>
-                <input type="number" id="bonoMovilizacion" name="bonoMovilizacion">
-                <br>
-                <label for="bonoColacion">Bono de Colación:</label>
-                <input type="number" id="bonoColacion" name="bonoColacion">
-                <br>
-                <label for="afp">AFP:</label>
-                <select name="afp" id="afp">
-                    <option value="144" name="afpCapital">Capital</option>
-                    <option value="144" name="afpCuprum">Cuprum</option>
-                    <option value="127" name="afpHabitat">Habitat</option>
-                    <option value="058" name="afpModelo">Modelo</option>
-                    <option value="116" name="afpPlanVital">Planvital</option>
-                    <option value="145" name="afpProvida">Provida</option>
-                    <option value="049" name="afpUno">Uno</option>
-                </select required>
-                <br>
-                <label for="prevision">Previsión:</label>
-                <select name="prevision" id="prevision">
-                    <option value="fonasa">FONASA</option>
-                    <option value="isapre">ISAPRE</option>
-                </select required>
-                <br>
-                <label for="tipocontrato">Tipo de Contrato:</label>
-                <select name="tipocontrato" id="tipocontrato">
-                    <option value="plazoFijo">Plazo Fijo</option>
-                    <option value="indefinido">Indefinido</option>
-                </select required>
-                <br>
-                <br> -->
         <button type="button" class="boton" onclick="mostrarResultado()">Calcular</button>
       </form>
     </div>
     <!-- Fin del div del form -->
     <div id="resultados" style="display:none;">
       <h2>Resultados:</h2>
-      <p id="resultadoLiquido"></p>
       <p id="resultadoSueldo"></p>
-      <p id="resultadoDescuentos"></p>
+      <p id="pagoZona"></p>
+      <p id="pagoAntiguedad"></p>
+      <p id="complementoRemunerativo"></p>
     </div>
   </div>
 </body>
