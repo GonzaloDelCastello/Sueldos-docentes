@@ -12,6 +12,8 @@ function mostrarResultado() {
     "Pago por Antiguedad: " + resultados.pagoAntiguedad;
   document.getElementById("complementoRemunerativo").textContent =
     "Complemento Remunerativo: " + resultados.complementoRemunerativo;
+    document.getElementById("complementoNoRemunerativo").textContent =
+    "Complemento No Remunerativo: " + resultados.complementoNoRemunerativo;
 }
 
 function calcularSalario() {
@@ -92,6 +94,7 @@ function calcularSalario() {
   let bonificacionZona = basicoXHs * calculoZona();
   let bonificacionAntiguedad = basicoXHs * calculoAntiguedad();
   let complementoRemunerativo1 = basicoXHs * 1.11;
+  let complementoNoRemunerativo1 = basicoXHs * 1.26;
   //   var descuentosLegales = basicoXHs * afp + basicoXHs * 0.07;
   //   var sueldoLiquido = parseInt(basicoXHs - descuentosLegales);
   //   if (sueldoLiquido < 100000) {
@@ -104,7 +107,8 @@ function calcularSalario() {
     imponible: basicoXHs,
     pagoDeZona: bonificacionZona,
     pagoAntiguedad: bonificacionAntiguedad,
-    complementoRemunerativo: complementoRemunerativo1
+    complementoRemunerativo: complementoRemunerativo1,
+    complementoNoRemunerativo: complementoNoRemunerativo1
     // descuentos: descuentosLegales,
     // liquido: sueldoLiquido
   };
