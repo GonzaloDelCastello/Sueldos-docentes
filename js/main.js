@@ -18,7 +18,7 @@ function mostrarResultado() {
 
 function calcularSalario() {
   let cantHs = parseInt(document.getElementById("cantHs").value);
-
+  
   let calculoBasico = (() => {
     switch (document.getElementById("cargo").value) {
       case "1":
@@ -105,11 +105,11 @@ function calcularSalario() {
 
   return {
     imponible: basicoXHs,
-    pagoDeZona: bonificacionZona,
-    pagoAntiguedad: bonificacionAntiguedad,
-    complementoRemunerativo: complementoRemunerativo1,
-    complementoNoRemunerativo: complementoNoRemunerativo1
-    // descuentos: descuentosLegales,
+    // pagoDeZona: bonificacionZona,
+    // pagoAntiguedad: bonificacionAntiguedad,
+    // complementoRemunerativo: complementoRemunerativo1,
+    // complementoNoRemunerativo: complementoNoRemunerativo1
+    // // descuentos: descuentosLegales,
     // liquido: sueldoLiquido
   };
 }
