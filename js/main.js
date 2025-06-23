@@ -105,10 +105,10 @@ function calcularSalario() {
 
   return {
     imponible: basicoXHs,
-    // pagoDeZona: bonificacionZona,
-    // pagoAntiguedad: bonificacionAntiguedad,
-    // complementoRemunerativo: complementoRemunerativo1,
-    // complementoNoRemunerativo: complementoNoRemunerativo1
+    pagoDeZona: bonificacionZona,
+    pagoAntiguedad: bonificacionAntiguedad,
+    complementoRemunerativo: complementoRemunerativo1,
+    complementoNoRemunerativo: complementoNoRemunerativo1
     // // descuentos: descuentosLegales,
     // liquido: sueldoLiquido
   };
