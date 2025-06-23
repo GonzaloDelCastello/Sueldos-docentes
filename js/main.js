@@ -112,7 +112,7 @@ function calcularSalario() {
     // // descuentos: descuentosLegales,
     // liquido: sueldoLiquido
   };
-}
+
 // function calcularGratificacion(sueldoBruto) {
 //   iMM = 450000; // Ingreso minimo mensual
 //   topeIMM = iMM * 4.75;
