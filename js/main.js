@@ -22,7 +22,7 @@ function calcularSalario() {
   let calculoBasico = (() => {
     switch (document.getElementById("cargo").value) {
       case "1":
-        return { pagoXHs: 12756.59 };
+        return { pagoXHs: 14173.99 };
       case "2":
         return { pagoXHs: 10 };
       default:
