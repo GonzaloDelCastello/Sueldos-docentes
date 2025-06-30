@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="es">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Calculadora Salarial</title>
+  <title>Inicio - Sueldo Docente San Luis</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" media="screen" href="css/style.css">
-  <script src="js/main.js"></script>
+  <link rel="stylesheet" href="css/style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap" rel="stylesheet">
 </head>
 
@@ -16,76 +14,45 @@
     <div class="contenedor">
       <div class="barra">
         <div class="logo">
-          <h1 class="header__texto">Docentes <br>San Luis</h1>
+          <a href="index.html"><h1 class="header__texto">Docentes<br>San Luis</h1></a>
         </div>
         <div class="navegacion">
-          <a href="/calculadoraS.html">Calculadora Sueldos<br>Docentes</a>
-          <a href="/contacto.html">Contacto</a>
-          <a href="/recursos.html">Recursos</a>
+          <a href="calculadora.html">Calculadora</a>
+          <a href="sobreNosotros.html">Sobre nosotros</a>
+          <a href="recursos.html">Recursos</a>
         </div>
       </div>
-      <h2 class="header__texto2"></h2>
+      <h2 class="header__texto2">Bienvenidxs</h2>
     </div>
   </header>
-  <div id="calculoSalarial">
-    <div id="formularioCalculo">
-      <h3> Calculo de sueldo docente San Luis</h3>
-      <form id="formSueldo">
-        <fieldset>
-          <legend>sueldoPorCargo</legend>
-          <label for="cargo">Tipo de cargo</label>
-          <select id="cargo" name="cargo">
-            <option value="1">Hs. en Secundario</option>
-            <option value="2">Cargo primaria</option>
-          </select>
-          <br>
-          <label for="cantHs">Cantidad de hs</label>
-          <input type="number" id="cantHs" name="cantHs">
-          <br>
-          <label for="zona">Bonificación por zona</label>
-          <select id="zona" name="zona">
-            <option value="1">0%</option>
-            <option value="2">20%</option>
-            <option value="3">40%</option>
-            <option value="4">60%</option>
-            <option value="5">80%</option>
-            <option value="6">100%</option>
-            
-          </select>
-        </fieldset> <!--Fin del form por cargo-->
 
-        <fieldset> <!--  separado porque la antiguedad es la misma para todos los cargos -->
-          <label for="antiguedad">Antiguedad docente</label>
-          <select id="antiguedad" name="antiguedad">
-            <option value="0">0 años (0%)</option>
-            <option value="1">1 año (10%)</option>
-            <option value="2">2 a 4 años (15%)</option>
-            <option value="3">5 a 6 años (30%)</option>
-            <option value="4">7 a 9 años (40%)</option>
-            <option value="5">10 a 11 años (50%)</option>
-            <option value="6">12 a 14 años (60%)</option>
-            <option value="7">15 a 16 años (70%)</option>
-            <option value="8">17 a 18 años (80%)</option>
-            <option value="9">20 a 21 años (100%)</option>
-            <option value="10">22 a 23 años (110%)</option>
-            <option value="11">Más de 24 años (120%)</option>
-          </select>
-        </fieldset>
+  <main class="contenedor">
+    <section class="intro">
+      <p>
+        Este sitio fue desarrollado por un docente de Matemáticas, egresado del IFDC VM, con el objetivo de acompañar y facilitar el
+        trabajo de sus colegas. Nuestro objetivo es ofrecer una herramienta transparente y sencilla para calcular sueldos docentes, y al mismo tiempo, generar conciencia sobre la situación económica que enfrentamos quienes educamos.
+      </p>
+    </section>
 
-        <button type="button" class="boton" onclick="mostrarResultado()">Calcular</button>
-      </form>
-    </div>
-    <!-- Fin del div del form -->
-    <div id="resultados" style="display:none;">
-      <h2>Resultados:</h2>
-      <p id="resultadoSueldo"></p>
-      <p id="pagoZona"></p>
-      <p id="pagoAntiguedad"></p>
-      <p id="complementoRemunerativo"></p>
-      <p id="complementoNoRemunerativo"></p>
-      
-    </div>
+    <section class="contenido">
+      <h3>¿Qué vas a encontrar aquí?</h3>
+      <ul>
+        <li>Una <strong>calculadora salarial</strong> actualizada y accesible. (en construcción)</li>
+        <li>Recursos útiles para docentes de todos los niveles. (en construcción)</li>
+        <li>Información sobre la estructura del salario y bonificaciones. (en construcción)</li>
+        <li>Espacios para compartir experiencias y contactarse. (en construcción)</li>
+      </ul>
+
+      <div style="text-align:center; margin-top: 2rem;">
+        <a href="calculadoraS.html" class="boton">Ir a la Calculadora</a>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+  <div class="contenedor footer__contenido">
+    <p>&copy; 2025 Docentes San Luis. Todos los derechos reservados.</p>
+    <p>Diseñado por Gonzalo J. Del Castello</p>
   </div>
+</footer>
 </body>
-
 </html>

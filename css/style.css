@@ -1,4 +1,13 @@
 :root {
+  --primario: #3e5e4d;               /* Verde apagado tipo pizarrón */
+  --primarioClaro: #9fb8a3;          /* Gris verdoso claro */
+  --secundario: #f0e68c;             /* Amarillo suave tipo tiza vieja */
+  --secundarioOscuro: #406882;       /* Azul apagado para resaltes */
+  --blanco: #f4f4f4;                 /* Blanco tiza */
+  --negro: #2b2b2b;                  /* Gris pizarra oscuro */
+  --fuenteTitulo: "Fredericka the Great", serif;
+}
+/* :root {
   --primario: #27659a;
   --primarioClaro: #afddff;
   --secundario: #ffecdb;
@@ -7,7 +16,7 @@
   --negro: #000;
   --fuenteTitulo: "Fredericka the Great", serif;
   
-}
+} */
 
 html {
   box-sizing: border-box;
@@ -24,6 +33,32 @@ body {
   font-size: 1.6rem;
   line-height: 1.5;
 }
+.intro {
+  max-width: 600px;
+  margin: 4rem auto 0 auto;
+  font-size: 1.8rem;
+  text-align: center;
+  color: #333;
+  background-color: #f4faff;
+  padding: 2rem;
+  border-left: 5px solid var(--primario);
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+#formularioCalculo {
+  background-color: var(--secundario);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.15);
+}
+label, select, input {
+  display: block;
+  margin: 1rem auto;
+  font-size: 1.6rem;
+  width: 90%;
+  max-width: 300px;
+}
+
 p {
   font-size: 1.8rem;
   font-family: Arial, Helvetica, sans-serif;
@@ -77,20 +112,32 @@ h3 {
   align-items: center;
   justify-content: space-between;
 }
-.navegacion,
-a {
-  margin-top: 0.5rem;
-  margin-right: 2rem;
-  font-family: var(--fuenteTitulo);
+
+.contenido a {
+  text-decoration: none;
+  color: var(--primarioClaro);
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: var(--secundarioOscuro); 
+  text-decoration: underline;
+}
+.navegacion {
   display: flex;
-  text-align: center;
   gap: 3rem;
+  align-items: center;
+}
+
+.navegacion a {
   color: var(--blanco);
+  font-family: var(--fuenteTitulo);
   font-size: 2.1rem;
+  text-decoration: none;
 }
 #calculoSalarial {
   max-width: 500px;
-  height: 300px;
+  height: auto;
   border-radius: 5px;
   display: relative;
   align-items: center;
@@ -99,12 +146,67 @@ a {
   margin: 10% auto;
 }
 #resultados {
-  text-align: center;
-  color: red;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-  padding: 10px;
-  border-radius: 5px;
-  background-color: rgba(169, 197, 250, 0.4);
-  margin: 0 auto;
-  margin-top: 50px;
+  text-align: left;
+  color: var(--blanco);
+  padding: 2rem;
+  border-radius: 8px;
+  background-color: rgba(62, 94, 77, 0.8); /* verde apagado semitransparente */
+  margin: 2rem auto;
+  max-width: 600px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  font-size: 1.6rem;
+  font-family: Arial, sans-serif;
 }
+#resultados h2 {
+  text-align: center;
+  color: var(--secundario);
+  font-family: var(--fuenteTitulo);
+}
+#resultados p {
+  margin: 1rem 0;
+  line-height: 1.4;
+}
+
+.boton {
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  background-color: var(--primario);
+  color: white;
+  border: none;
+  font-size: 1.6rem;
+  font-family: Arial, sans-serif;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.boton:hover {
+  background-color: var(--primarioClaro);
+  color: var(--negro);
+}
+.sobreNosotros .contenido {
+  margin-top: 3rem;
+  font-size: 1.7rem;
+  line-height: 1.8;
+}
+
+.sobreNosotros h3 {
+  margin-top: 2.5rem;
+  color: var(--primario);
+}
+ul {
+  font-size: 1.7rem;
+  line-height: 1.6;
+  margin-left: 2rem;
+}
+.footer {
+  background-color: var(--primario);
+  color: var(--blanco);
+  padding: 2rem 0;
+  margin-top: 5rem;
+  font-size: 1.4rem;
+}
+
+.footer__contenido {
+  text-align: center;
+}
+

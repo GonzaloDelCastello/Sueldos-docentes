@@ -1,19 +1,33 @@
 function mostrarResultado() {
-  var resultadosSection = document.getElementById("resultados"); //asigna a resultadosSection el elemento con id "resultados";
-  resultadosSection.style.display =
-    resultadosSection.style.display === "none" ? "block" : "none";
-    
+  var resultadosSection = document.getElementById("resultados");
+  resultadosSection.style.display = "block"; // Siempre se muestra
+
+  const cantHs = parseInt(document.getElementById("cantHs").value);
+
+  if (isNaN(cantHs) || cantHs <= 0) {
+    // Mostrar $0.00 en todos los campos
+    document.getElementById("resultadoSueldo").textContent = "Sueldo básico por hs: $0.00";
+    document.getElementById("pagoZona").textContent = "Pago por Zona: $0.00";
+    document.getElementById("pagoAntiguedad").textContent = "Pago por Antigüedad: $0.00";
+    document.getElementById("complementoRemunerativo").textContent = "Complemento Remunerativo: $0.00";
+    document.getElementById("complementoNoRemunerativo").textContent = "Complemento No Remunerativo: $0.00";
+    return; // Evita que siga con el cálculo
+  }
+
   var resultados = calcularSalario();
   document.getElementById("resultadoSueldo").textContent =
-    "Sueldo básico por hs $" + resultados.imponible;
-  document.getElementById("pagoZona").textContent = 
-    "Pago por Zona: " + resultados.pagoDeZona;
-  document.getElementById("pagoAntiguedad").textContent = 
-    "Pago por Antiguedad: " + resultados.pagoAntiguedad;
+    "Sueldo básico por hs: " + aPesos(resultados.imponible);
+  document.getElementById("pagoZona").textContent =
+    "Pago por Zona: " + aPesos(resultados.pagoDeZona);
+  document.getElementById("pagoAntiguedad").textContent =
+    "Pago por Antigüedad: " + aPesos(resultados.pagoAntiguedad);
   document.getElementById("complementoRemunerativo").textContent =
-    "Complemento Remunerativo: " + resultados.complementoRemunerativo;
-    document.getElementById("complementoNoRemunerativo").textContent =
-    "Complemento No Remunerativo: " + resultados.complementoNoRemunerativo;
+    "Complemento Remunerativo: " + aPesos(resultados.complementoRemunerativo);
+  document.getElementById("complementoNoRemunerativo").textContent =
+    "Complemento No Remunerativo: " + aPesos(resultados.complementoNoRemunerativo);
+}
+function aPesos(valor) {
+  return "$" + valor.toFixed(2);
 }
 
 function calcularSalario() {
