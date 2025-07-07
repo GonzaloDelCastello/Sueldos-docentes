@@ -6,8 +6,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Calculadora Salarial</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/normalize.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="css/style.css">
-  <script src="js/main.js"></script>
+  <script src="js/main2.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap" rel="stylesheet">
 </head>
 
@@ -37,7 +38,7 @@
     <div id="formularioCalculo">
       <h3> Calculo de sueldo docente San Luis</h3>
       <form id="formSueldo">
-        <fieldset>
+        <fieldset class="grid-form">
           <legend>Sueldo por cargo</legend>
           <label for="cargo">Tipo de cargo</label>
           <select id="cargo" name="cargo">
@@ -60,7 +61,7 @@
           </select>
         </fieldset> <!--Fin del form por cargo-->
 
-        <fieldset> <!--  separado porque la antiguedad es la misma para todos los cargos -->
+        <fieldset class="grid-form"> <!--  separado porque la antiguedad es la misma para todos los cargos -->
           <label for="antiguedad">Antiguedad docente</label>
           <select id="antiguedad" name="antiguedad">
             <option value="0">0 años (0%)</option>
@@ -89,7 +90,9 @@
       <p id="pagoAntiguedad"></p>
       <p id="complementoRemunerativo"></p>
       <p id="complementoNoRemunerativo"></p>
-      
+      <p id="sumaNoRemunerativa"></p>
+      <p id="incentivoDocente"></p>
+
     </div>
   </div>
   <footer class="footer">

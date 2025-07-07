@@ -46,6 +46,7 @@ body {
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 #formularioCalculo {
+  
   background-color: var(--secundario);
   padding: 2rem;
   border-radius: 10px;
@@ -66,8 +67,7 @@ p {
 a {
   text-decoration: none;
 }
-img {
-}
+
 .contenedor {
   max-width: 120rem;
   margin: auto;
@@ -208,5 +208,13 @@ ul {
 
 .footer__contenido {
   text-align: center;
+}
+
+.grid-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+  gap: 1.5rem 2rem;               /* Espaciado vertical y horizontal */
+  justify-content: center;
+  align-items: center;
 }
 
