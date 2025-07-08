@@ -17,7 +17,9 @@
     <div class="contenedor">
       <div class="barra">
         <div class="logo">
-          <a href="index.html"><h1 class="header__texto">Docentes<br>San Luis</h1></a>
+          <a href="index.html">
+            <h1 class="header__texto">Docentes<br>San Luis</h1>
+          </a>
         </div>
         <div class="navegacion">
           <a href="calculadora.html">Calculadora</a>
@@ -29,55 +31,58 @@
     </div>
   </header>
   <section class="intro">
-  <p>
-    Esta herramienta permite estimar el sueldo docente en San Luis según el cargo, zona de trabajo y antigüedad. Completá los datos y presioná <strong>Calcular</strong>.
-  </p>
-  <p>Como el resto del sitio, está en construcción. Actualmente solo funciona para cargo de hs. en secundaria. Espero pronto brindar cálculo para otros cargos y niveles educativos.</p>
-</section>
+    <p>
+      Esta herramienta permite estimar el sueldo docente en San Luis según el cargo, zona de trabajo y antigüedad.
+      Completá los datos y presioná <strong>Calcular</strong>.
+    </p>
+    <p>Como el resto del sitio, está en construcción. Actualmente solo funciona para cargo de hs. en secundaria. Espero
+      pronto brindar cálculo para otros cargos y niveles educativos.</p>
+  </section>
+
   <div id="calculoSalarial">
+
     <div id="formularioCalculo">
+
       <h3> Calculo de sueldo docente San Luis</h3>
+
       <form id="formSueldo">
         <fieldset class="grid-form">
           <legend>Sueldo por cargo</legend>
-          <label for="cargo">Tipo de cargo</label>
-          <select id="cargo" name="cargo">
-            <option value="1">Hs. en Secundario</option>
-            <option value="2">Proximamente</option>
-          </select>
-          <br>
-          <label for="cantHs">Cantidad de hs</label>
-          <input type="number" id="cantHs" name="cantHs">
-          <br>
-          <label for="zona">Bonificación por zona</label>
-          <select id="zona" name="zona">
-            <option value="1">0%</option>
-            <option value="2">20%</option>
-            <option value="3">40%</option>
-            <option value="4">60%</option>
-            <option value="5">80%</option>
-            <option value="6">100%</option>
-            
-          </select>
-        </fieldset> <!--Fin del form por cargo-->
+          <p><label for="cargo">Tipo de cargo <select id="cargo" name="cargo">
+                <option value="1">Hs. en Secundario</option>
+                <option value="2">Proximamente</option>
+              </select></label></p>
 
-        <fieldset class="grid-form"> <!--  separado porque la antiguedad es la misma para todos los cargos -->
-          <label for="antiguedad">Antiguedad docente</label>
-          <select id="antiguedad" name="antiguedad">
-            <option value="0">0 años (0%)</option>
-            <option value="1">1 año (10%)</option>
-            <option value="2">2 a 4 años (15%)</option>
-            <option value="3">5 a 6 años (30%)</option>
-            <option value="4">7 a 9 años (40%)</option>
-            <option value="5">10 a 11 años (50%)</option>
-            <option value="6">12 a 14 años (60%)</option>
-            <option value="7">15 a 16 años (70%)</option>
-            <option value="8">17 a 18 años (80%)</option>
-            <option value="9">20 a 21 años (100%)</option>
-            <option value="10">22 a 23 años (110%)</option>
-            <option value="11">Más de 24 años (120%)</option>
-          </select>
-        </fieldset>
+
+          <p><label for="cantHs">Cantidad de hs<input type="number" id="cantHs" name="cantHs"></label></p>
+
+
+          <p><label for="zona">Bonificación por zona<select id="zona" name="zona">
+                <option value="1">0%</option>
+                <option value="2">20%</option>
+                <option value="3">40%</option>
+                <option value="4">60%</option>
+                <option value="5">80%</option>
+                <option value="6">100%</option>
+
+              </select></label></p>
+
+          <p><label for="antiguedad">Antiguedad docente <select id="antiguedad" name="antiguedad">
+                <option value="0">0 años (0%)</option>
+                <option value="1">1 año (10%)</option>
+                <option value="2">2 a 4 años (15%)</option>
+                <option value="3">5 a 6 años (30%)</option>
+                <option value="4">7 a 9 años (40%)</option>
+                <option value="5">10 a 11 años (50%)</option>
+                <option value="6">12 a 14 años (60%)</option>
+                <option value="7">15 a 16 años (70%)</option>
+                <option value="8">17 a 18 años (80%)</option>
+                <option value="9">20 a 21 años (100%)</option>
+                <option value="10">22 a 23 años (110%)</option>
+                <option value="11">Más de 24 años (120%)</option>
+              </select>
+        </fieldset></label></p>
+
 
         <button type="button" class="boton" onclick="mostrarResultado()">Calcular</button>
       </form>
@@ -85,22 +90,83 @@
     <!-- Fin del div del form -->
     <div id="resultados" style="display:none;">
       <h2>Resultados:</h2>
-      <p id="resultadoSueldo"></p>
-      <p id="pagoZona"></p>
-      <p id="pagoAntiguedad"></p>
-      <p id="complementoRemunerativo"></p>
-      <p id="complementoNoRemunerativo"></p>
-      <p id="sumaNoRemunerativa"></p>
-      <p id="incentivoDocente"></p>
-
+      <table>
+        <tr>
+          <th>Concepto</th>
+          <th>Con aportes</th>
+          <th>Sin aportes</th>
+        </tr>
+        <tr>
+          <td>
+            <p>Sueldo Básico</p>
+          </td>
+          <td>
+            <p id="resultadoSueldo"></p>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <p>Pago por zona: </p>
+          </td>
+          <td>
+            <p id="pagoZona"></p>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Pago por Antigüedad: </td>
+          <td>
+            <p id="pagoAntiguedad"></p>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Complemento Remunerativo: </td>
+          <td>
+            <p id="complementoRemunerativo"></p>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Complemento No Remunerativo: </td>
+          <td></td>
+          <td>
+            <p id="complementoNoRemunerativo"></p>
+          </td>
+        </tr>
+        <tr>
+          <td>Pago Suma No Remunerativa: </td>
+          <td></td>
+          <td>
+            <p id="sumaNoRemunerativa"></p>
+          </td>
+        </tr>
+        <tr>
+          <td>Incentivo Docente: </td>
+          <td></td>
+          <td>
+            <p id="incentivoDocente"></p>
+          </td>
+        </tr>
+        <tr>
+          <th>Total</th>
+          <th>
+            <p id="totalCAportes"></p>
+          </th>
+          <th>
+            <p id="totalSAportes"></p>
+          </th>
+        </tr>
+      </table>
     </div>
   </div>
   <footer class="footer">
-  <div class="contenedor footer__contenido">
-    <p>&copy; 2025 Docentes San Luis. Todos los derechos reservados.</p>
-    <p>Diseñado por Gonzalo J. Del Castello</p>
-  </div>
-</footer>
+    <div class="contenedor footer__contenido">
+      <p>&copy; 2025 Docentes San Luis. Todos los derechos reservados.</p>
+      <p>Diseñado por Gonzalo J. Del Castello</p>
+    </div>
+  </footer>
 </body>
 
 </html>

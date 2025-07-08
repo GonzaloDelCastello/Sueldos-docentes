@@ -20,8 +20,8 @@ function mostrarResultado() {
     cantHsInput.insertAdjacentElement("afterend", mensaje);
 
     document.getElementById("resultadoSueldo").textContent =
-      "Sueldo básico por hs: $0.00";
-    document.getElementById("pagoZona").textContent = "Pago por Zona: $0.00";
+      "$0.00";
+    document.getElementById("pagoZona").textContent = "$0.00";
     document.getElementById("pagoAntiguedad").textContent =
       "Pago por Antigüedad: $0.00";
     document.getElementById("complementoRemunerativo").textContent =
@@ -34,23 +34,27 @@ function mostrarResultado() {
   // Si pasa la validación, mostrar resultados
   const resultados = calcularSalario();
   document.getElementById("resultadoSueldo").textContent =
-    "Sueldo básico por hs: " + aPesos(resultados.imponible);
+    aPesos(resultados.imponible);
   document.getElementById("pagoZona").textContent =
-    "Pago por Zona: " + aPesos(resultados.pagoDeZona);
+    aPesos(resultados.pagoDeZona);
   document.getElementById("pagoAntiguedad").textContent =
-    "Pago por Antigüedad: " + aPesos(resultados.pagoAntiguedad);
+    aPesos(resultados.pagoAntiguedad);
   document.getElementById("complementoRemunerativo").textContent =
-    "Complemento Remunerativo: " + aPesos(resultados.complementoRemunerativo);
+    aPesos(resultados.complementoRemunerativo);
   document.getElementById("complementoNoRemunerativo").textContent =
-    "Complemento No Remunerativo: " + aPesos(resultados.complementoNoRemunerativo);
+    aPesos(resultados.complementoNoRemunerativo);
   document.getElementById("sumaNoRemunerativa").textContent =
-    "Pago Suma No Remunerativa" + aPesos(resultados.pagoSumaNoRemunerativa);
+    aPesos(resultados.pagoSumaNoRemunerativa);
   document.getElementById("incentivoDocente").textContent =
-    "Incentivo Docente" + aPesos(resultados.pagoIncentivoDocente);
+    aPesos(resultados.pagoIncentivoDocente);
+  document.getElementById("totalCAportes").textContent =
+    aPesos(resultados.totalRemunerativo);
+  document.getElementById("totalSAportes").textContent =
+    aPesos(resultados.totalNRemunerativo);
 }
 
 function aPesos(valor) {
-  return "$" + valor.toFixed(2);
+  return "$ " + valor.toFixed(2);
 }
 
 function calcularSalario() {
@@ -134,6 +138,8 @@ function calcularSalario() {
   let complementoNoRemunerativo1 = basicoXHs * 1.185; //el 1185% del básico
   let sumaNoRemunerativa = cantHs * 4667.483; //Pago de suma no remunerativa 
   let incentivoDocente = cantHs * 1913.3325; //Pago por incentivo docente
+  let totalRemunerativo1 = basicoXHs + complementoRemunerativo1 + bonificacionZona + bonificacionAntiguedad;
+  let totalNRemunerativo1 =complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente
   //   var descuentosLegales = basicoXHs * afp + basicoXHs * 0.07;
   //   var sueldoLiquido = parseInt(basicoXHs - descuentosLegales);
   //   if (sueldoLiquido < 100000) {
@@ -149,7 +155,9 @@ function calcularSalario() {
     complementoRemunerativo: complementoRemunerativo1,
     complementoNoRemunerativo: complementoNoRemunerativo1,
     pagoSumaNoRemunerativa : sumaNoRemunerativa,
-    pagoIncentivoDocente : incentivoDocente
+    pagoIncentivoDocente : incentivoDocente,
+    totalRemunerativo : totalRemunerativo1,
+    totalNRemunerativo : totalNRemunerativo1
     
   };
 }

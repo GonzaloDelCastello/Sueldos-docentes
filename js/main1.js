@@ -22,8 +22,8 @@ let sueldoBasicoXH = 12756.59; //Valor de marzo 2025
 let bonificacionBasico = sueldoBasicoXH * cantHs; //Sueldo basico x el cargo 
 
 
-const porcentajeNoRemunerativo = 1.26; //el 126% del básico
-const porcentajeRemunerativo = 1.11; //el 111% del básico
+const porcentajeNoRemunerativo = 1.19; //el 119% del básico
+const porcentajeRemunerativo = 1.19; //el 119% del básico
 function fPorcentajeZona() {
   switch (document.getElementById("zona").value) {
     case "1":

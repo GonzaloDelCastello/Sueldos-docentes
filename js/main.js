@@ -5,7 +5,7 @@ function mostrarResultado() {
   const cantHs = parseInt(document.getElementById("cantHs").value);
 
   if (isNaN(cantHs) || cantHs <= 0) {
-    // Mostrar $0.00 en todos los campos
+    // Muestra $0.00 en 4 var si cantHs es NaN
     document.getElementById("resultadoSueldo").textContent = "Sueldo básico por hs: $0.00";
     document.getElementById("pagoZona").textContent = "Pago por Zona: $0.00";
     document.getElementById("pagoAntiguedad").textContent = "Pago por Antigüedad: $0.00";

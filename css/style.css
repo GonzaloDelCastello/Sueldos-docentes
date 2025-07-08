@@ -218,3 +218,6 @@ ul {
   align-items: center;
 }
 
+table, td, th{
+  border: solid;
+}
