@@ -61,6 +61,8 @@ a {
 .contenedor {
   max-width: 100%;
   margin: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 h1,
 h2,
@@ -101,6 +103,7 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-left: 2rem;
 }
 
 .contenido a {
@@ -111,7 +114,7 @@ h3 {
 
 a:hover {
   color: var(--secundarioOscuro);
-  text-decoration: underline;
+  text-decoration: none;
 }
 .navegacion {
   display: flex;
