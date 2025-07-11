@@ -221,3 +221,44 @@ ul {
 table, td, th{
   border: solid;
 }
+
+/* Menu hamburguesa hecho por ia */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--blanco);
+  font-size: 3rem;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .navegacion {
+    display: none;
+    flex-direction: column;
+    background-color: var(--primario);
+    width: 100%;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    padding: 1rem 0;
+    text-align: center;
+  }
+
+  .navegacion a {
+    margin: 1rem 0;
+    color: var(--blanco);
+  }
+
+  .navegacion.activo {
+    display: flex;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .barra {
+    position: relative;
+  }
+}

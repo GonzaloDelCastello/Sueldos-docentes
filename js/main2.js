@@ -60,16 +60,19 @@ function aPesos(valor) {
 function calcularSalario() {
   let cantHs = parseInt(document.getElementById("cantHs").value);
 
-  let calculoBasico = (() => {
-    switch (document.getElementById("cargo").value) {
-      case "1":
-        return { pagoXHs: 14173.99 };
-      case "2":
-        return { pagoXHs: 10 };
-      default:
-        return { pagoXHs: 0 };
-    }
-  })();
+  //Depende del cargo MODIFICAR
+  function obtenerPagoXHs(cargo) {
+  switch (cargo) {
+    case "1":
+      return { pagoXHs: 14173.99 };
+    case "2":
+      return { pagoXHs: 10 };
+    default:
+      return { pagoXHs: 0 };
+  }
+}
+let calculoBasico = obtenerPagoXHs(document.getElementById("cargo").value);
+
 
   function calculoZona() {
     switch (document.getElementById("zona").value) {
@@ -120,16 +123,7 @@ function calcularSalario() {
     }
   }
 
-  //   var montoGratificacion = 0;
-  //   if (gratificacion != "no") {
-  //     montoGratificacion = calcularGratificacion(sueldoBruto);
-  //   }
-  //   var bonoMov = parseInt(document.getElementById("bonoMovilizacion").value);
-  //   var bonoCol = parseInt(document.getElementById("bonoColacion").value);
-  //   var afp = parseFloat(document.getElementById("afp").value).toFixed(2) / 100;
-  //   afp = (afp + 10) / 100;
-  //   var prevision = document.getElementById("prevision").value;
-  //   var contrato = document.getElementById("tipocontrato").value;
+
 
   let basicoXHs = cantHs * calculoBasico.pagoXHs;
   let bonificacionZona = basicoXHs * calculoZona();
@@ -140,13 +134,7 @@ function calcularSalario() {
   let incentivoDocente = cantHs * 1913.3325; //Pago por incentivo docente
   let totalRemunerativo1 = basicoXHs + complementoRemunerativo1 + bonificacionZona + bonificacionAntiguedad;
   let totalNRemunerativo1 =complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente
-  //   var descuentosLegales = basicoXHs * afp + basicoXHs * 0.07;
-  //   var sueldoLiquido = parseInt(basicoXHs - descuentosLegales);
-  //   if (sueldoLiquido < 100000) {
-  //     alert(
-  //       "Es posible que haya un Error en los datos Ingresados, favor verifique"
-  //     );
-  //   }
+ 
 
   return {
     imponible: basicoXHs,
@@ -161,4 +149,13 @@ function calcularSalario() {
     
   };
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const toggle = document.getElementById("menu-toggle");
+  const nav = document.getElementById("navegacion");
+
+  toggle.addEventListener("click", () => {
+  nav.classList.toggle("activo");
+  });
+});
 
