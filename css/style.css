@@ -1,23 +1,12 @@
 :root {
-  --primario: #3e5e4d;               /* Verde apagado tipo pizarrón */
-  --primarioClaro: #9fb8a3;          /* Gris verdoso claro */
-  --secundario: #f0e68c;             /* Amarillo suave tipo tiza vieja */
-  --secundarioOscuro: #406882;       /* Azul apagado para resaltes */
-  --blanco: #f4f4f4;                 /* Blanco tiza */
-  --negro: #2b2b2b;                  /* Gris pizarra oscuro */
+  --primario: #3e5e4d; /* Verde apagado tipo pizarrón */
+  --primarioClaro: #9fb8a3; /* Gris verdoso claro */
+  --secundario: #f0e68c; /* Amarillo suave tipo tiza vieja */
+  --secundarioOscuro: #406882; /* Azul apagado para resaltes */
+  --blanco: #f4f4f4; /* Blanco tiza */
+  --negro: #2b2b2b; /* Gris pizarra oscuro */
   --fuenteTitulo: "Fredericka the Great", serif;
 }
-/* :root {
-  --primario: #27659a;
-  --primarioClaro: #afddff;
-  --secundario: #ffecdb;
-  --secundarioOscuro: #ff9149;
-  --blanco: #fff;
-  --negro: #000;
-  --fuenteTitulo: "Fredericka the Great", serif;
-  
-} */
-
 html {
   box-sizing: border-box;
   font-size: 62.5%;
@@ -34,7 +23,7 @@ body {
   line-height: 1.5;
 }
 .intro {
-  max-width: 600px;
+  max-width: 100%;
   margin: 4rem auto 0 auto;
   font-size: 1.8rem;
   text-align: center;
@@ -43,21 +32,22 @@ body {
   padding: 2rem;
   border-left: 5px solid var(--primario);
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 #formularioCalculo {
-  
   background-color: var(--secundario);
   padding: 2rem;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.15);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 }
-label, select, input {
+label,
+select,
+input {
   display: block;
   margin: 1rem auto;
   font-size: 1.6rem;
   width: 90%;
-  max-width: 300px;
+  max-width: 100%;
 }
 
 p {
@@ -69,7 +59,7 @@ a {
 }
 
 .contenedor {
-  max-width: 120rem;
+  max-width: 100%;
   margin: auto;
 }
 h1,
@@ -120,7 +110,7 @@ h3 {
 }
 
 a:hover {
-  color: var(--secundarioOscuro); 
+  color: var(--secundarioOscuro);
   text-decoration: underline;
 }
 .navegacion {
@@ -136,7 +126,7 @@ a:hover {
   text-decoration: none;
 }
 #calculoSalarial {
-  max-width: 500px;
+  max-width: 60rem;
   height: auto;
   border-radius: 5px;
   display: relative;
@@ -146,14 +136,15 @@ a:hover {
   margin: 10% auto;
 }
 #resultados {
-  text-align: left;
+  text-align: center;
   color: var(--blanco);
   padding: 2rem;
   border-radius: 8px;
   background-color: rgba(62, 94, 77, 0.8); /* verde apagado semitransparente */
   margin: 2rem auto;
-  max-width: 600px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  max-width: 100%;
+  min-width: 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
   font-size: 1.6rem;
   font-family: Arial, sans-serif;
 }
@@ -161,6 +152,9 @@ a:hover {
   text-align: center;
   color: var(--secundario);
   font-family: var(--fuenteTitulo);
+}
+#tabla {
+  align-items: center;
 }
 #resultados p {
   margin: 1rem 0;
@@ -213,12 +207,14 @@ ul {
 .grid-form {
   display: grid;
   grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
-  gap: 1.5rem 2rem;               /* Espaciado vertical y horizontal */
+  gap: 1.5rem 2rem; /* Espaciado vertical y horizontal */
   justify-content: center;
   align-items: center;
 }
 
-table, td, th{
+table,
+td,
+th {
   border: solid;
 }
 
@@ -236,13 +232,18 @@ table, td, th{
   .navegacion {
     display: none;
     flex-direction: column;
-    background-color: var(--primario);
-    width: 100%;
+    background-image: url(../img/PizarraNegra.jpg);
+    min-height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 100%; /* ocupa todo el ancho visible */
     position: absolute;
     top: 100%;
     left: 0;
     padding: 1rem 0;
     text-align: center;
+    z-index: 10;
   }
 
   .navegacion a {
