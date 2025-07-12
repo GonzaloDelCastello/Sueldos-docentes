@@ -1,169 +1,146 @@
 :root {
-  --primario: #3e5e4d; /* Verde apagado tipo pizarrón */
-  --primarioClaro: #9fb8a3; /* Gris verdoso claro */
-  --secundario: #f0e68c; /* Amarillo suave tipo tiza vieja */
-  --secundarioOscuro: #406882; /* Azul apagado para resaltes */
-  --blanco: #f4f4f4; /* Blanco tiza */
-  --negro: #2b2b2b; /* Gris pizarra oscuro */
+  --primario: #3e5e4d;
+  --primarioClaro: #9fb8a3;
+  --secundario: #f0e68c;
+  --secundarioOscuro: #406882;
+  --blanco: #f4f4f4;
+  --negro: #2b2b2b;
   --fuenteTitulo: "Fredericka the Great", serif;
 }
-html {
+
+* {
   box-sizing: border-box;
-  font-size: 62.5%;
-}
-*,
-*:before,
-*:after {
-  box-sizing: inherit;
-}
-body {
   margin: 0;
-  background-color: var(--blanco);
+  padding: 0;
+}
+
+html {
+  font-size: 62.5%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 1.6rem;
   line-height: 1.5;
+  background-color: var(--blanco);
 }
-.intro {
-  max-width: 100%;
-  margin: 4rem auto 0 auto;
-  font-size: 1.8rem;
+
+/* --- Estructura general --- */
+.contenedor {
+  max-width: 120rem;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+h1, h2, h3 {
   text-align: center;
-  color: #333;
+  font-family: var(--fuenteTitulo);
+}
+h1 { font-size: 4rem; }
+h2 { font-size: 3.2rem; }
+h3 { font-size: 2.4rem; }
+
+/* --- Header y barra --- */
+.header {
+  background-image: url(../img/PizarraNegra.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 2rem 0;
+}
+
+.header__texto {
+  color: var(--blanco);
+  margin-left: 2rem;
+  font-family: var(--fuenteTitulo);
+  font-weight: 400;
+}
+
+.header__texto2 {
+  color: var(--blanco);
+  font-size: 4rem;
+  padding: 1rem 0 0;
+}
+
+.barra {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  position: relative;
+}
+
+.navegacion {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+.navegacion a {
+  color: var(--blanco);
+  font-family: var(--fuenteTitulo);
+  font-size: 2rem;
+  text-decoration: none;
+}
+
+/* --- Intro --- */
+.intro {
+  max-width: 60rem;
+  margin: 4rem auto;
   background-color: #f4faff;
   padding: 2rem;
   border-left: 5px solid var(--primario);
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  text-align: center;
+  color: #333;
 }
+
+/* --- Formulario --- */
+#calculoSalarial {
+  max-width: 60rem;
+  margin: 4rem auto;
+  text-align: center;
+}
+
 #formularioCalculo {
   background-color: var(--secundario);
   padding: 2rem;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 10px rgba(0,0,0,0.15);
 }
-label,
-select,
-input {
+
+label, select, input {
   display: block;
+  width: 90%;
+  max-width: 30rem;
   margin: 1rem auto;
   font-size: 1.6rem;
-  width: 90%;
-  max-width: 100%;
 }
 
-p {
-  font-size: 1.8rem;
-  font-family: Arial, Helvetica, sans-serif;
-}
-a {
-  text-decoration: none;
-}
-
-.contenedor {
-  max-width: 100%;
-  margin: auto;
-  padding-left: 2rem;
-  padding-right: 2rem;
-}
-h1,
-h2,
-h3 {
-  text-align: center;
-  font-family: var(--fuentePrincipal);
-}
-h1 {
-  font-size: 4rem;
-}
-h2 {
-  font-size: 3.2rem;
-}
-h3 {
-  font-size: 2.4rem;
-}
-
-.header {
-  background-image: url(../img/PizarraNegra.jpg);
-  height: 15rem;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-}
-.header__texto {
-  margin-top: 2rem;
-  margin-left: 6rem;
-  color: var(--blanco);
-  font-family: var(--fuenteTitulo);
-  font-weight: 400;
-}
-.header__texto2 {
-  color: var(--blanco);
-  padding-top: 20rem;
-  font-size: 8rem;
-}
-.barra {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 2rem;
-}
-
-.contenido a {
-  text-decoration: none;
-  color: var(--primarioClaro);
-  transition: color 0.3s;
-}
-
-a:hover {
-  color: var(--secundarioOscuro);
-  text-decoration: none;
-}
-.navegacion {
-  display: flex;
-  gap: 3rem;
-  align-items: center;
-}
-
-.navegacion a {
-  color: var(--blanco);
-  font-family: var(--fuenteTitulo);
-  font-size: 2.1rem;
-  text-decoration: none;
-}
-#calculoSalarial {
-  max-width: 60rem;
-  height: auto;
-  border-radius: 5px;
-  display: relative;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  margin: 10% auto;
-}
+/* --- Resultados --- */
 #resultados {
-  text-align: center;
+  background-color: rgba(62, 94, 77, 0.8);
   color: var(--blanco);
+  margin: 3rem auto;
   padding: 2rem;
   border-radius: 8px;
-  background-color: rgba(62, 94, 77, 0.8); /* verde apagado semitransparente */
-  margin: 2rem auto;
-  max-width: 100%;
-  min-width: 100%;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-  font-size: 1.6rem;
-  font-family: Arial, sans-serif;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  max-width: 60rem;
 }
+
 #resultados h2 {
-  text-align: center;
   color: var(--secundario);
   font-family: var(--fuenteTitulo);
 }
-#tabla {
-  align-items: center;
-}
-#resultados p {
-  margin: 1rem 0;
-  line-height: 1.4;
+
+table, td, th {
+  border: 1px solid var(--negro);
+  padding: 0.5rem;
+  width: 100%;
 }
 
+/* --- Botón --- */
 .boton {
   margin-top: 2rem;
   padding: 1rem 2rem;
@@ -171,7 +148,6 @@ a:hover {
   color: white;
   border: none;
   font-size: 1.6rem;
-  font-family: Arial, sans-serif;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -180,48 +156,27 @@ a:hover {
   background-color: var(--primarioClaro);
   color: var(--negro);
 }
-.sobreNosotros .contenido {
-  margin-top: 3rem;
-  font-size: 1.7rem;
-  line-height: 1.8;
-}
 
-.sobreNosotros h3 {
-  margin-top: 2.5rem;
-  color: var(--primario);
-}
-ul {
-  font-size: 1.7rem;
-  line-height: 1.6;
-  margin-left: 2rem;
-}
+/* --- Footer --- */
 .footer {
   background-color: var(--primario);
   color: var(--blanco);
-  padding: 2rem 0;
-  margin-top: 5rem;
-  font-size: 1.4rem;
-}
-
-.footer__contenido {
   text-align: center;
+  padding: 2rem;
+  font-size: 1.4rem;
+  margin-top: 4rem;
 }
 
+/* --- Grid formulario --- */
 .grid-form {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
-  gap: 1.5rem 2rem; /* Espaciado vertical y horizontal */
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem 2rem;
   justify-content: center;
   align-items: center;
 }
 
-table,
-td,
-th {
-  border: solid;
-}
-
-/* Menu hamburguesa hecho por ia */
+/* --- Responsive --- */
 .menu-toggle {
   display: none;
   background: none;
@@ -235,23 +190,16 @@ th {
   .navegacion {
     display: none;
     flex-direction: column;
-    background-image: url(../img/PizarraNegra.jpg);
-    min-height: 100%;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
-    width: 100%; /* ocupa todo el ancho visible */
     position: absolute;
     top: 100%;
     left: 0;
+    width: 100%;
+    background-color: var(--primario);
+    background-image: url(../img/PizarraNegra.jpg);
+    background-size: cover;
     padding: 1rem 0;
-    text-align: center;
     z-index: 10;
-  }
-
-  .navegacion a {
-    margin: 1rem 0;
-    color: var(--blanco);
+    text-align: center;
   }
 
   .navegacion.activo {
@@ -262,7 +210,19 @@ th {
     display: block;
   }
 
-  .barra {
-    position: relative;
+  .grid-form {
+    grid-template-columns: 1fr;
   }
+
+  .intro, #resultados, #formularioCalculo {
+    max-width: 95%;
+  }
+
+  .header__texto2 {
+    font-size: 4rem;
+    padding-top: 10rem;
+  }
+}
+a {
+  text-decoration: none;
 }
