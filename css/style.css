@@ -82,6 +82,11 @@ h3 { font-size: 2.4rem; }
   font-size: 2rem;
   text-decoration: none;
 }
+.navegacion a:hover {
+  color: var(--blanco); /* por ejemplo, azul apagado */
+  font-size: 2.3rem;
+  transition: color 0.3s ease;
+}
 
 /* --- Intro --- */
 .intro {
@@ -225,4 +230,7 @@ table, td, th {
 }
 a {
   text-decoration: none;
+}
+.oculto {
+  display: none;
 }
