@@ -81,7 +81,9 @@ function mostrarResultado() {
 }
 
 function mostrarCalculoSecundario() {
-  const resultados = calcularSalarioHSecundario();
+  const resultados = calcularSalarioHsSecundario();
+  const descuentos = calculoDescuentosHsSecundario();
+  const totalBolsillo= calculoTotalNeto();
   document.getElementById("resultadoSueldo").textContent = aPesos(
     resultados.imponible
   );
@@ -109,20 +111,20 @@ function mostrarCalculoSecundario() {
   document.getElementById("totalSAportes").textContent = aPesos(
     resultados.totalNRemunerativo
   );
-  document.getElementById("totalBolsillo").textContent = aPesos(
-    resultados.totalBolsillo
+  document.getElementById("totalBruto").textContent = aPesos(
+    resultados.totalBruto
   );
-  
-  document.getElementById("cargo").addEventListener("change", (e) => {
-  if (e.target.value === "preceptor") {
-    const filasSecundaria = document.querySelectorAll(".fila-secundaria");
-    filasSecundaria.forEach(fila => fila.remove());
-  }
-});
+  //descuentos
+  document.getElementById("aporteJuvilatorio").textContent = aPesos(descuentos.descuentoJuvilacion);
+  document.getElementById("aporteJuvilatorioEsp").textContent = aPesos(descuentos.descuentoJuvilacionRegEsp);
+  document.getElementById("obraSocial").textContent = aPesos(descuentos.descuentoObraSocial);
+  document.getElementById("totalDescuentos").textContent = aPesos(descuentos.totalDescuentos);
+  //Total Neto
+  document.getElementById("totalBolsillo").textContent = aPesos(totalBolsillo.totalBolsillo);
 }
 
 //Función para el cálculo de hs de secundaria
-function calcularSalarioHSecundario() {
+function calcularSalarioHsSecundario() {
 
   let cantHs = parseInt(document.getElementById("cantHs").value);
   let calculoBasico = calculoBasicoHsSecundario;
@@ -142,7 +144,7 @@ function calcularSalarioHSecundario() {
     bonificacionAntiguedad;
   let totalNRemunerativo1 =
     complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente;
-  let totalBolsillo1 = totalNRemunerativo1 + totalRemunerativo1;
+  let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
   return {
     imponible: basicoXHs,
     pagoDeZona: bonificacionZona,
@@ -153,7 +155,7 @@ function calcularSalarioHSecundario() {
     pagoIncentivoDocente: incentivoDocente,
     totalRemunerativo: totalRemunerativo1,
     totalNRemunerativo: totalNRemunerativo1,
-    totalBolsillo: totalBolsillo1,
+    totalBruto: totalBruto1,
   };
 }
 //Calculo Zona
@@ -208,9 +210,24 @@ function calculoAntiguedad() {
   }
 }
 //Cálculo descuentos
-/*function(){
-  
-}*/
+function calculoDescuentosHsSecundario() {
+  let descuentoJuvilacion1 = calcularSalarioHsSecundario().totalRemunerativo * 0.11;
+  let descuentoJuvilacionRegEsp1 = calcularSalarioHsSecundario().totalBruto * 0.02;
+  let descuentoObraSocial1 = calcularSalarioHsSecundario().totalBruto * 0.06;
+  let totalDescuentos1 = descuentoJuvilacion1 + descuentoJuvilacionRegEsp1 + descuentoObraSocial1;
+  return {
+    descuentoJuvilacion: descuentoJuvilacion1,
+    descuentoJuvilacionRegEsp: descuentoJuvilacionRegEsp1,
+    descuentoObraSocial: descuentoObraSocial1,
+    totalDescuentos: totalDescuentos1,
+  }
+}
+function calculoTotalNeto() {
+  let totalBolsillo1 = calcularSalarioHsSecundario().totalBruto - calculoDescuentosHsSecundario().totalDescuentos;
+  return{
+    totalBolsillo: totalBolsillo1
+  }
+}
 
 //Botón hamburguesa (ia)
 document.addEventListener("DOMContentLoaded", () => {

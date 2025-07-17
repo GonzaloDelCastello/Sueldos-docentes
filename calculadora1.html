@@ -73,7 +73,7 @@
         </fieldset>
       </form>
       <!--Fin formulario Hs secundario-->
-         <!--Inicio formulario Hs Preceptor-->
+      <!--Inicio formulario Hs Preceptor-->
       <form id="formPreceptor" class="formulario_preceptor oculto">
         <fieldset class="grid-form">
           <legend>Sueldo por cargo</legend>
@@ -91,7 +91,7 @@
       </form>
       <!--Fin formulario Hs secundario-->
       <!--Inicio formulario fijo-->
-      <form id="formFijo" class="formFijo oculto" >
+      <form id="formFijo" class="formFijo oculto">
         <fieldset class="grid-form">
           <p><label for="antiguedad">Antiguedad docente <select id="antiguedad" name="antiguedad">
                 <option value="0">0 años (0%)</option>
@@ -117,7 +117,16 @@
     <!-- Fin del div del form -->
     <div id="resultados" style="display:none;">
       <h2>Resultados:</h2>
-      <h2>Sueldo Bruto (sin descuentos)</h2>
+      <h3>Total a cobrar por cargo:</h3>
+      <table>
+        <tr>
+          <td>Total Neto</td>
+          <td>
+            <p id="totalBolsillo"></p>
+          </td>
+        </tr>
+      </table>
+      <h3>Detalles</h3>
       <table id="tabla">
         <tr>
           <th>Concepto</th>
@@ -156,13 +165,15 @@
           </td>
           <td></td>
         </tr>
-        <tr>
+        <!--
+        <tr class="filaAdicionalXCargo">
           <td>Adicional Por Cargo: </td>
           <td>
             <p id="adicionalPorCargo"></p>
           </td>
           <td></td>
-        </tr>
+        </tr> 
+        -->
         <tr>
           <td>Complemento No Remunerativo: </td>
           <td></td>
@@ -196,11 +207,44 @@
         <tr>
           <th>Sueldo Burto Total <br> Sin descuentos</th>
           <th colspan="2">
-            <p id="totalBolsillo"></p>
+            <p id="totalBruto"></p>
           </th>
-          
+
         </tr>
       </table>
+      <h3>Descuentos</h3>
+      <table>
+        <tr>
+          <th>Concepto</th>
+          <th>Monto</th>
+        </tr>
+        <tr>
+          <td>Aportes Juvilatorios</td>
+          <td>
+            <p id="aporteJuvilatorio"></p>
+          </td>
+        </tr>
+        <tr>
+          <td>Aportes Juvilatorios <br>Regimen especial</td>
+          <td>
+            <p id="aporteJuvilatorioEsp"></p>
+          </td>
+        </tr>
+        <tr>
+          <td>Aportes Obra Social</td>
+          <td>
+            <p id="obraSocial"></p>
+          </td>
+        </tr>
+        <tr>
+          <td>Total Descuentos</td>
+          <td>
+            <p id="totalDescuentos"></p>
+          </td>
+        </tr>
+      </table>
+
+
     </div>
   </div>
   <footer class="footer">
