@@ -285,7 +285,7 @@ function calcularSalarioPreceptor() {
   };
 }
 
-//Botón hamburguesa (ia)
+  //Botón hamburguesa (ia)
 document.addEventListener("DOMContentLoaded", () => {
   const toggle = document.getElementById("menu-toggle");
   const nav = document.getElementById("navegacion");

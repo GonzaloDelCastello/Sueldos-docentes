@@ -77,7 +77,7 @@
       <form id="formPreceptor" class="formulario_preceptor oculto">
         <fieldset class="grid-form">
           <legend>Sueldo por cargo</legend>
-          <p><label for="hPreceptor">Cantidad de hs Preceptor<input type="number" id="hPreceptor" name="hPreceptor"></label></p>
+          <!-- <p><label for="hPreceptor">Cantidad de hs Preceptor<input type="number" id="hPreceptor" name="hPreceptor"></label></p>-->
           <p><label for="zona">Bonificación por zona<select id="zona" name="zona">
                 <option value="1">0%</option>
                 <option value="2">20%</option>
@@ -91,7 +91,7 @@
       </form>
       <!--Fin formulario Hs secundario-->
       <!--Inicio formulario fijo-->
-      <form id="formFijo">
+      <form id="formFijo" class="formFijo oculto" >
         <fieldset class="grid-form">
           <p><label for="antiguedad">Antiguedad docente <select id="antiguedad" name="antiguedad">
                 <option value="0">0 años (0%)</option>
@@ -192,6 +192,13 @@
           <th>
             <p id="totalSAportes"></p>
           </th>
+        </tr>
+        <tr>
+          <th>Sueldo Burto Total <br> Sin descuentos</th>
+          <th colspan="2">
+            <p id="totalBolsillo"></p>
+          </th>
+          
         </tr>
       </table>
     </div>
