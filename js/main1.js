@@ -119,6 +119,7 @@ function mostrarCalculoSecundario() {
   document.getElementById("aporteJuvilatorioEsp").textContent = aPesos(descuentos.descuentoJuvilacionRegEsp);
   document.getElementById("obraSocial").textContent = aPesos(descuentos.descuentoObraSocial);
   document.getElementById("totalDescuentos").textContent = aPesos(descuentos.totalDescuentos);
+  document.getElementById("seguroObligatorio").textContent = aPesos(descuentos.seguroObligatorio);
   //Total Neto
   document.getElementById("totalBolsillo").textContent = aPesos(totalBolsillo.totalBolsillo);
 }
@@ -212,14 +213,16 @@ function calculoAntiguedad() {
 //Cálculo descuentos
 function calculoDescuentosHsSecundario() {
   let descuentoJuvilacion1 = calcularSalarioHsSecundario().totalRemunerativo * 0.11;
-  let descuentoJuvilacionRegEsp1 = calcularSalarioHsSecundario().totalBruto * 0.02;
-  let descuentoObraSocial1 = calcularSalarioHsSecundario().totalBruto * 0.06;
-  let totalDescuentos1 = descuentoJuvilacion1 + descuentoJuvilacionRegEsp1 + descuentoObraSocial1;
+  let descuentoJuvilacionRegEsp1 = calcularSalarioHsSecundario().totalRemunerativo * 0.02;
+  let descuentoObraSocial1 = calcularSalarioHsSecundario().totalRemunerativo * 0.06;
+  let seguroObligatorio1 = 4115;
+  let totalDescuentos1 = descuentoJuvilacion1 + descuentoJuvilacionRegEsp1 + descuentoObraSocial1 + seguroObligatorio1;
   return {
     descuentoJuvilacion: descuentoJuvilacion1,
     descuentoJuvilacionRegEsp: descuentoJuvilacionRegEsp1,
     descuentoObraSocial: descuentoObraSocial1,
     totalDescuentos: totalDescuentos1,
+    seguroObligatorio:  seguroObligatorio1,
   }
 }
 function calculoTotalNeto() {
