@@ -220,6 +220,7 @@ function calculoDescuentosHsSecundario() {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   let descuentoJuvilacion1 = calcularSalarioHsSecundario().totalRemunerativo * 0.11;
   let descuentoJuvilacionRegEsp1 = calcularSalarioHsSecundario().totalRemunerativo * 0.02;
   let descuentoObraSocial1 = calcularSalarioHsSecundario().totalRemunerativo * 0.06;
@@ -230,12 +231,17 @@ function calculoDescuentosHsSecundario() {
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
   let descuentoJubilacion1 = calcularSalarioHsSecundario().totalRemunerativo * 0.11;
   let descuentoJubilacionRegEsp1 = calcularSalarioHsSecundario().totalBruto * 0.02;
   let descuentoObraSocial1 = calcularSalarioHsSecundario().totalBruto * 0.06;
   let totalDescuentos1 = descuentoJubilacion1 + descuentoJubilacionRegEsp1 + descuentoObraSocial1;
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
