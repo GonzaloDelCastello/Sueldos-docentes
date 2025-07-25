@@ -3,11 +3,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const selectCargo = document.getElementById("cargo");
   const formSecundario = document.getElementById("formSecundario");
   const formPreceptor = document.getElementById("formPreceptor");
+  const formPrimaria = document.getElementById("formPrimaria");
   selectCargo.addEventListener("change", function () {
     const cargo = parseInt(this.value);
     // Ocultar todos
     formSecundario.classList.add("oculto");
     formPreceptor.classList.add("oculto");
+    formPrimaria.classList.add("oculto");
 
     // Mostrar según selección
     switch (cargo) {
@@ -19,6 +21,9 @@ document.addEventListener("DOMContentLoaded", function () {
         formPreceptor.classList.remove("oculto");
         formFijo.classList.remove("oculto");
         break;
+      case 3: formPrimaria.classList.remove("oculto");
+      formFijo.classList.remove("oculto");
+      break;
     }
   });
 
@@ -115,8 +120,8 @@ function mostrarCalculoSecundario() {
     resultados.totalBruto
   );
   //descuentos
-  document.getElementById("aporteJuvilatorio").textContent = aPesos(descuentos.descuentoJuvilacion);
-  document.getElementById("aporteJuvilatorioEsp").textContent = aPesos(descuentos.descuentoJuvilacionRegEsp);
+  document.getElementById("aporteJubilatorio").textContent = aPesos(descuentos.descuentoJubilacion);
+  document.getElementById("aporteJubilatorioEsp").textContent = aPesos(descuentos.descuentoJubilacionRegEsp);
   document.getElementById("obraSocial").textContent = aPesos(descuentos.descuentoObraSocial);
   document.getElementById("totalDescuentos").textContent = aPesos(descuentos.totalDescuentos);
   document.getElementById("seguroObligatorio").textContent = aPesos(descuentos.seguroObligatorio);
@@ -212,14 +217,21 @@ function calculoAntiguedad() {
 }
 //Cálculo descuentos
 function calculoDescuentosHsSecundario() {
+<<<<<<< Updated upstream
   let descuentoJuvilacion1 = calcularSalarioHsSecundario().totalRemunerativo * 0.11;
   let descuentoJuvilacionRegEsp1 = calcularSalarioHsSecundario().totalRemunerativo * 0.02;
   let descuentoObraSocial1 = calcularSalarioHsSecundario().totalRemunerativo * 0.06;
   let seguroObligatorio1 = 4115;
   let totalDescuentos1 = descuentoJuvilacion1 + descuentoJuvilacionRegEsp1 + descuentoObraSocial1 + seguroObligatorio1;
+=======
+  let descuentoJubilacion1 = calcularSalarioHsSecundario().totalRemunerativo * 0.11;
+  let descuentoJubilacionRegEsp1 = calcularSalarioHsSecundario().totalBruto * 0.02;
+  let descuentoObraSocial1 = calcularSalarioHsSecundario().totalBruto * 0.06;
+  let totalDescuentos1 = descuentoJubilacion1 + descuentoJubilacionRegEsp1 + descuentoObraSocial1;
+>>>>>>> Stashed changes
   return {
-    descuentoJuvilacion: descuentoJuvilacion1,
-    descuentoJuvilacionRegEsp: descuentoJuvilacionRegEsp1,
+    descuentoJubilacion: descuentoJubilacion1,
+    descuentoJubilacionRegEsp: descuentoJubilacionRegEsp1,
     descuentoObraSocial: descuentoObraSocial1,
     totalDescuentos: totalDescuentos1,
     seguroObligatorio:  seguroObligatorio1,

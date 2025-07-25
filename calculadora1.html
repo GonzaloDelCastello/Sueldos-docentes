@@ -55,6 +55,7 @@
             <option value="0" selected>Selecciona un cargo</option>
             <option value="1">Hs. en Secundario</option>
             <option value="2">Cargo Preceptor</option>
+            <option value="3">Cargo Primaria</option>
           </select></label></p>
       <!--Inicio formulario Hs secundario-->
       <form id="formSecundario" class="formulario_secundario oculto">
@@ -89,7 +90,24 @@
               </select></label></p>
         </fieldset>
       </form>
-      <!--Fin formulario Hs secundario-->
+      <!--Fin formulario preceptor-->
+      <!--Inicio formulario primaria-->
+      <form id="formPrimaria" class="formulario_primaria oculto">
+        <fieldset class="grid-form">
+          <legend>Sueldo por cargo</legend>
+
+          <p><label for="zona">Bonificación por zona<select id="zona" name="zona">
+                <option value="1">0%</option>
+                <option value="2">20%</option>
+                <option value="3">40%</option>
+                <option value="4">60%</option>
+                <option value="5">80%</option>
+                <option value="6">100%</option>
+
+              </select></label></p>
+        </fieldset>
+      </form>
+      <!--Fin formulario primaria-->
       <!--Inicio formulario fijo-->
       <form id="formFijo" class="formFijo oculto">
         <fieldset class="grid-form">
@@ -219,15 +237,15 @@
           <th>Monto</th>
         </tr>
         <tr>
-          <td>Aportes Juvilatorios</td>
+          <td>Aportes Jubilatorios</td>
           <td>
-            <p id="aporteJuvilatorio"></p>
+            <p id="aporteJubilatorio"></p>
           </td>
         </tr>
         <tr>
-          <td>Aportes Juvilatorios <br>Regimen especial</td>
+          <td>Aportes Jubilatorios <br>Regimen especial</td>
           <td>
-            <p id="aporteJuvilatorioEsp"></p>
+            <p id="aporteJubilatorioEsp"></p>
           </td>
         </tr>
         <tr>
