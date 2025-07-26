@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/normalize.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="css/style.css">
-  <script src="js/main2.js"></script>
+  <script src="js/main1.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap" rel="stylesheet">
 </head>
 
@@ -27,7 +27,7 @@
         </button>
         <!--Menú de navegación-->
         <div class="navegacion" id="navegacion">
-          <a href="calculadora.html">Calculadora</a>
+          <a href="calculadora1.html">Calculadora</a>
           <a href="sobreNosotros.html">Sobre nosotros</a>
           <a href="recursos.html">Recursos</a>
         </div>
@@ -38,7 +38,8 @@
 
   <section class="intro">
     <p>
-      Esta herramienta permite estimar el sueldo docente en San Luis según la cantidad de horas, el tipo de cargo, ítems Zona e ítems Antigüedad.
+      Esta herramienta permite estimar el sueldo docente en San Luis según la cantidad de horas, el tipo de cargo, ítems
+      Zona e ítems Antigüedad.
       Completá los datos y presioná <strong>Calcular</strong>.
     </p>
     <p>Como el resto del sitio, está en construcción. Actualmente solo funciona para cargo de hs. en secundaria. Espero
@@ -50,19 +51,16 @@
     <div id="formularioCalculo">
 
       <h3> Calculo de sueldo docente San Luis</h3>
-
-      <form id="formSueldo">
+      <p><label for="cargo">Tipo de cargo <select id="cargo" name="cargo">
+            <option value="0" selected>Selecciona un cargo</option>
+            <option value="1">Hs. en Secundario</option>
+            <option value="2">Cargo Preceptor</option>
+          </select></label></p>
+      <!--Inicio formulario Hs secundario-->
+      <form id="formSecundario" class="formulario_secundario oculto">
         <fieldset class="grid-form">
           <legend>Sueldo por cargo</legend>
-          <p><label for="cargo">Tipo de cargo <select id="cargo" name="cargo">
-                <option value="1">Hs. en Secundario</option>
-                <option value="2">Cargo Preceptor</option>
-              </select></label></p>
-
-
           <p><label for="cantHs">Cantidad de hs<input type="number" id="cantHs" name="cantHs"></label></p>
-
-
           <p><label for="zona">Bonificación por zona<select id="zona" name="zona">
                 <option value="1">0%</option>
                 <option value="2">20%</option>
@@ -72,7 +70,29 @@
                 <option value="6">100%</option>
 
               </select></label></p>
+        </fieldset>
+      </form>
+      <!--Fin formulario Hs secundario-->
+      <!--Inicio formulario Hs Preceptor-->
+      <form id="formPreceptor" class="formulario_preceptor oculto">
+        <fieldset class="grid-form">
+          <legend>Sueldo por cargo</legend>
+          <!-- <p><label for="hPreceptor">Cantidad de hs Preceptor<input type="number" id="hPreceptor" name="hPreceptor"></label></p>-->
+          <p><label for="zona">Bonificación por zona<select id="zona" name="zona">
+                <option value="1">0%</option>
+                <option value="2">20%</option>
+                <option value="3">40%</option>
+                <option value="4">60%</option>
+                <option value="5">80%</option>
+                <option value="6">100%</option>
 
+              </select></label></p>
+        </fieldset>
+      </form>
+      <!--Fin formulario Hs secundario-->
+      <!--Inicio formulario fijo-->
+      <form id="formFijo" class="formFijo oculto">
+        <fieldset class="grid-form">
           <p><label for="antiguedad">Antiguedad docente <select id="antiguedad" name="antiguedad">
                 <option value="0">0 años (0%)</option>
                 <option value="1">1 año (10%)</option>
@@ -87,16 +107,26 @@
                 <option value="10">22 a 23 años (110%)</option>
                 <option value="11">Más de 24 años (120%)</option>
               </select>
-        </fieldset></label></p>
-
-
-        <button type="button" class="boton" onclick="mostrarResultado()">Calcular</button>
+            </label></p>
+          <p><label for="cantHijxs">Cantidad de Hijxs <input type="number" id="cantHijxs" name="cantHijxs"></label></p>
+        </fieldset>
       </form>
+      <!--Fin formulario fijo-->
+      <button type="button" class="boton" onclick="mostrarResultado()">Calcular</button>
     </div>
     <!-- Fin del div del form -->
     <div id="resultados" style="display:none;">
       <h2>Resultados:</h2>
-      <h2>Sueldo Bruto (sin descuentos)</h2>
+      <h3>Total a cobrar por cargo:</h3>
+      <table>
+        <tr>
+          <td>Total Neto</td>
+          <td>
+            <p id="totalBolsillo"></p>
+          </td>
+        </tr>
+      </table>
+      <h3>Detalles</h3>
       <table id="tabla">
         <tr>
           <th>Concepto</th>
@@ -135,13 +165,15 @@
           </td>
           <td></td>
         </tr>
-        <tr>
+        <!--
+        <tr class="filaAdicionalXCargo">
           <td>Adicional Por Cargo: </td>
           <td>
             <p id="adicionalPorCargo"></p>
           </td>
           <td></td>
-        </tr>
+        </tr> 
+        -->
         <tr>
           <td>Complemento No Remunerativo: </td>
           <td></td>
@@ -172,7 +204,53 @@
             <p id="totalSAportes"></p>
           </th>
         </tr>
+        <tr>
+          <th>Sueldo Burto Total <br> Sin descuentos</th>
+          <th colspan="2">
+            <p id="totalBruto"></p>
+          </th>
+
+        </tr>
       </table>
+      <h3>Descuentos</h3>
+      <table>
+        <tr>
+          <th>Concepto</th>
+          <th>Monto</th>
+        </tr>
+        <tr>
+          <td>Aportes Juvilatorios</td>
+          <td>
+            <p id="aporteJuvilatorio"></p>
+          </td>
+        </tr>
+        <tr>
+          <td>Aportes Juvilatorios <br>Regimen especial</td>
+          <td>
+            <p id="aporteJuvilatorioEsp"></p>
+          </td>
+        </tr>
+        <tr>
+          <td>Aportes Obra Social</td>
+          <td>
+            <p id="obraSocial"></p>
+          </td>
+        </tr>
+        <tr>
+          <td>Seguro Obligatorio</td>
+          <td>
+            <p id="seguroObligatorio"></p>
+          </td>
+        </tr>
+        <tr>
+          <td>Total Descuentos</td>
+          <td>
+            <p id="totalDescuentos"></p>
+          </td>
+        </tr>
+      </table>
+
+
     </div>
   </div>
   <footer class="footer">
@@ -183,4 +261,4 @@
   </footer>
 </body>
 
-</html>>
+</html>
