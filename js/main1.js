@@ -27,14 +27,21 @@ document.addEventListener("DOMContentLoaded", function () {
 function mostrarResultado() {
   const cantHsInput = document.getElementById("cantHs");
   const cantHs = parseInt(cantHsInput.value);
+  
   const resultadosSection = document.getElementById("resultados");
+//Mostrar sección de resultados
   resultadosSection.style.display = "block";
+ 
+  // Ocultar todas las filas antes de mostrar resultados nuevos
+  document.querySelectorAll("#tablaResultados tr").forEach(fila => {
+    fila.style.display = "none";
+  });
 
   // Borrar mensaje anterior si existiera (ia)
   const mensajeExistente = document.getElementById("mensajeError");
   if (mensajeExistente) mensajeExistente.remove();
 
-  // Validación clara (ia)
+  // Validación: campo vacío, no numérico o menor o igual a cero (ia)
   if (!cantHsInput.value.trim() || isNaN(cantHs) || cantHs <= 0) {
     const mensaje = document.createElement("p");
     mensaje.id = "mensajeError";
@@ -42,33 +49,18 @@ function mostrarResultado() {
     mensaje.style.fontSize = "1.6rem";
     mensaje.style.marginTop = "1rem";
     mensaje.textContent = "⚠️ Por favor, ingresá una cantidad válida de horas.";
-    //(ia)
     cantHsInput.insertAdjacentElement("afterend", mensaje);
 
-    document.getElementById("resultadoSueldo").textContent = "$0.00";
-    document.getElementById("pagoZona").textContent = "$0.00";
-    document.getElementById("pagoAntiguedad").textContent =
-      "$0.00";
-    document.getElementById("complementoRemunerativo").textContent =
-      "$0.00";
-    document.getElementById("complementoNoRemunerativo").textContent =
-      "$0.00";
-    document.getElementById("sumaNoRemunerativa").textContent =
-      "$0.00";
-    document.getElementById("incentivoDocente").textContent =
-      "$0.00";
-    document.getElementById("totalSAportes").textContent =
-      "$0.00";
-    document.getElementById("totalCAportes").textContent =
-      "$0.00";
+
+      // Reiniciar todos los resultados a $0.00 (puede extraerse en una función auxiliar)
+    resetearResultados();
 
     return;
-  }
+  }//Se puede optimizar con una funcion "resetearResultados()"
 
 
-  // Si pasa la validación, mostrar resultados
-  //Depende del cargo MODIFICAR
-  let cargo = parseInt(document.getElementById("cargo").value);
+  // Si pasó la validación, ejecutar cálculo según cargo seleccionado
+  const cargo = parseInt(document.getElementById("cargo").value);
 
   switch (cargo) {
     case 1:
@@ -77,6 +69,9 @@ function mostrarResultado() {
     case 2:
       mostrarCalculoPreceptor();
       break;
+      default:
+      //Por si selecciona otro valor no calculado
+      alert("Este tipo de cargo aún no tiene cálculo implementado.");
   }
 }
 
@@ -84,7 +79,45 @@ function mostrarCalculoSecundario() {
   const resultados = calcularSalarioHsSecundario();
   const descuentos = calculoDescuentosHsSecundario();
   const totalBolsillo= calculoTotalNeto();
-  document.getElementById("resultadoSueldo").textContent = aPesos(
+  
+  // Rellenar valores
+  document.getElementById("resultadoSueldo").textContent = aPesos(resultados.imponible);
+  document.getElementById("pagoZona").textContent = aPesos(resultados.pagoDeZona);
+  document.getElementById("pagoAntiguedad").textContent = aPesos(resultados.pagoAntiguedad);
+  document.getElementById("complementoRemunerativo").textContent = aPesos(resultados.complementoRemunerativo);
+  document.getElementById("complementoNoRemunerativo").textContent = aPesos(resultados.complementoNoRemunerativo);
+  document.getElementById("sumaNoRemunerativa").textContent = aPesos(resultados.pagoSumaNoRemunerativa);
+  document.getElementById("incentivoDocente").textContent = aPesos(resultados.pagoIncentivoDocente);
+  document.getElementById("totalCAportes").textContent = aPesos(resultados.totalRemunerativo);
+  document.getElementById("totalSAportes").textContent = aPesos(resultados.totalNRemunerativo);
+  document.getElementById("totalBruto").textContent = aPesos(resultados.totalBruto);
+  document.getElementById("aporteJubilatorio").textContent = aPesos(descuentos.descuentoJubilacion);
+  document.getElementById("aporteJubilatorioEsp").textContent = aPesos(descuentos.descuentoJubilacionRegEsp);
+  document.getElementById("obraSocial").textContent = aPesos(descuentos.descuentoObraSocial);
+  document.getElementById("totalDescuentos").textContent = aPesos(descuentos.totalDescuentos);
+  document.getElementById("seguroObligatorio").textContent = aPesos(descuentos.seguroObligatorio);
+  document.getElementById("totalBolsillo").textContent = aPesos(totalBolsillo.totalBolsillo);
+  document.getElementById("totalBolsillo1").textContent = aPesos(22);
+
+  // Mostrar solo las filas necesarias
+  mostrarFila("filaTotalNeto");
+  mostrarFila("filaSueldoBasico");
+  mostrarFila("filaZona");
+  mostrarFila("filaAntiguedad");
+  mostrarFila("filaComplementoRem");
+  mostrarFila("filaComplementoNoRem");
+  mostrarFila("filaSumaNoRem");
+  mostrarFila("filaIncentivo");
+  mostrarFila("filaTotalCAportes");
+  mostrarFila("filaTotalSAportes");
+  mostrarFila("filaTotalBruto");
+  mostrarFila("filaAporteJubilatorio");
+  mostrarFila("filaAporteJubilatorioEsp");
+  mostrarFila("filaObraSocial");
+  mostrarFila("filaSeguroObligatorio");
+  mostrarFila("filaTotalDescuentos");
+}
+  /*document.getElementById("resultadoSueldo").textContent = aPesos(
     resultados.imponible
   );
   document.getElementById("pagoZona").textContent = aPesos(
@@ -115,14 +148,14 @@ function mostrarCalculoSecundario() {
     resultados.totalBruto
   );
   //descuentos
-  document.getElementById("aporteJuvilatorio").textContent = aPesos(descuentos.descuentoJuvilacion);
-  document.getElementById("aporteJuvilatorioEsp").textContent = aPesos(descuentos.descuentoJuvilacionRegEsp);
+  document.getElementById("aporteJubilatorio").textContent = aPesos(descuentos.descuentoJubilacion);
+  document.getElementById("aporteJubilatorioEsp").textContent = aPesos(descuentos.descuentoJubilacionRegEsp);
   document.getElementById("obraSocial").textContent = aPesos(descuentos.descuentoObraSocial);
   document.getElementById("totalDescuentos").textContent = aPesos(descuentos.totalDescuentos);
   document.getElementById("seguroObligatorio").textContent = aPesos(descuentos.seguroObligatorio);
   //Total Neto
   document.getElementById("totalBolsillo").textContent = aPesos(totalBolsillo.totalBolsillo);
-}
+}*/
 
 //Función para el cálculo de hs de secundaria
 function calcularSalarioHsSecundario() {
@@ -212,14 +245,14 @@ function calculoAntiguedad() {
 }
 //Cálculo descuentos
 function calculoDescuentosHsSecundario() {
-  let descuentoJuvilacion1 = calcularSalarioHsSecundario().totalRemunerativo * 0.11;
-  let descuentoJuvilacionRegEsp1 = calcularSalarioHsSecundario().totalRemunerativo * 0.02;
+  let descuentoJubilacion1 = calcularSalarioHsSecundario().totalRemunerativo * 0.11;
+  let descuentoJubilacionRegEsp1 = calcularSalarioHsSecundario().totalRemunerativo * 0.02;
   let descuentoObraSocial1 = calcularSalarioHsSecundario().totalRemunerativo * 0.06;
   let seguroObligatorio1 = 4115;
-  let totalDescuentos1 = descuentoJuvilacion1 + descuentoJuvilacionRegEsp1 + descuentoObraSocial1 + seguroObligatorio1;
+  let totalDescuentos1 = descuentoJubilacion1 + descuentoJubilacionRegEsp1 + descuentoObraSocial1 + seguroObligatorio1;
   return {
-    descuentoJuvilacion: descuentoJuvilacion1,
-    descuentoJuvilacionRegEsp: descuentoJuvilacionRegEsp1,
+    descuentoJubilacion: descuentoJubilacion1,
+    descuentoJubilacionRegEsp: descuentoJubilacionRegEsp1,
     descuentoObraSocial: descuentoObraSocial1,
     totalDescuentos: totalDescuentos1,
     seguroObligatorio:  seguroObligatorio1,
@@ -242,5 +275,22 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 function aPesos(valor) {
-  return "$ " + valor.toFixed(2);
+  return "$\u00A0" + valor.toFixed(2);//"\u00A0" espacio no separable
+}
+function resetearResultados() {
+  const ids = [
+    "resultadoSueldo", "pagoZona", "pagoAntiguedad", "complementoRemunerativo",
+    "complementoNoRemunerativo", "sumaNoRemunerativa", "incentivoDocente",
+    "totalSAportes", "totalCAportes", "totalBruto", "aporteJubilatorio",
+    "aporteJubilatorioEsp", "obraSocial", "totalDescuentos", "seguroObligatorio",
+    "totalBolsillo"
+  ];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = "$0.00";
+  });
+}
+function mostrarFila(idFila) {
+  const fila = document.getElementById(idFila);
+  if (fila) fila.style.display = "table-row";
 }
