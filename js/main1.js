@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function mostrarResultado() {
   const cantHsInput = document.getElementById("cantHs");
   const cantHs = parseInt(cantHsInput.value);
+  const cantHijxs = parseInt(document.getElementById("cantHijxs").value);
   
   const resultadosSection = document.getElementById("resultados");
 //Mostrar sección de resultados
@@ -56,8 +57,7 @@ function mostrarResultado() {
     resetearResultados();
 
     return;
-  }//Se puede optimizar con una funcion "resetearResultados()"
-
+  }
 
   // Si pasó la validación, ejecutar cálculo según cargo seleccionado
   const cargo = parseInt(document.getElementById("cargo").value);
@@ -97,66 +97,16 @@ function mostrarCalculoSecundario() {
   document.getElementById("totalDescuentos").textContent = aPesos(descuentos.totalDescuentos);
   document.getElementById("seguroObligatorio").textContent = aPesos(descuentos.seguroObligatorio);
   document.getElementById("totalBolsillo").textContent = aPesos(totalBolsillo.totalBolsillo);
-  document.getElementById("totalBolsillo1").textContent = aPesos(22);
+  //document.getElementById("totalBolsillo1").textContent = aPesos();
 
   // Mostrar solo las filas necesarias
-  mostrarFila("filaTotalNeto");
-  mostrarFila("filaSueldoBasico");
-  mostrarFila("filaZona");
-  mostrarFila("filaAntiguedad");
-  mostrarFila("filaComplementoRem");
-  mostrarFila("filaComplementoNoRem");
-  mostrarFila("filaSumaNoRem");
-  mostrarFila("filaIncentivo");
-  mostrarFila("filaTotalCAportes");
-  mostrarFila("filaTotalSAportes");
-  mostrarFila("filaTotalBruto");
-  mostrarFila("filaAporteJubilatorio");
-  mostrarFila("filaAporteJubilatorioEsp");
-  mostrarFila("filaObraSocial");
-  mostrarFila("filaSeguroObligatorio");
-  mostrarFila("filaTotalDescuentos");
+  mostrarFilas(
+  ["filaSueldoBasico", "filaZona", "filaAntiguedad", "filaSumaNoRem"], // mostrar
+  ["filaComplementoRem", "filaComplementoNoRem", "filaTotalBolsillo1"]      // ocultar
+);
+  
 }
-  /*document.getElementById("resultadoSueldo").textContent = aPesos(
-    resultados.imponible
-  );
-  document.getElementById("pagoZona").textContent = aPesos(
-    resultados.pagoDeZona
-  );
-  document.getElementById("pagoAntiguedad").textContent = aPesos(
-    resultados.pagoAntiguedad
-  );
-  document.getElementById("complementoRemunerativo").textContent = aPesos(
-    resultados.complementoRemunerativo
-  );
-  document.getElementById("complementoNoRemunerativo").textContent = aPesos(
-    resultados.complementoNoRemunerativo
-  );
-  document.getElementById("sumaNoRemunerativa").textContent = aPesos(
-    resultados.pagoSumaNoRemunerativa
-  );
-  document.getElementById("incentivoDocente").textContent = aPesos(
-    resultados.pagoIncentivoDocente
-  );
-  document.getElementById("totalCAportes").textContent = aPesos(
-    resultados.totalRemunerativo
-  );
-  document.getElementById("totalSAportes").textContent = aPesos(
-    resultados.totalNRemunerativo
-  );
-  document.getElementById("totalBruto").textContent = aPesos(
-    resultados.totalBruto
-  );
-  //descuentos
-  document.getElementById("aporteJubilatorio").textContent = aPesos(descuentos.descuentoJubilacion);
-  document.getElementById("aporteJubilatorioEsp").textContent = aPesos(descuentos.descuentoJubilacionRegEsp);
-  document.getElementById("obraSocial").textContent = aPesos(descuentos.descuentoObraSocial);
-  document.getElementById("totalDescuentos").textContent = aPesos(descuentos.totalDescuentos);
-  document.getElementById("seguroObligatorio").textContent = aPesos(descuentos.seguroObligatorio);
-  //Total Neto
-  document.getElementById("totalBolsillo").textContent = aPesos(totalBolsillo.totalBolsillo);
-}*/
-
+  
 //Función para el cálculo de hs de secundaria
 function calcularSalarioHsSecundario() {
 
@@ -266,16 +216,25 @@ function calculoTotalNeto() {
 }
 
 //Botón hamburguesa (ia)
-document.addEventListener("DOMContentLoaded", () => {
-  const toggle = document.getElementById("menu-toggle");
-  const nav = document.getElementById("navegacion");
-
-  toggle.addEventListener("click", () => {
-    nav.classList.toggle("activo");
-  });
+document.addEventListener("DOMContentLoaded", function () {
+  const menuToggle = document.querySelector('.menu-toggle');
+  const navegacion = document.querySelector('.navegacion');
+  if (menuToggle && navegacion) {
+    menuToggle.addEventListener('click', function() {
+      navegacion.classList.toggle('activo');
+    });
+  }
 });
+// document.addEventListener("DOMContentLoaded", () => {
+//   const toggle = document.getElementById("menu-toggle");
+//   const nav = document.getElementById("navegacion");
+
+//   toggle.addEventListener("click", () => {
+//     nav.classList.toggle("activo");
+//   });
+// });
 function aPesos(valor) {
-  return "$\u00A0" + valor.toFixed(2);//"\u00A0" espacio no separable
+  return "$\u00A0" + valor.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 function resetearResultados() {
   const ids = [
@@ -290,7 +249,15 @@ function resetearResultados() {
     if (el) el.textContent = "$0.00";
   });
 }
-function mostrarFila(idFila) {
-  const fila = document.getElementById(idFila);
-  if (fila) fila.style.display = "table-row";
+function mostrarFilas(filasMostrar = [], filasOcultar = []) {
+  // Mostrar las filas indicadas
+  filasMostrar.forEach(id => {
+    const fila = document.getElementById(id);
+    if (fila) fila.style.display = "table-row";
+  });
+  // Ocultar las filas indicadas
+  filasOcultar.forEach(id => {
+    const fila = document.getElementById(id);
+    if (fila) fila.style.display = "none";
+  });
 }

@@ -140,12 +140,37 @@ label, select, input {
   font-family: var(--fuenteTitulo);
 }
 
-table, td, th {
-  border: 1px solid var(--negro);
-  padding: 0.5rem;
+table {
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   width: 100%;
+  margin-bottom: 2rem;
 }
-
+th {
+  background-color: var(--primarioClaro);
+  color: var(--negro);
+  font-weight: bold;
+}
+td, th {
+  padding: 1rem;
+  border: 1px solid var(--primarioClaro);
+}
+tr:nth-child(even) {
+  background-color: rgba(255,255,255,0.08);
+}
+td span {
+  display: block;
+  text-align: right;
+  font-family: monospace;
+}
+@media (max-width: 600px) {
+  table, td, th {
+    font-size: 1.2rem;
+    padding: 0.5rem;
+  }
+}
 /* --- Botón --- */
 .boton {
   margin-top: 2rem;
