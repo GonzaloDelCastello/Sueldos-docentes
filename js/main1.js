@@ -102,7 +102,7 @@ function mostrarCalculoSecundario() {
   // Mostrar solo las filas necesarias
   mostrarFilas(
   ["filaSueldoBasico", "filaZona", "filaAntiguedad", "filaSumaNoRem"], // mostrar
-  ["filaComplementoRem", "filaComplementoNoRem", "filaTotalBolsillo1"]      // ocultar
+  ["filaTotalNeto", "filaComplementoRem", "filaComplementoNoRem", "filaTotalBolsillo1"]      // ocultar
 );
   
 }
@@ -261,3 +261,8 @@ function mostrarFilas(filasMostrar = [], filasOcultar = []) {
     if (fila) fila.style.display = "none";
   });
 }
+document.addEventListener("DOMContentLoaded", function () {
+  const fecha = new Date();
+  const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
+  document.getElementById("fechaActual").textContent = fecha.toLocaleDateString("es-AR", opciones);
+});
