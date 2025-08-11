@@ -1,10 +1,11 @@
+let cargo = 0; // Variable global para el cargo seleccionado
 let calculoBasicoHsSecundario = 14173.99;
 document.addEventListener("DOMContentLoaded", function () {
   const selectCargo = document.getElementById("cargo");
   const formSecundario = document.getElementById("formSecundario");
   const formPreceptor = document.getElementById("formPreceptor");
   selectCargo.addEventListener("change", function () {
-    const cargo = parseInt(this.value);
+  cargo = parseInt(this.value);
     // Ocultar todos
     formSecundario.classList.add("oculto");
     formPreceptor.classList.add("oculto");
@@ -43,7 +44,7 @@ function mostrarResultado() {
   if (mensajeExistente) mensajeExistente.remove();
 
   // Validación: campo vacío, no numérico o menor o igual a cero (ia)
-  if (!cantHsInput.value.trim() || isNaN(cantHs) || cantHs <= 0) {
+  if (cargo === 1 && (!cantHsInput.value.trim() || isNaN(cantHs) || cantHs <= 0)){
     const mensaje = document.createElement("p");
     mensaje.id = "mensajeError";
     mensaje.style.color = "red";
@@ -60,7 +61,7 @@ function mostrarResultado() {
   }
 
   // Si pasó la validación, ejecutar cálculo según cargo seleccionado
-  const cargo = parseInt(document.getElementById("cargo").value);
+  cargo = parseInt(document.getElementById("cargo").value);
 
   switch (cargo) {
     case 1:
@@ -97,12 +98,11 @@ function mostrarCalculoSecundario() {
   document.getElementById("totalDescuentos").textContent = aPesos(descuentos.totalDescuentos);
   document.getElementById("seguroObligatorio").textContent = aPesos(descuentos.seguroObligatorio);
   document.getElementById("totalBolsillo").textContent = aPesos(totalBolsillo.totalBolsillo);
-  //document.getElementById("totalBolsillo1").textContent = aPesos();
-
-  // Mostrar solo las filas necesarias
+  
+  //Mostrar solo las filas necesarias
   mostrarFilas(
-  ["filaSueldoBasico", "filaZona", "filaAntiguedad", "filaSumaNoRem"], // mostrar
-  ["filaTotalNeto", "filaComplementoRem", "filaComplementoNoRem", "filaTotalBolsillo1"]      // ocultar
+  ["filaTotalNeto", "filaSueldoBasico", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem"], // mostrar
+  [ "filaTotalBolsillo1", "filaAdicionalCargoPrec"]      // ocultar
 );
   
 }

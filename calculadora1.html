@@ -136,12 +136,11 @@
           </td>
         </tr>
       </table>
-      <h3>Detalles</h3>
-      <table id="filaTitulos">
-        <tr >
+      <h3>Conceptos remunerativos</h3>
+      <table >
+        <tr id="filaTitulos">
           <th>Concepto</th>
-          <th>Con aportes</th>
-          <th>Sin aportes</th>
+          <th>Monto</th>
         </tr>
         <tr id="filaSueldoBasico">
           <td>
@@ -150,7 +149,6 @@
           <td>
             <span id="resultadoSueldo"></span>
           </td>
-          <td></td>
         </tr>
         <tr id="filaZona">
           <td>
@@ -159,67 +157,70 @@
           <td>
             <span id="pagoZona"></span>
           </td>
-          <td></td>
         </tr>
         <tr id="filaAntiguedad">
           <td>Pago por Antigüedad: </td>
           <td>
             <span id="pagoAntiguedad"></span>
           </td>
-          <td></td>
         </tr>
         <tr id="filaComplementoRem">
           <td>Complemento Remunerativo: </td>
           <td>
             <span id="complementoRemunerativo"></span>
           </td>
-          <td></td>
         </tr>
         
-        <tr id="filaAdicionalCargoPrec ">
+        <tr id="filaAdicionalCargoPrec">
           <td>Adicional Por Cargo: </td>
           <td>
             <p id="adicionalPorCargo"></p>
           </td>
-          <td></td>
+        </tr>
+        <tr>
+          <th>Total Remunerativo</th>
+          <th>
+            <span id="totalCAportes"></span>
+          </th>
         </tr> 
-        
+        </table>
+      <h3>Conceptos no remunerativos</h3>
+      <table id="tablaNoRemunerativos">
+        <tr>
+          <th>Concepto</th>
+          <th>Monto</th>
+        </tr>
+        <tr>
         <tr id="filaComplementoNoRem">
           <td>Complemento No Remunerativo: </td>
-          <td></td>
           <td>
             <span id="complementoNoRemunerativo"></span>
           </td>
         </tr>
         <tr id="filaSumaNoRem">
           <td>Pago Suma No Remunerativa: </td>
-          <td></td>
           <td>
             <span id="sumaNoRemunerativa"></span>
           </td>
         </tr>
         <tr>
           <td>Incentivo Docente: </td>
-          <td></td>
           <td>
             <span id="incentivoDocente"></span>
           </td>
         </tr>
         <tr>
           <th>Total</th>
-          <th>
-            <span id="totalCAportes"></span>
-          </th>
+          
           <th>
             <span id="totalSAportes"></span>
           </th>
         </tr>
         <tr>
-          <th>Sueldo Burto Total <br> Sin descuentos</th>
+          <th>Sueldo Burto Total <br> (Sin descuentos)</th>
           <th colspan="2">
             <span id="totalBruto"></span>
           </th>
-
         </tr>
       </table>
       <h3>Descuentos</h3>
@@ -253,10 +254,10 @@
           </td>
         </tr>
         <tr>
-          <td>Total Descuentos</td>
-          <td>
+          <th>Total Descuentos</th>
+          <th>
             <span id="totalDescuentos"></span>
-          </td>
+          </th>
         </tr>
       </table>
 
