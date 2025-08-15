@@ -4,8 +4,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const selectCargo = document.getElementById("cargo");
   const formSecundario = document.getElementById("formSecundario");
   const formPreceptor = document.getElementById("formPreceptor");
+  const formFijo = document.getElementById("formFijo");
+  
   selectCargo.addEventListener("change", function () {
-  cargo = parseInt(this.value);
+    cargo = parseInt(this.value);
     // Ocultar todos
     formSecundario.classList.add("oculto");
     formPreceptor.classList.add("oculto");
@@ -78,7 +80,7 @@ function mostrarResultado() {
 
 function mostrarCalculoSecundario() {
   const resultados = calcularSalarioHsSecundario();
-  const descuentos = calculoDescuentosHsSecundario();
+  const descuentos = calculoDescuentos(resultados.totalRemunerativo);
   const totalBolsillo= calculoTotalNeto();
   
   // Rellenar valores
@@ -194,10 +196,11 @@ function calculoAntiguedad() {
   }
 }
 //Cálculo descuentos
-function calculoDescuentosHsSecundario() {
-  let descuentoJubilacion1 = calcularSalarioHsSecundario().totalRemunerativo * 0.11;
-  let descuentoJubilacionRegEsp1 = calcularSalarioHsSecundario().totalRemunerativo * 0.02;
-  let descuentoObraSocial1 = calcularSalarioHsSecundario().totalRemunerativo * 0.06;
+function calculoDescuentos(totalRemunerativo) {
+  
+  let descuentoJubilacion1 = totalRemunerativo * 0.11;
+  let descuentoJubilacionRegEsp1 = totalRemunerativo * 0.02;
+  let descuentoObraSocial1 = totalRemunerativo * 0.06;
   let seguroObligatorio1 = 4115;
   let totalDescuentos1 = descuentoJubilacion1 + descuentoJubilacionRegEsp1 + descuentoObraSocial1 + seguroObligatorio1;
   return {
@@ -209,7 +212,9 @@ function calculoDescuentosHsSecundario() {
   }
 }
 function calculoTotalNeto() {
-  let totalBolsillo1 = calcularSalarioHsSecundario().totalBruto - calculoDescuentosHsSecundario().totalDescuentos;
+  const resultados = calcularSalarioHsSecundario();
+  const descuentos = calculoDescuentos(resultados.totalRemunerativo);
+  let totalBolsillo1 = calcularSalarioHsSecundario().totalBruto - descuentos.totalDescuentos;
   return{
     totalBolsillo: totalBolsillo1
   }

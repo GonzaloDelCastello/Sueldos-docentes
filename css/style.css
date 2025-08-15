@@ -33,13 +33,22 @@ body {
   padding: 0 2rem;
 }
 
-h1, h2, h3 {
+h1,
+h2 {
   text-align: center;
   font-family: var(--fuenteTitulo);
 }
-h1 { font-size: 4rem; }
-h2 { font-size: 3.2rem; }
-h3 { font-size: 2.4rem; }
+h1 {
+  font-size: 4rem;
+}
+h2 {
+  font-size: 3.2rem;
+}
+h3 {
+  font-size: 2.4rem;
+  text-align: center;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
 
 /* --- Header y barra --- */
 .header {
@@ -61,7 +70,6 @@ h3 { font-size: 2.4rem; }
   color: var(--blanco);
   font-size: 6rem;
   padding: 0rem 2rem 2rem;
-
 }
 
 .barra {
@@ -77,7 +85,9 @@ h3 { font-size: 2.4rem; }
   gap: 2rem;
   align-items: center;
 }
-.navegacion, #fechaActual, a {
+.navegacion,
+#fechaActual,
+a {
   color: var(--blanco);
   font-family: var(--fuenteTitulo);
   font-size: 2rem;
@@ -102,11 +112,78 @@ h3 { font-size: 2.4rem; }
   padding: 2rem;
   border-left: 5px solid var(--primario);
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   text-align: center;
   color: #333;
 }
+.cuerpo {
+  background: rgba(62, 94, 77, 0.85);
+  color: var(--blanco);
+  margin: 3rem auto;
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  max-width: 700px;
+  text-align: center;
+  font-size: 1.6rem;
+  line-height: 1.7;
+  position: relative;
+  overflow: hidden;
+}
+.cuerpo::before {
+  content: "";
+  position: absolute;
+  top: -40px;
+  left: -40px;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, var(--secundario) 40%, transparent 70%);
+  opacity: 0.15;
+  z-index: 0;
+}
 
+.cuerpo::after {
+  content: "";
+  position: absolute;
+  bottom: -40px;
+  right: -40px;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, var(--primarioClaro) 40%, transparent 70%);
+  opacity: 0.12;
+  z-index: 0;
+}
+
+.cuerpo > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 600px) {
+  .cuerpo {
+    padding: 1.2rem 0.5rem;
+    font-size: 1.3rem;
+    max-width: 98vw;
+  }
+}
+.contenido {
+  max-width: 900px;
+  margin: 4rem auto 0 auto;
+  padding: 2.5rem 2rem;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+.contenido span {
+  font-weight: bold;
+  color: var(--negro);
+  font-family: Arial, Helvetica, sans-serif;
+  
+}
 /* --- Formulario --- */
 #calculoSalarial {
   max-width: 60rem;
@@ -118,10 +195,12 @@ h3 { font-size: 2.4rem; }
   background-color: var(--secundario);
   padding: 2rem;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.15);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 }
 
-label, select, input {
+label,
+select,
+input {
   display: block;
   width: 90%;
   max-width: 30rem;
@@ -136,7 +215,7 @@ label, select, input {
   margin: 3rem auto;
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
   max-width: 60rem;
 }
 
@@ -149,7 +228,7 @@ table {
   border-collapse: collapse;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   width: 100%;
   margin-bottom: 2rem;
 }
@@ -157,14 +236,14 @@ th {
   background-color: var(--primarioClaro);
   color: var(--negro);
   font-weight: bold;
-  
 }
-td, th {
+td,
+th {
   padding: 1rem;
   border: 1px solid var(--primarioClaro);
 }
 tr:nth-child(even) {
-  background-color: rgba(255,255,255,0.08);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 td span {
   display: block;
@@ -177,15 +256,17 @@ th span {
   font-family: monospace;
 }
 @media (max-width: 600px) {
-  table, td, th {
+  table,
+  td,
+  th {
     font-size: 1.2rem;
     padding: 0.5rem;
   }
 }
 /* --- Botón --- */
 .boton {
-  margin-top: 2rem;
-  padding: 1rem 2rem;
+  margin: 2rem 0;
+  padding: 1.5rem 2rem;
   background-color: var(--primario);
   color: white;
   border: none;
@@ -256,7 +337,9 @@ th span {
     grid-template-columns: 1fr;
   }
 
-  .intro, #resultados, #formularioCalculo {
+  .intro,
+  #resultados,
+  #formularioCalculo {
     max-width: 95%;
   }
 
