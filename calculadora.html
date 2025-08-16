@@ -64,23 +64,16 @@
         <fieldset class="grid-form">
           <legend>Sueldo por cargo</legend>
           <p><label for="cantHs">Cantidad de hs<input type="number" id="cantHs" name="cantHs"></label></p>
-          <p><label for="zona">Bonificación por zona<select id="zona" name="zona">
-                <option value="1">0%</option>
-                <option value="2">20%</option>
-                <option value="3">40%</option>
-                <option value="4">60%</option>
-                <option value="5">80%</option>
-                <option value="6">100%</option>
-
-              </select></label></p>
+          
         </fieldset>
       </form>
       <!--Fin formulario Hs secundario-->
       <!--Inicio formulario Hs Preceptor-->
-      <form id="formPreceptor" class="formulario_preceptor oculto">
+      
+      <!--Fin formulario Preceptor-->
+      <!--Inicio formulario fijo-->
+      <form id="formFijo" class="formFijo oculto">
         <fieldset class="grid-form">
-          <legend>Sueldo por cargo</legend>
-          <!-- <p><label for="hPreceptor">Cantidad de hs Preceptor<input type="number" id="hPreceptor" name="hPreceptor"></label></p>-->
           <p><label for="zona">Bonificación por zona<select id="zona" name="zona">
                 <option value="1">0%</option>
                 <option value="2">20%</option>
@@ -90,12 +83,6 @@
                 <option value="6">100%</option>
 
               </select></label></p>
-        </fieldset>
-      </form>
-      <!--Fin formulario Hs secundario-->
-      <!--Inicio formulario fijo-->
-      <form id="formFijo" class="formFijo oculto">
-        <fieldset class="grid-form">
           <p><label for="antiguedad">Antiguedad docente <select id="antiguedad" name="antiguedad">
                 <option value="0">0 años (0%)</option>
                 <option value="1">1 año (10%)</option>
@@ -136,6 +123,7 @@
           </td>
         </tr>
       </table>
+      <!--Tabla de conceptos remunerativos-->
       <h3>Conceptos remunerativos</h3>
       <table >
         <tr id="filaTitulos">
@@ -174,7 +162,7 @@
         <tr id="filaAdicionalCargoPrec">
           <td>Adicional Por Cargo: </td>
           <td>
-            <p id="adicionalPorCargo"></p>
+            <span id="adicionalPorCargo"></span>
           </td>
         </tr>
         <tr>
@@ -184,7 +172,8 @@
           </th>
         </tr> 
         </table>
-      <h3>Conceptos no remunerativos</h3>
+      <!--Tabla de conceptos no remunerativos-->
+        <h3>Conceptos no remunerativos</h3>
       <table id="tablaNoRemunerativos">
         <tr>
           <th>Concepto</th>
@@ -223,6 +212,7 @@
           </th>
         </tr>
       </table>
+      <!--Tabla de descuentos-->
       <h3>Descuentos</h3>
       <table id="tablaDescuentos">
         <tr>
@@ -247,6 +237,11 @@
             <span id="obraSocial"></span>
           </td>
         </tr>
+        <tr>
+          <td>Descuento afilición Sindical</td>
+          <td>
+            <span id="descuentoSindical"></span>
+          </td>
         <tr>
           <td>Seguro Obligatorio</td>
           <td>
