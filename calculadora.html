@@ -57,7 +57,8 @@
       <p><label for="cargo">Tipo de cargo <select id="cargo" name="cargo">
             <option value="0" selected>Selecciona un cargo</option>
             <option value="1">Hs. en Secundario</option>
-            <option value="2">Cargo Preceptor</option>
+            <option value="2">Cargo Preceptor (213p)</option>
+            <option value="3">Maestra/o Celador (259p)</option>
           </select></label></p>
       <!--Inicio formulario Hs secundario-->
       <form id="formSecundario" class="formulario_secundario oculto">
@@ -74,7 +75,7 @@
       <!--Inicio formulario fijo-->
       <form id="formFijo" class="formFijo oculto">
         <fieldset class="grid-form">
-          <p><label for="zona">Bonificación por zona<select id="zona" name="zona">
+          <span><label for="zona">Bonificación por zona<select id="zona" name="zona">
                 <option value="1">0%</option>
                 <option value="2">20%</option>
                 <option value="3">40%</option>
@@ -82,8 +83,8 @@
                 <option value="5">80%</option>
                 <option value="6">100%</option>
 
-              </select></label></p>
-          <p><label for="antiguedad">Antiguedad docente <select id="antiguedad" name="antiguedad">
+              </select></label></span>
+          <span><label for="antiguedad">Antiguedad docente <select id="antiguedad" name="antiguedad">
                 <option value="0">0 años (0%)</option>
                 <option value="1">1 año (10%)</option>
                 <option value="2">2 a 4 años (15%)</option>
@@ -97,8 +98,13 @@
                 <option value="10">22 a 23 años (110%)</option>
                 <option value="11">Más de 24 años (120%)</option>
               </select>
-            </label></p>
-          <p><label for="cantHijxs">Cantidad de Hijxs <input type="number" id="cantHijxs" name="cantHijxs"></label></p>
+            </label></span>
+          <span><label for="cantHijxs">Cantidad de Hijxs <input type="number" id="cantHijxs" name="cantHijxs"></label></span>
+          <span><label for="afiliacionSindical">Afiliación Sindical</label><select name="afiliacionSindical" id="afiliacionSindical">
+                <option value="0">No afiliado</option>
+                <option value="1">Amet</option>
+                <option value="2">Uda</option>
+          </select></span>
         </fieldset>
       </form>
       <!--Fin formulario fijo-->
