@@ -1,5 +1,6 @@
 let cargo = 0; // Variable global para el cargo seleccionado
-let calculoBasicoHsSecundario = 14173.99;
+//let calculoBasicoHsSecundario = 14173.99; Básico hs secundaria 05/25
+let calculoBasicoHsSecundario = 14854.34; //07/25
 document.addEventListener("DOMContentLoaded", function () {
   const selectCargo = document.getElementById("cargo");
   const formSecundario = document.getElementById("formSecundario");
@@ -125,8 +126,10 @@ function calcularSalarioHsSecundario() {
   let basicoXHs = cantHs * calculoBasico;
   let bonificacionZona = basicoXHs * calculoZona();
   let bonificacionAntiguedad = basicoXHs * calculoAntiguedad();
-  let complementoRemunerativo1 = basicoXHs * 1.185; //el 1185% del básico
-  let complementoNoRemunerativo1 = basicoXHs * 1.185; //el 1185% del básico
+  //let complementoRemunerativo1 = basicoXHs * 1.185; //el 1185% del básico 05/25
+  let complementoRemunerativo1 = basicoXHs * 1.25; //el 1125% del básico 07/25
+  //let complementoNoRemunerativo1 = basicoXHs * 1.185; //el 1185% del básico 05/25
+  let complementoNoRemunerativo1 = basicoXHs * 1.12; //el 1120% del básico 07/25
   let sumaNoRemunerativa = cantHs * 4667.483; //Pago de suma no remunerativa
   let incentivoDocente = cantHs * 1913.3325; //Pago por incentivo docente
   let totalRemunerativo1 =
@@ -184,13 +187,15 @@ function mostrarCalculoPreceptor() {
 //Función para el cálculo de preceptor
 function calcularSalarioPreceptor() {
 
-  let basico1 = 200345.1; //Basico preceptor 05/25
-
+  //let basico1 = 200345.1; //Basico preceptor 05/25
+  let basico1 = 209961.66; //Basico preceptor 07/25
   let bonificacionZona = basico1 * calculoZona();
   let bonificacionAntiguedad = basico1 * calculoAntiguedad();
-  let complementoRemunerativo1 = basico1* 1.185; //el 1185% del básico
+  //let complementoRemunerativo1 = basico1* 1.185; //el 1185% del básico 05/25
+  let complementoRemunerativo1 = basico1* 1.25; //el 1125% del básico 07/25
   let adicionalXCargo1 = basico1 * 0.33; //Adicional por cargo preceptor
-  let complementoNoRemunerativo1 = basico1 * 1.185; //el 1185% del básico
+  //let complementoNoRemunerativo1 = basico1 * 1.185; //el 1185% del básico 05/25
+  let complementoNoRemunerativo1 = basico1 * 1.12; // el 1120% del básico 07/25
   let sumaNoRemunerativa = 65973.47; //Pago de suma no remunerativa 0.3292% del básico
   let incentivoDocente = 28700; //Pago por incentivo docente
   let totalRemunerativo1 =
@@ -201,8 +206,7 @@ function calcularSalarioPreceptor() {
   let totalNRemunerativo1 =
     complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
-  console.log(bonificacionZona);
-  return {
+    return {
     basico: basico1,
     pagoDeZona: bonificacionZona,
     pagoAntiguedad: bonificacionAntiguedad,
@@ -250,13 +254,15 @@ function mostrarCalculoMaestrCelador() {
   
 //Función para el cálculo de hs de secundaria
 function calcularSalarioMaestrCelador() {
-let basico1 = 243611.01; //Basico preceptor 05/25
-
+//let basico1 = 243611.01; //Basico Maestrx Celador 05/25
+let basico1 = 243611.01; //Basico Maestrx Celador 07/25
   let bonificacionZona = basico1 * calculoZona();
   let bonificacionAntiguedad = basico1 * calculoAntiguedad();
-  let complementoRemunerativo1 = basico1* 1.185; //el 1185% del básico
+  //let complementoRemunerativo1 = basico1* 1.185; //el 1185% del básico 05/25
+  let complementoRemunerativo1 = basico1* 1.25; //el 1125% del básico 07/25
   let adicionalXCargo1 = basico1 * 0.33; //Adicional por cargo preceptor
-  let complementoNoRemunerativo1 = basico1 * 1.185; //el 1185% del básico
+  //let complementoNoRemunerativo1 = basico1 * 1.185; //el 1185% del básico 05/25
+  let complementoNoRemunerativo1 = basico1 * 1.12; // el 1120% del básico 07/25
   let sumaNoRemunerativa = 80220.9; //Pago de suma no remunerativa 0.3292% del básico
   let incentivoDocente = 28700; //Pago por incentivo docente
   let totalRemunerativo1 =
