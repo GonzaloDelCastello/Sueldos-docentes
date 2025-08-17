@@ -1,11 +1,54 @@
 let cargo = 0; // Variable global para el cargo seleccionado
+let nivel = 0; // Variable global para el nivel seleccionado
 //let calculoBasicoHsSecundario = 14173.99; Básico hs secundaria 05/25
 let calculoBasicoHsSecundario = 14854.34; //07/25
 document.addEventListener("DOMContentLoaded", function () {
-  const selectCargo = document.getElementById("cargo");
-  const formSecundario = document.getElementById("formSecundario");
-  const formFijo = document.getElementById("formFijo");
   
+  const cargosPorNivel = {
+    1: [ // Inicial
+      { value: 0, text: "Selecciona un cargo" }] // Nivel inicial no tiene cargos implementados
+    ,
+    2: [ // Primaria
+      { value: 0, text: "Selecciona un cargo" },
+      { value: 3, text: "Cargo Maestrx Celador" },
+      { value: 4, text: "Maestrx de grado" } // Pendiente a cargar en cargo = 2
+    ],
+    3: [ // Secundaria
+      { value: 0, text: "Selecciona un cargo" },
+      { value: 1, text: "Hs. en Secundario" },
+      { value: 2, text: "Cargo Preceptor" }
+    ],
+    4: [ // Superior
+      { value: 0, text: "Selecciona un cargo" }] // Nivel superior no tiene cargos implementados
+  };
+
+  
+    const selectNivel = document.getElementById("nivel"); 
+    const selectCargo = document.getElementById("cargo");
+    const formSecundario = document.getElementById("formSecundario");
+    const formFijo = document.getElementById("formFijo");  
+
+     // Función para actualizar las opciones del select de cargo según el nivel seleccionado
+    function actualizarOpcionesCargo(nivelSeleccionado) {
+      // Limpiar opciones actuales
+      selectCargo.innerHTML = "";
+      // Agregar nuevas opciones basadas en el nivel seleccionado
+      (cargosPorNivel[nivel] || [{ value: 0, text: "Selecciona un cargo" }]).forEach(opcion => {
+      const opt = document.createElement("option");
+      opt.value = opcion.value;
+      opt.textContent = opcion.text;
+      selectCargo.appendChild(opt);
+      });
+    }
+    // Evento al cambiar el nivel
+    selectNivel.addEventListener("change", function () {
+      const nivelSeleccionado = this.value;
+      nivel = parseInt(nivelSeleccionado);
+      actualizarOpcionesCargo(nivelSeleccionado);
+      resetearResultados(); // Reiniciar resultados al cambiar nivel
+    });
+     
+    // Muestra el formulario correspondiente al cargo seleccionado
   selectCargo.addEventListener("change", function () {
     cargo = parseInt(this.value);
     // Ocultar todos
@@ -28,8 +71,10 @@ document.addEventListener("DOMContentLoaded", function () {
         formFijo.classList.remove("oculto");
         break;
     }
+    resetearResultados(); // Reiniciar resultados al cambiar cargo
   });
-
+  // Inicializar opciones de cargo al cargar la página
+  actualizarOpcionesCargo(parseInt(selectNivel.value)); 
 });
 
 function mostrarResultado() {
@@ -355,7 +400,7 @@ function calculoDescuentos(totalRemunerativo) {
       descuentoSindical1 = totalRemunerativo * 0.015
       break;
     case "2": //Uda
-      descuentoSindical1 = totalRemunerativo * 0.03
+      descuentoSindical1 = totalRemunerativo * 0.015
       break;
     default: descuentoJubilacion1 = 0;
   }

@@ -199,7 +199,6 @@ a {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   margin-left: auto;
   margin-right: auto;
-  /* Si quieres centrar el texto dentro también: */
   text-align: center;
 }
 
