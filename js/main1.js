@@ -475,3 +475,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
   document.getElementById("fechaActual").textContent = fecha.toLocaleDateString("es-AR", opciones);
 });
+// Contador de visitas
+fetch('https://api.countapi.xyz/hit/gonzalodelcastello.github.io/Sueldos-Docentes/')
+  .then(res => res.json())
+  .then(res => {
+    document.getElementById('contador').innerText = res.value;
+  });
