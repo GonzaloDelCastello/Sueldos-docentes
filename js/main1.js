@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const formSecundario = document.getElementById("formSecundario");
     const formFijo = document.getElementById("formFijo");  
 
+    if (!selectNivel || !selectCargo) return;
      // Función para actualizar las opciones del select de cargo según el nivel seleccionado
     function actualizarOpcionesCargo(nivelSeleccionado) {
       // Limpiar opciones actuales
