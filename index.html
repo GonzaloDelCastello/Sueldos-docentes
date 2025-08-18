@@ -8,6 +8,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/normalize.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="css/style.css">
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+
+  // Tu config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAROXYjAzAn-SJ0ZiKkEDly2yafX3eBMGE",
+    authDomain: "sueldos-docentes.firebaseapp.com",
+    projectId: "sueldos-docentes",
+    storageBucket: "sueldos-docentes.firebasestorage.app",
+    messagingSenderId: "55544288469",
+    appId: "1:55544288469:web:5e4bfdf1f62224d19bfe5c",
+    measurementId: "G-RNK4Y627WK"
+  };
+
+  // Inicializar Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+
+  // Lo dejo global si después lo querés usar en main.js
+  window.app = app;
+</script>
   <script src="js/main1.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap" rel="stylesheet">
 </head>
@@ -68,6 +90,30 @@
       <p>&copy; 2025 Docentes San Luis. Todos los derechos reservados.</p>
       <p>Diseñado por Gonzalo J. Del Castello
       <span> -- Visitas: <span id="contador"></span></span></p>
+     <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+
+  // Tu config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAROXYjAzAn-SJ0ZiKkEDly2yafX3eBMGE",
+    authDomain: "sueldos-docentes.firebaseapp.com",
+    projectId: "sueldos-docentes",
+    storageBucket: "sueldos-docentes.firebasestorage.app",
+    messagingSenderId: "55544288469",
+    appId: "1:55544288469:web:5e4bfdf1f62224d19bfe5c",
+    measurementId: "G-RNK4Y627WK"
+  };
+
+  // Inicializar Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+
+  // Lo dejo global si después lo querés usar en main.js
+  window.app = app;
+</script>
+<script src="js/main1.js"></script>
+
     </div>
   </footer>
 </body>
