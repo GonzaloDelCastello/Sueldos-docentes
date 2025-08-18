@@ -477,7 +477,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 // Contador de visitas
 document.addEventListener("DOMContentLoaded", function () {
-  fetch('https://api.countapi.xyz/hit/gonzalodelcastello.github.io/Sueldos-Docentes/')
+  fetch('https://api.countapi.xyz/hit/gonzalodelcastello.github.io/Sueldos-Docentes/calculadora.html')
     .then(res => res.json())
     .then(res => {
       const contador = document.getElementById('contador');
