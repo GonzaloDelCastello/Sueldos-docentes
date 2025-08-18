@@ -476,8 +476,12 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("fechaActual").textContent = fecha.toLocaleDateString("es-AR", opciones);
 });
 // Contador de visitas
-fetch('https://api.countapi.xyz/hit/gonzalodelcastello.github.io/Sueldos-Docentes/')
-  .then(res => res.json())
-  .then(res => {
-    document.getElementById('contador').innerText = res.value;
-  });
+document.addEventListener("DOMContentLoaded", function () {
+  fetch('https://api.countapi.xyz/hit/gonzalodelcastello.github.io/Sueldos-Docentes/')
+    .then(res => res.json())
+    .then(res => {
+      const contador = document.getElementById('contador');
+      if (contador) contador.innerText = res.value;
+    });
+});
+
