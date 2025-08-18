@@ -497,12 +497,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
-// Contador de visitas
-document.addEventListener("DOMContentLoaded", function () {
-  fetch('https://api.countapi.xyz/hit/sueldos-docentes/visitas')
-  .then(res => res.json())
-  .then(res => {
-    document.getElementById('contador').innerText = res.value;
-  });
-});
+
 
