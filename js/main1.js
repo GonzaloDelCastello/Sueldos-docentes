@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
     3: [ // Secundaria
       { value: 0, text: "Selecciona un cargo" },
       { value: 1, text: "Hs. en Secundario" },
-      { value: 2, text: "Cargo Preceptor" }
+      { value: 2, text: "Cargo Preceptor" },
     ],
     4: [ // Superior
       { value: 0, text: "Selecciona un cargo" }] // Nivel superior no tiene cargos implementados
@@ -71,6 +71,10 @@ document.addEventListener("DOMContentLoaded", function () {
         //formMaestrCelador.classList.remove("oculto");
         formFijo.classList.remove("oculto");
         break;
+      case 4:
+        //formMaestrGrado.classList.remove("oculto");
+        formFijo.classList.remove("oculto");
+        break;
     }
     resetearResultados(); // Reiniciar resultados al cambiar cargo
   });
@@ -117,6 +121,11 @@ function mostrarResultado() {
   cargo = parseInt(document.getElementById("cargo").value);
 
   switch (cargo) {
+    case 0:
+      // Si no se seleccionó un cargo válido, mostrar mensaje de error
+      alert("Por favor, selecciona un cargo válido.");
+      resetearResultados();
+      return;
     case 1:
       mostrarCalculoSecundario();
       break;
@@ -126,6 +135,9 @@ function mostrarResultado() {
     case 3:
       mostrarCalculoMaestrCelador();
       break;
+      case 4:
+        mostrarCalculoMaestrGrado(); 
+        break;
       default:
       //Por si selecciona otro valor no calculado
       alert("Este tipo de cargo aún no tiene cálculo implementado.");
@@ -135,33 +147,14 @@ function mostrarResultado() {
 function mostrarCalculoSecundario() {
   const resultados = calcularSalarioHsSecundario();
   const descuentos = calculoDescuentos(resultados.totalRemunerativo);
-  const totalBolsillo= calculoTotalNeto();
-  
-  // Rellenar valores
-  document.getElementById("resultadoSueldo").textContent = aPesos(resultados.basico);
-  document.getElementById("pagoZona").textContent = aPesos(resultados.pagoDeZona);
-  document.getElementById("pagoAntiguedad").textContent = aPesos(resultados.pagoAntiguedad);
-  document.getElementById("complementoRemunerativo").textContent = aPesos(resultados.complementoRemunerativo);
-  document.getElementById("complementoNoRemunerativo").textContent = aPesos(resultados.complementoNoRemunerativo);
-  document.getElementById("sumaNoRemunerativa").textContent = aPesos(resultados.pagoSumaNoRemunerativa);
-  document.getElementById("incentivoDocente").textContent = aPesos(resultados.pagoIncentivoDocente);
-  document.getElementById("totalCAportes").textContent = aPesos(resultados.totalRemunerativo);
-  document.getElementById("totalSAportes").textContent = aPesos(resultados.totalNRemunerativo);
-  document.getElementById("totalBruto").textContent = aPesos(resultados.totalBruto);
-  document.getElementById("aporteJubilatorio").textContent = aPesos(descuentos.descuentoJubilacion);
-  document.getElementById("aporteJubilatorioEsp").textContent = aPesos(descuentos.descuentoJubilacionRegEsp);
-  document.getElementById("obraSocial").textContent = aPesos(descuentos.descuentoObraSocial);
-  document.getElementById("totalDescuentos").textContent = aPesos(descuentos.totalDescuentos);
-  document.getElementById("seguroObligatorio").textContent = aPesos(descuentos.seguroObligatorio);
-  document.getElementById("totalBolsillo").textContent = aPesos(totalBolsillo.totalBolsillo);
-  document.getElementById("descuentoSindical").textContent = aPesos(descuentos.descuentoSindical);
-  
-  //Mostrar solo las filas necesarias
-  mostrarFilas(
-  ["filaTotalNeto", "filaSueldoBasico", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem"], // mostrar
-  [ "filaTotalBolsillo1", "filaAdicionalCargoPrec"]      // ocultar
-);
-  
+  const totalBolsillo= resultados.totalBruto - descuentos.totalDescuentos;
+
+  mostrarResultados(
+    resultados,
+    descuentos,
+    ["filaTotalNeto", "filaSueldoBasico", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem", "filaAsignacionXHijxs"], // mostrar
+    [ "filaTotalBolsillo1", "filaAdicionalCargo"]      // ocultar
+  );
 }
   
 //Función para el cálculo de hs de secundaria
@@ -207,35 +200,10 @@ function mostrarCalculoPreceptor() {
 mostrarResultados(
   resultados, 
   descuentos,
-  ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargoPrec", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem", "filaDescuentoSindical"], // mostrar
+  ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargo", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs"], // mostrar
   [ "filaTotalBolsillo1"]      // ocultar    
 );
-}// Rellenar valores
-//   document.getElementById("resultadoSueldo").textContent = aPesos(resultados.basico);
-//   document.getElementById("pagoZona").textContent = aPesos(resultados.pagoDeZona);
-//   document.getElementById("pagoAntiguedad").textContent = aPesos(resultados.pagoAntiguedad);
-//   document.getElementById("complementoRemunerativo").textContent = aPesos(resultados.complementoRemunerativo);
-//   document.getElementById("adicionalPorCargo").textContent = aPesos(resultados.adicionalXCargo);
-//   document.getElementById("complementoNoRemunerativo").textContent = aPesos(resultados.complementoNoRemunerativo);
-//   document.getElementById("sumaNoRemunerativa").textContent = aPesos(resultados.pagoSumaNoRemunerativa);
-//   document.getElementById("incentivoDocente").textContent = aPesos(resultados.pagoIncentivoDocente);
-//   document.getElementById("totalCAportes").textContent = aPesos(resultados.totalRemunerativo);
-//   document.getElementById("totalSAportes").textContent = aPesos(resultados.totalNRemunerativo);
-//   document.getElementById("totalBruto").textContent = aPesos(resultados.totalBruto);
-//   document.getElementById("aporteJubilatorio").textContent = aPesos(descuentos.descuentoJubilacion);
-//   document.getElementById("aporteJubilatorioEsp").textContent = aPesos(descuentos.descuentoJubilacionRegEsp);
-//   document.getElementById("obraSocial").textContent = aPesos(descuentos.descuentoObraSocial);
-//   document.getElementById("totalDescuentos").textContent = aPesos(descuentos.totalDescuentos);
-//   document.getElementById("seguroObligatorio").textContent = aPesos(descuentos.seguroObligatorio);
-//   document.getElementById("totalBolsillo").textContent = aPesos(resultados.totalBruto - calculoDescuentos(resultados.totalRemunerativo).totalDescuentos);
-//   document.getElementById("descuentoSindical").textContent = aPesos(descuentos.descuentoSindical);
-//   //Mostrar solo las filas necesarias
-//   mostrarFilas(
-//   ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargoPrec", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem", "filaDescuentoSindical"], // mostrar
-//   [ "filaTotalBolsillo1"]      // ocultar
-// );
-  
-// }
+}
 //Función para el cálculo de preceptor
 function calcularSalarioPreceptor() {
 
@@ -276,35 +244,17 @@ function calcularSalarioPreceptor() {
 function mostrarCalculoMaestrCelador() {
   const resultados = calcularSalarioMaestrCelador();
   const descuentos = calculoDescuentos(resultados.totalRemunerativo);
-  //console.log("calculado salario maestr celador");
-// Rellenar valores
-  document.getElementById("resultadoSueldo").textContent = aPesos(resultados.basico);
-  document.getElementById("pagoZona").textContent = aPesos(resultados.pagoDeZona);
-  document.getElementById("pagoAntiguedad").textContent = aPesos(resultados.pagoAntiguedad);
-  document.getElementById("complementoRemunerativo").textContent = aPesos(resultados.complementoRemunerativo);
-  document.getElementById("adicionalPorCargo").textContent = aPesos(resultados.adicionalXCargo);
-  document.getElementById("complementoNoRemunerativo").textContent = aPesos(resultados.complementoNoRemunerativo);
-  document.getElementById("sumaNoRemunerativa").textContent = aPesos(resultados.pagoSumaNoRemunerativa);
-  document.getElementById("incentivoDocente").textContent = aPesos(resultados.pagoIncentivoDocente);
-  document.getElementById("totalCAportes").textContent = aPesos(resultados.totalRemunerativo);
-  document.getElementById("totalSAportes").textContent = aPesos(resultados.totalNRemunerativo);
-  document.getElementById("totalBruto").textContent = aPesos(resultados.totalBruto);
-  document.getElementById("aporteJubilatorio").textContent = aPesos(descuentos.descuentoJubilacion);
-  document.getElementById("aporteJubilatorioEsp").textContent = aPesos(descuentos.descuentoJubilacionRegEsp);
-  document.getElementById("obraSocial").textContent = aPesos(descuentos.descuentoObraSocial);
-  document.getElementById("totalDescuentos").textContent = aPesos(descuentos.totalDescuentos);
-  document.getElementById("seguroObligatorio").textContent = aPesos(descuentos.seguroObligatorio);
-  document.getElementById("totalBolsillo").textContent = aPesos(resultados.totalBruto - calculoDescuentos(resultados.totalRemunerativo).totalDescuentos);
-  document.getElementById("descuentoSindical").textContent = aPesos(descuentos.descuentoSindical);
-  //Mostrar solo las filas necesarias
-  mostrarFilas(
-  ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargoPrec", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem", "filaDescuentoSindical"], // mostrar
-  [ "filaTotalBolsillo1"]      // ocultar
+  // Mostrar resultados en la tabla
+  mostrarResultados(
+  resultados, 
+  descuentos,
+  ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargo", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs"], // mostrar
+  [ "filaTotalBolsillo1"]      // ocultar    
 );
-  
 }
+
   
-//Función para el cálculo de hs de secundaria
+//Función para el cálculo de maestrx celador
 function calcularSalarioMaestrCelador() {
 //let basico1 = 243611.01; //Basico Maestrx Celador 05/25
 let basico1 = 243611.01; //Basico Maestrx Celador 07/25
@@ -312,7 +262,7 @@ let basico1 = 243611.01; //Basico Maestrx Celador 07/25
   let bonificacionAntiguedad = basico1 * calculoAntiguedad();
   //let complementoRemunerativo1 = basico1* 1.185; //el 1185% del básico 05/25
   let complementoRemunerativo1 = basico1* 1.25; //el 1125% del básico 07/25
-  let adicionalXCargo1 = basico1 * 0.33; //Adicional por cargo preceptor
+  let adicionalXCargo1 = basico1 * 0.33; //Adicional por cargo maestrx celador
   //let complementoNoRemunerativo1 = basico1 * 1.185; //el 1185% del básico 05/25
   let complementoNoRemunerativo1 = basico1 * 1.12; // el 1120% del básico 07/25
   let sumaNoRemunerativa = 80220.9; //Pago de suma no remunerativa 0.3292% del básico
@@ -338,6 +288,57 @@ let basico1 = 243611.01; //Basico Maestrx Celador 07/25
     totalRemunerativo: totalRemunerativo1,
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
+  };
+}
+
+// Cargo de maestra/o de grado
+function mostrarCalculoMaestrGrado() {
+  const resultados = calcularSalarioMaestrGrado();
+  const descuentos = calculoDescuentos(resultados.totalRemunerativo);
+  // Mostrar resultados en la tabla
+  mostrarResultados(
+  resultados, 
+  descuentos,
+  ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargo", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs"], // mostrar
+  [ "filaTotalBolsillo1"]      // ocultar    
+);
+}
+//Función para el cálculo de maestrx de grado
+function calcularSalarioMaestrGrado() {
+//let basico1 = 243611.01; //Basico Maestrx de grado 05/25 (No es seguro)
+let basico1 = 222776.16; //Basico Maestrx de grado 07/25 
+  let bonificacionZona = basico1 * calculoZona();
+  let bonificacionAntiguedad = basico1 * calculoAntiguedad();
+  //let complementoRemunerativo1 = basico1* 1.185; //el 1185% del básico 05/25 (No es seguro)
+  let complementoRemunerativo1 = basico1* 1.25; //el 1125% del básico 07/25
+  let adicionalXCargo1 = basico1 * 0.33; //Adicional por cargo maestrx de grado
+  //let complementoNoRemunerativo1 = basico1 * 1.185; //el 1185% del básico 05/25 
+  let complementoNoRemunerativo1 = basico1 * 1.12; // el 1120% del básico 07/25
+  let sumaNoRemunerativa = 70000.0; //Pago de suma no remunerativa 0.3292% del básico (Fija)
+  let incentivoDocente = 28700; //Pago por incentivo docente
+    let asignacionXHijxs1 = calcularAsignacionXHijxs();
+  let totalRemunerativo1 =
+    basico1 +
+    complementoRemunerativo1 + adicionalXCargo1 +
+    bonificacionZona +
+    bonificacionAntiguedad;
+  let totalNRemunerativo1 =
+    complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs1;
+  let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
+  //let asignacionXHijxs1 = calcularAsignacionXHijxs();
+  return {
+    basico: basico1, 
+    pagoDeZona: bonificacionZona,
+    pagoAntiguedad: bonificacionAntiguedad,
+    complementoRemunerativo: complementoRemunerativo1,
+    adicionalXCargo: adicionalXCargo1,
+    complementoNoRemunerativo: complementoNoRemunerativo1,
+    pagoSumaNoRemunerativa: sumaNoRemunerativa,
+    pagoIncentivoDocente: incentivoDocente,
+    totalRemunerativo: totalRemunerativo1,
+    totalNRemunerativo: totalNRemunerativo1,
+    totalBruto: totalBruto1,
+    asignacionXHijxs: asignacionXHijxs1
   };
 }
 //Calculo Zona
@@ -441,6 +442,8 @@ function mostrarResultados(resultados, descuentos, filasMostrar, filasOcultar) {
   document.getElementById("seguroObligatorio").textContent = aPesos(descuentos.seguroObligatorio ?? 0);
   document.getElementById("totalBolsillo").textContent = aPesos((resultados.totalBruto ?? 0) - (descuentos.totalDescuentos ?? 0));
   document.getElementById("descuentoSindical").textContent = aPesos(descuentos.descuentoSindical ?? 0);
+  document.getElementById("asignacionXHijxs").textContent = aPesos(resultados.asignacionXHijxs ?? 0);
+
   mostrarFilas(filasMostrar, filasOcultar);
 }
 function calculoTotalNeto() {
@@ -451,7 +454,16 @@ function calculoTotalNeto() {
     totalBolsillo: totalBolsillo1
   }
 }
-
+function calcularAsignacionXHijxs() {
+  const cantHijxs = parseInt(document.getElementById("cantHijxs").value);
+  console.log(cantHijxs);
+  let asignacionXHijxs = 0;
+  if (cantHijxs > 0) {
+    asignacionXHijxs = cantHijxs * 51280; //Asignación por hijx
+  }
+  //document.getElementById("asignacionXHijxs").textContent = aPesos(asignacionXHijxs1);
+  return asignacionXHijxs;
+}
 function aPesos(valor) {
   return "$\u00A0" + valor.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
@@ -461,7 +473,7 @@ function resetearResultados() {
     "complementoNoRemunerativo", "sumaNoRemunerativa", "incentivoDocente",
     "totalSAportes", "totalCAportes", "totalBruto", "aporteJubilatorio",
     "aporteJubilatorioEsp", "obraSocial", "totalDescuentos", "seguroObligatorio",
-    "totalBolsillo"
+    "totalBolsillo", "adicionalPorCargo", "descuentoSindical", "asignacionXHijxs"
   ];
   ids.forEach(id => {
     const el = document.getElementById(id);
