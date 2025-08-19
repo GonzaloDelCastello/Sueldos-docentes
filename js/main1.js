@@ -11,7 +11,8 @@ document.addEventListener("DOMContentLoaded", function () {
     2: [ // Primaria
       { value: 0, text: "Selecciona un cargo" },
       { value: 3, text: "Cargo Maestrx Celador" },
-      { value: 4, text: "Maestrx de grado" } // Pendiente a cargar en cargo = 2
+      { value: 4, text: "Maestrx de grado" },
+      { value: 5, text: "Cargo Maestrx Especial (Proximamente)" },
     ],
     3: [ // Secundaria
       { value: 0, text: "Selecciona un cargo" },
@@ -27,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const selectCargo = document.getElementById("cargo");
     const formSecundario = document.getElementById("formSecundario");
     const formFijo = document.getElementById("formFijo");  
-
+    
     if (!selectNivel || !selectCargo) return;
      // Función para actualizar las opciones del select de cargo según el nivel seleccionado
     function actualizarOpcionesCargo(nivelSeleccionado) {
@@ -171,13 +172,15 @@ function calcularSalarioHsSecundario() {
   let complementoNoRemunerativo1 = basicoXHs * 1.12; //el 1120% del básico 07/25
   let sumaNoRemunerativa = cantHs * 4667.483; //Pago de suma no remunerativa
   let incentivoDocente = cantHs * 1913.3325; //Pago por incentivo docente
+  let asignacionXHijxs1 = calcularAsignacionXHijxs();
   let totalRemunerativo1 =
     basicoXHs +
     complementoRemunerativo1 +
     bonificacionZona +
     bonificacionAntiguedad;
   let totalNRemunerativo1 =
-    complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente;
+    complementoNoRemunerativo1 + sumaNoRemunerativa + 
+    incentivoDocente + asignacionXHijxs1;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
   return {
     basico: basicoXHs,
@@ -190,6 +193,7 @@ function calcularSalarioHsSecundario() {
     totalRemunerativo: totalRemunerativo1,
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
+    asignacionXHijxs: asignacionXHijxs1
   };
 }
 // Mostrar calculo de preceptor
@@ -200,7 +204,9 @@ function mostrarCalculoPreceptor() {
 mostrarResultados(
   resultados, 
   descuentos,
-  ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargo", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs"], // mostrar
+  ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargo", "filaZona",
+     "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
+     "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs"], // mostrar
   [ "filaTotalBolsillo1"]      // ocultar    
 );
 }
@@ -218,13 +224,15 @@ function calcularSalarioPreceptor() {
   let complementoNoRemunerativo1 = basico1 * 1.12; // el 1120% del básico 07/25
   let sumaNoRemunerativa = 65973.47; //Pago de suma no remunerativa 0.3292% del básico
   let incentivoDocente = 28700; //Pago por incentivo docente
+  let asignacionXHijxs = calcularAsignacionXHijxs();
   let totalRemunerativo1 =
     basico1 +
     complementoRemunerativo1 + adicionalXCargo1 +
     bonificacionZona +
     bonificacionAntiguedad;
   let totalNRemunerativo1 =
-    complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente;
+    complementoNoRemunerativo1 + sumaNoRemunerativa +
+     incentivoDocente + asignacionXHijxs;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
     return {
     basico: basico1,
@@ -238,6 +246,7 @@ function calcularSalarioPreceptor() {
     totalRemunerativo: totalRemunerativo1,
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
+    asignacionXHijxs: asignacionXHijxs
   };
 }
 // Cargo de maestra/o celador
@@ -248,7 +257,10 @@ function mostrarCalculoMaestrCelador() {
   mostrarResultados(
   resultados, 
   descuentos,
-  ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargo", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs"], // mostrar
+  ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargo", "filaZona",
+     "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
+      "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs",
+      "filaAsignacionXHijxs"], // mostrar
   [ "filaTotalBolsillo1"]      // ocultar    
 );
 }
@@ -267,13 +279,15 @@ let basico1 = 243611.01; //Basico Maestrx Celador 07/25
   let complementoNoRemunerativo1 = basico1 * 1.12; // el 1120% del básico 07/25
   let sumaNoRemunerativa = 80220.9; //Pago de suma no remunerativa 0.3292% del básico
   let incentivoDocente = 28700; //Pago por incentivo docente
+  let asignacionXHijxs1 = calcularAsignacionXHijxs();
   let totalRemunerativo1 =
     basico1 +
     complementoRemunerativo1 + adicionalXCargo1 +
     bonificacionZona +
     bonificacionAntiguedad;
   let totalNRemunerativo1 =
-    complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente;
+    complementoNoRemunerativo1 + sumaNoRemunerativa + 
+    incentivoDocente + asignacionXHijxs1;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
   console.log(bonificacionZona);
   return {
@@ -288,6 +302,7 @@ let basico1 = 243611.01; //Basico Maestrx Celador 07/25
     totalRemunerativo: totalRemunerativo1,
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
+    asignacionXHijxs: asignacionXHijxs1
   };
 }
 
@@ -299,7 +314,10 @@ function mostrarCalculoMaestrGrado() {
   mostrarResultados(
   resultados, 
   descuentos,
-  ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargo", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs"], // mostrar
+  ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargo", 
+    "filaZona", "filaComplementoNoRem", "filaAntiguedad",
+     "filaComplementoRem", "filaSumaNoRem", "filaDescuentoSindical",
+      "filaAsignacionXHijxs"], // mostrar
   [ "filaTotalBolsillo1"]      // ocultar    
 );
 }
@@ -316,14 +334,13 @@ let basico1 = 222776.16; //Basico Maestrx de grado 07/25
   let complementoNoRemunerativo1 = basico1 * 1.12; // el 1120% del básico 07/25
   let sumaNoRemunerativa = 70000.0; //Pago de suma no remunerativa 0.3292% del básico (Fija)
   let incentivoDocente = 28700; //Pago por incentivo docente
-    let asignacionXHijxs1 = calcularAsignacionXHijxs();
-  let totalRemunerativo1 =
-    basico1 +
-    complementoRemunerativo1 + adicionalXCargo1 +
-    bonificacionZona +
-    bonificacionAntiguedad;
+  let asignacionXHijxs1 = calcularAsignacionXHijxs();
+  let totalRemunerativo1 = 
+  basico1 + complementoRemunerativo1 + adicionalXCargo1 
+  + bonificacionZona + bonificacionAntiguedad;
   let totalNRemunerativo1 =
-    complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs1;
+    complementoNoRemunerativo1 + sumaNoRemunerativa + 
+    incentivoDocente + asignacionXHijxs1;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
   //let asignacionXHijxs1 = calcularAsignacionXHijxs();
   return {

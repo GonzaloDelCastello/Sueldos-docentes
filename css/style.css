@@ -3,6 +3,7 @@
   --primarioClaro: #9fb8a3;
   --secundario: #f0e68c;
   --secundarioOscuro: #406882;
+  --terciario: rgb(196, 212, 199);
   --blanco: #f4f4f4;
   --negro: #2b2b2b;
   --fuenteTitulo: "Fredericka the Great", serif;
@@ -114,7 +115,7 @@ a {
   border-left: 5px solid var(--primario);
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  text-align: justify;
   color: #333;
 }
 .cuerpo {
@@ -168,16 +169,18 @@ a {
   }
 }
 .contenido {
+  text-align: justify;
   max-width: 900px;
   margin: 4rem auto 0 auto;
   padding: 2.5rem 2rem;
-  background: #fff;
+  background: var(--terciario);
   border-radius: 14px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.10);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2rem;
+  border-left: 5px solid var(--primario);
 }
 .contenido span {
   font-weight: bold;
@@ -193,13 +196,14 @@ a {
 }
 
 #formularioCalculo {
-  background-color: var(--secundario);
+  background-color: var(--terciario);
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   margin-left: auto;
   margin-right: auto;
   text-align: center;
+  border-right: 5px solid var(--primario);
 }
 
 label,
