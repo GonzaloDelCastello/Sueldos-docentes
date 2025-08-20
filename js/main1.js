@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Limpiar opciones actuales
       selectCargo.innerHTML = "";
       // Agregar nuevas opciones basadas en el nivel seleccionado
-      (cargosPorNivel[nivel] || [{ value: 0, text: "Selecciona un cargo" }]).forEach(opcion => {
+      (cargosPorNivel[nivel] || [{ value: 0, text: "Selecciona un Nivel ⬆ ⬆" }]).forEach(opcion => {
       const opt = document.createElement("option");
       opt.value = opcion.value;
       opt.textContent = opcion.text;
