@@ -3,7 +3,34 @@ let nivel = 0; // Variable global para el nivel seleccionado
 //let calculoBasicoHsSecundario = 14173.99; Básico hs secundaria 05/25
 let calculoBasicoHsSecundario = 14854.34; //07/25
 document.addEventListener("DOMContentLoaded", function () {
+  const menuToggle = document.querySelector('.menu-toggle');
+  const navegacion = document.querySelector('.navegacion');
   
+   if (menuToggle && navegacion) {
+    // Abre/cierra con el botón hamburguesa
+    menuToggle.addEventListener('click', function (event) {
+      event.stopPropagation(); // evita que se dispare el click global
+      navegacion.classList.toggle('activo');
+    });
+
+    // Cerrar al hacer click fuera
+    document.addEventListener('click', function (event) {
+      if (
+        navegacion.classList.contains('activo') &&
+        !navegacion.contains(event.target) &&
+        !menuToggle.contains(event.target)
+      ) {
+        navegacion.classList.remove('activo');
+      }
+    });
+
+    // Cerrar al hacer scroll
+    window.addEventListener('scroll', function () {
+      if (navegacion.classList.contains('activo')) {
+        navegacion.classList.remove('activo');
+      }
+    });
+  }
   const cargosPorNivel = {
     1: [ // Inicial
       { value: 0, text: "Selecciona un cargo" }] // Nivel inicial no tiene cargos implementados
@@ -517,15 +544,15 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("fechaActual").textContent = fecha.toLocaleDateString("es-AR", opciones);
 });
 
-//Botón hamburguesa (ia)
-document.addEventListener("DOMContentLoaded", function () {
-  const menuToggle = document.querySelector('.menu-toggle');
-  const navegacion = document.querySelector('.navegacion');
-  if (menuToggle && navegacion) {
-    menuToggle.addEventListener('click', function() {
-      navegacion.classList.toggle('activo');
-    });
-  }
-});
+// //Botón hamburguesa (ia)
+// document.addEventListener("DOMContentLoaded", function () {
+//   const menuToggle = document.querySelector('.menu-toggle');
+//   const navegacion = document.querySelector('.navegacion');
+//   if (menuToggle && navegacion) {
+//     menuToggle.addEventListener('click', function() {
+//       navegacion.classList.toggle('activo');
+//     });
+//   }
+// });
 
 
