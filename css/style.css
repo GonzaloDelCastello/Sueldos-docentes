@@ -39,9 +39,9 @@ body {
   align-items: flex-start;
 }
 @media (max-width: 768px) {
-  .contenedorBody { 
+  .contenedorBody {
     flex-direction: column;
-}
+  }
 }
 
 h1,
@@ -59,7 +59,7 @@ h2 {
 h3 {
   font-size: 2.4rem;
   text-align: center;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
 }
 
 /* --- Header y barra --- */
@@ -106,14 +106,28 @@ a {
   text-decoration: none;
 }
 #fechaActual {
-  font-size: 1.6rem;
+  font-size: 2.6rem;
   color: var(--blanco);
-  margin-left: 80%;
+  margin-left: 70%;
+}
+@media (max-width: 768px) {
+  #fechaActual {
+    font-size: 2rem;
+    margin-left: 40%;
+  }
 }
 .navegacion a:hover {
   color: var(--blanco); /* por ejemplo, azul apagado */
   font-size: 2.3rem;
   transition: color 0.3s ease;
+}
+@media (max-width: 768px) {
+  .navegacion a:hover {
+  color: var(--blanco); /* por ejemplo, azul apagado */
+  font-size: 1.8rem;
+  transition: color 0.3s ease;
+}
+  
 }
 
 /* --- Intro --- */
@@ -130,9 +144,9 @@ a {
 }
 @media (max-width: 768px) {
   .intro {
-    max-width: 90%;   /* se ajusta al ancho de pantalla */
+    max-width: 90%; /* se ajusta al ancho de pantalla */
     margin: 2rem auto;
-    padding: 1.2rem;  /* menos padding en móviles */
+    padding: 1.2rem; /* menos padding en móviles */
     font-size: 1.4rem;
   }
 }
@@ -142,7 +156,7 @@ a {
   margin: 3rem auto;
   padding: 2.5rem 2rem;
   border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
   max-width: 70rem;
   text-align: center;
   font-size: 1.6rem;
@@ -169,7 +183,11 @@ a {
   right: -40px;
   width: 120px;
   height: 120px;
-  background: radial-gradient(circle, var(--primarioClaro) 40%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    var(--primarioClaro) 40%,
+    transparent 70%
+  );
   opacity: 0.12;
   z-index: 0;
 }
@@ -193,7 +211,7 @@ a {
   padding: 2.5rem 2rem;
   background: var(--terciario);
   border-radius: 14px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -211,14 +229,12 @@ a {
   font-weight: bold;
   color: var(--negro);
   font-family: Arial, Helvetica, sans-serif;
-  
 }
 /* --- Formulario --- */
 .calculoSalarial {
   max-width: none;
   margin: 4rem auto;
   text-align: center;
-  
 }
 
 #formularioCalculo {
@@ -235,7 +251,7 @@ a {
 #formularioCargo {
   width: 100%;
   max-width: 100%;
-  margin: 0;          /* que no desplace nada en flex */
+  margin: 0; /* que no desplace nada en flex */
 }
 
 label,
@@ -357,21 +373,21 @@ th span {
     position: fixed;
     top: 0;
     right: 0;
-    width: 60%; /* ajustá el ancho del menú */
-    height: 60%;
-    background-color: var(--terciario) ;
+    width: 40%; /* ajustá el ancho del menú */
+    height: 40%;  
+    background-image: url(../img/PizarraNegra.jpg);
     background-size: cover;
     padding: 2rem 1rem;
     z-index: 100;
-    
+
     /* estado inicial: fuera de la pantalla */
     transform: translateX(100%);
     transition: transform 0.3s ease-in-out;
   }
   .navegacion a {
     margin: 1rem 0;
-    font-size: 2.5rem;
-    color: var(--negro);
+    font-size: 1.5rem;
+    color: var(--blanco);
   }
   .navegacion.activo {
     transform: translateX(0); /* entra desde la derecha */
@@ -381,12 +397,12 @@ th span {
     display: block;
     background: none;
     border: none;
-    color: var(--blanco);
+    color: var(--negro);
     font-size: 3rem;
     cursor: pointer;
     position: relative;
     z-index: 200; /* arriba del menú */
-  }
+  }   
 }
 a {
   text-decoration: none;
