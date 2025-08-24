@@ -33,6 +33,9 @@ body {
   margin: 0 auto;
   padding: 0 2rem;
 }
+.contenedorBody {
+  display: flex;
+}
 
 h1,
 h2 {
@@ -108,7 +111,7 @@ a {
 
 /* --- Intro --- */
 .intro {
-  max-width: 60rem;
+  max-width: 50rem;
   margin: 4rem auto;
   background-color: #f4faff;
   padding: 2rem;
@@ -125,7 +128,7 @@ a {
   padding: 2.5rem 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.15);
-  max-width: 700px;
+  max-width: 70rem;
   text-align: center;
   font-size: 1.6rem;
   line-height: 1.7;
@@ -189,7 +192,7 @@ a {
   
 }
 /* --- Formulario --- */
-#calculoSalarial {
+.calculoSalarial {
   max-width: 60rem;
   margin: 4rem auto;
   text-align: center;

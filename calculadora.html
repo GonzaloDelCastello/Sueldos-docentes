@@ -39,7 +39,8 @@
     </div>
   </header>
 
-  <section class="intro">
+  <div class="contenedorBody">
+    <section class="intro">
     <p>
       Esta herramienta permite estimar el sueldo docente en San Luis según la cantidad de horas, el tipo de cargo, ítems
       Zona e ítems Antigüedad.
@@ -57,237 +58,238 @@ puedo colocarlas todas juntas. Pero si la zona es distinta, las tendrá que suma
 separado para saber el total a cobrar por varios cargos.</p> 
   </section>
 
-  <div id="calculoSalarial">
+    <div class="calculoSalarial">
 
-    <div id="formularioCalculo">
+      <div id="formularioCalculo">
 
-      <h3> Cálculo de sueldo docente San Luis</h3>
-      
-      <span>
-        <label for="nivel" >Nivel educativo <select id="nivel" name="nivel">
-            <option value="0" selected>Selecciona un nivel</option>
-            <option value="1">Inicial (Proximamente)</option>
-            <option value="2">Primario</option>
-            <option value="3">Secundario</option>
-            <option value="4">Superior (Proximamente)</option>
-          </select></label>
-      </span>
-      <span><label for="cargo">Tipo de cargo <select id="cargo" name="cargo">
-            <option value="0" selected>Seleccione un nivel</option>
-            <option value="1">Hs. en Secundario</option>
-            <option value="2">Cargo Preceptor (213p)</option>
-            <option value="3">Maestra/o Celador (259p)</option>
-          </select></label></span>
-      
-      <!--Inicio formulario Hs secundario-->
-      <form id="formSecundario" class="formulario_secundario oculto">
-        <fieldset class="grid-form">
-          <legend>Sueldo por cargo</legend>
-          <p><label for="cantHs">Cantidad de hs<input type="number" id="cantHs" name="cantHs"></label></p>
-          
-        </fieldset>
-      </form>
-      <!--Fin formulario Hs secundario-->
-      <!--Inicio formulario Hs Preceptor-->
-      
-      <!--Fin formulario Preceptor-->
-      <!--Inicio formulario fijo-->
-      <form id="formFijo" class="formFijo oculto">
-        <fieldset class="grid-form">
-          <span><label for="zona">Bonificación por zona<select id="zona" name="zona">
-                <option value="1">0%</option>
-                <option value="2">20%</option>
-                <option value="3">40%</option>
-                <option value="4">60%</option>
-                <option value="5">80%</option>
-                <option value="6">100%</option>
-
-              </select></label></span>
-          <span><label for="antiguedad">Antiguedad docente <select id="antiguedad" name="antiguedad">
-                <option value="0">0 años (0%)</option>
-                <option value="1">1 año (10%)</option>
-                <option value="2">2 a 4 años (15%)</option>
-                <option value="3">5 a 6 años (30%)</option>
-                <option value="4">7 a 9 años (40%)</option>
-                <option value="5">10 a 11 años (50%)</option>
-                <option value="6">12 a 14 años (60%)</option>
-                <option value="7">15 a 16 años (70%)</option>
-                <option value="8">17 a 18 años (80%)</option>
-                <option value="9">20 a 21 años (100%)</option>
-                <option value="10">22 a 23 años (110%)</option>
-                <option value="11">Más de 24 años (120%)</option>
-              </select>
-            </label></span>
-          <span><label for="cantHijxs">Cantidad de Hijxs <input type="number" id="cantHijxs" name="cantHijxs"></label></span>
-          <span><label for="afiliacionSindical">Afiliación Sindical</label><select name="afiliacionSindical" id="afiliacionSindical">
-                <option value="0">No afiliado</option>
-                <option value="1">Amet</option>
-                <option value="2">Uda</option>
-          </select></span>
-        </fieldset>
-      </form>
-      <!--Fin formulario fijo-->
-      <button type="button" class="boton" onclick="mostrarResultado()">Calcular</button>
-    </div>
-    <!-- Fin del div del form -->
-    <div id="resultados" style="display:none;">
-      <h2>Resultados:</h2>
-      <h3>Total a cobrar por cargo:</h3>
-      <table id="tablaTotal">
-        <tr id="filaTotalNeto">
-          <th>Total de bolsillo</th>
-          <td>
-            <span id="totalBolsillo"></span>
-          </td>
-        </tr>
-        <!-- Fila ejemplo -->
-        <tr id="filaTotalBolsillo1">
-          <td>Total</td>
-          <td>
-            <span id="totalBolsillo1"></span>
-          </td>
-        </tr>
-      </table>
-      <!--Tabla de conceptos remunerativos-->
-      <h3>Conceptos remunerativos</h3>
-      <table >
-        <tr id="filaTitulos">
-          <th>Concepto</th>
-          <th>Monto</th>
-        </tr>
-        <tr id="filaSueldoBasico">
-          <td>
-            <p>Sueldo Básico</p>
-          </td>
-          <td>
-            <span id="resultadoSueldo"></span>
-          </td>
-        </tr>
-        <tr id="filaZona">
-          <td>
-            <p>Pago por zona: </p>
-          </td>
-          <td>
-            <span id="pagoZona"></span>
-          </td>
-        </tr>
-        <tr id="filaAntiguedad">
-          <td>Pago por Antigüedad: </td>
-          <td>
-            <span id="pagoAntiguedad"></span>
-          </td>
-        </tr>
-        <tr id="filaComplementoRem">
-          <td>Complemento Remunerativo: </td>
-          <td>
-            <span id="complementoRemunerativo"></span>
-          </td>
-        </tr>
+        <h3> Cálculo de sueldo docente San Luis</h3>
         
-        <tr id="filaAdicionalCargo">
-          <td>Adicional Por Cargo: </td>
-          <td>
-            <span id="adicionalPorCargo"></span>
-          </td>
-        </tr>
-        <tr>
-          <th>Total Remunerativo</th>
-          <th>
-            <span id="totalCAportes"></span>
-          </th>
-        </tr> 
+        <span>
+          <label for="nivel" >Nivel educativo <select id="nivel" name="nivel">
+              <option value="0" selected>Selecciona un nivel</option>
+              <option value="1">Inicial (Proximamente)</option>
+              <option value="2">Primario</option>
+              <option value="3">Secundario</option>
+              <option value="4">Superior (Proximamente)</option>
+            </select></label>
+        </span>
+        <span><label for="cargo">Tipo de cargo <select id="cargo" name="cargo">
+              <option value="0" selected>Seleccione un nivel</option>
+              <option value="1">Hs. en Secundario</option>
+              <option value="2">Cargo Preceptor (213p)</option>
+              <option value="3">Maestra/o Celador (259p)</option>
+            </select></label></span>
+        
+        <!--Inicio formulario Hs secundario-->
+        <form id="formSecundario" class="formulario_secundario oculto">
+          <fieldset class="grid-form">
+            <legend>Sueldo por cargo</legend>
+            <p><label for="cantHs">Cantidad de hs<input type="number" id="cantHs" name="cantHs"></label></p>
+            
+          </fieldset>
+        </form>
+        <!--Fin formulario Hs secundario-->
+        <!--Inicio formulario Hs Preceptor-->
+        
+        <!--Fin formulario Preceptor-->
+        <!--Inicio formulario fijo-->
+        <form id="formFijo" class="formFijo oculto">
+          <fieldset class="grid-form">
+            <span><label for="zona">Bonificación por zona<select id="zona" name="zona">
+                  <option value="1">0%</option>
+                  <option value="2">20%</option>
+                  <option value="3">40%</option>
+                  <option value="4">60%</option>
+                  <option value="5">80%</option>
+                  <option value="6">100%</option>
+
+                </select></label></span>
+            <span><label for="antiguedad">Antiguedad docente <select id="antiguedad" name="antiguedad">
+                  <option value="0">0 años (0%)</option>
+                  <option value="1">1 año (10%)</option>
+                  <option value="2">2 a 4 años (15%)</option>
+                  <option value="3">5 a 6 años (30%)</option>
+                  <option value="4">7 a 9 años (40%)</option>
+                  <option value="5">10 a 11 años (50%)</option>
+                  <option value="6">12 a 14 años (60%)</option>
+                  <option value="7">15 a 16 años (70%)</option>
+                  <option value="8">17 a 18 años (80%)</option>
+                  <option value="9">20 a 21 años (100%)</option>
+                  <option value="10">22 a 23 años (110%)</option>
+                  <option value="11">Más de 24 años (120%)</option>
+                </select>
+              </label></span>
+            <span><label for="cantHijxs">Cantidad de Hijxs <input type="number" id="cantHijxs" name="cantHijxs"></label></span>
+            <span><label for="afiliacionSindical">Afiliación Sindical</label><select name="afiliacionSindical" id="afiliacionSindical">
+                  <option value="0">No afiliado</option>
+                  <option value="1">Amet</option>
+                  <option value="2">Uda</option>
+            </select></span>
+          </fieldset>
+        </form>
+        <!--Fin formulario fijo-->
+        <button type="button" class="boton" onclick="mostrarResultado()">Calcular</button>
+      </div>
+      <!-- Fin del div del form -->
+      <div id="resultados" style="display:none;">
+        <h2>Resultados:</h2>
+        <h3>Total a cobrar por cargo:</h3>
+        <table id="tablaTotal">
+          <tr id="filaTotalNeto">
+            <th>Total de bolsillo</th>
+            <td>
+              <span id="totalBolsillo"></span>
+            </td>
+          </tr>
+          <!-- Fila ejemplo -->
+          <tr id="filaTotalBolsillo1">
+            <td>Total</td>
+            <td>
+              <span id="totalBolsillo1"></span>
+            </td>
+          </tr>
         </table>
-      <!--Tabla de conceptos no remunerativos-->
-        <h3>Conceptos no remunerativos</h3>
-      <table id="tablaNoRemunerativos">
-        <tr>
-          <th>Concepto</th>
-          <th>Monto</th>
-        </tr>
-        <tr>
-        <tr id="filaComplementoNoRem">
-          <td>Complemento No Remunerativo: </td>
-          <td>
-            <span id="complementoNoRemunerativo"></span>
-          </td>
-        </tr>
-        <tr id="filaSumaNoRem">
-          <td>Pago Suma No Remunerativa: </td>
-          <td>
-            <span id="sumaNoRemunerativa"></span>
-          </td>
-        </tr>
-        <tr>
-          <td>Incentivo Docente: </td>
-          <td>
-            <span id="incentivoDocente"></span>
-          </td>
-        </tr>
-        <tr id="filaAsignacionXHijxs">
-          <td>Asignación por hijxs </td>
-          <td>
-            <span id="asignacionXHijxs"></span>
-          </td>
-        </tr>
-        <tr>
-          <th>Total</th>
+        <!--Tabla de conceptos remunerativos-->
+        <h3>Conceptos remunerativos</h3>
+        <table >
+          <tr id="filaTitulos">
+            <th>Concepto</th>
+            <th>Monto</th>
+          </tr>
+          <tr id="filaSueldoBasico">
+            <td>
+              <p>Sueldo Básico</p>
+            </td>
+            <td>
+              <span id="resultadoSueldo"></span>
+            </td>
+          </tr>
+          <tr id="filaZona">
+            <td>
+              <p>Pago por zona: </p>
+            </td>
+            <td>
+              <span id="pagoZona"></span>
+            </td>
+          </tr>
+          <tr id="filaAntiguedad">
+            <td>Pago por Antigüedad: </td>
+            <td>
+              <span id="pagoAntiguedad"></span>
+            </td>
+          </tr>
+          <tr id="filaComplementoRem">
+            <td>Complemento Remunerativo: </td>
+            <td>
+              <span id="complementoRemunerativo"></span>
+            </td>
+          </tr>
           
-          <th>
-            <span id="totalSAportes"></span>
-          </th>
-        </tr>
-        <tr>
-          <th>Sueldo Bruto Total <br> (Sin descuentos)</th>
-          <th colspan="2">
-            <span id="totalBruto"></span>
-          </th>
-        </tr>
-      </table>
-      <!--Tabla de descuentos-->
-      <h3>Descuentos</h3>
-      <table id="tablaDescuentos">
-        <tr>
-          <th>Concepto</th>
-          <th>Monto</th>
-        </tr>
-        <tr>
-          <td>Aportes Jubilatorios</td>
-          <td>
-            <span id="aporteJubilatorio"></span>
-          </td>
-        </tr>
-        <tr>
-          <td>Aportes Jubilatorios <br>Regimen especial</td>
-          <td>
-            <span id="aporteJubilatorioEsp"></span>
-          </td>
-        </tr>
-        <tr>
-          <td>Aportes Obra Social</td>
-          <td>
-            <span id="obraSocial"></span>
-          </td>
-        </tr>
-        <tr>
-          <td>Descuento afilición Sindical</td>
-          <td>
-            <span id="descuentoSindical"></span>
-          </td>
-        <tr>
-          <td>Seguro Obligatorio</td>
-          <td>
-            <span id="seguroObligatorio"></span>
-          </td>
-        </tr>
-        <tr>
-          <th>Total Descuentos</th>
-          <th>
-            <span id="totalDescuentos"></span>
-          </th>
-        </tr>
-      </table>
+          <tr id="filaAdicionalCargo">
+            <td>Adicional Por Cargo: </td>
+            <td>
+              <span id="adicionalPorCargo"></span>
+            </td>
+          </tr>
+          <tr>
+            <th>Total Remunerativo</th>
+            <th>
+              <span id="totalCAportes"></span>
+            </th>
+          </tr> 
+          </table>
+        <!--Tabla de conceptos no remunerativos-->
+          <h3>Conceptos no remunerativos</h3>
+        <table id="tablaNoRemunerativos">
+          <tr>
+            <th>Concepto</th>
+            <th>Monto</th>
+          </tr>
+          <tr>
+          <tr id="filaComplementoNoRem">
+            <td>Complemento No Remunerativo: </td>
+            <td>
+              <span id="complementoNoRemunerativo"></span>
+            </td>
+          </tr>
+          <tr id="filaSumaNoRem">
+            <td>Pago Suma No Remunerativa: </td>
+            <td>
+              <span id="sumaNoRemunerativa"></span>
+            </td>
+          </tr>
+          <tr>
+            <td>Incentivo Docente: </td>
+            <td>
+              <span id="incentivoDocente"></span>
+            </td>
+          </tr>
+          <tr id="filaAsignacionXHijxs">
+            <td>Asignación por hijxs </td>
+            <td>
+              <span id="asignacionXHijxs"></span>
+            </td>
+          </tr>
+          <tr>
+            <th>Total</th>
+            
+            <th>
+              <span id="totalSAportes"></span>
+            </th>
+          </tr>
+          <tr>
+            <th>Sueldo Bruto Total <br> (Sin descuentos)</th>
+            <th colspan="2">
+              <span id="totalBruto"></span>
+            </th>
+          </tr>
+        </table>
+        <!--Tabla de descuentos-->
+        <h3>Descuentos</h3>
+        <table id="tablaDescuentos">
+          <tr>
+            <th>Concepto</th>
+            <th>Monto</th>
+          </tr>
+          <tr>
+            <td>Aportes Jubilatorios</td>
+            <td>
+              <span id="aporteJubilatorio"></span>
+            </td>
+          </tr>
+          <tr>
+            <td>Aportes Jubilatorios <br>Regimen especial</td>
+            <td>
+              <span id="aporteJubilatorioEsp"></span>
+            </td>
+          </tr>
+          <tr>
+            <td>Aportes Obra Social</td>
+            <td>
+              <span id="obraSocial"></span>
+            </td>
+          </tr>
+          <tr>
+            <td>Descuento afilición Sindical</td>
+            <td>
+              <span id="descuentoSindical"></span>
+            </td>
+          <tr>
+            <td>Seguro Obligatorio</td>
+            <td>
+              <span id="seguroObligatorio"></span>
+            </td>
+          </tr>
+          <tr>
+            <th>Total Descuentos</th>
+            <th>
+              <span id="totalDescuentos"></span>
+            </th>
+          </tr>
+        </table>
 
 
+      </div>
     </div>
   </div>
   <footer class="footer">
