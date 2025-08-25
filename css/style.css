@@ -35,11 +35,12 @@ body {
 }
 .contenedorBody {
   display: flex;
-  gap: 2rem;
-  align-items: flex-start;
+  gap: 1rem;
+  align-items: start;
 }
 @media (max-width: 768px) {
   .contenedorBody {
+    max-width: 100%;;
     flex-direction: column;
   }
 }
@@ -123,8 +124,8 @@ a {
 }
 @media (max-width: 768px) {
   .navegacion a:hover {
-  color: var(--blanco); /* por ejemplo, azul apagado */
-  font-size: 1.8rem;
+  color: var(--negro); /* por ejemplo, azul apagado */
+  font-size: 2rem;
   transition: color 0.3s ease;
 }
   
@@ -132,7 +133,7 @@ a {
 
 /* --- Intro --- */
 .intro {
-  max-width: 50rem;
+  max-width: 50%;
   margin: 4rem auto;
   background-color: #f4faff;
   padding: 2rem;
@@ -144,66 +145,13 @@ a {
 }
 @media (max-width: 768px) {
   .intro {
-    max-width: 90%; /* se ajusta al ancho de pantalla */
+    max-width: 85%; /* se ajusta al ancho de pantalla */
     margin: 2rem auto;
     padding: 1.2rem; /* menos padding en móviles */
     font-size: 1.4rem;
   }
 }
-.cuerpo {
-  background: rgba(62, 94, 77, 0.85);
-  color: var(--blanco);
-  margin: 3rem auto;
-  padding: 2.5rem 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
-  max-width: 70rem;
-  text-align: center;
-  font-size: 1.6rem;
-  line-height: 1.7;
-  position: relative;
-  overflow: hidden;
-}
-.cuerpo::before {
-  content: "";
-  position: absolute;
-  top: -40px;
-  left: -40px;
-  width: 120px;
-  height: 120px;
-  background: radial-gradient(circle, var(--secundario) 40%, transparent 70%);
-  opacity: 0.15;
-  z-index: 0;
-}
 
-.cuerpo::after {
-  content: "";
-  position: absolute;
-  bottom: -40px;
-  right: -40px;
-  width: 120px;
-  height: 120px;
-  background: radial-gradient(
-    circle,
-    var(--primarioClaro) 40%,
-    transparent 70%
-  );
-  opacity: 0.12;
-  z-index: 0;
-}
-
-.cuerpo > * {
-  position: relative;
-  z-index: 1;
-}
-
-@media (max-width: 768px) {
-  .cuerpo {
-    padding: 1.2rem 0.5rem;
-    font-size: 1.3rem;
-    max-width: 98vw;
-  }
-}
 .contenido {
   text-align: justify;
   max-width: 900px;
@@ -221,7 +169,7 @@ a {
 @media (max-width: 768px) {
   .contenido {
     max-width: 95%;
-    padding: 1.5rem 1rem;
+    padding: 1.5rem 2.5rem;
     gap: 1rem;
   }
 }
@@ -232,7 +180,7 @@ a {
 }
 /* --- Formulario --- */
 .calculoSalarial {
-  max-width: none;
+  max-width: 90%;
   margin: 4rem auto;
   text-align: center;
 }
@@ -249,7 +197,7 @@ a {
 }
 #formularioCalculo,
 #formularioCargo {
-  width: 100%;
+  width: 95%;
   max-width: 100%;
   margin: 0; /* que no desplace nada en flex */
 }
@@ -369,16 +317,16 @@ th span {
   .navegacion {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     position: fixed;
     top: 0;
     right: 0;
-    width: 40%; /* ajustá el ancho del menú */
-    height: 40%;  
-    background-image: url(../img/PizarraNegra.jpg);
-    background-size: cover;
+    width: 60%; /* ajustá el ancho del menú */
+    height:80%;  
+    background-color: var(--blanco);
     padding: 2rem 1rem;
     z-index: 100;
+    border-radius: 4%;
 
     /* estado inicial: fuera de la pantalla */
     transform: translateX(100%);
@@ -387,7 +335,7 @@ th span {
   .navegacion a {
     margin: 1rem 0;
     font-size: 1.5rem;
-    color: var(--blanco);
+    color: var(--negro);
   }
   .navegacion.activo {
     transform: translateX(0); /* entra desde la derecha */

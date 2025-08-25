@@ -11,6 +11,11 @@ document.addEventListener("DOMContentLoaded", function () {
     menuToggle.addEventListener('click', function (event) {
       event.stopPropagation(); // evita que se dispare el click global
       navegacion.classList.toggle('activo');
+      if (navegacion.classList.contains('activo')) {
+        menuToggle.classList.add('oculto');  
+      } else {
+        menuToggle.classList.remove('oculto');  
+      }
     });
 
     // Cerrar al hacer click fuera
@@ -21,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
         !menuToggle.contains(event.target)
       ) {
         navegacion.classList.remove('activo');
+        menuToggle.classList.remove('oculto'); 
       }
     });
 
@@ -28,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener('scroll', function () {
       if (navegacion.classList.contains('activo')) {
         navegacion.classList.remove('activo');
+        menuToggle.classList.remove('oculto'); 
       }
     });
   }
