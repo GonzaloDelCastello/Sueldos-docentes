@@ -34,7 +34,7 @@ body {
   padding: 0 2rem;
 }
 .contenedorBody {
-  display: flex;
+  display: block;
   gap: 1rem;
   align-items: start;
 }
@@ -125,7 +125,7 @@ a {
 @media (max-width: 768px) {
   .navegacion a:hover {
   color: var(--negro); /* por ejemplo, azul apagado */
-  font-size: 2rem;
+  font-size: 3rem;
   transition: color 0.3s ease;
 }
   
@@ -133,7 +133,7 @@ a {
 
 /* --- Intro --- */
 .intro {
-  max-width: 50%;
+  max-width: 80%;
   margin: 4rem auto;
   background-color: #f4faff;
   padding: 2rem;
@@ -312,7 +312,7 @@ th span {
   font-size: 3rem;
   cursor: pointer;
 }
-
+/* menu y .navegacion */
 @media (max-width: 768px) {
   .navegacion {
     display: flex;
@@ -334,7 +334,7 @@ th span {
   }
   .navegacion a {
     margin: 1rem 0;
-    font-size: 1.5rem;
+    font-size: 2.5rem;
     color: var(--negro);
   }
   .navegacion.activo {

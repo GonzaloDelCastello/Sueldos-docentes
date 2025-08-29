@@ -40,21 +40,21 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   const cargosPorNivel = {
     1: [ // Inicial
-      { value: 0, text: "Selecciona un cargo" }] // Nivel inicial no tiene cargos implementados
+      { value: 0, text: "Cargo no disponible" }] // Nivel inicial no tiene cargos implementados
     ,
     2: [ // Primaria
-      { value: 0, text: "Selecciona un cargo" },
+      //{ value: 0, text: "Selecciona un cargo" },
       { value: 3, text: "Cargo Maestrx Celador" },
       { value: 4, text: "Maestrx de grado" },
       { value: 5, text: "Cargo Maestrx Especial (Proximamente)" },
     ],
     3: [ // Secundaria
-      { value: 0, text: "Selecciona un cargo" },
+      //{ value: 0, text: "Selecciona un cargo" },
       { value: 1, text: "Hs. en Secundario" },
       { value: 2, text: "Cargo Preceptor" },
     ],
     4: [ // Superior
-      { value: 0, text: "Selecciona un cargo" }] // Nivel superior no tiene cargos implementados
+      { value: 0, text: "Cargo no disponible" }] // Nivel superior no tiene cargos implementados
   };
 
   
