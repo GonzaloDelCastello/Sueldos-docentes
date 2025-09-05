@@ -302,6 +302,23 @@ th span {
   justify-content: center;
   align-items: center;
 }
+.formulario_secundario {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem 2rem;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  justify-items: center;
+    margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+.formulario_secundario input {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
 
 /* --- Responsive --- */
 .menu-toggle {

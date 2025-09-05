@@ -43,13 +43,13 @@ document.addEventListener("DOMContentLoaded", function () {
       { value: 0, text: "Cargo no disponible" }] // Nivel inicial no tiene cargos implementados
     ,
     2: [ // Primaria
-      //{ value: 0, text: "Selecciona un cargo" },
+      { value: 0, text: "Selecciona un cargo" },
       { value: 3, text: "Cargo Maestrx Celador" },
       { value: 4, text: "Maestrx de grado" },
       { value: 5, text: "Cargo Maestrx Especial (Proximamente)" },
     ],
     3: [ // Secundaria
-      //{ value: 0, text: "Selecciona un cargo" },
+      { value: 0, text: "Selecciona un cargo" },
       { value: 1, text: "Hs. en Secundario" },
       { value: 2, text: "Cargo Preceptor" },
     ],
