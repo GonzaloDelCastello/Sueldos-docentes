@@ -1,3 +1,5 @@
+import { calculoZona } from './funcionesCalculo.js';
+
 let cargo = 0; // Variable global para el cargo seleccionado
 let nivel = 0; // Variable global para el nivel seleccionado
 //let calculoBasicoHsSecundario = 14173.99; Básico hs secundaria 05/25
@@ -116,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Inicializar opciones de cargo al cargar la página
   actualizarOpcionesCargo(parseInt(selectNivel.value)); 
 });
-
+document.getElementById("btnMostrarResultado").addEventListener("click", mostrarResultado); 
 function mostrarResultado() {
   const cantHsInput = document.getElementById("cantHs");
   const cantHs = parseInt(cantHsInput.value);
@@ -392,25 +394,7 @@ let basico1 = 222776.16; //Basico Maestrx de grado 07/25
     asignacionXHijxs: asignacionXHijxs1
   };
 }
-//Calculo Zona
-function calculoZona() {
-  switch (document.getElementById("zona").value) {
-    case "1":
-      return 0;
-    case "2":
-      return 0.2;
-    case "3":
-      return 0.4;
-    case "4":
-      return 0.6;
-    case "5":
-      return 0.8;
-    case "6":
-      return 1;
-    default:
-      return 0;
-  }
-}
+
 
 //Cálculo Antiguedad
 function calculoAntiguedad() {

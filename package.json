@@ -1,0 +1,22 @@
+{
+  "name": "sueldos-docentes",
+  "version": "1.0.0",
+  "description": "Web de sueldos docentes",
+  "main": "funcionesCalculo.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GonzaloDelCastello/Sueldos-docentes.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GonzaloDelCastello/Sueldos-docentes/issues"
+  },
+  "homepage": "https://github.com/GonzaloDelCastello/Sueldos-docentes#readme"
+}
