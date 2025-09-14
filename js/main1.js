@@ -42,8 +42,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   const cargosPorNivel = {
     1: [ // Inicial
-      { value: 0, text: "Cargo no disponible" }] // Nivel inicial no tiene cargos implementados
-    ,
+      { value: 0, text: "Selecciona un cargo" },
+      { value: 6, text: "Maestrx Jardín" },
+    ],
+    
     2: [ // Primaria
       { value: 0, text: "Selecciona un cargo" },
       { value: 3, text: "Cargo Maestrx Celador" },
@@ -110,6 +112,9 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case 4:
         //formMaestrGrado.classList.remove("oculto");
+        formFijo.classList.remove("oculto");
+        break;
+      case 6:
         formFijo.classList.remove("oculto");
         break;
     }
