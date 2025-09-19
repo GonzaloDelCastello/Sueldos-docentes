@@ -2,7 +2,7 @@
   "name": "sueldos-docentes",
   "version": "1.0.0",
   "description": "Web de sueldos docentes",
-  "main": "funcionesCalculo.js",
+  "main": "main.js",
   "directories": {
     "doc": "docs"
   },
@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/GonzaloDelCastello/Sueldos-docentes/issues"
   },
-  "homepage": "https://github.com/GonzaloDelCastello/Sueldos-docentes#readme"
+  "homepage": "https://github.com/GonzaloDelCastello/Sueldos-docentes#readme",
+  "dependencies": {
+    "gulp": "^5.0.1"
+  }
 }
