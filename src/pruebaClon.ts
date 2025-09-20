@@ -1,14 +1,16 @@
+import { calculoZona, calcularAsignacionXHijxs, resetearResultados, mostrarResultado } from './pruebaClonF';
+
 let cargo: number = 0; // Variable global para el cargo seleccionado
 let nivel: number = 0; // Variable global para el nivel seleccionado
 //let calculoBasicoHsSecundario = 14173.99; Básico hs secundaria 05/25
 let calculoBasicoHsSecundario: number = 14854.34; //07/25
 document.addEventListener("DOMContentLoaded", function () {
-  const menuToggle = document.querySelector('.menu-toggle');
-  const navegacion = document.querySelector('.navegacion');
+  const menuToggle = document.querySelector('.menu-toggle') as HTMLElement | null;
+  const navegacion = document.querySelector('.navegacion') as HTMLElement | null;
   
    if (menuToggle && navegacion) {
     // Abre/cierra con el botón hamburguesa
-    menuToggle.addEventListener('click', function (event) {
+    menuToggle.addEventListener('click', function (event: MouseEvent) {
       event.stopPropagation(); // evita que se dispare el click global
       navegacion.classList.toggle('activo');
       if (navegacion.classList.contains('activo')) {
@@ -19,11 +21,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Cerrar al hacer click fuera
-    document.addEventListener('click', function (event) {
+    document.addEventListener('click', function (event: MouseEvent) {
       if (
         navegacion.classList.contains('activo') &&
-        !navegacion.contains(event.target) &&
-        !menuToggle.contains(event.target)
+        !navegacion.contains(event.target as Node) &&
+        !menuToggle.contains(event.target as Node)
       ) {
         navegacion.classList.remove('activo');
         menuToggle.classList.remove('oculto'); 
@@ -38,7 +40,11 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   }
-  const cargosPorNivel = {
+  interface Opcion {
+    value: number;
+    text: string;
+  }
+  const cargosPorNivel: Record<number, Opcion[]> = {
     1: [ // Inicial
       { value: 0, text: "Selecciona un cargo" },
       { value: 6, text: "Maestrx Jardín" },
@@ -60,29 +66,29 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   
-    const selectNivel = document.getElementById("nivel"); 
-    const selectCargo = document.getElementById("cargo");
-    const formSecundario = document.getElementById("formSecundario");
-    const formFijo = document.getElementById("formFijo");  
+    const selectNivel = document.getElementById("nivel") as HTMLSelectElement | null; 
+    const selectCargo = document.getElementById("cargo")  as HTMLSelectElement | null;
+    const formSecundario = document.getElementById("formSecundario") as HTMLSelectElement | null;
+    const formFijo = document.getElementById("formFijo")  as HTMLSelectElement | null;  
     
     if (!selectNivel || !selectCargo) return;
      // Función para actualizar las opciones del select de cargo según el nivel seleccionado
-    function actualizarOpcionesCargo(nivelSeleccionado) {
+    function actualizarOpcionesCargo(nivelSeleccionado: number) {
       // Limpiar opciones actuales
-      selectCargo.innerHTML = "";
+      selectCargo!.innerHTML = "";
       // Agregar nuevas opciones basadas en el nivel seleccionado
       (cargosPorNivel[nivel] || [{ value: 0, text: "Selecciona un Nivel ⬆ ⬆" }]).forEach(opcion => {
       const opt = document.createElement("option");
-      opt.value = opcion.value;
+      opt.value = opcion.value.toString();
       opt.textContent = opcion.text;
-      selectCargo.appendChild(opt);
+      selectCargo!.appendChild(opt);
       });
     }
     // Evento al cambiar el nivel
-    selectNivel.addEventListener("change", function () {
+    selectNivel.addEventListener("change", function (this: HTMLSelectElement) {
       const nivelSeleccionado = this.value;
-      nivel = parseInt(nivelSeleccionado);
-      actualizarOpcionesCargo(nivelSeleccionado);
+      nivel = parseInt(this.value);
+      actualizarOpcionesCargo(nivel); // Actualizar cargos
       resetearResultados(); // Reiniciar resultados al cambiar nivel
     });
      
