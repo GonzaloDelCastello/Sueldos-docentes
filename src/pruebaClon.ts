@@ -93,33 +93,34 @@ document.addEventListener("DOMContentLoaded", function () {
     });
      
     // Muestra el formulario correspondiente al cargo seleccionado
-  selectCargo.addEventListener("change", function () {
+  selectCargo.addEventListener("change", function (this: HTMLSelectElement) {
     cargo = parseInt(this.value);
     // Ocultar todos
-    formSecundario.classList.add("oculto");
-    
+    if (formSecundario) formSecundario.classList.add("oculto");
+    if (formFijo) formFijo.classList.add("oculto");
+
     // Resetear resultados al cambiar cargo
     resetearResultados();
     // Mostrar según selección
     switch (cargo) {
       case 1:
-        formSecundario.classList.remove("oculto");
-        formFijo.classList.remove("oculto");
+        if (formSecundario) formSecundario.classList.remove("oculto");
+        if (formFijo) formFijo.classList.remove("oculto");
         break;
       case 2:
         //formPreceptor.classList.remove("oculto");
-        formFijo.classList.remove("oculto");
+        if (formFijo) formFijo.classList.remove("oculto");
         break;
       case 3:
         //formMaestrCelador.classList.remove("oculto");
-        formFijo.classList.remove("oculto");
+        if (formFijo) formFijo.classList.remove("oculto");
         break;
       case 4:
         //formMaestrGrado.classList.remove("oculto");
-        formFijo.classList.remove("oculto");
+        if (formFijo) formFijo.classList.remove("oculto");
         break;
       case 6:
-        formFijo.classList.remove("oculto");
+        if (formFijo) formFijo.classList.remove("oculto");
         break;
     }
     resetearResultados(); // Reiniciar resultados al cambiar cargo
@@ -127,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Inicializar opciones de cargo al cargar la página
   actualizarOpcionesCargo(parseInt(selectNivel.value)); 
 });
-const btnMostrarResultado = document.getElementById("btnMostrarResultado");
+const btnMostrarResultado = document.getElementById("btnMostrarResultado") as HTMLButtonElement | null;
 if (btnMostrarResultado) {
   btnMostrarResultado.addEventListener("click", mostrarResultado);
 }
@@ -141,10 +142,10 @@ if (btnMostrarResultado) {
 
 
 document.addEventListener("DOMContentLoaded", function () {
-  const fechaActualEl = document.getElementById("fechaActual");
+  const fechaActualEl = document.getElementById("fechaActual") as HTMLElement | null;
   if (fechaActualEl) {
     const fecha = new Date();
-    const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
+    const opciones: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
     fechaActualEl.textContent = fecha.toLocaleDateString("es-AR", opciones);
   }
 });

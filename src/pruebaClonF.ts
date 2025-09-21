@@ -1,10 +1,12 @@
-let cargo = 0; // Variable global para el cargo seleccionado
-let calculoBasicoHsSecundario = 14854.34; //07/25
+let cargo: number = 0; // Variable global para el cargo seleccionado
+let calculoBasicoHsSecundario: number = 14854.34; //07/25
 //let calculoBasicoHsSecundario = 14173.99; Básico hs secundaria 05/25
 
 //Función cálculo Zona
-export function calculoZona() {
-  switch (document.getElementById("zona").value) {
+export function calculoZona(): number {
+  const zona = document.getElementById("zona") as HTMLSelectElement | null;
+  if (!zona) return 0;
+  switch (zona.value) {
     case "1":
       return 0;
     case "2":
@@ -22,19 +24,23 @@ export function calculoZona() {
   }
 }
 // Función asignación x hijxs
-export function calcularAsignacionXHijxs() {
-  const cantHijxs = parseInt(document.getElementById("cantHijxs").value);
+export function calcularAsignacionXHijxs(): number {
+  const cantHijxs = document.getElementById("cantHijxs") as HTMLInputElement | null;
+  if (!cantHijxs) return 0;
+  const cantHijxsValue = parseInt(cantHijxs.value);
   let asignacionXHijxs = 0;
-  if (cantHijxs > 0) {
-    asignacionXHijxs = cantHijxs * 51280; //Asignación por hijx
+  if (cantHijxsValue > 0) {
+    asignacionXHijxs = cantHijxsValue * 51280; //Asignación por hijx
   }
   //document.getElementById("asignacionXHijxs").textContent = aPesos(asignacionXHijxs1);
   return asignacionXHijxs;
 }
 
 //Cálculo Antiguedad
-function calculoAntiguedad() {
-  switch (document.getElementById("antiguedad").value) {
+function calculoAntiguedad(): number {
+  const antiguedad = document.getElementById("antiguedad") as HTMLSelectElement | null;
+  if (!antiguedad) return 0;
+  switch (antiguedad.value) {
     case "0":
       return 0;
     case "1":
@@ -64,15 +70,17 @@ function calculoAntiguedad() {
   }
 }
 //Cálculo descuentos
-function calculoDescuentos(totalRemunerativo) {
+function calculoDescuentos(totalRemunerativo: number){
 
-  let descuentoJubilacion1 = totalRemunerativo * 0.11;
-  let descuentoJubilacionRegEsp1 = totalRemunerativo * 0.02;
-  let descuentoObraSocial1 = totalRemunerativo * 0.06;
-  const seguroObligatorio1 = 4312.73;
-  let descuentoSindical1;
-  const seguroSocial = 110;
-  switch (document.getElementById("afiliacionSindical").value) {
+  let descuentoJubilacion1: number = totalRemunerativo * 0.11;
+  let descuentoJubilacionRegEsp1: number = totalRemunerativo * 0.02;
+  let descuentoObraSocial1: number = totalRemunerativo * 0.06;
+  const seguroObligatorio1: number = 4312.73;
+  let descuentoSindical1: number = 0;
+  const seguroSocial: number = 110;
+  const afiliacion = document.getElementById("afiliacionSindical") as HTMLSelectElement | null;
+  if (!afiliacion) return 0;
+  switch (afiliacion.value) {
     case "0":
       descuentoSindical1 = 0;
       break;
@@ -85,7 +93,7 @@ function calculoDescuentos(totalRemunerativo) {
     default: descuentoJubilacion1 = 0;
   }
 
-  let totalDescuentos1 = descuentoJubilacion1 + descuentoJubilacionRegEsp1 + descuentoObraSocial1 + descuentoSindical1 + seguroObligatorio1 + seguroSocial;
+  let totalDescuentos1: number = descuentoJubilacion1 + descuentoJubilacionRegEsp1 + descuentoObraSocial1 + descuentoSindical1 + seguroObligatorio1 + seguroSocial;
   return {
     descuentoJubilacion: descuentoJubilacion1,
     descuentoJubilacionRegEsp: descuentoJubilacionRegEsp1,
@@ -96,21 +104,23 @@ function calculoDescuentos(totalRemunerativo) {
   }
 }
 // Función para formatear números como moneda en pesos argentinos
-export function aPesos(valor) {
+export function aPesos(valor: number): string {
   return "$\u00A0" + valor.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-export function mostrarResultado() {
-  const cantHsInput = document.getElementById("cantHs");
+export function mostrarResultado(): void {
+  const cantHsInput = document.getElementById("cantHs") as HTMLInputElement | null;
+  if (!cantHsInput) return;
   const cantHs = parseInt(cantHsInput.value);
-  const cantHijxs = parseInt(document.getElementById("cantHijxs").value);
+  //const cantHijxs = parseInt(document.getElementById("cantHijxs").value);
 
-  const resultadosSection = document.getElementById("resultados");
   //Mostrar sección de resultados
-  resultadosSection.style.display = "block";
+  const resultadosSection = document.getElementById("resultados") as HTMLElement | null;
+  if (resultadosSection) resultadosSection.style.display = "block";
+    
 
   // Ocultar todas las filas antes de mostrar resultados nuevos
-  document.querySelectorAll("#tablaResultados tr").forEach(fila => {
+  document.querySelectorAll<HTMLTableRowElement>("#tablaResultados tr").forEach(fila => {
     fila.style.display = "none";
   });
 
@@ -136,7 +146,8 @@ export function mostrarResultado() {
   }
 
   // Si pasó la validación, ejecutar cálculo según cargo seleccionado
-  cargo = parseInt(document.getElementById("cargo").value);
+  const cargoEl = document.getElementById("cargo") as HTMLSelectElement | null;
+  cargo = parseInt(cargoEl?.value ?? "0");
 
   switch (cargo) {
     case 0:
@@ -165,10 +176,14 @@ export function mostrarResultado() {
   }
 }
 
-function mostrarCalculoSecundario() {
+function mostrarCalculoSecundario(): void {
   const resultados = calcularSalarioHsSecundario();
   const descuentos = calculoDescuentos(resultados.totalRemunerativo);
-  const totalBolsillo = resultados.totalBruto - descuentos.totalDescuentos;
+  let totalBolsillo = resultados.totalBruto;
+  if(descuentos !== 0) {
+    totalBolsillo -= descuentos.totalDescuentos;
+  }
+   
 
   mostrarResultados(
     resultados,
@@ -181,7 +196,9 @@ function mostrarCalculoSecundario() {
 //Función para el cálculo de hs de secundaria
 function calcularSalarioHsSecundario() {
 
-  let cantHs = parseInt(document.getElementById("cantHs").value);
+  let cantHsV = document.getElementById("cantHs") as HTMLInputElement | null;
+  if (!cantHsV) return 0; 
+  const cantHs = parseInt(cantHsV.value);
   let calculoBasico = calculoBasicoHsSecundario;
   let basicoXHs = cantHs * calculoBasico;
   let bonificacionZona = basicoXHs * calculoZona();
@@ -218,7 +235,7 @@ function calcularSalarioHsSecundario() {
 }
 
 // Mostrar calculo de preceptor
-function mostrarCalculoPreceptor() {
+function mostrarCalculoPreceptor(): void{
   const resultados = calcularSalarioPreceptor();
   const descuentos = calculoDescuentos(resultados.totalRemunerativo);
 
