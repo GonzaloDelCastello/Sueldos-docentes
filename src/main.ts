@@ -1,4 +1,4 @@
-import { calculoZona, calcularAsignacionXHijxs, resetearResultados, mostrarResultado } from './pruebaClonF';
+import { resetearResultados, mostrarResultado } from './funciones.js';
 
 let cargo: number = 0; // Variable global para el cargo seleccionado
 let nivel: number = 0; // Variable global para el nivel seleccionado
@@ -133,19 +133,12 @@ if (btnMostrarResultado) {
   btnMostrarResultado.addEventListener("click", mostrarResultado);
 }
 
-// Mostrar fecha actual en formato legible
-// document.addEventListener("DOMContentLoaded", function () {
-//   const fecha = new Date();
-//   const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
-//   document.getElementById("fechaActual").textContent = fecha.toLocaleDateString("es-AR", opciones);
-// });
-
-
-document.addEventListener("DOMContentLoaded", function () {
-  const fechaActualEl = document.getElementById("fechaActual") as HTMLElement | null;
-  if (fechaActualEl) {
-    const fecha = new Date();
-    const opciones: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
-    fechaActualEl.textContent = fecha.toLocaleDateString("es-AR", opciones);
+// Mostrar fecha actual en formato legible (único listener, robusto)
+document.addEventListener("DOMContentLoaded", () => {
+  const opciones: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+  // Obtener el elemento y asignar si existe (no usar optional chaining en LHS)
+  const fechaEl = document.getElementById("fechaActual") as HTMLElement | null;
+  if (fechaEl) {
+    fechaEl.textContent = new Date().toLocaleDateString("es-AR", opciones);
   }
 });

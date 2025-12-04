@@ -1,6 +1,34 @@
 let cargo: number = 0; // Variable global para el cargo seleccionado
-let calculoBasicoHsSecundario: number = 14854.34; //07/25
-//let calculoBasicoHsSecundario = 14173.99; Básico hs secundaria 05/25
+let calculoBasicoHsSecundario: number = 15421.3; //11/25
+//let calculoBasicoHsSecundario: number = 14854.34; 07/25
+//let calculoBasicoHsSecundario: number = 14173.99; Básico hs secundaria 05/25
+//let calculoBasicoHsSecundario: number = 11339.19; Básico hs secundaria 01/25
+
+// Defino la interfaz para los resultados
+interface Resultados {
+  basico?: number; 
+  pagoDeZona?: number;
+  pagoAntiguedad?: number;
+  complementoRemunerativo?: number;
+  adicionalXCargo?: number;
+  complementoNoRemunerativo?: number;
+  pagoSumaNoRemunerativa?: number;
+  pagoIncentivoDocente?: number;
+  totalRemunerativo: number;
+  totalNRemunerativo?: number;
+  totalBruto: number;
+  asignacionXHijxs?: number;
+} 
+
+// Interfaz para los descuentos
+interface Descuentos {
+  descuentoJubilacion: number;
+  descuentoJubilacionRegEsp: number;
+  descuentoObraSocial: number;
+  descuentoSindical?: number;
+  seguroObligatorio: number;
+  totalDescuentos: number;
+}
 
 //Función cálculo Zona
 export function calculoZona(): number {
@@ -70,38 +98,44 @@ function calculoAntiguedad(): number {
   }
 }
 //Cálculo descuentos
-function calculoDescuentos(totalRemunerativo: number){
+function calculoDescuentos(totalRemunerativo: number): Descuentos {
+  const descuentoJubilacion1 = totalRemunerativo * 0.11;
+  const descuentoJubilacionRegEsp1 = totalRemunerativo * 0.02;
+  const descuentoObraSocial1 = totalRemunerativo * 0.06;
+  const seguroObligatorio1 = 4312.73;
+  const seguroSocial = 110;
 
-  let descuentoJubilacion1: number = totalRemunerativo * 0.11;
-  let descuentoJubilacionRegEsp1: number = totalRemunerativo * 0.02;
-  let descuentoObraSocial1: number = totalRemunerativo * 0.06;
-  const seguroObligatorio1: number = 4312.73;
-  let descuentoSindical1: number = 0;
-  const seguroSocial: number = 110;
+  let descuentoSindical1 = 0;
+
   const afiliacion = document.getElementById("afiliacionSindical") as HTMLSelectElement | null;
-  if (!afiliacion) return 0;
-  switch (afiliacion.value) {
-    case "0":
-      descuentoSindical1 = 0;
-      break;
-    case "1": //Amet
-      descuentoSindical1 = totalRemunerativo * 0.015
-      break;
-    case "2": //Uda
-      descuentoSindical1 = totalRemunerativo * 0.015
-      break;
-    default: descuentoJubilacion1 = 0;
+
+  if (afiliacion) {
+    switch (afiliacion.value) {
+      case "1": // AMET
+      case "2": // UDA
+        descuentoSindical1 = totalRemunerativo * 0.015;
+        break;
+      default:
+        descuentoSindical1 = 0;
+    }
   }
 
-  let totalDescuentos1: number = descuentoJubilacion1 + descuentoJubilacionRegEsp1 + descuentoObraSocial1 + descuentoSindical1 + seguroObligatorio1 + seguroSocial;
+  const totalDescuentos1 =
+    descuentoJubilacion1 +
+    descuentoJubilacionRegEsp1 +
+    descuentoObraSocial1 +
+    descuentoSindical1 +
+    seguroObligatorio1 +
+    seguroSocial;
+
   return {
     descuentoJubilacion: descuentoJubilacion1,
     descuentoJubilacionRegEsp: descuentoJubilacionRegEsp1,
     descuentoObraSocial: descuentoObraSocial1,
     totalDescuentos: totalDescuentos1,
     seguroObligatorio: seguroObligatorio1,
-    descuentoSindical: descuentoSindical1
-  }
+    descuentoSindical: descuentoSindical1,
+  };
 }
 // Función para formatear números como moneda en pesos argentinos
 export function aPesos(valor: number): string {
@@ -177,14 +211,11 @@ export function mostrarResultado(): void {
 }
 
 function mostrarCalculoSecundario(): void {
-  const resultados = calcularSalarioHsSecundario();
-  const descuentos = calculoDescuentos(resultados.totalRemunerativo);
-  let totalBolsillo = resultados.totalBruto;
-  if(descuentos !== 0) {
-    totalBolsillo -= descuentos.totalDescuentos;
-  }
-   
-
+  const resultados: Resultados = calcularSalarioHsSecundario();
+  const descuentos: Descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
+  let totalBolsillo = resultados.totalBruto - descuentos.totalDescuentos;
+  
+  // Mostrar resultados en la tabla
   mostrarResultados(
     resultados,
     descuentos,
@@ -194,19 +225,22 @@ function mostrarCalculoSecundario(): void {
 }
 
 //Función para el cálculo de hs de secundaria
-function calcularSalarioHsSecundario() {
+function calcularSalarioHsSecundario(): Resultados {
 
   let cantHsV = document.getElementById("cantHs") as HTMLInputElement | null;
-  if (!cantHsV) return 0; 
+  if (!cantHsV) return 0 as unknown as Resultados; 
   const cantHs = parseInt(cantHsV.value);
   let calculoBasico = calculoBasicoHsSecundario;
   let basicoXHs = cantHs * calculoBasico;
   let bonificacionZona = basicoXHs * calculoZona();
   let bonificacionAntiguedad = basicoXHs * calculoAntiguedad();
+  let complementoRemunerativo1 = basicoXHs * 1.30; //el 1130% del básico 11/25
+  //let complementoRemunerativo1 = basicoXHs * 1.25; //el 1125% del básico 07/25
   //let complementoRemunerativo1 = basicoXHs * 1.185; //el 1185% del básico 05/25
-  let complementoRemunerativo1 = basicoXHs * 1.25; //el 1125% del básico 07/25
+  
+  let complementoNoRemunerativo1 = basicoXHs * 1.07; //el 107% del básico 11/25
+  //let complementoNoRemunerativo1 = basicoXHs * 1.12; //el 1120% del básico 07/25
   //let complementoNoRemunerativo1 = basicoXHs * 1.185; //el 1185% del básico 05/25
-  let complementoNoRemunerativo1 = basicoXHs * 1.12; //el 1120% del básico 07/25
   let sumaNoRemunerativa = cantHs * 4667.483; //Pago de suma no remunerativa
   let incentivoDocente = cantHs * 1913.3325; //Pago por incentivo docente
   let asignacionXHijxs1 = calcularAsignacionXHijxs();
@@ -237,7 +271,7 @@ function calcularSalarioHsSecundario() {
 // Mostrar calculo de preceptor
 function mostrarCalculoPreceptor(): void{
   const resultados = calcularSalarioPreceptor();
-  const descuentos = calculoDescuentos(resultados.totalRemunerativo);
+  const descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
 
   mostrarResultados(
     resultados,
@@ -251,15 +285,19 @@ function mostrarCalculoPreceptor(): void{
 //Función para el cálculo de preceptor
 function calcularSalarioPreceptor() {
 
+  //let basico1 = 160276.05; //Basico preceptor 01/25
   //let basico1 = 200345.1; //Basico preceptor 05/25
-  let basico1 = 209961.66; //Basico preceptor 07/25
+  //let basico1 = 209961.66; //Basico preceptor 07/25
+  let basico1: number= 217975.47; //Basico preceptor 11/25
   let bonificacionZona = basico1 * calculoZona();
   let bonificacionAntiguedad = basico1 * calculoAntiguedad();
   //let complementoRemunerativo1 = basico1* 1.185; //el 1185% del básico 05/25
-  let complementoRemunerativo1 = basico1 * 1.25; //el 1125% del básico 07/25
+  //let complementoRemunerativo1 = basico1 * 1.25; //el 125% del básico 07/25
+  let complementoRemunerativo1 = basico1 * 1.3; //el 130% del básico 11/25
   let adicionalXCargo1 = basico1 * 0.33; //Adicional por cargo preceptor
-  //let complementoNoRemunerativo1 = basico1 * 1.185; //el 1185% del básico 05/25
-  let complementoNoRemunerativo1 = basico1 * 1.12; // el 1120% del básico 07/25
+  //let complementoNoRemunerativo1 = basico1 * 1.185; //el 118% del básico 05/25
+  //let complementoNoRemunerativo1 = basico1 * 1.12; // el 112% del básico 07/25
+  let complementoNoRemunerativo1 = basico1 * 1.07; // el 107% del básico 11/25
   let sumaNoRemunerativa = 65973.47; //Pago de suma no remunerativa 0.3292% del básico
   let incentivoDocente = 28700; //Pago por incentivo docente
   let asignacionXHijxs = calcularAsignacionXHijxs();
@@ -291,7 +329,7 @@ function calcularSalarioPreceptor() {
 // Cargo de maestra/o celador
 function mostrarCalculoMaestrCelador() {
   const resultados = calcularSalarioMaestrCelador();
-  const descuentos = calculoDescuentos(resultados.totalRemunerativo);
+  const descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
   // Mostrar resultados en la tabla
   mostrarResultados(
     resultados,
@@ -346,9 +384,10 @@ function calcularSalarioMaestrCelador() {
 }
 
 // Cargo de maestra/o de grado
-function mostrarCalculoMaestrGrado() {
+function mostrarCalculoMaestrGrado(): void {
   const resultados = calcularSalarioMaestrGrado();
-  const descuentos = calculoDescuentos(resultados.totalRemunerativo);
+  const descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
+  
   // Mostrar resultados en la tabla
   mostrarResultados(
     resultados,
@@ -401,17 +440,19 @@ function calcularSalarioMaestrGrado() {
 // Nivel Inicial
 // Cargo maestrx jardín
 // Función mostrar maestrx jardín
-function mostrarCalculoMaestrxJardin() {
-  const resultados = calcularSalarioMaestrxJardin();
-  const descuentos = calculoDescuentos(resultados.totalRemunerativo);
+function mostrarCalculoMaestrxJardin(): void {
+  const resultados: Resultados = calcularSalarioMaestrxJardin();
+  const descuentos: Descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
   // Mostrar resultados en la tabla
   mostrarResultados(
     resultados,
     descuentos,
-    ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargo", "filaZona",
+    [
+      "filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargo", "filaZona",
       "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
       "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs",
-      "filaAsignacionXHijxs"], // mostrar
+      "filaAsignacionXHijxs"
+    ], // mostrar
     ["filaTotalBolsillo1"]      // ocultar    
   );
 }
@@ -466,26 +507,36 @@ export function resetearResultados(): void {
     if (el) el.textContent = "$0.00";
   });
 }
-function mostrarResultados(resultados, descuentos, filasMostrar, filasOcultar) {
-  document.getElementById("resultadoSueldo").textContent = aPesos(resultados.basico ?? 0);
-  document.getElementById("pagoZona").textContent = aPesos(resultados.pagoDeZona ?? 0);
-  document.getElementById("pagoAntiguedad").textContent = aPesos(resultados.pagoAntiguedad ?? 0);
-  document.getElementById("complementoRemunerativo").textContent = aPesos(resultados.complementoRemunerativo ?? 0);
-  document.getElementById("adicionalPorCargo").textContent = aPesos(resultados.adicionalXCargo ?? 0);
-  document.getElementById("complementoNoRemunerativo").textContent = aPesos(resultados.complementoNoRemunerativo ?? 0);
-  document.getElementById("sumaNoRemunerativa").textContent = aPesos(resultados.pagoSumaNoRemunerativa ?? 0);
-  document.getElementById("incentivoDocente").textContent = aPesos(resultados.pagoIncentivoDocente ?? 0);
-  document.getElementById("totalCAportes").textContent = aPesos(resultados.totalRemunerativo ?? 0);
-  document.getElementById("totalSAportes").textContent = aPesos(resultados.totalNRemunerativo ?? 0);
-  document.getElementById("totalBruto").textContent = aPesos(resultados.totalBruto ?? 0);
-  document.getElementById("aporteJubilatorio").textContent = aPesos(descuentos.descuentoJubilacion ?? 0);
-  document.getElementById("aporteJubilatorioEsp").textContent = aPesos(descuentos.descuentoJubilacionRegEsp ?? 0);
-  document.getElementById("obraSocial").textContent = aPesos(descuentos.descuentoObraSocial ?? 0);
-  document.getElementById("totalDescuentos").textContent = aPesos(descuentos.totalDescuentos ?? 0);
-  document.getElementById("seguroObligatorio").textContent = aPesos(descuentos.seguroObligatorio ?? 0);
-  document.getElementById("totalBolsillo").textContent = aPesos((resultados.totalBruto ?? 0) - (descuentos.totalDescuentos ?? 0));
-  document.getElementById("descuentoSindical").textContent = aPesos(descuentos.descuentoSindical ?? 0);
-  document.getElementById("asignacionXHijxs").textContent = aPesos(resultados.asignacionXHijxs ?? 0);
+function mostrarResultados(
+  resultados: Resultados, 
+  descuentos: Descuentos,
+  filasMostrar: string[],
+  filasOcultar: string[]
+): void {
+  const setText = (id: string, value: number | undefined) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = aPesos(value ?? 0);
+  };
+
+  setText("resultadoSueldo", resultados.basico);
+  setText("pagoZona", resultados.pagoDeZona);
+  setText("pagoAntiguedad", resultados.pagoAntiguedad);
+  setText("complementoRemunerativo", resultados.complementoRemunerativo);
+  setText("adicionalPorCargo", resultados.adicionalXCargo);
+  setText("complementoNoRemunerativo", resultados.complementoNoRemunerativo);
+  setText("sumaNoRemunerativa", resultados.pagoSumaNoRemunerativa);
+  setText("incentivoDocente", resultados.pagoIncentivoDocente);
+  setText("totalCAportes", resultados.totalRemunerativo);
+  setText("totalSAportes", resultados.totalNRemunerativo);
+  setText("totalBruto", resultados.totalBruto);
+  setText("aporteJubilatorio", descuentos.descuentoJubilacion);
+  setText("aporteJubilatorioEsp", descuentos.descuentoJubilacionRegEsp);
+  setText("obraSocial", descuentos.descuentoObraSocial);
+  setText("totalDescuentos", descuentos.totalDescuentos);
+  setText("seguroObligatorio", descuentos.seguroObligatorio);
+  setText("totalBolsillo", (resultados.totalBruto ?? 0) - (descuentos.totalDescuentos ?? 0));
+  setText("descuentoSindical", descuentos.descuentoSindical);
+  setText("asignacionXHijxs", resultados.asignacionXHijxs);
 
   mostrarFilas(filasMostrar, filasOcultar);
 }
@@ -499,7 +550,7 @@ function calculoTotalNeto() {
 }
 
 // Mostrar u ocultar filas de la tabla de resultados
-function mostrarFilas(filasMostrar = [], filasOcultar = []) {
+function mostrarFilas(filasMostrar: string[] = [], filasOcultar: string[] = []): void {
   // Mostrar las filas indicadas
   filasMostrar.forEach(id => {
     const fila = document.getElementById(id);
