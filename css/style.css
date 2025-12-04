@@ -213,7 +213,7 @@ input {
 }
 
 /* --- Resultados --- */
-#resultados {
+/* #resultados {
   background-color: rgba(62, 94, 77, 0.8);
   color: var(--blanco);
   margin: 3rem auto;
@@ -226,6 +226,22 @@ input {
 #resultados h2 {
   color: var(--secundario);
   font-family: var(--fuenteTitulo);
+} */
+/* --- Resultados --- */
+#resultados {
+  /* Quitamos el background oscuro para que se vea limpio */
+  background-color: transparent; 
+  color: var(--negro);
+  margin: 3rem auto;
+  /* padding: 0;  <-- Puedes quitar el padding si quieres */
+  max-width: 60rem;
+  width: 100%;
+}
+
+#resultados h2 {
+  color: var(--primario); /* Antes era secundario, ahora verde para el título principal */
+  font-family: var(--fuenteTitulo);
+  margin-bottom: 2rem;
 }
 
 table {
@@ -374,4 +390,135 @@ a {
 }
 .oculto {
   display: none;
+}
+
+/* =========================================
+   NUEVOS ESTILOS: TARJETAS Y DESPLEGABLES
+   ========================================= */
+
+/* 1. Tarjeta del Total (El cuadro grande de arriba) */
+.tarjeta-total {
+  background-color: var(--primario); /* Verde oscuro */
+  color: var(--blanco);
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-bottom: 5px solid var(--secundario); /* Detalle amarillo abajo */
+}
+
+.tarjeta-total h3 {
+  color: var(--blanco); /* Forzamos blanco */
+  font-family: var(--fuenteTitulo);
+  font-size: 2.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.precio-gigante {
+  font-size: 3.5rem;
+  font-weight: bold;
+  margin: 1rem 0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  font-family: monospace;
+}
+
+.resumen-total {
+  background-color: rgba(255, 255, 255, 0.15); /* Transparencia blanca */
+  padding: 0.8rem 1.5rem;
+  border-radius: 20px;
+  font-size: 1.4rem;
+  display: inline-block;
+}
+
+/* 2. Acordeones (Details) */
+details.desplegable {
+  background-color: var(--blanco);
+  border: 1px solid var(--primarioClaro);
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+details.desplegable[open] {
+  border-color: var(--primario); /* Borde verde al abrir */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* El encabezado clickeable */
+details.desplegable summary {
+  background-color: var(--terciario); /* Verde muy clarito */
+  padding: 1.5rem;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.6rem;
+  color: var(--primario);
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "Franklin Gothic Medium", Arial, sans-serif;
+}
+
+details.desplegable summary:hover {
+  background-color: var(--primarioClaro);
+  color: var(--blanco);
+  transition: background-color 0.3s;
+}
+
+/* Flechita personalizada (+ / -) */
+details.desplegable summary::after {
+  content: '+'; 
+  font-size: 2rem;
+  font-weight: bold;
+  color: inherit;
+}
+
+details.desplegable[open] summary::after {
+  content: '-';
+}
+
+/* 3. Tablas Internas */
+.tabla-detalle {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0; /* Sobrescribe el margen global de tablas */
+  box-shadow: none; /* Quitamos sombra global */
+  border-radius: 0;
+}
+
+.tabla-detalle td, .tabla-detalle th {
+  padding: 1.2rem;
+  border-bottom: 1px solid #eee; /* Borde suave */
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  color: var(--negro);
+}
+
+.tabla-detalle tr:last-child td {
+  border-bottom: none;
+}
+
+/* Alinear números a la derecha */
+.tabla-detalle td:last-child, 
+.tabla-detalle th:last-child {
+  text-align: right;
+  font-family: monospace;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+/* Filas de Subtotal */
+.fila-subtotal {
+  background-color: #fffbe6; /* Un amarillo muy pálido para destacar */
+  font-weight: bold;
+  border-top: 2px solid var(--primarioClaro);
+}
+
+.fila-subtotal th {
+    color: var(--primario);
+    font-size: 1.5rem;
 }

@@ -42,7 +42,7 @@
 
   <div class="contenedorBody">
     <section class="intro">
-      <h4>Actualizada a valores de agosto 2025</h4>
+      <h4>Actualizada a valores de noviembre 2025</h4>
       <p>
         Esta herramienta permite estimar el sueldo docente en San Luis según la cantidad de horas, el tipo de cargo,
         ítems
@@ -133,164 +133,102 @@
       </div>
       <!-- Fin del div del form -->
       <div id="resultados" style="display:none;">
-        <h2>Resultados:</h2>
-        <h3>Total a cobrar por cargo:</h3>
-        <table id="tablaTotal">
-          <tr id="filaTotalNeto">
-            <th>Total de bolsillo</th>
-            <td>
-              <span id="totalBolsillo"></span>
-            </td>
-          </tr>
-          <!-- Fila ejemplo -->
-          <tr id="filaTotalBolsillo1">
-            <td>Total</td>
-            <td>
-              <span id="totalBolsillo1"></span>
-            </td>
-          </tr>
-        </table>
-        <!--Tabla de conceptos remunerativos-->
-        <h3>Conceptos remunerativos</h3>
-        <table>
-          <tr id="filaTitulos">
-            <th>Concepto</th>
-            <th>Monto</th>
-          </tr>
-          <tr id="filaSueldoBasico">
-            <td>
-              <p>Sueldo Básico</p>
-            </td>
-            <td>
-              <span id="resultadoSueldo"></span>
-            </td>
-          </tr>
-          <tr id="filaZona">
-            <td>
-              <p>Pago por zona: </p>
-            </td>
-            <td>
-              <span id="pagoZona"></span>
-            </td>
-          </tr>
-          <tr id="filaAntiguedad">
-            <td>Pago por Antigüedad: </td>
-            <td>
-              <span id="pagoAntiguedad"></span>
-            </td>
-          </tr>
-          <tr id="filaComplementoRem">
-            <td>Complemento Remunerativo: </td>
-            <td>
-              <span id="complementoRemunerativo"></span>
-            </td>
-          </tr>
+    
+    <div class="tarjeta-total">
+        <h3>Total de Bolsillo</h3>
+        <p class="precio-gigante" id="totalBolsillo">$0.00</p>
+        <div class="resumen-total">
+            <span>Bruto: <strong id="totalBruto">$0.00</strong></span>
+            <span> | </span>
+            <span>Descuentos: <strong id="totalDescuentos">$0.00</strong></span>
+        </div>
+    </div>
 
-          <tr id="filaAdicionalCargo">
-            <td>Adicional Por Cargo: </td>
-            <td>
-              <span id="adicionalPorCargo"></span>
-            </td>
-          </tr>
-          <tr>
-            <th>Total Remunerativo</th>
-            <th>
-              <span id="totalCAportes"></span>
-            </th>
-          </tr>
+    <details class="desplegable">
+        <summary>🟢 Conceptos Remunerativos</summary>
+        <table class="tabla-detalle">
+            <tr id="filaSueldoBasico" class="fila-resultado">
+                <td>Sueldo Básico</td>
+                <td id="resultadoSueldo">$0.00</td>
+            </tr>
+            <tr id="filaZona" class="fila-resultado">
+                <td>Pago por Zona</td>
+                <td id="pagoZona">$0.00</td>
+            </tr>
+            <tr id="filaAntiguedad" class="fila-resultado">
+                <td>Pago por Antigüedad</td>
+                <td id="pagoAntiguedad">$0.00</td>
+            </tr>
+            <tr id="filaComplementoRem" class="fila-resultado">
+                <td>Complemento Remunerativo</td>
+                <td id="complementoRemunerativo">$0.00</td>
+            </tr>
+            <tr id="filaAdicionalCargo" class="fila-resultado">
+                <td>Adicional Por Cargo</td>
+                <td id="adicionalPorCargo">$0.00</td>
+            </tr>
+            <tr class="fila-subtotal">
+                <th>Total Remunerativo</th>
+                <th id="totalCAportes">$0.00</th>
+            </tr>
         </table>
-        <!--Tabla de conceptos no remunerativos-->
-        <h3>Conceptos no remunerativos</h3>
-        <table id="tablaNoRemunerativos">
-          <tr>
-            <th>Concepto</th>
-            <th>Monto</th>
-          </tr>
-          <tr>
-          <tr id="filaComplementoNoRem">
-            <td>Complemento No Remunerativo: </td>
-            <td>
-              <span id="complementoNoRemunerativo"></span>
-            </td>
-          </tr>
-          <tr id="filaSumaNoRem">
-            <td>Pago Suma No Remunerativa: </td>
-            <td>
-              <span id="sumaNoRemunerativa"></span>
-            </td>
-          </tr>
-          <tr>
-            <td>Incentivo Docente: </td>
-            <td>
-              <span id="incentivoDocente"></span>
-            </td>
-          </tr>
-          <tr id="filaAsignacionXHijxs">
-            <td>Asignación por hijxs </td>
-            <td>
-              <span id="asignacionXHijxs"></span>
-            </td>
-          </tr>
-          <tr>
-            <th>Total</th>
+    </details>
 
-            <th>
-              <span id="totalSAportes"></span>
-            </th>
-          </tr>
-          <tr>
-            <th>Sueldo Bruto Total <br> (Sin descuentos)</th>
-            <th colspan="2">
-              <span id="totalBruto"></span>
-            </th>
-          </tr>
+    <details class="desplegable">
+        <summary>🔵 Conceptos No Remunerativos</summary>
+        <table class="tabla-detalle">
+            <tr id="filaComplementoNoRem" class="fila-resultado">
+                <td>Complemento No Remunerativo</td>
+                <td id="complementoNoRemunerativo">$0.00</td>
+            </tr>
+            <tr id="filaSumaNoRem" class="fila-resultado">
+                <td>Suma No Remunerativa</td>
+                <td id="sumaNoRemunerativa">$0.00</td>
+            </tr>
+            <tr id="filaIncentivoDocente" class="fila-resultado"> <td>Incentivo Docente</td>
+                <td id="incentivoDocente">$0.00</td>
+            </tr>
+            <tr id="filaAsignacionXHijxs" class="fila-resultado">
+                <td>Asignación por hijxs</td>
+                <td id="asignacionXHijxs">$0.00</td>
+            </tr>
+            <tr class="fila-subtotal">
+                <th>Total No Remunerativo</th>
+                <th id="totalSAportes">$0.00</th>
+            </tr>
         </table>
-        <!--Tabla de descuentos-->
-        <h3>Descuentos</h3>
-        <table id="tablaDescuentos">
-          <tr>
-            <th>Concepto</th>
-            <th>Monto</th>
-          </tr>
-          <tr>
-            <td>Aportes Jubilatorios</td>
-            <td>
-              <span id="aporteJubilatorio"></span>
-            </td>
-          </tr>
-          <tr>
-            <td>Aportes Jubilatorios <br>Regimen especial</td>
-            <td>
-              <span id="aporteJubilatorioEsp"></span>
-            </td>
-          </tr>
-          <tr>
-            <td>Aportes Obra Social</td>
-            <td>
-              <span id="obraSocial"></span>
-            </td>
-          </tr>
-          <tr>
-            <td>Descuento afilición Sindical</td>
-            <td>
-              <span id="descuentoSindical"></span>
-            </td>
-          <tr>
-            <td>Seguro Obligatorio</td>
-            <td>
-              <span id="seguroObligatorio"></span>
-            </td>
-          </tr>
-          <tr>
-            <th>Total Descuentos</th>
-            <th>
-              <span id="totalDescuentos"></span>
-            </th>
-          </tr>
+    </details>
+
+    <details class="desplegable">
+        <summary>🔴 Descuentos </summary>
+        <table class="tabla-detalle">
+            <tr class="fila-resultado">
+                <td>Jubilación (11%)</td>
+                <td id="aporteJubilatorio">$0.00</td>
+            </tr>
+            <tr class="fila-resultado">
+                <td>Jubilación Reg. Esp.</td>
+                <td id="aporteJubilatorioEsp">$0.00</td>
+            </tr>
+            <tr class="fila-resultado">
+                <td>Obra Social</td>
+                <td id="obraSocial">$0.00</td>
+            </tr>
+            <tr id="filaDescuentoSindical" class="fila-resultado">
+                <td>Afiliación Sindical</td>
+                <td id="descuentoSindical">$0.00</td>
+            </tr>
+            <tr class="fila-resultado">
+                <td>Seguro Obligatorio</td>
+                <td id="seguroObligatorio">$0.00</td>
+            </tr>
+            <tr class="fila-subtotal">
+                <th>Total Descuentos</th>
+                <th id="totalDescuentosTexto">$0.00</th> 
+                </tr>
         </table>
-
-
-      </div>
+    </details>
+</div>
     </div>
   </div>
   <footer class="footer">
@@ -300,7 +238,7 @@
 
     </div>
   </footer>
-  <script type="module" src="js/main1.js"></script>
+  <script type="module" src="dist/main.js"></script>
 </body>
 
 </html>
