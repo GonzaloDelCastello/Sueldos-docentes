@@ -1,7 +1,9 @@
+import { obtenerConfiguracionActual, calcularBasicoCargo, COEFICIENTES_CARGOS } from "./historial.js";
 let cargo: number = 0; // Variable global para el cargo seleccionado
-let calculoBasicoHsSecundario: number = 15421.3; //11/25
+//let calculoBasicoHsSecundario: number = 15421.3; //11/25
 //let calculoBasicoHsSecundario: number = 14854.34; 07/25
-//let calculoBasicoHsSecundario: number = 14173.99; Básico hs secundaria 05/25
+//let calculoBasicoHsSecundario: number = 14173.99; Básico hs secundaria 04/25
+//let calculoBasicoHsSecundario: number = 12756.59; Básico hs secundaria 02/25
 //let calculoBasicoHsSecundario: number = 11339.19; Básico hs secundaria 01/25
 
 // Defino la interfaz para los resultados
@@ -18,6 +20,8 @@ interface Resultados {
   totalNRemunerativo?: number;
   totalBruto: number;
   asignacionXHijxs?: number;
+  aguinaldoBruto?: number; // La mitad del remunerativo
+  aguinaldoNeto?: number;  // Lo que te queda en mano
 } 
 
 // Interfaz para los descuentos
@@ -225,34 +229,49 @@ function mostrarCalculoSecundario(): void {
 }
 
 //Función para el cálculo de hs de secundaria
+// Función para el cálculo de hs de secundaria
 function calcularSalarioHsSecundario(): Resultados {
-
   let cantHsV = document.getElementById("cantHs") as HTMLInputElement | null;
   if (!cantHsV) return 0 as unknown as Resultados; 
   const cantHs = parseInt(cantHsV.value);
-  let calculoBasico = calculoBasicoHsSecundario;
-  let basicoXHs = cantHs * calculoBasico;
+
+  // 1. OBTENER CONFIGURACIÓN VIGENTE (El "Cerebro")
+  const config = obtenerConfiguracionActual();
+
+  // 2. OBTENER EL VALOR DE LA HORA (Del historial)
+  let valorHora = config.basicoHoraCatedra; 
+
+  // 3. CALCULAR BÁSICO (Valor Hora * Cantidad)
+  let basicoXHs = cantHs * valorHora;
+
+  // --- De aquí en adelante usas la 'config' para los porcentajes ---
+  
   let bonificacionZona = basicoXHs * calculoZona();
   let bonificacionAntiguedad = basicoXHs * calculoAntiguedad();
-  let complementoRemunerativo1 = basicoXHs * 1.30; //el 1130% del básico 11/25
-  //let complementoRemunerativo1 = basicoXHs * 1.25; //el 1125% del básico 07/25
-  //let complementoRemunerativo1 = basicoXHs * 1.185; //el 1185% del básico 05/25
+
+  // USAR PORCENTAJES DEL HISTORIAL
+  let complementoRemunerativo1 = basicoXHs * config.porcentajes.remunerativo;
+  let complementoNoRemunerativo1 = basicoXHs * config.porcentajes.noRemunerativo;
+
+  // USAR FIJOS DEL HISTORIAL
+  // Nota: Asumimos que el incentivo y conectividad son por cargo (proporcional a 15hs)
+  // Si en tu recibo es un monto fijo sin importar las horas, borra la división.
+  let sumaNoRemunerativa = (config.sumaNoRemunerativa / 15) * cantHs; 
+  let incentivoDocente = (config.fonid / 15) * cantHs; 
   
-  let complementoNoRemunerativo1 = basicoXHs * 1.07; //el 107% del básico 11/25
-  //let complementoNoRemunerativo1 = basicoXHs * 1.12; //el 1120% del básico 07/25
-  //let complementoNoRemunerativo1 = basicoXHs * 1.185; //el 1185% del básico 05/25
-  let sumaNoRemunerativa = cantHs * 4667.483; //Pago de suma no remunerativa
-  let incentivoDocente = cantHs * 1913.3325; //Pago por incentivo docente
   let asignacionXHijxs1 = calcularAsignacionXHijxs();
-  let totalRemunerativo1 =
-    basicoXHs +
-    complementoRemunerativo1 +
-    bonificacionZona +
-    bonificacionAntiguedad;
-  let totalNRemunerativo1 =
-    complementoNoRemunerativo1 + sumaNoRemunerativa +
-    incentivoDocente + asignacionXHijxs1;
+
+  // Suma y resultados finales
+  let totalRemunerativo1 = basicoXHs + complementoRemunerativo1 + bonificacionZona + bonificacionAntiguedad;
+  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs1;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
+
+  
+  // --- CÁLCULO SAC ---
+  let sacBruto = totalRemunerativo1 / 2;
+  let descuentosSAC = calcularDescuentosSAC(sacBruto);
+  let sacNeto = sacBruto - descuentosSAC;
+
   return {
     basico: basicoXHs,
     pagoDeZona: bonificacionZona,
@@ -264,7 +283,9 @@ function calcularSalarioHsSecundario(): Resultados {
     totalRemunerativo: totalRemunerativo1,
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
-    asignacionXHijxs: asignacionXHijxs1
+    asignacionXHijxs: asignacionXHijxs1,
+    aguinaldoBruto: sacBruto, 
+    aguinaldoNeto: sacNeto    
   };
 }
 
@@ -284,32 +305,37 @@ function mostrarCalculoPreceptor(): void{
 }
 //Función para el cálculo de preceptor
 function calcularSalarioPreceptor() {
+  // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
+  const config = obtenerConfiguracionActual();
 
-  //let basico1 = 160276.05; //Basico preceptor 01/25
-  //let basico1 = 200345.1; //Basico preceptor 05/25
-  //let basico1 = 209961.66; //Basico preceptor 07/25
-  let basico1: number= 217975.47; //Basico preceptor 11/25
+  // CALCULAR BÁSICO AUTOMÁTICO
+  // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
+  let basico1 = calcularBasicoCargo('preceptor', config); 
+
   let bonificacionZona = basico1 * calculoZona();
   let bonificacionAntiguedad = basico1 * calculoAntiguedad();
-  //let complementoRemunerativo1 = basico1* 1.185; //el 1185% del básico 05/25
-  //let complementoRemunerativo1 = basico1 * 1.25; //el 125% del básico 07/25
-  let complementoRemunerativo1 = basico1 * 1.3; //el 130% del básico 11/25
-  let adicionalXCargo1 = basico1 * 0.33; //Adicional por cargo preceptor
-  //let complementoNoRemunerativo1 = basico1 * 1.185; //el 118% del básico 05/25
-  //let complementoNoRemunerativo1 = basico1 * 1.12; // el 112% del básico 07/25
-  let complementoNoRemunerativo1 = basico1 * 1.07; // el 107% del básico 11/25
-  let sumaNoRemunerativa = 65973.47; //Pago de suma no remunerativa 0.3292% del básico
-  let incentivoDocente = 28700; //Pago por incentivo docente
+
+  // PORCENTAJES DEL HISTORIAL
+  let complementoRemunerativo1 = basico1 * config.porcentajes.remunerativo;
+  let adicionalXCargo1 = basico1 * config.porcentajes.adicionalCargo;
+  let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
+
+  // COMPLEMENTOS NO REMUNERATIVOS FIJOS
+  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.preceptor; // Valor entero
+  let incentivoDocente = config.fonid;          // Valor entero
+
   let asignacionXHijxs = calcularAsignacionXHijxs();
-  let totalRemunerativo1 =
-    basico1 +
-    complementoRemunerativo1 + adicionalXCargo1 +
-    bonificacionZona +
-    bonificacionAntiguedad;
-  let totalNRemunerativo1 =
-    complementoNoRemunerativo1 + sumaNoRemunerativa +
-    incentivoDocente + asignacionXHijxs;
+
+  // Suma y resultados finales
+  let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalXCargo1 + bonificacionZona + bonificacionAntiguedad;
+  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
+
+  // --- CÁLCULO SAC ---
+  let sacBruto = totalRemunerativo1 / 2;
+  let descuentosSAC = calcularDescuentosSAC(sacBruto);
+  let sacNeto = sacBruto - descuentosSAC;
+
   return {
     basico: basico1,
     pagoDeZona: bonificacionZona,
@@ -322,7 +348,9 @@ function calcularSalarioPreceptor() {
     totalRemunerativo: totalRemunerativo1,
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
-    asignacionXHijxs: asignacionXHijxs
+    asignacionXHijxs: asignacionXHijxs,
+    aguinaldoBruto: sacBruto, 
+    aguinaldoNeto: sacNeto    
   };
 }
 
@@ -345,28 +373,37 @@ function mostrarCalculoMaestrCelador() {
 
 //Función para el cálculo de maestrx celador
 function calcularSalarioMaestrCelador() {
-  //let basico1 = 243611.01; //Basico Maestrx Celador 05/25
-  let basico1 = 243611.01; //Basico Maestrx Celador 07/25
+  // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
+  const config = obtenerConfiguracionActual();
+
+  // CALCULAR BÁSICO AUTOMÁTICO
+  // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
+  let basico1 = calcularBasicoCargo('maestroCelador', config); 
+
   let bonificacionZona = basico1 * calculoZona();
   let bonificacionAntiguedad = basico1 * calculoAntiguedad();
-  //let complementoRemunerativo1 = basico1* 1.185; //el 1185% del básico 05/25
-  let complementoRemunerativo1 = basico1 * 1.25; //el 1125% del básico 07/25
-  let adicionalXCargo1 = basico1 * 0.33; //Adicional por cargo maestrx celador
-  //let complementoNoRemunerativo1 = basico1 * 1.185; //el 1185% del básico 05/25
-  let complementoNoRemunerativo1 = basico1 * 1.12; // el 1120% del básico 07/25
-  let sumaNoRemunerativa = 80220.9; //Pago de suma no remunerativa 0.3292% del básico
-  let incentivoDocente = 28700; //Pago por incentivo docente
-  let asignacionXHijxs1 = calcularAsignacionXHijxs();
-  let totalRemunerativo1 =
-    basico1 +
-    complementoRemunerativo1 + adicionalXCargo1 +
-    bonificacionZona +
-    bonificacionAntiguedad;
-  let totalNRemunerativo1 =
-    complementoNoRemunerativo1 + sumaNoRemunerativa +
-    incentivoDocente + asignacionXHijxs1;
+
+  // PORCENTAJES DEL HISTORIAL
+  let complementoRemunerativo1 = basico1 * config.porcentajes.remunerativo;
+  let adicionalXCargo1 = basico1 * config.porcentajes.adicionalCargo;
+  let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
+
+  // COMPLEMENTOS NO REMUNERATIVOS FIJOS
+  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroCelador; 
+  let incentivoDocente = config.fonid ;          
+
+  let asignacionXHijxs = calcularAsignacionXHijxs();
+
+  // Suma y resultados finales
+  let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalXCargo1 + bonificacionZona + bonificacionAntiguedad;
+  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
-  console.log(bonificacionZona);
+
+    // --- CÁLCULO SAC ---
+  let sacBruto = totalRemunerativo1 / 2;
+  let descuentosSAC = calcularDescuentosSAC(sacBruto);
+  let sacNeto = sacBruto - descuentosSAC;
+
   return {
     basico: basico1,
     pagoDeZona: bonificacionZona,
@@ -379,9 +416,12 @@ function calcularSalarioMaestrCelador() {
     totalRemunerativo: totalRemunerativo1,
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
-    asignacionXHijxs: asignacionXHijxs1
+    asignacionXHijxs: asignacionXHijxs,
+    aguinaldoBruto: sacBruto, 
+    aguinaldoNeto: sacNeto    
   };
 }
+
 
 // Cargo de maestra/o de grado
 function mostrarCalculoMaestrGrado(): void {
@@ -402,26 +442,37 @@ function mostrarCalculoMaestrGrado(): void {
 
 //Función para el cálculo de maestrx de grado
 function calcularSalarioMaestrGrado() {
-  //let basico1 = 243611.01; //Basico Maestrx de grado 05/25 (No es seguro)
-  let basico1 = 222776.16; //Basico Maestrx de grado 07/25 
+  // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
+  const config = obtenerConfiguracionActual();
+
+  // CALCULAR BÁSICO AUTOMÁTICO
+  // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
+  let basico1 = calcularBasicoCargo('maestroGrado', config); 
+
   let bonificacionZona = basico1 * calculoZona();
   let bonificacionAntiguedad = basico1 * calculoAntiguedad();
-  //let complementoRemunerativo1 = basico1* 1.185; //el 1185% del básico 05/25 (No es seguro)
-  let complementoRemunerativo1 = basico1 * 1.25; //el 1125% del básico 07/25
-  let adicionalXCargo1 = basico1 * 0.33; //Adicional por cargo maestrx de grado
-  //let complementoNoRemunerativo1 = basico1 * 1.185; //el 1185% del básico 05/25 
-  let complementoNoRemunerativo1 = basico1 * 1.12; // el 1120% del básico 07/25
-  let sumaNoRemunerativa = 70000.0; //Pago de suma no remunerativa 0.3292% del básico (Fija)
-  let incentivoDocente = 28700; //Pago por incentivo docente
-  let asignacionXHijxs1 = calcularAsignacionXHijxs();
-  let totalRemunerativo1 =
-    basico1 + complementoRemunerativo1 + adicionalXCargo1
-    + bonificacionZona + bonificacionAntiguedad;
-  let totalNRemunerativo1 =
-    complementoNoRemunerativo1 + sumaNoRemunerativa +
-    incentivoDocente + asignacionXHijxs1;
+
+  // PORCENTAJES DEL HISTORIAL
+  let complementoRemunerativo1 = basico1 * config.porcentajes.remunerativo;
+  let adicionalXCargo1 = basico1 * config.porcentajes.adicionalCargo;
+  let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
+
+  // COMPLEMENTOS NO REMUNERATIVOS FIJOS
+  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroGrado; 
+  let incentivoDocente = config.fonid;          
+
+  let asignacionXHijxs = calcularAsignacionXHijxs();
+
+  // Suma y resultados finales
+  let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalXCargo1 + bonificacionZona + bonificacionAntiguedad;
+  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
-  //let asignacionXHijxs1 = calcularAsignacionXHijxs();
+
+    // --- CÁLCULO SAC ---
+  let sacBruto = totalRemunerativo1 / 2;
+  let descuentosSAC = calcularDescuentosSAC(sacBruto);
+  let sacNeto = sacBruto - descuentosSAC;
+
   return {
     basico: basico1,
     pagoDeZona: bonificacionZona,
@@ -434,7 +485,9 @@ function calcularSalarioMaestrGrado() {
     totalRemunerativo: totalRemunerativo1,
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
-    asignacionXHijxs: asignacionXHijxs1
+    asignacionXHijxs: asignacionXHijxs,
+    aguinaldoBruto: sacBruto, 
+    aguinaldoNeto: sacNeto    
   };
 }
 // Nivel Inicial
@@ -458,26 +511,38 @@ function mostrarCalculoMaestrxJardin(): void {
 }
 // Función calcular maestrx jardín
 function calcularSalarioMaestrxJardin() {
-  //let basico1 = ---; //Basico Maestrx Jardín 05/25 (No es seguro)
-  let basico1 = 225733.456; //Basico Maestrx Jardín 07/25 
+  // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
+  const config = obtenerConfiguracionActual();
+
+  // CALCULAR BÁSICO AUTOMÁTICO
+  // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
+  let basico1 = calcularBasicoCargo('maestroJardin', config); 
+
   let bonificacionZona = basico1 * calculoZona();
   let bonificacionAntiguedad = basico1 * calculoAntiguedad();
-  //let complementoRemunerativo1 = basico1* 1.185; //el 1185% del básico 05/25 (No es seguro)
-  let complementoRemunerativo1 = basico1 * 1.25; //el 1125% del básico 07/25
-  let adicionalXCargo1 = basico1 * 0.33; //Adicional por cargo maestrx de grado
-  //let complementoNoRemunerativo1 = basico1 * 1.185; //el 1185% del básico 05/25 
-  let complementoNoRemunerativo1 = basico1 * 1.12; // el 1120% del básico 07/25
-  let sumaNoRemunerativa = 70929.23; //Pago de suma no remunerativa 0.3292% del básico (Fija)
-  let incentivoDocente = 28700; //Pago por incentivo docente
-  let asignacionXHijxs1 = calcularAsignacionXHijxs();
-  let totalRemunerativo1 =
-    basico1 + complementoRemunerativo1 + adicionalXCargo1
-    + bonificacionZona + bonificacionAntiguedad;
-  let totalNRemunerativo1 =
-    complementoNoRemunerativo1 + sumaNoRemunerativa +
-    incentivoDocente + asignacionXHijxs1;
+
+  // PORCENTAJES DEL HISTORIAL
+  let complementoRemunerativo1 = basico1 * config.porcentajes.remunerativo;
+  let adicionalXCargo1 = basico1 * config.porcentajes.adicionalCargo;
+  let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
+
+  // COMPLEMENTOS NO REMUNERATIVOS FIJOS
+  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroJardin; 
+  let incentivoDocente = config.fonid;          
+
+  let asignacionXHijxs = calcularAsignacionXHijxs();
+
+  // Suma y resultados finales
+  let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalXCargo1 + bonificacionZona + bonificacionAntiguedad;
+  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
-  //let asignacionXHijxs1 = calcularAsignacionXHijxs();
+
+  
+  // --- CÁLCULO SAC ---
+  let sacBruto = totalRemunerativo1 / 2;
+  let descuentosSAC = calcularDescuentosSAC(sacBruto);
+  let sacNeto = sacBruto - descuentosSAC;
+
   return {
     basico: basico1,
     pagoDeZona: bonificacionZona,
@@ -490,7 +555,9 @@ function calcularSalarioMaestrxJardin() {
     totalRemunerativo: totalRemunerativo1,
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
-    asignacionXHijxs: asignacionXHijxs1
+    asignacionXHijxs: asignacionXHijxs,
+    aguinaldoBruto: sacBruto, 
+    aguinaldoNeto: sacNeto
   };
 }
 
@@ -537,7 +604,17 @@ function mostrarResultados(
   setText("totalBolsillo", (resultados.totalBruto ?? 0) - (descuentos.totalDescuentos ?? 0));
   setText("descuentoSindical", descuentos.descuentoSindical);
   setText("asignacionXHijxs", resultados.asignacionXHijxs);
+  setText("totalDescuentosTexto", descuentos.totalDescuentos);
 
+
+  // Aguinaldo
+  const sacB = resultados.aguinaldoBruto ?? 0;
+  const sacN = resultados.aguinaldoNeto ?? 0;
+  const sacDesc = sacB - sacN;
+
+  setText("sacBruto", sacB);
+  setText("sacDescuentos", sacDesc); // Mostramos cuánto se descontó
+  setText("sacNeto", sacN);
   mostrarFilas(filasMostrar, filasOcultar);
 }
 function calculoTotalNeto() {
@@ -547,6 +624,24 @@ function calculoTotalNeto() {
   return {
     totalBolsillo: totalBolsillo1
   }
+}
+
+//Aguinaldo
+// Función auxiliar para descuentos de SAC (Solo porcentajes, sin fijos)
+function calcularDescuentosSAC(brutoSAC: number): number {
+    // 1. Jubilación (11%) + Ley Esp. (2%) + Obra Social (6%) = 19%
+    // Nota: Si la Obra Social varía, puedes leer el select, pero por defecto suele ser el total.
+    let porcentajeLey = 0.19; 
+
+    // 2. Sindicato (Si está afiliado)
+    let porcentajeSindical = 0;
+    const afiliacion = document.getElementById("afiliacionSindical") as HTMLSelectElement | null;
+    if (afiliacion && (afiliacion.value === "1" || afiliacion.value === "2")) {
+        porcentajeSindical = 0.015; // 1.5%
+    }
+
+    // Total de descuento
+    return brutoSAC * (porcentajeLey + porcentajeSindical);
 }
 
 // Mostrar u ocultar filas de la tabla de resultados
