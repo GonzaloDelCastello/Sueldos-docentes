@@ -198,8 +198,9 @@ function calcularSalarioHsSecundario() {
     // USAR FIJOS DEL HISTORIAL
     // Nota: Asumimos que el incentivo y conectividad son por cargo (proporcional a 15hs)
     // Si en tu recibo es un monto fijo sin importar las horas, borra la división.
-    let sumaNoRemunerativa = (config.sumaNoRemunerativa / 15) * cantHs;
-    let incentivoDocente = (config.fonid / 15) * cantHs;
+    let sumaNoRemunerativa = (config.sumaNoRemunerativa) * cantHs;
+    let incentivoDocente = (config.fonid) * cantHs;
+    console.log("config.fonid:", config.fonid, " | cantHs:", cantHs, " | incentivoDocente:", incentivoDocente);
     let asignacionXHijxs1 = calcularAsignacionXHijxs();
     // Suma y resultados finales
     let totalRemunerativo1 = basicoXHs + complementoRemunerativo1 + bonificacionZona + bonificacionAntiguedad;
