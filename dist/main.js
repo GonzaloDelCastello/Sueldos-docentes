@@ -54,12 +54,14 @@ document.addEventListener("DOMContentLoaded", function () {
         4: [
             { value: 0, text: "Selecciona un cargo" },
             { value: 7, text: "Prof. tiempo completo, 30 hs." },
+            { value: 8, text: "Prof. semiexclusivo, 25 hs." },
         ] // Nivel superior no tiene cargos implementados
     };
     const selectNivel = document.getElementById("nivel");
     const selectCargo = document.getElementById("cargo");
     const formSecundario = document.getElementById("formSecundario");
     const formFijo = document.getElementById("formFijo");
+    const zona = document.getElementById("zona1");
     if (!selectNivel || !selectCargo)
         return;
     // Función para actualizar las opciones del select de cargo según el nivel seleccionado
@@ -121,6 +123,14 @@ document.addEventListener("DOMContentLoaded", function () {
             case 7:
                 if (formFijo)
                     formFijo.classList.remove("oculto");
+                if (zona)
+                    zona.classList.add("oculto");
+                break;
+            case 8:
+                if (formFijo)
+                    formFijo.classList.remove("oculto");
+                if (zona)
+                    zona.classList.add("oculto");
                 break;
         }
         resetearResultados(); // Reiniciar resultados al cambiar cargo

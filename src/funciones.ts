@@ -1,4 +1,4 @@
-import { obtenerConfiguracionActual2, obtenerConfiguracionActual1, calcularBasicoCargo, COEFICIENTES_CARGOS, HISTORIAL_IFDC } from "./historial.js";
+import { obtenerConfiguracionActual2, obtenerConfiguracionActual1, calcularBasicoCargo, COEFICIENTES_CARGOS, HISTORIAL_IFDC, COEFICIENTES_CARGOS1 } from "./historial.js";
 let cargo: number = 0; // Variable global para el cargo seleccionado
 //let calculoBasicoHsSecundario: number = 15421.3; //11/25
 //let calculoBasicoHsSecundario: number = 14854.34; 07/25
@@ -210,7 +210,10 @@ export function mostrarResultado(): void {
       mostrarCalculoMaestrxJardin();
       break;
     case 7:
-      mostrarCalculoIFDC();
+      mostrarCalculoIfdcExclusivo();
+      break;
+    case 8:
+      mostrarCalculoIfdcSemiExclusivo();
       break;
     default:
       //Por si selecciona otro valor no calculado
@@ -565,25 +568,25 @@ function calcularSalarioMaestrxJardin() {
 }
 
 // Función mostrar resultados IFDC
-function mostrarCalculoIFDC(): void {
-  const resultados: Resultados = calcularSalarioIFDC();
+function mostrarCalculoIfdcExclusivo(): void {
+  const resultados: Resultados = calcularSalarioIfdcExclusivo();
   const descuentos: Descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
   // Mostrar resultados en la tabla
   mostrarResultados(
     resultados,
     descuentos,
     [
-      "filaTotalNeto", "filaSueldoBasico",  "filaZona",
+      "filaTotalNeto", "filaSueldoBasico", 
       "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
       "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs",
-      "filaAsignacionXHijxs", "filaAdicionalPorDedicacion"
+      "filaAsignacionXHijxs", "filaAdicionalCargo"
     ], // mostrar
-    ["filaTotalBolsillo1", "filaAdicionalCargo"]      // ocultar    
+    ["filaZona","filaTotalBolsillo1" ]      // ocultar    
   );
 }
 // Función calcular IFDC
 // Función calcular maestrx jardín
-function calcularSalarioIFDC() {
+function calcularSalarioIfdcExclusivo() {
   // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
   const config = obtenerConfiguracionActual2();
 
@@ -601,7 +604,7 @@ function calcularSalarioIFDC() {
   // COMPLEMENTOS NO REMUNERATIVOS FIJOS
   let sumaNoRemunerativa = config.sumaNoRemunerativa; 
   let incentivoDocente = config.fonid;          
-  let adicionalPorDedicacion1 = config.adicionalPorDedicacion;
+  let adicionalPorDedicacion1 = config.porcentajes.adicionalCargo * basico1;
   let asignacionXHijxs = calcularAsignacionXHijxs();
 
   // Suma y resultados finales
@@ -634,6 +637,75 @@ function calcularSalarioIFDC() {
   };
 }
 
+// Función mostrar resultados IFDC semi exclusivo
+function mostrarCalculoIfdcSemiExclusivo(): void {
+  const resultados: Resultados = calcularSalarioIfdcSemiExclusivo();
+  const descuentos: Descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
+  // Mostrar resultados en la tabla
+  mostrarResultados(
+    resultados,
+    descuentos,
+    [
+      "filaTotalNeto", "filaSueldoBasico", 
+      "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
+      "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs",
+      "filaAsignacionXHijxs", "filaAdicionalCargo"
+    ], // mostrar
+    ["filaZona","filaTotalBolsillo1" ]      // ocultar    
+  );
+}
+// Función calcular IFDC
+// Función calcular maestrx jardín
+function calcularSalarioIfdcSemiExclusivo() {
+  // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
+  const config = obtenerConfiguracionActual2();
+
+  // CALCULAR BÁSICO AUTOMÁTICO
+  // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
+  let basico1 = config.basicoCargo_Hora * COEFICIENTES_CARGOS.ifdcSemiExclusivo; 
+  
+  let bonificacionAntiguedad = basico1 * calculoAntiguedad();
+
+  // PORCENTAJES DEL HISTORIAL
+  let complementoRemunerativo1 = basico1 * config.porcentajes.remunerativo;
+  let adicionalXCargo1 = basico1 * config.porcentajes.adicionalCargo;
+  let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
+
+  // COMPLEMENTOS NO REMUNERATIVOS FIJOS
+  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.ifdcSemiExclusivo; 
+  let incentivoDocente = config.fonid * 0.8345;          
+  let adicionalPorDedicacion1 = config.porcentajes.adicionalCargo * basico1;
+  let asignacionXHijxs = calcularAsignacionXHijxs();
+
+  // Suma y resultados finales
+  let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalPorDedicacion1 + bonificacionAntiguedad;
+  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs;
+  let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
+
+  
+  // --- CÁLCULO SAC ---
+  let sacBruto = totalRemunerativo1 / 2;
+  let descuentosSAC = calcularDescuentosSAC(sacBruto);
+  let sacNeto = sacBruto - descuentosSAC;
+
+  return {
+    basico: basico1,
+    //pagoDeZona: bonificacionZona,
+    pagoAntiguedad: bonificacionAntiguedad,
+    complementoRemunerativo: complementoRemunerativo1,
+    adicionalXCargo: adicionalXCargo1,
+    complementoNoRemunerativo: complementoNoRemunerativo1,
+    pagoSumaNoRemunerativa: sumaNoRemunerativa,
+    pagoIncentivoDocente: incentivoDocente,
+    totalRemunerativo: totalRemunerativo1,
+    totalNRemunerativo: totalNRemunerativo1,
+    totalBruto: totalBruto1,
+    asignacionXHijxs: asignacionXHijxs,
+    adicionalPorDedicacion: adicionalPorDedicacion1,
+    aguinaldoBruto: sacBruto, 
+    aguinaldoNeto: sacNeto
+  };
+}
 
 export function resetearResultados(): void {
   const ids = [
@@ -679,7 +751,7 @@ function mostrarResultados(
   setText("descuentoSindical", descuentos.descuentoSindical);
   setText("asignacionXHijxs", resultados.asignacionXHijxs);
   setText("totalDescuentosTexto", descuentos.totalDescuentos);
-  setText("adicionalPorDedicacion", resultados.adicionalPorDedicacion);
+  
 
 
   // Aguinaldo

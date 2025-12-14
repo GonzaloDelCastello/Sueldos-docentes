@@ -4,6 +4,7 @@ export declare const COEFICIENTES_CARGOS: {
     maestroGrado: number;
     maestroJardin: number;
     maestroCelador: number;
+    ifdcSemiExclusivo: number;
 };
 export declare const COEFICIENTES_CARGOS1: {
     horaSecundaria: number;
@@ -11,8 +12,6 @@ export declare const COEFICIENTES_CARGOS1: {
     maestroGrado: number;
     maestroJardin: number;
     maestroCelador: number;
-    directorBase: number;
-    viceDirectorBase: number;
 };
 export interface ConfiguracionBase {
     fecha: string;
@@ -23,7 +22,6 @@ export interface ConfiguracionBase {
         noRemunerativo: number;
         adicionalCargo: number;
     };
-    adicionalPorDedicacion: number;
     fonid: number;
     sumaNoRemunerativa: number;
 }
@@ -48,7 +46,6 @@ export interface ConfiguracionSalarial2 extends ConfiguracionBase {
         noRemunerativo: number;
         adicionalCargo: number;
     };
-    adicionalPorDedicacion: number;
     fonid: number;
     sumaNoRemunerativa: number;
 }

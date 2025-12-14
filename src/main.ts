@@ -64,6 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
     4: [ // Superior
       { value: 0, text: "Selecciona un cargo" },
       { value: 7, text: "Prof. tiempo completo, 30 hs." },
+      { value: 8, text: "Prof. semiexclusivo, 25 hs." },
     ] // Nivel superior no tiene cargos implementados
   };
 
@@ -72,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const selectCargo = document.getElementById("cargo")  as HTMLSelectElement | null;
     const formSecundario = document.getElementById("formSecundario") as HTMLSelectElement | null;
     const formFijo = document.getElementById("formFijo")  as HTMLSelectElement | null;  
-    
+    const zona = document.getElementById("zona1")  as HTMLSelectElement | null;
     if (!selectNivel || !selectCargo) return;
      // Función para actualizar las opciones del select de cargo según el nivel seleccionado
     function actualizarOpcionesCargo(nivelSeleccionado: number) {
@@ -126,6 +127,11 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case 7:
         if (formFijo) formFijo.classList.remove("oculto");
+        if (zona) zona.classList.add("oculto");
+        break;
+      case 8:
+        if (formFijo) formFijo.classList.remove("oculto");
+        if (zona) zona.classList.add("oculto");
         break;
     }
     resetearResultados(); // Reiniciar resultados al cambiar cargo
