@@ -62,7 +62,9 @@ document.addEventListener("DOMContentLoaded", function () {
       { value: 2, text: "Cargo Preceptor" },
     ],
     4: [ // Superior
-      { value: 0, text: "Cargo no disponible" }] // Nivel superior no tiene cargos implementados
+      { value: 0, text: "Selecciona un cargo" },
+      { value: 7, text: "Prof. tiempo completo, 30 hs." },
+    ] // Nivel superior no tiene cargos implementados
   };
 
   
@@ -120,6 +122,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if (formFijo) formFijo.classList.remove("oculto");
         break;
       case 6:
+        if (formFijo) formFijo.classList.remove("oculto");
+        break;
+      case 7:
         if (formFijo) formFijo.classList.remove("oculto");
         break;
     }

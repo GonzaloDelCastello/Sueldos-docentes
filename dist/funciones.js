@@ -1,4 +1,4 @@
-import { obtenerConfiguracionActual, calcularBasicoCargo, COEFICIENTES_CARGOS } from "./historial.js";
+import { obtenerConfiguracionActual2, obtenerConfiguracionActual1, calcularBasicoCargo, COEFICIENTES_CARGOS, HISTORIAL_IFDC } from "./historial.js";
 let cargo = 0; // Variable global para el cargo seleccionado
 //Función cálculo Zona
 export function calculoZona() {
@@ -162,6 +162,9 @@ export function mostrarResultado() {
         case 6:
             mostrarCalculoMaestrxJardin();
             break;
+        case 7:
+            mostrarCalculoIFDC();
+            break;
         default:
             //Por si selecciona otro valor no calculado
             alert("Este tipo de cargo aún no tiene cálculo implementado.");
@@ -173,7 +176,7 @@ function mostrarCalculoSecundario() {
     let totalBolsillo = resultados.totalBruto - descuentos.totalDescuentos;
     // Mostrar resultados en la tabla
     mostrarResultados(resultados, descuentos, ["filaTotalNeto", "filaSueldoBasico", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem", "filaAsignacionXHijxs"], // mostrar
-    ["filaTotalBolsillo1", "filaAdicionalCargo"] // ocultar
+    ["filaTotalBolsillo1", "filaAdicionalCargo", "filaAdicionalPorDedicacion"] // ocultar
     );
 }
 //Función para el cálculo de hs de secundaria
@@ -183,24 +186,22 @@ function calcularSalarioHsSecundario() {
     if (!cantHsV)
         return 0;
     const cantHs = parseInt(cantHsV.value);
-    // 1. OBTENER CONFIGURACIÓN VIGENTE (El "Cerebro")
-    const config = obtenerConfiguracionActual();
-    // 2. OBTENER EL VALOR DE LA HORA (Del historial)
-    let valorHora = config.basicoHoraCatedra;
-    // 3. CALCULAR BÁSICO (Valor Hora * Cantidad)
+    // OBTENER CONFIGURACIÓN VIGENTE 
+    const config1 = obtenerConfiguracionActual1();
+    // OBTENER EL VALOR DE LA HORA (Del historial)
+    let valorHora = config1.basicoCargo_Hora;
+    // CALCULAR BÁSICO (Valor Hora * Cantidad)
     let basicoXHs = cantHs * valorHora;
-    // --- De aquí en adelante usas la 'config' para los porcentajes ---
     let bonificacionZona = basicoXHs * calculoZona();
     let bonificacionAntiguedad = basicoXHs * calculoAntiguedad();
     // USAR PORCENTAJES DEL HISTORIAL
-    let complementoRemunerativo1 = basicoXHs * config.porcentajes.remunerativo;
-    let complementoNoRemunerativo1 = basicoXHs * config.porcentajes.noRemunerativo;
+    let complementoRemunerativo1 = basicoXHs * config1.porcentajes.remunerativo;
+    let complementoNoRemunerativo1 = basicoXHs * config1.porcentajes.noRemunerativo;
     // USAR FIJOS DEL HISTORIAL
     // Nota: Asumimos que el incentivo y conectividad son por cargo (proporcional a 15hs)
     // Si en tu recibo es un monto fijo sin importar las horas, borra la división.
-    let sumaNoRemunerativa = (config.sumaNoRemunerativa) * cantHs;
-    let incentivoDocente = (config.fonid) * cantHs;
-    console.log("config.fonid:", config.fonid, " | cantHs:", cantHs, " | incentivoDocente:", incentivoDocente);
+    let sumaNoRemunerativa = (config1.sumaNoRemunerativa) * cantHs;
+    let incentivoDocente = (config1.fonid) * cantHs;
     let asignacionXHijxs1 = calcularAsignacionXHijxs();
     // Suma y resultados finales
     let totalRemunerativo1 = basicoXHs + complementoRemunerativo1 + bonificacionZona + bonificacionAntiguedad;
@@ -233,13 +234,13 @@ function mostrarCalculoPreceptor() {
     mostrarResultados(resultados, descuentos, ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargo", "filaZona",
         "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
         "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs"], // mostrar
-    ["filaTotalBolsillo1"] // ocultar    
+    ["filaTotalBolsillo1", "filaAdicionalPorDedicacion"] // ocultar    
     );
 }
 //Función para el cálculo de preceptor
 function calcularSalarioPreceptor() {
     // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-    const config = obtenerConfiguracionActual();
+    const config = obtenerConfiguracionActual1();
     // CALCULAR BÁSICO AUTOMÁTICO
     // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
     let basico1 = calcularBasicoCargo('preceptor', config);
@@ -287,13 +288,13 @@ function mostrarCalculoMaestrCelador() {
         "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
         "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs",
         "filaAsignacionXHijxs"], // mostrar
-    ["filaTotalBolsillo1"] // ocultar    
+    ["filaTotalBolsillo1", "filaAdicionalPorDedicacion"] // ocultar    
     );
 }
 //Función para el cálculo de maestrx celador
 function calcularSalarioMaestrCelador() {
     // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-    const config = obtenerConfiguracionActual();
+    const config = obtenerConfiguracionActual1();
     // CALCULAR BÁSICO AUTOMÁTICO
     // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
     let basico1 = calcularBasicoCargo('maestroCelador', config);
@@ -341,13 +342,13 @@ function mostrarCalculoMaestrGrado() {
         "filaZona", "filaComplementoNoRem", "filaAntiguedad",
         "filaComplementoRem", "filaSumaNoRem", "filaDescuentoSindical",
         "filaAsignacionXHijxs"], // mostrar
-    ["filaTotalBolsillo1"] // ocultar    
+    ["filaTotalBolsillo1", "filaAdicionalPorDedicacion"] // ocultar    
     );
 }
 //Función para el cálculo de maestrx de grado
 function calcularSalarioMaestrGrado() {
     // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-    const config = obtenerConfiguracionActual();
+    const config = obtenerConfiguracionActual1();
     // CALCULAR BÁSICO AUTOMÁTICO
     // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
     let basico1 = calcularBasicoCargo('maestroGrado', config);
@@ -399,13 +400,13 @@ function mostrarCalculoMaestrxJardin() {
         "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs",
         "filaAsignacionXHijxs"
     ], // mostrar
-    ["filaTotalBolsillo1"] // ocultar    
+    ["filaTotalBolsillo1", "filaAdicionalPorDedicacion"] // ocultar    
     );
 }
 // Función calcular maestrx jardín
 function calcularSalarioMaestrxJardin() {
     // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-    const config = obtenerConfiguracionActual();
+    const config = obtenerConfiguracionActual1();
     // CALCULAR BÁSICO AUTOMÁTICO
     // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
     let basico1 = calcularBasicoCargo('maestroJardin', config);
@@ -440,6 +441,64 @@ function calcularSalarioMaestrxJardin() {
         totalNRemunerativo: totalNRemunerativo1,
         totalBruto: totalBruto1,
         asignacionXHijxs: asignacionXHijxs,
+        aguinaldoBruto: sacBruto,
+        aguinaldoNeto: sacNeto
+    };
+}
+// Función mostrar resultados IFDC
+function mostrarCalculoIFDC() {
+    const resultados = calcularSalarioIFDC();
+    const descuentos = calculoDescuentos(resultados.totalRemunerativo);
+    // Mostrar resultados en la tabla
+    mostrarResultados(resultados, descuentos, [
+        "filaTotalNeto", "filaSueldoBasico", "filaZona",
+        "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
+        "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs",
+        "filaAsignacionXHijxs", "filaAdicionalPorDedicacion"
+    ], // mostrar
+    ["filaTotalBolsillo1", "filaAdicionalCargo"] // ocultar    
+    );
+}
+// Función calcular IFDC
+// Función calcular maestrx jardín
+function calcularSalarioIFDC() {
+    // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
+    const config = obtenerConfiguracionActual2();
+    // CALCULAR BÁSICO AUTOMÁTICO
+    // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
+    let basico1 = config.basicoCargo_Hora;
+    let bonificacionAntiguedad = basico1 * calculoAntiguedad();
+    // PORCENTAJES DEL HISTORIAL
+    let complementoRemunerativo1 = basico1 * config.porcentajes.remunerativo;
+    let adicionalXCargo1 = basico1 * config.porcentajes.adicionalCargo;
+    let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
+    // COMPLEMENTOS NO REMUNERATIVOS FIJOS
+    let sumaNoRemunerativa = config.sumaNoRemunerativa;
+    let incentivoDocente = config.fonid;
+    let adicionalPorDedicacion1 = config.adicionalPorDedicacion;
+    let asignacionXHijxs = calcularAsignacionXHijxs();
+    // Suma y resultados finales
+    let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalPorDedicacion1 + bonificacionAntiguedad;
+    let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs;
+    let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
+    // --- CÁLCULO SAC ---
+    let sacBruto = totalRemunerativo1 / 2;
+    let descuentosSAC = calcularDescuentosSAC(sacBruto);
+    let sacNeto = sacBruto - descuentosSAC;
+    return {
+        basico: basico1,
+        //pagoDeZona: bonificacionZona,
+        pagoAntiguedad: bonificacionAntiguedad,
+        complementoRemunerativo: complementoRemunerativo1,
+        adicionalXCargo: adicionalXCargo1,
+        complementoNoRemunerativo: complementoNoRemunerativo1,
+        pagoSumaNoRemunerativa: sumaNoRemunerativa,
+        pagoIncentivoDocente: incentivoDocente,
+        totalRemunerativo: totalRemunerativo1,
+        totalNRemunerativo: totalNRemunerativo1,
+        totalBruto: totalBruto1,
+        asignacionXHijxs: asignacionXHijxs,
+        adicionalPorDedicacion: adicionalPorDedicacion1,
         aguinaldoBruto: sacBruto,
         aguinaldoNeto: sacNeto
     };
@@ -484,6 +543,7 @@ function mostrarResultados(resultados, descuentos, filasMostrar, filasOcultar) {
     setText("descuentoSindical", descuentos.descuentoSindical);
     setText("asignacionXHijxs", resultados.asignacionXHijxs);
     setText("totalDescuentosTexto", descuentos.totalDescuentos);
+    setText("adicionalPorDedicacion", resultados.adicionalPorDedicacion);
     // Aguinaldo
     const sacB = resultados.aguinaldoBruto ?? 0;
     const sacN = resultados.aguinaldoNeto ?? 0;

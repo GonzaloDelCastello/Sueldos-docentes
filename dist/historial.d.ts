@@ -14,10 +14,23 @@ export declare const COEFICIENTES_CARGOS1: {
     directorBase: number;
     viceDirectorBase: number;
 };
-export interface ConfiguracionSalarial {
+export interface ConfiguracionBase {
     fecha: string;
     descripcion: string;
-    basicoHoraCatedra: number;
+    basicoCargo_Hora: number;
+    porcentajes: {
+        remunerativo: number;
+        noRemunerativo: number;
+        adicionalCargo: number;
+    };
+    adicionalPorDedicacion: number;
+    fonid: number;
+    sumaNoRemunerativa: number;
+}
+export interface ConfiguracionSalarial1 extends ConfiguracionBase {
+    fecha: string;
+    descripcion: string;
+    basicoCargo_Hora: number;
     porcentajes: {
         remunerativo: number;
         noRemunerativo: number;
@@ -26,7 +39,22 @@ export interface ConfiguracionSalarial {
     fonid: number;
     sumaNoRemunerativa: number;
 }
-export declare const HISTORIAL_AUMENTOS: ConfiguracionSalarial[];
-export declare function obtenerConfiguracionActual(fecha?: string): ConfiguracionSalarial;
-export declare function calcularBasicoCargo(tipoCargo: keyof typeof COEFICIENTES_CARGOS, config: ConfiguracionSalarial): number;
+export interface ConfiguracionSalarial2 extends ConfiguracionBase {
+    fecha: string;
+    descripcion: string;
+    basicoCargo_Hora: number;
+    porcentajes: {
+        remunerativo: number;
+        noRemunerativo: number;
+        adicionalCargo: number;
+    };
+    adicionalPorDedicacion: number;
+    fonid: number;
+    sumaNoRemunerativa: number;
+}
+export declare function obtenerConfiguracionActual1(fecha?: string): ConfiguracionBase;
+export declare function obtenerConfiguracionActual2(fecha?: string): ConfiguracionBase;
+export declare function calcularBasicoCargo(tipoCargo: keyof typeof COEFICIENTES_CARGOS, config: ConfiguracionSalarial1): number;
+export declare const HISTORIAL_BASICA: ConfiguracionSalarial1[];
+export declare const HISTORIAL_IFDC: ConfiguracionSalarial2[];
 //# sourceMappingURL=historial.d.ts.map
