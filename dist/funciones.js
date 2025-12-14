@@ -535,7 +535,7 @@ function calcularSalarioIfdcSemiExclusivo() {
     let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
     // COMPLEMENTOS NO REMUNERATIVOS FIJOS
     let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.ifdcSemiExclusivo;
-    let incentivoDocente = config.fonid * 0.8345;
+    let incentivoDocente = config.fonid;
     let adicionalPorDedicacion1 = config.porcentajes.adicionalCargo * basico1;
     let asignacionXHijxs = calcularAsignacionXHijxs();
     // Suma y resultados finales
