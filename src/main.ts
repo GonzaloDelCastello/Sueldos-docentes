@@ -1,5 +1,5 @@
 import { resetearResultados, mostrarResultado } from './funciones.js';
-import { Analytics } from "@vercel/analytics/next";
+
 
 
 
