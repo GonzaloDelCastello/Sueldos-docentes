@@ -1,8 +1,5 @@
 import { resetearResultados, mostrarResultado } from './funciones.js';
 
-
-
-
 let cargo: number = 0; // Variable global para el cargo seleccionado
 let nivel: number = 0; // Variable global para el nivel seleccionado
 //let calculoBasicoHsSecundario = 14173.99; Básico hs secundaria 05/25
@@ -109,30 +106,35 @@ document.addEventListener("DOMContentLoaded", function () {
     resetearResultados();
     // Mostrar según selección
     switch (cargo) {
-      case 1:
+      case 1: // Hs. Secundaria
         if (formSecundario) formSecundario.classList.remove("oculto");
         if (formFijo) formFijo.classList.remove("oculto");
+        if (zona) zona.classList.remove("oculto");
         break;
-      case 2:
+      case 2: // Preceptor
         //formPreceptor.classList.remove("oculto");
         if (formFijo) formFijo.classList.remove("oculto");
+        if (zona) zona.classList.remove("oculto");
         break;
-      case 3:
+      case 3: // Maestrx Celador
         //formMaestrCelador.classList.remove("oculto");
         if (formFijo) formFijo.classList.remove("oculto");
+        if (zona) zona.classList.remove("oculto");
         break;
-      case 4:
+      case 4: // Maestrx de grado
         //formMaestrGrado.classList.remove("oculto");
         if (formFijo) formFijo.classList.remove("oculto");
+        if (zona) zona.classList.remove("oculto");
         break;
-      case 6:
+      case 6:// Maestrx Jardín
         if (formFijo) formFijo.classList.remove("oculto");
+        if (zona) zona.classList.remove("oculto");
         break;
-      case 7:
+      case 7: // IFDC Prof. tiempo completo, 30 hs.
         if (formFijo) formFijo.classList.remove("oculto");
         if (zona) zona.classList.add("oculto");
         break;
-      case 8:
+      case 8: // IFDC Prof. semiexclusivo, 25 hs.
         if (formFijo) formFijo.classList.remove("oculto");
         if (zona) zona.classList.add("oculto");
         break;
