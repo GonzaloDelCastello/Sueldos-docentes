@@ -1,4 +1,6 @@
 import { resetearResultados, mostrarResultado } from './funciones.js';
+import { inject } from '@vercel/analytics';
+inject();
 let cargo = 0; // Variable global para el cargo seleccionado
 let nivel = 0; // Variable global para el nivel seleccionado
 //let calculoBasicoHsSecundario = 14173.99; Básico hs secundaria 05/25

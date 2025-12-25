@@ -1,4 +1,7 @@
 import { resetearResultados, mostrarResultado } from './funciones.js';
+import { inject } from '@vercel/analytics';
+
+inject();
 
 let cargo: number = 0; // Variable global para el cargo seleccionado
 let nivel: number = 0; // Variable global para el nivel seleccionado

@@ -7,11 +7,10 @@
     "doc": "docs"
   },
   "type": "module",
- "scripts": {
-  "test": "echo \"Error: no test specified\" && exit 1",
-  "build": "npx tsc" 
-},
-  
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tsc"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GonzaloDelCastello/Sueldos-docentes.git"
@@ -23,6 +22,7 @@
   },
   "homepage": "https://github.com/GonzaloDelCastello/Sueldos-docentes#readme",
   "dependencies": {
+    "@vercel/analytics": "^1.6.1",
     "gulp": "^5.0.1"
   },
   "devDependencies": {
