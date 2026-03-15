@@ -312,7 +312,8 @@ function mostrarCalculoPreceptor(): void{
 //Función para el cálculo de preceptor
 function calcularSalarioPreceptor() {
   // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-  const config = obtenerConfiguracionActual1();
+  const config = obtenerConfiguracionActual1("2026-02");
+  
 
   // CALCULAR BÁSICO AUTOMÁTICO
   // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
@@ -588,7 +589,7 @@ function mostrarCalculoIfdcExclusivo(): void {
 // Función calcular maestrx jardín
 function calcularSalarioIfdcExclusivo() {
   // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-  const config = obtenerConfiguracionActual2();
+  const config = obtenerConfiguracionActual2("2026-02");
 
   // CALCULAR BÁSICO AUTOMÁTICO
   // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.

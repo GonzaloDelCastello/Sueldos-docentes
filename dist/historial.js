@@ -45,7 +45,7 @@ export function calcularBasicoCargo(tipoCargo, config) {
 // HISTORIAL DE AUMENTOS SALARIALES - CARGOS (Primaria y Media)
 export const HISTORIAL_BASICA = [
     {
-        fecha: "2025-01",
+        fecha: "2025-01", // ENERO 2025
         descripcion: "Inicio 2025",
         basicoCargo_Hora: 11339.19, // 
         porcentajes: {
@@ -59,7 +59,31 @@ export const HISTORIAL_BASICA = [
     {
         fecha: "2025-11",
         descripcion: "Actualización Noviembre",
-        basicoCargo_Hora: 15421.30, // [cite: 534]
+        basicoCargo_Hora: 15421.30, // Valor de hora secundaria en Noviembre 2025
+        porcentajes: {
+            remunerativo: 1.30, // 130% [cite: 538]
+            noRemunerativo: 1.07, // 107% [cite: 554]
+            adicionalCargo: 0.33
+        },
+        fonid: 1913.3333, // Por hs cátedra
+        sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+    },
+    {
+        fecha: "2026-01",
+        descripcion: "Actualización Enero 2026",
+        basicoCargo_Hora: 15421.30, // [Se mantiene el mismo básico que en Noviembre 2025, pero se actualizan los porcentajes]
+        porcentajes: {
+            remunerativo: 1.30, // 130% [cite: 538]
+            noRemunerativo: 1.07, // 107% [cite: 554]
+            adicionalCargo: 0.33
+        },
+        fonid: 1913.3333, // Por hs cátedra
+        sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+    },
+    {
+        fecha: "2026-02",
+        descripcion: "Actualización Febrero 2026",
+        basicoCargo_Hora: 16192.37, // [calculo basado en aumento del 5% sobre 15421.30]
         porcentajes: {
             remunerativo: 1.30, // 130% [cite: 538]
             noRemunerativo: 1.07, // 107% [cite: 554]
@@ -83,18 +107,29 @@ export const HISTORIAL_IFDC = [
         },
         fonid: 57400, // FONID Noviembre (según recibo)
         sumaNoRemunerativa: 157894.07, // No aplica
+    },
+    {
+        fecha: "2026-02", // Febrero 2026
+        descripcion: "Actualización Febrero 2026",
+        basicoCargo_Hora: 588040.66, // (Tu valor de hora secundaria)
+        porcentajes: {
+            remunerativo: 0.65, // 65% (Item 100-24)
+            noRemunerativo: 0.30, // 30% (Item 100-25)
+            adicionalCargo: 0.34999 // 34.996%
+        },
+        fonid: 57400, // FONID Noviembre (según recibo)
+        sumaNoRemunerativa: 157894.07, // No aplica
     }
     // },
     // {
-    //     fechaVigencia: "2025-07-01", // JULIO 2025
-    //     basicoCargo_Hora: 0, 
+    //     fechaVigencia: "2025-07-01", // JULIO 2025 
     //     basicoIFDC: 540859.32, // <--- Básico del recibo Jul
-    //     porcentajes: { remunerativo: 0, noRemunerativo: 0, adicionalCargo: 0 },
-    //     porcentajesIFDC: { 
+    //     porcentajes: {  
     //         remunerativo: 0.60,    // 60%
     //         noRemunerativo: 0.35   // 35%
+    //         adicionalCargo: 0.34999 // 34.996%
     //     },
-    //     fijos: { conectividad: 0, fonid: 28700 }
+    //     fonid: 57400, Revisar
     // },
     // {
     //     fechaVigencia: "2025-02-01", // FEBRERO 2025
