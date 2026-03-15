@@ -120,6 +120,30 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
         },
         fonid: 1913.3333, // Por hs cátedra
         sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+    },
+    {
+        fecha: "2026-01",
+        descripcion: "Actualización Enero 2026",
+        basicoCargo_Hora: 15421.30, // [cite: 534]
+        porcentajes: {
+            remunerativo: 1.30,      // 130% [cite: 538]
+            noRemunerativo: 1.07,    // 107% [cite: 554]
+            adicionalCargo: 0.33
+        },
+        fonid: 1913.3333, // Por hs cátedra
+        sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+    },
+    {
+        fecha: "2026-02",
+        descripcion: "Actualización Febrero 2026",
+        basicoCargo_Hora: 16192.37, // [cite: 534]
+        porcentajes: {
+            remunerativo: 1.30,      // 130% [cite: 538]
+            noRemunerativo: 1.07,    // 107% [cite: 554]
+            adicionalCargo: 0.33
+        },
+        fonid: 1913.3333, // Por hs cátedra
+        sumaNoRemunerativa: 4667.33333, //Por hs cátedra
     }
     // Aquí podrás agregar futuros aumentos simplemente copiando un bloque y cambiando fecha/valores.
 ];
