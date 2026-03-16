@@ -11,11 +11,17 @@
   <link rel="stylesheet" type="text/css" media="screen" href="css/style.css">
   
   <link href="https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap" rel="stylesheet">
-  <script>
-    // Preguntamos si la URL actual contiene "github.io"
+   <script>
     if (window.location.hostname.includes("github.io")) {
-      // Si es verdadero, lo mandamos a la casa nueva en Vercel
-      window.location.href = "hhttps://sueldos-docentes-sanluis.vercel.app/calculadora.html" + window.location.pathname;
+      // 1. Obtenemos la ruta actual (ej: /Sueldos-docentes/calculadora.html)
+      let ruta = window.location.pathname;
+      
+      // 2. Le borramos el nombre del repositorio para dejarla limpia
+      // Importante: respeta las mayúsculas de tu repositorio
+      ruta = ruta.replace('/Sueldos-docentes', '');
+      
+      // 3. Redirigimos a Vercel con la ruta ya corregida
+      window.location.href = "https://sueldos-docentes-sanluis.vercel.app" + ruta;
     }
   </script>
 </head>
