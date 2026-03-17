@@ -182,7 +182,6 @@ function mostrarCalculoSecundario() {
     ["filaTotalBolsillo1", "filaAdicionalCargo", "filaAdicionalPorDedicacion"] // ocultar
     );
 }
-//Función para el cálculo de hs de secundaria
 // Función para el cálculo de hs de secundaria
 function calcularSalarioHsSecundario() {
     let cantHsV = document.getElementById("cantHs");
@@ -242,8 +241,7 @@ function mostrarCalculoPreceptor() {
 }
 //Función para el cálculo de preceptor
 function calcularSalarioPreceptor() {
-    // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-    const config = obtenerConfiguracionActual1("2026-02");
+    const config = obtenerConfiguracionActual1();
     // CALCULAR BÁSICO AUTOMÁTICO
     // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
     let basico1 = calcularBasicoCargo('preceptor', config);
@@ -255,7 +253,7 @@ function calcularSalarioPreceptor() {
     let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
     // COMPLEMENTOS NO REMUNERATIVOS FIJOS
     let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.preceptor; // Valor entero
-    let incentivoDocente = config.fonid; // Valor entero
+    let incentivoDocente = config.fonid * 15; // Valor entero
     let asignacionXHijxs = calcularAsignacionXHijxs();
     // Suma y resultados finales
     let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalXCargo1 + bonificacionZona + bonificacionAntiguedad;

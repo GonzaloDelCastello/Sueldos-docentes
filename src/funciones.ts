@@ -235,7 +235,6 @@ function mostrarCalculoSecundario(): void {
   );
 }
 
-//Función para el cálculo de hs de secundaria
 // Función para el cálculo de hs de secundaria
 function calcularSalarioHsSecundario(): Resultados {
   let cantHsV = document.getElementById("cantHs") as HTMLInputElement | null;
@@ -311,8 +310,7 @@ function mostrarCalculoPreceptor(): void{
 }
 //Función para el cálculo de preceptor
 function calcularSalarioPreceptor() {
-  // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-  const config = obtenerConfiguracionActual1("2026-02");
+  const config = obtenerConfiguracionActual1();
   
 
   // CALCULAR BÁSICO AUTOMÁTICO
@@ -329,7 +327,7 @@ function calcularSalarioPreceptor() {
 
   // COMPLEMENTOS NO REMUNERATIVOS FIJOS
   let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.preceptor; // Valor entero
-  let incentivoDocente = config.fonid;          // Valor entero
+  let incentivoDocente = config.fonid * 15;          // Valor entero
 
   let asignacionXHijxs = calcularAsignacionXHijxs();
 
