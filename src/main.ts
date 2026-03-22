@@ -1,9 +1,9 @@
-import { resetearResultados, mostrarResultado } from './funciones.js';
+import { setPeriodoCalculo, resetearResultados, mostrarResultadoActual as mostrarResultadoActual } from './funciones.js';
 
 let cargo: number = 0; // Variable global para el cargo seleccionado
 let nivel: number = 0; // Variable global para el nivel seleccionado
-//let calculoBasicoHsSecundario = 14173.99; Básico hs secundaria 05/25
-let calculoBasicoHsSecundario: number = 14854.34; //07/25
+const contenedorResultados = document.getElementById('resultados') as HTMLDivElement;
+
 document.addEventListener("DOMContentLoaded", function () {
   const menuToggle = document.querySelector('.menu-toggle') as HTMLElement | null;
   const navegacion = document.querySelector('.navegacion') as HTMLElement | null;
@@ -93,6 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
       nivel = parseInt(this.value);
       actualizarOpcionesCargo(nivel); // Actualizar cargos
       resetearResultados(); // Reiniciar resultados al cambiar nivel
+      contenedorResultados.style.display = "none"; // Ocultar resultados al cambiar nivel
     });
      
     // Muestra el formulario correspondiente al cargo seleccionado
@@ -139,17 +140,55 @@ document.addEventListener("DOMContentLoaded", function () {
         if (zona) zona.classList.add("oculto");
         break;
     }
+    // ... aquí termina tu switch(cargo) { ... }
+
+    // Damos un pequeño respiro (150ms) para que el navegador dibuje los formularios nuevos
+    setTimeout(() => {
+      
+      if (formFijo && !formFijo.classList.contains("oculto")) {
+        formFijo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      if (cargo === 1) {
+        const inputHoras = document.getElementById("cantHs") as HTMLInputElement | null;
+        if (inputHoras) {
+          inputHoras.focus(); 
+        }
+      }
+      
+    }, 150);
+
     resetearResultados(); // Reiniciar resultados al cambiar cargo
+    contenedorResultados.style.display = "none";
   });
   // Inicializar opciones de cargo al cargar la página
   actualizarOpcionesCargo(parseInt(selectNivel.value)); 
 });
-const btnMostrarResultado = document.getElementById("btnMostrarResultado") as HTMLButtonElement | null;
-if (btnMostrarResultado) {
-  btnMostrarResultado.addEventListener("click", mostrarResultado);
+const btnMostrarResultadoActual = document.getElementById("btnMostrarResultadoActual") as HTMLButtonElement | null;
+
+if (btnMostrarResultadoActual) {
+  btnMostrarResultadoActual.addEventListener("click", () => {
+    setPeriodoCalculo("2026-02"); //Periodo actual 02/26
+    mostrarResultadoActual();
+    setTimeout(() => {
+      contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 250);
+    
+  });
+}
+const btnMostrarResultado1 = document.getElementById("btnMostrarResultado1") as HTMLButtonElement | null;
+
+if (btnMostrarResultado1) {
+  btnMostrarResultado1.addEventListener("click", () => {
+    setPeriodoCalculo("2026-04"); //Periodo actual 04/26
+    mostrarResultadoActual();
+    setTimeout(() => {
+      contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 250);
+    
+  });
 }
 
-// Mostrar fecha actual en formato legible (único listener, robusto)
+// Mostrar fecha actual en formato legible 
 document.addEventListener("DOMContentLoaded", () => {
   const opciones: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
   // Obtener el elemento y asignar si existe (no usar optional chaining en LHS)

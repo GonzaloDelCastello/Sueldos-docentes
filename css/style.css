@@ -1,3 +1,4 @@
+html {  scroll-behavior: smooth; }
 :root {
   --primario: #3e5e4d;
   --primarioClaro: #9fb8a3;

@@ -49,7 +49,7 @@ export interface ConfiguracionSalarial2 extends ConfiguracionBase {
     fonid: number;
     sumaNoRemunerativa: number;
 }
-export declare function obtenerConfiguracionActual1(fecha?: string): ConfiguracionBase;
+export declare function obtenerConfiguracionActual1(fecha: string): ConfiguracionBase;
 export declare function obtenerConfiguracionActual2(fecha?: string): ConfiguracionBase;
 export declare function calcularBasicoCargo(tipoCargo: keyof typeof COEFICIENTES_CARGOS, config: ConfiguracionSalarial1): number;
 export declare const HISTORIAL_BASICA: ConfiguracionSalarial1[];

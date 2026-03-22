@@ -22,21 +22,22 @@ export const COEFICIENTES_CARGOS1 = {
 };
 // FUNCIÓN HELPER PARA OBTENER CONFIGURACIÓN DE INICIAL PRIMARIA Y MEDIA
 export function obtenerConfiguracionActual1(fecha) {
-    // Si no pasan fecha, devolvemos la última (la más reciente)
+    // Si no pasan fecha, devolvemos la última por defecto
     if (!fecha) {
         return HISTORIAL_BASICA[HISTORIAL_BASICA.length - 1];
     }
-    // Lógica para buscar por fecha (aquí simplificada para devolver la última por ahora)
-    return HISTORIAL_BASICA[HISTORIAL_BASICA.length - 1];
+    // Usamos .find() para buscar la configuración que coincida exactamente con la fecha pedida
+    const configEncontrada = HISTORIAL_BASICA.find(config => config.fecha === fecha);
+    // Si la encontró, la devuelve. Si por algún error no la encuentra, devuelve la última por seguridad.
+    return configEncontrada || HISTORIAL_BASICA[HISTORIAL_BASICA.length - 1];
 }
-// FUNCIÓN HELPER PARA OBTENER CONFIGURACIÓN DE INICIAL PRIMARIA Y MEDIA
+// FUNCIÓN HELPER PARA OBTENER CONFIGURACIÓN IFDC
 export function obtenerConfiguracionActual2(fecha) {
-    // Si no pasan fecha, devolvemos la última (la más reciente)
     if (!fecha) {
         return HISTORIAL_IFDC[HISTORIAL_IFDC.length - 1];
     }
-    // Lógica para buscar por fecha (aquí simplificada para devolver la última por ahora)
-    return HISTORIAL_IFDC[HISTORIAL_IFDC.length - 1];
+    const configEncontrada = HISTORIAL_IFDC.find(config => config.fecha === fecha);
+    return configEncontrada || HISTORIAL_IFDC[HISTORIAL_IFDC.length - 1];
 }
 // FUNCIÓN PARA CALCULAR BÁSICO DE CUALQUIER CARGO
 export function calcularBasicoCargo(tipoCargo, config) {
@@ -91,6 +92,18 @@ export const HISTORIAL_BASICA = [
         },
         fonid: 1913.3333, // Por hs cátedra
         sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+    },
+    {
+        fecha: "2026-04",
+        descripcion: "Actualización Abril 2026",
+        basicoCargo_Hora: 16963.44, // [calculo basado en aumento del 10% sobre 15421.30]
+        porcentajes: {
+            remunerativo: 1.30, // 130% [cite: 538]
+            noRemunerativo: 1.07, // 107% [cite: 554]
+            adicionalCargo: 0.33
+        },
+        fonid: 1913.3333, // Por hs cátedra
+        sumaNoRemunerativa: 4667.33333, //Por hs cátedra
     }
     // Aquí podrás agregar futuros aumentos simplemente copiando un bloque y cambiando fecha/valores.
 ];
@@ -112,6 +125,18 @@ export const HISTORIAL_IFDC = [
         fecha: "2026-02", // Febrero 2026
         descripcion: "Actualización Febrero 2026",
         basicoCargo_Hora: 588040.66, // (Tu valor de hora secundaria)
+        porcentajes: {
+            remunerativo: 0.65, // 65% (Item 100-24)
+            noRemunerativo: 0.30, // 30% (Item 100-25)
+            adicionalCargo: 0.34999 // 34.996%
+        },
+        fonid: 57400, // FONID Noviembre (según recibo)
+        sumaNoRemunerativa: 157894.07, // No aplica
+    },
+    {
+        fecha: "2026-04", // Abril 2026
+        descripcion: "Actualización Abril 2026",
+        basicoCargo_Hora: 616042.59, // (Tu valor de hora secundaria)
         porcentajes: {
             remunerativo: 0.65, // 65% (Item 100-24)
             noRemunerativo: 0.30, // 30% (Item 100-25)

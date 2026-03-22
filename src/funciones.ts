@@ -1,4 +1,12 @@
 import { obtenerConfiguracionActual2, obtenerConfiguracionActual1, calcularBasicoCargo, COEFICIENTES_CARGOS, HISTORIAL_IFDC, COEFICIENTES_CARGOS1 } from "./historial.js";
+
+// Variable que guarda el mes que el usuario quiere calcular (por defecto Febrero 26)
+export let periodoCalculo: string = "2026-02"; 
+
+// Función para cambiar el mes desde los botones
+export function setPeriodoCalculo(periodo: string) {
+  periodoCalculo = periodo;
+}
 let cargo: number = 0; // Variable global para el cargo seleccionado
 //let calculoBasicoHsSecundario: number = 15421.3; //11/25
 //let calculoBasicoHsSecundario: number = 14854.34; 07/25
@@ -147,23 +155,21 @@ export function aPesos(valor: number): string {
   return "$\u00A0" + valor.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-export function mostrarResultado(): void {
+export function mostrarResultadoActual(): void {
   const cantHsInput = document.getElementById("cantHs") as HTMLInputElement | null;
   if (!cantHsInput) return;
   const cantHs = parseInt(cantHsInput.value);
-  //const cantHijxs = parseInt(document.getElementById("cantHijxs").value);
 
   //Mostrar sección de resultados
   const resultadosSection = document.getElementById("resultados") as HTMLElement | null;
   if (resultadosSection) resultadosSection.style.display = "block";
     
-
   // Ocultar todas las filas antes de mostrar resultados nuevos
   document.querySelectorAll<HTMLTableRowElement>("#tablaResultados tr").forEach(fila => {
     fila.style.display = "none";
   });
 
-  // Borrar mensaje anterior si existiera (ia)
+  // Borrar mensaje anterior si existiera
   const mensajeExistente = document.getElementById("mensajeError");
   if (mensajeExistente) mensajeExistente.remove();
 
@@ -177,8 +183,7 @@ export function mostrarResultado(): void {
     mensaje.textContent = "⚠️ Por favor, ingresá una cantidad válida de horas.";
     cantHsInput.insertAdjacentElement("afterend", mensaje);
 
-
-    // Reiniciar todos los resultados a $0.00 (puede extraerse en una función auxiliar)
+    // Reiniciar todos los resultados a $0.00
     resetearResultados();
 
     return;
@@ -242,10 +247,11 @@ function calcularSalarioHsSecundario(): Resultados {
   const cantHs = parseInt(cantHsV.value);
 
   // OBTENER CONFIGURACIÓN VIGENTE 
-  const config1 = obtenerConfiguracionActual1();
-
+  const config1 = obtenerConfiguracionActual1(periodoCalculo);
+  console.log("Configuración seleccionada para cálculo:", periodoCalculo); //Prueba error
   // OBTENER EL VALOR DE LA HORA (Del historial)
-  let valorHora = config1.basicoCargo_Hora; 
+  let valorHora = config1.basicoCargo_Hora;
+  console.log("Valor de la hora según configuración:", valorHora); //Prueba error
 
   // CALCULAR BÁSICO (Valor Hora * Cantidad)
   let basicoXHs = cantHs * valorHora;
@@ -310,7 +316,7 @@ function mostrarCalculoPreceptor(): void{
 }
 //Función para el cálculo de preceptor
 function calcularSalarioPreceptor() {
-  const config = obtenerConfiguracionActual1();
+  const config = obtenerConfiguracionActual1(periodoCalculo);
   
 
   // CALCULAR BÁSICO AUTOMÁTICO
@@ -379,7 +385,7 @@ function mostrarCalculoMaestrCelador() {
 //Función para el cálculo de maestrx celador
 function calcularSalarioMaestrCelador() {
   // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-  const config = obtenerConfiguracionActual1();
+  const config = obtenerConfiguracionActual1(periodoCalculo);
 
   // CALCULAR BÁSICO AUTOMÁTICO
   // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
@@ -448,7 +454,7 @@ function mostrarCalculoMaestrGrado(): void {
 //Función para el cálculo de maestrx de grado
 function calcularSalarioMaestrGrado() {
   // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-  const config = obtenerConfiguracionActual1();
+  const config = obtenerConfiguracionActual1(periodoCalculo);
 
   // CALCULAR BÁSICO AUTOMÁTICO
   // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
@@ -517,7 +523,7 @@ function mostrarCalculoMaestrxJardin(): void {
 // Función calcular maestrx jardín
 function calcularSalarioMaestrxJardin() {
   // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-  const config = obtenerConfiguracionActual1();
+  const config = obtenerConfiguracionActual1(periodoCalculo);
 
   // CALCULAR BÁSICO AUTOMÁTICO
   // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
@@ -587,7 +593,7 @@ function mostrarCalculoIfdcExclusivo(): void {
 // Función calcular maestrx jardín
 function calcularSalarioIfdcExclusivo() {
   // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-  const config = obtenerConfiguracionActual2("2026-02");
+  const config = obtenerConfiguracionActual2(periodoCalculo);
 
   // CALCULAR BÁSICO AUTOMÁTICO
   // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
@@ -657,7 +663,7 @@ function mostrarCalculoIfdcSemiExclusivo(): void {
 // Función calcular maestrx jardín
 function calcularSalarioIfdcSemiExclusivo() {
   // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-  const config = obtenerConfiguracionActual2();
+  const config = obtenerConfiguracionActual2(periodoCalculo);
 
   // CALCULAR BÁSICO AUTOMÁTICO
   // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
