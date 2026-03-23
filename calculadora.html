@@ -24,6 +24,7 @@
       window.location.href = "https://sueldos-docentes-sanluis.vercel.app" + ruta;
     }
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -62,8 +63,7 @@
         Zona e ítems Antigüedad.
         Completá los datos y presioná <strong>Calcular</strong>.
       </p>
-      <p>Como el resto del sitio, está en construcción. Actualmente funciona para
-        cargo de hs. en secundaria, cargo de Preceptor, Maestrx de Grado y Maestrx Celador.
+      Actualmente funciona para cargo de hs. en secundaria, cargo de Preceptor, Maestrx de Grado y Maestrx Celador, .
         Espero pronto brindar cálculo para otros cargos y niveles educativos.</p>
       <p><strong>¿Qué hace esta herramienta?</strong> Calcula un aproximado de cada concepto
         del salario por cargo. La herramienta solo funciona por CARGO. Si quiere calcular
@@ -263,6 +263,20 @@
     </table>
 </details>
 </div>
+    <div class="contenedorGraficos">
+          <details style="margin: 20px auto; text-align: center;">
+        
+        <summary style="cursor: pointer; padding: 12px; background-color: #e9ecef; border-radius: 8px; font-weight: bold; list-style: none; display: inline-block;">
+          📊 Ver gráfico de proporciones sobre el sueldo bruto.
+        </summary>
+        
+        <div style="max-width: 280px; margin: 20px auto;">
+          <canvas id="miGrafico"></canvas>
+        </div>
+        
+      </details>
+      </div>
+    
     </div>
   </div>
   <footer class="footer">

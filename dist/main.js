@@ -161,6 +161,23 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     // Inicializar opciones de cargo al cargar la página
     actualizarOpcionesCargo(parseInt(selectNivel.value));
+    // Función que oculta resultados y borra el gráfico si tocamos algo
+    function limpiarPantallaAlEscribir() {
+        // Asumiendo que contenedorResultados está declarado al principio de tu main.ts
+        if (typeof contenedorResultados !== 'undefined' && contenedorResultados) {
+            contenedorResultados.style.display = "none";
+        }
+        resetearResultados(); // Esto borra el texto y destruye el gráfico
+    }
+    // Le decimos a los formularios (que ya buscaste arriba) que escuchen los cambios
+    if (formSecundario) {
+        formSecundario.addEventListener("input", limpiarPantallaAlEscribir);
+        formSecundario.addEventListener("change", limpiarPantallaAlEscribir);
+    }
+    if (formFijo) {
+        formFijo.addEventListener("input", limpiarPantallaAlEscribir);
+        formFijo.addEventListener("change", limpiarPantallaAlEscribir);
+    }
 });
 const btnMostrarResultadoActual = document.getElementById("btnMostrarResultadoActual");
 if (btnMostrarResultadoActual) {

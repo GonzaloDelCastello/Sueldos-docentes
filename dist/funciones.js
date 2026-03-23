@@ -1,4 +1,5 @@
 import { obtenerConfiguracionActual2, obtenerConfiguracionActual1, calcularBasicoCargo, COEFICIENTES_CARGOS, HISTORIAL_IFDC, COEFICIENTES_CARGOS1 } from "./historial.js";
+let miGraficoSueldo = null; // Variable global para almacenar la instancia del gráfico
 // Variable que guarda el mes que el usuario quiere calcular (por defecto Febrero 26)
 export let periodoCalculo = "2026-02";
 // Función para cambiar el mes desde los botones
@@ -582,6 +583,11 @@ export function resetearResultados() {
         if (el)
             el.textContent = "$0.00";
     });
+    // Borrar el gráfico si existe
+    if (typeof miGraficoSueldo !== 'undefined' && miGraficoSueldo !== null) {
+        miGraficoSueldo.destroy();
+        miGraficoSueldo = null;
+    }
 }
 function mostrarResultados(resultados, descuentos, filasMostrar, filasOcultar) {
     const setText = (id, value) => {
@@ -617,6 +623,8 @@ function mostrarResultados(resultados, descuentos, filasMostrar, filasOcultar) {
     setText("sacDescuentos", sacDesc); // Mostramos cuánto se descontó
     setText("sacNeto", sacN);
     mostrarFilas(filasMostrar, filasOcultar);
+    // Gráfico de torta
+    crearGraficoTorta(resultados, descuentos);
 }
 function calculoTotalNeto() {
     const resultados = calcularSalarioHsSecundario();
@@ -640,6 +648,74 @@ function calcularDescuentosSAC(brutoSAC) {
     }
     // Total de descuento
     return brutoSAC * (porcentajeLey + porcentajeSindical);
+}
+// Función para el gráfico de torta Chart.js
+export function crearGraficoTorta(resultados, descuentos) {
+    const lienzo = document.getElementById('miGrafico');
+    if (!lienzo)
+        return;
+    if (typeof miGraficoSueldo !== 'undefined' && miGraficoSueldo !== null) {
+        miGraficoSueldo.destroy();
+    }
+    // 1. DICCIONARIO DE DATOS: Preparamos todas las posibles porciones de la torta
+    // Agrupamos en tonos de VERDE (Remunerativo) y AZUL/VIOLETA (No Remunerativo)
+    const conceptos = [
+        // --- REMUNERATIVOS ---
+        { etiqueta: 'Básico', valor: resultados.basico ?? 0, color: '#046205' },
+        { etiqueta: 'Zona', valor: resultados.pagoDeZona ?? 0, color: '#05ff04' },
+        { etiqueta: 'Antigüedad', valor: resultados.pagoAntiguedad ?? 0, color: '#28a745' },
+        { etiqueta: 'Adicional Cargo', valor: resultados.adicionalXCargo ?? 0, color: '#a3d139' },
+        { etiqueta: 'Comp. Remunerativo', valor: resultados.complementoRemunerativo ?? 0, color: '#1fde4c' },
+        // --- NO REMUNERATIVOS ---
+        { etiqueta: 'Comp. No Remunerativo', valor: resultados.complementoNoRemunerativo ?? 0, color: '#0dcaf0' },
+        { etiqueta: 'Suma No Remunerativa', valor: resultados.pagoSumaNoRemunerativa ?? 0, color: '#0d6efd' },
+        { etiqueta: 'Incentivo Docente', valor: resultados.pagoIncentivoDocente ?? 0, color: '#6610f2' },
+        { etiqueta: 'Asig. por Hijxs', valor: resultados.asignacionXHijxs ?? 0, color: '#e83e8c' }
+    ];
+    // 2. EL FILTRO MÁGICO: Nos quedamos SOLO con los conceptos que sean mayores a $0
+    const conceptosActivos = conceptos.filter(item => item.valor > 0);
+    // 3. SEPARAMOS LOS DATOS: Chart.js necesita listas separadas para textos, números y colores
+    const etiquetasGrafico = conceptosActivos.map(item => item.etiqueta);
+    const valoresGrafico = conceptosActivos.map(item => item.valor);
+    const coloresGrafico = conceptosActivos.map(item => item.color);
+    // 4. ¡DIBUJAMOS EL GRÁFICO!
+    miGraficoSueldo = new Chart(lienzo, {
+        type: 'doughnut',
+        data: {
+            labels: etiquetasGrafico, // Usamos la lista filtrada
+            datasets: [{
+                    data: valoresGrafico, // Usamos la lista filtrada
+                    backgroundColor: coloresGrafico, // Usamos la lista filtrada
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#333',
+                        font: { size: 11 } // Achicamos un poco la letra para que entren todas las etiquetas
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const etiqueta = context.label || '';
+                            const valorEnPesos = context.raw;
+                            // Calculamos el porcentaje sobre el total bruto
+                            const total = context.chart._metasets[context.datasetIndex].total;
+                            const porcentaje = ((valorEnPesos / total) * 100).toFixed(1);
+                            const valorFormateado = valorEnPesos.toLocaleString('es-AR', { minimumFractionDigits: 2 });
+                            return `${etiqueta}: $${valorFormateado} (${porcentaje}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
 }
 // Mostrar u ocultar filas de la tabla de resultados
 function mostrarFilas(filasMostrar = [], filasOcultar = []) {

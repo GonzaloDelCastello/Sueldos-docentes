@@ -67,8 +67,6 @@ document.addEventListener("DOMContentLoaded", function () {
       { value: 8, text: "Prof. semiexclusivo, 25 hs." },
     ] // Nivel superior no tiene cargos implementados
   };
-
-  
     const selectNivel = document.getElementById("nivel") as HTMLSelectElement | null; 
     const selectCargo = document.getElementById("cargo")  as HTMLSelectElement | null;
     const formSecundario = document.getElementById("formSecundario") as HTMLSelectElement | null;
@@ -161,8 +159,29 @@ document.addEventListener("DOMContentLoaded", function () {
     contenedorResultados.style.display = "none";
   });
   // Inicializar opciones de cargo al cargar la página
-  actualizarOpcionesCargo(parseInt(selectNivel.value)); 
+  actualizarOpcionesCargo(parseInt(selectNivel.value));
+
+  // Función que oculta resultados y borra el gráfico si tocamos algo
+    function limpiarPantallaAlEscribir() {
+      // Asumiendo que contenedorResultados está declarado al principio de tu main.ts
+      if (typeof contenedorResultados !== 'undefined' && contenedorResultados) {
+        contenedorResultados.style.display = "none";
+      }
+      resetearResultados(); // Esto borra el texto y destruye el gráfico
+    }
+
+    // Le decimos a los formularios (que ya buscaste arriba) que escuchen los cambios
+    if (formSecundario) {
+      formSecundario.addEventListener("input", limpiarPantallaAlEscribir);
+      formSecundario.addEventListener("change", limpiarPantallaAlEscribir);
+    }
+    
+    if (formFijo) {
+      formFijo.addEventListener("input", limpiarPantallaAlEscribir);
+      formFijo.addEventListener("change", limpiarPantallaAlEscribir);
+    }
 });
+
 const btnMostrarResultadoActual = document.getElementById("btnMostrarResultadoActual") as HTMLButtonElement | null;
 
 if (btnMostrarResultadoActual) {
