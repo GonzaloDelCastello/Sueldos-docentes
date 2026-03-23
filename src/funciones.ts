@@ -405,7 +405,7 @@ function calcularSalarioMaestrCelador() {
 
   // COMPLEMENTOS NO REMUNERATIVOS FIJOS
   let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroCelador; 
-  let incentivoDocente = config.fonid ;          
+  let incentivoDocente = config.fonid * 15;          
 
   let asignacionXHijxs = calcularAsignacionXHijxs();
 
@@ -474,7 +474,7 @@ function calcularSalarioMaestrGrado() {
 
   // COMPLEMENTOS NO REMUNERATIVOS FIJOS
   let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroGrado; 
-  let incentivoDocente = config.fonid;          
+  let incentivoDocente = config.fonid * 15;          
 
   let asignacionXHijxs = calcularAsignacionXHijxs();
 
@@ -543,7 +543,7 @@ function calcularSalarioMaestrxJardin() {
 
   // COMPLEMENTOS NO REMUNERATIVOS FIJOS
   let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroJardin; 
-  let incentivoDocente = config.fonid;          
+  let incentivoDocente = config.fonid * 15;          
 
   let asignacionXHijxs = calcularAsignacionXHijxs();
 
@@ -612,7 +612,7 @@ function calcularSalarioIfdcExclusivo() {
 
   // COMPLEMENTOS NO REMUNERATIVOS FIJOS
   let sumaNoRemunerativa = config.sumaNoRemunerativa; 
-  let incentivoDocente = config.fonid;          
+  let incentivoDocente = config.fonid * 15;          
   let adicionalPorDedicacion1 = config.porcentajes.adicionalCargo * basico1;
   let asignacionXHijxs = calcularAsignacionXHijxs();
 
@@ -682,7 +682,7 @@ function calcularSalarioIfdcSemiExclusivo() {
 
   // COMPLEMENTOS NO REMUNERATIVOS FIJOS
   let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.ifdcSemiExclusivo; 
-  let incentivoDocente = config.fonid;          
+  let incentivoDocente = config.fonid * 15;          
   let adicionalPorDedicacion1 = config.porcentajes.adicionalCargo * basico1;
   let asignacionXHijxs = calcularAsignacionXHijxs();
 
