@@ -86,6 +86,22 @@ h3 {
   padding: 0rem 2rem 2rem;
 }
 
+.header__imagen {
+  display: flex;
+  margin: -20rem auto -10rem;
+  max-width: 300px;
+  height: auto;
+  border-radius: 8px;
+}
+@media (max-width: 768px) {
+  .header__imagen {
+    display: flex;
+  margin: -5rem auto -5rem;
+  max-width: 250px;
+  height: auto;
+  border-radius: 8px;
+  }
+
 .barra {
   display: flex;
   justify-content: space-between;
@@ -114,6 +130,7 @@ a {
 }
 @media (max-width: 768px) {
   #fechaActual {
+    display: none;
     font-size: 2rem;
     margin-left: 40%;
   }
