@@ -55,10 +55,23 @@
   <main class="contenedor">
     <section class="intro">
       <p>
-      Esta página fue creada por un docente de Matemáticas de Villa Mercedes, con la idea de ayudar a otrxs colegas.
-      Aquí podés calcular de forma simple y rápida tu sueldo, entender cada concepto y reflexionar sobre la realidad económica que compartimos quienes educamos.
+      "Desde la Lista Roja, ponemos la tecnología al servicio de la lucha docente. Esta plataforma, creada por y para trabajadores de la educación desde Villa Mercedes y para toda la provincia, es nuestra respuesta a la falta de información oficial. Aquí encontrarás herramientas clave para nuestra defensa: desde una calculadora salarial para entender tus haberes, interpretaciones políticas de nuestros salarios, novedades de la lucha docente en la provincia y hoy, información sobre las elecciones de AMET del próximo 5 de mayo. Entender nuestra realidad es el primer paso para transformarla. Te invitamos a apropiarte de este espacio para visibilizar el impacto de las políticas salariales y fortalecer nuestra unidad.
       </p>
     </section>
+
+    <div class="container">
+        <h2>Consultá en que mesa votás</h2>
+        <p>Introducí tu DNI o CUIL (solo números) para saber dónde votás el 5 de mayo.</p>
+        <input type="text" id="buscadorDni" placeholder="Ingresá DNI, CUIL o Apellido..." style="padding: 10px; width: 80%;">
+        <button onclick="buscarMesa()" style="padding: 10px;">Consultar</button>
+
+        <div id="resultado" style="margin-top: 20px; font-weight: bold; border: 1px solid #ccc; padding: 15px; display: none;">
+            </div>
+
+        <p style="font-size: 0.8em; color: gray; margin-top: 30px;">
+            * Esta consulta es privada y local. Tus datos no se guardan en ningún servidor.
+        </p>
+    </div>
 
     <section class="contenido">
       <h3>¿Qué vas a encontrar aquí?</h3>
@@ -84,6 +97,87 @@
   inject();
 </script>
   <script type="module" src="js/main1.js" ></script>
-</body>
+  <script src="padron.js"></script> 
+    <script>
+        function buscarMesa() {
+    const inputUsuario = document.getElementById('buscadorDni').value.trim();
+    const divResultado = document.getElementById('resultado');
+    
+    if (typeof padron === 'undefined') {
+        divResultado.style.display = 'block';
+        divResultado.innerHTML = "Error: No se cargaron los datos.";
+        return;
+    }
 
+    if (inputUsuario.length < 3) {
+        divResultado.style.display = 'block';
+        divResultado.innerHTML = "⚠️ Ingresá al menos 3 caracteres.";
+        return;
+    }
+
+    // Función interna para limpiar texto (quita comas, tildes y pasa a minúsculas)
+    const limpiarTexto = (texto) => {
+        return texto.toString()
+            .toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Quita tildes
+            .replace(/,/g, "") // Quita comas
+            .replace(/\s+/g, " ") // Normaliza espacios
+            .trim();
+    };
+
+    const busquedaLimpia = limpiarTexto(inputUsuario);
+    const busquedaNumerica = inputUsuario.replace(/[^0-9]/g, "");
+
+    const docente = padron.find(d => {
+        // Lógica 1: Buscar por DNI/CUIL
+        if (busquedaNumerica.length > 5) {
+            const cuilArchivo = d["CUIL"].toString().replace(/[^0-9]/g, "");
+            if (cuilArchivo.includes(busquedaNumerica)) return true;
+        }
+
+        // Lógica 2: Buscar por Nombre ignorando comas y tildes
+        const nombreArchivo = limpiarTexto(d["Apellido y Nombres"]);
+        if (nombreArchivo.includes(busquedaLimpia)) return true;
+
+        return false;
+    });
+
+    if (docente) {
+        divResultado.style.display = 'block';
+        divResultado.style.backgroundColor = '#e7f3fe';
+        divResultado.style.borderLeft = "5px solid #e74c3c";
+        divResultado.innerHTML = `
+            <div style="color: #27ae60; font-weight: bold; margin-bottom: 8px;">✅ ¡Encontrado!</div>
+            <p><strong>👤 Docente:</strong> ${docente["Apellido y Nombres"]}</p>
+            <p><strong>📍 Establecimiento:</strong> ${docente["Establecimiento"]}</p>
+            <p><strong>🗳️ MESA ASIGNADA:</strong></p>
+            <p style="font-size: 1.2rem; color: #d35400; font-weight: bold;">${docente["Mesa"]}</p>
+        `;
+    } else {
+        divResultado.style.display = 'block';
+        divResultado.style.backgroundColor = '#ffe7e7';
+        divResultado.style.borderLeft = "5px solid #666";
+        divResultado.innerHTML = `
+            <p>❌ No se encontró coincidencia.</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Si no figurás, contactate con la <strong>Lista Roja</strong> para denunciar posibles irregularidades en el padrón.</p>
+        `;
+    }
+}
+// Esperamos a que cargue el documento para asignar el evento
+document.addEventListener("DOMContentLoaded", function() {
+    const input = document.getElementById('buscadorDni');
+
+    // Escuchamos cuando el usuario presiona una tecla
+    input.addEventListener("keypress", function(event) {
+        // Si la tecla presionada es "Enter" (código 13)
+        if (event.key === "Enter") {
+            // Cancelamos el comportamiento por defecto (evitar que recargue la página)
+            event.preventDefault();
+            // Ejecutamos la función de búsqueda
+            buscarMesa();
+        }
+    });
+});
+    </script>
+</body>
 </html>
