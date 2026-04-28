@@ -1,12 +1,12 @@
 html {  scroll-behavior: smooth; }
 :root {
-  --primario: #3e5e4d;
-  --primarioClaro: #9fb8a3;
-  --secundario: #f0e68c;
-  --secundarioOscuro: #406882;
-  --terciario: rgb(196, 212, 199);
-  --blanco: #f4f4f4;
-  --negro: #2b2b2b;
+  --primario: #a33b32; /* Rojo Óxido sobrio */
+  --primarioClaro: #f9f7f2; /* Crema suave para fondos */
+  --secundario: #d9c5b2; /* Arena desaturado */
+  --secundarioOscuro: #343a40; /* Gris grafito */
+  --terciario: #e9ecef; /* Gris claro para bordes */
+  --blanco: #ffffff;
+  --negro: #212529;
   --fuenteTitulo: "Fredericka the Great", serif;
 }
 
@@ -230,32 +230,15 @@ input {
   font-size: 1.6rem;
 }
 
-/* --- Resultados --- */
-/* #resultados {
-  background-color: rgba(62, 94, 77, 0.8);
-  color: var(--blanco);
-  margin: 3rem auto;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-  max-width: 60rem;
+#resultado {
+    margin-top: 20px;
+    font-weight: bold;
+    border: 1px solid var(--terciario);
+    border-left: 5px solid var(--primario); /* La marca de la Lista Roja */
+    padding: 15px;
+    background-color: var(--secundario); /* El fondo rosáceo sutil */
+    color: var(--negro);
 }
-
-#resultados h2 {
-  color: var(--secundario);
-  font-family: var(--fuenteTitulo);
-} */
-/* --- Resultados --- */
-#resultados {
-  /* Quitamos el background oscuro para que se vea limpio */
-  background-color: transparent; 
-  color: var(--negro);
-  margin: 3rem auto;
-  /* padding: 0;  <-- Puedes quitar el padding si quieres */
-  max-width: 60rem;
-  width: 100%;
-}
-
 #resultados h2 {
   color: var(--primario); /* Antes era secundario, ahora verde para el título principal */
   font-family: var(--fuenteTitulo);
@@ -303,21 +286,26 @@ th span {
 }
 /* --- Botón --- */
 .boton {
-  margin: 2rem 0;
-  padding: 1.5rem 2rem;
-  background-color: var(--primario);
-  color: white;
-  border: none;
-  font-size: 1.6rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.boton:hover {
-  background-color: var(--primarioClaro);
-  color: var(--negro);
+    display: block; /* Ocupa su propia línea */
+    width: 100%;
+    max-width: 35rem; /* Ancho máximo para que no se estire en PC */
+    margin: 1.5rem auto; /* Los centra y los separa */
+    padding: 1.5rem;
+    text-align: center;
+    background-color: var(--primario);
+    color: var(--blanco);
+    border-radius: 0.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: none;
+    box-sizing: border-box; 
+    transition: background-color 0.3s ease;
 }
 
+.boton:hover {
+    background-color: var(--secundarioOscuro);
+    color: var(--blanco);
+}
 /* --- Footer --- */
 .footer {
   background-color: var(--primario);
@@ -482,8 +470,9 @@ details.desplegable summary {
 
 details.desplegable summary:hover {
   background-color: var(--primarioClaro);
-  color: var(--blanco);
-  transition: background-color 0.3s;
+  color: var(--primario); /* En vez de blanco, usamos el rojo óxido para que resalte */
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 /* Flechita personalizada (+ / -) */
@@ -539,4 +528,54 @@ details.desplegable[open] summary::after {
 .fila-subtotal th {
     color: var(--primario);
     font-size: 1.5rem;
+}
+
+#buscadorDni {
+    width: 100%; /* Ocupa todo el ancho en móviles */
+    max-width: 100%; 
+    padding: 1.2rem;
+    border: 1px solid var(--terciario);
+    border-radius: 0.5rem;
+    font-size: 1.6rem;
+    outline: none;
+    box-sizing: border-box; /* Para que no se desborde */
+}
+
+#buscadorDni:focus {
+  border: 1px solid var(--primario); /* Solo se marca al hacer click */
+}
+
+#resultado {
+    margin-top: 2rem;
+    padding: 2rem;
+    background-color: var(--blanco);
+    border: 1px solid var(--terciario);
+    border-left: 8px solid var(--primario);
+    border-radius: 0.8rem;
+    display: none; /* Se activa por JS */
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hover con color arena bien definido para que se note */
+#resultado:hover {
+    background-color: #f2eee2 !important; 
+    border-color: var(--primario) !important;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15) !important;
+    transform: translateY(-2px);
+}
+
+#resultado .boton {
+    background-color: var(--primario);
+    color: var(--blanco);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+#resultado .boton:hover {
+    background-color: #8a2f28 !important; /* Un tono más oscuro del rojo óxido */
+    color: var(--blanco) !important; 
+    border-color: var(--secundarioOscuro) !important; /* Borde oscuro para definir */
+    transform: scale(1.05); /* Pequeño zoom */
 }
