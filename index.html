@@ -14,11 +14,11 @@
     if (window.location.hostname.includes("github.io")) {
       // 1. Obtenemos la ruta actual (ej: /Sueldos-docentes/calculadora.html)
       let ruta = window.location.pathname;
-      
+
       // 2. Le borramos el nombre del repositorio para dejarla limpia
       // Importante: respeta las mayúsculas de tu repositorio
       ruta = ruta.replace('/Sueldos-docentes', '');
-      
+
       // 3. Redirigimos a Vercel con la ruta ya corregida
       window.location.href = "https://sueldos-docentes-sanluis.vercel.app" + ruta;
     }
@@ -53,24 +53,41 @@
   </header>
 
   <main class="contenedor">
-    <section class="intro">
-      <p>
-      "Desde la Lista Roja, ponemos la tecnología al servicio de la lucha docente. Esta plataforma, creada por y para trabajadores de la educación desde Villa Mercedes y para toda la provincia, es nuestra respuesta a la falta de información oficial. Aquí encontrarás herramientas clave para nuestra defensa: desde una calculadora salarial para entender tus haberes, interpretaciones políticas de nuestros salarios, novedades de la lucha docente en la provincia y hoy, información sobre las elecciones de AMET del próximo 5 de mayo. Entender nuestra realidad es el primer paso para transformarla. Te invitamos a apropiarte de este espacio para visibilizar el impacto de las políticas salariales y fortalecer nuestra unidad.
-      </p>
+    <section class="intro section-spacing">
+      <article class="intro__card">
+        <p>
+          Desde la <strong>Lista Roja</strong>, ponemos la tecnología al servicio de la lucha docente. Esta plataforma,
+          creada por y para trabajadores de la educación desde Villa Mercedes para toda la provincia, es nuestra
+          respuesta a la falta de información oficial.
+        </p>
+        <p>
+          Aquí encontrarás herramientas clave para nuestra defensa: desde una <strong>calculadora salarial</strong> para
+          entender tus haberes, hasta información actualizada sobre las elecciones de AMET del próximo 5 de mayo.
+          Entender nuestra realidad es el primer paso para transformarla.
+        </p>
+      </article>
+    </section>
+    <section class="propuestas section-spacing">
+      <h2>Nuestras Propuestas</h2>
+      <div class="contenedor-imagen">
+        <img src="img/Imagen propuestas.jpeg" alt="Propuestas Lista Roja" class="imagen-destacada">
+      </div>
     </section>
 
-    <div class="container">
-        <h2>Consultá en qué mesa votás</h2>
-        <p>Introducí tu DNI o CUIL (solo números) para saber dónde votás el 5 de mayo.</p>
-        <input type="text" id="buscadorDni" placeholder="Ingresá DNI, CUIL o Apellido..." style="padding: 10px; width: 80%;">
-        <button onclick="buscarMesa()" style="padding: 10px;">Consultar</button>
+    <div class="container container--padron">
+      <h2>Consultá en qué mesa votás</h2>
+      <p>Introducí tu DNI o CUIL (solo números) para saber dónde votás el 5 de mayo.</p>
 
-        <div id="resultado" style="margin-top: 20px; font-weight: bold; border: 1px solid #ccc; padding: 15px; display: none;">
-            </div>
+      <div class="buscador-grupo">
+        <input type="text" id="buscadorDni" placeholder="Ingresá DNI, CUIL o Apellido...">
+        <button onclick="buscarMesa()" class="boton">Consultar</button>
+      </div>
 
-        <p style="font-size: 0.8em; color: gray; margin-top: 30px;">
-            * Esta consulta es privada y local. Tus datos no se guardan en ningún servidor.
-        </p>
+      <div id="resultado"></div>
+
+      <p class="nota-privacidad">
+        * Esta consulta es privada y local. Tus datos no se guardan en ningún servidor.
+      </p>
     </div>
 
     <section class="contenido">
@@ -93,46 +110,46 @@
     </div>
   </footer>
   <script type="module">
-  import { inject } from 'https://cdn.jsdelivr.net/npm/@vercel/analytics/+esm';
-  inject();
-</script>
-  <script type="module" src="js/main1.js" ></script>
-  <script src="padron.js"></script> 
-    <script>
-        function buscarMesa() {
-    const inputUsuario = document.getElementById('buscadorDni').value.trim();
-    const divResultado = document.getElementById('resultado');
-    
-    if (typeof padron === 'undefined') {
+    import { inject } from 'https://cdn.jsdelivr.net/npm/@vercel/analytics/+esm';
+    inject();
+  </script>
+  <script type="module" src="js/main1.js"></script>
+  <script src="padron.js"></script>
+  <script>
+    function buscarMesa() {
+      const inputUsuario = document.getElementById('buscadorDni').value.trim();
+      const divResultado = document.getElementById('resultado');
+
+      if (typeof padron === 'undefined') {
         divResultado.style.display = 'block';
         divResultado.innerHTML = "Error: No se cargaron los datos.";
         return;
-    }
+      }
 
-    if (inputUsuario.length < 3) {
+      if (inputUsuario.length < 3) {
         divResultado.style.display = 'block';
         divResultado.innerHTML = "⚠️ Ingresá al menos 3 caracteres.";
         return;
-    }
+      }
 
-    // Función interna para limpiar texto (quita comas, tildes y pasa a minúsculas)
-    const limpiarTexto = (texto) => {
+      // Función interna para limpiar texto (quita comas, tildes y pasa a minúsculas)
+      const limpiarTexto = (texto) => {
         return texto.toString()
-            .toLowerCase()
-            .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Quita tildes
-            .replace(/,/g, "") // Quita comas
-            .replace(/\s+/g, " ") // Normaliza espacios
-            .trim();
-    };
+          .toLowerCase()
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Quita tildes
+          .replace(/,/g, "") // Quita comas
+          .replace(/\s+/g, " ") // Normaliza espacios
+          .trim();
+      };
 
-    const busquedaLimpia = limpiarTexto(inputUsuario);
-    const busquedaNumerica = inputUsuario.replace(/[^0-9]/g, "");
+      const busquedaLimpia = limpiarTexto(inputUsuario);
+      const busquedaNumerica = inputUsuario.replace(/[^0-9]/g, "");
 
-    const docente = padron.find(d => {
+      const docente = padron.find(d => {
         // Lógica 1: Buscar por DNI/CUIL
         if (busquedaNumerica.length > 5) {
-            const cuilArchivo = d["CUIL"].toString().replace(/[^0-9]/g, "");
-            if (cuilArchivo.includes(busquedaNumerica)) return true;
+          const cuilArchivo = d["CUIL"].toString().replace(/[^0-9]/g, "");
+          if (cuilArchivo.includes(busquedaNumerica)) return true;
         }
 
         // Lógica 2: Buscar por Nombre ignorando comas y tildes
@@ -140,9 +157,9 @@
         if (nombreArchivo.includes(busquedaLimpia)) return true;
 
         return false;
-    });
+      });
 
-    if (docente) {
+      if (docente) {
         divResultado.style.display = 'block';
         divResultado.style.backgroundColor = '#e7f3fe';
         divResultado.style.borderLeft = "5px solid #e74c3c";
@@ -153,7 +170,7 @@
             <p><strong>🗳️ MESA ASIGNADA:</strong></p>
             <p style="font-size: 1.2rem; color: #d35400; font-weight: bold;">${docente["Mesa"]}</p>
         `;
-    } else {
+      } else {
         divResultado.style.display = 'block';
         divResultado.style.backgroundColor = '#ffe7e7';
         divResultado.style.borderLeft = "5px solid #666";
@@ -161,23 +178,24 @@
             <p>❌ No se encontró coincidencia.</p>
             <p style="font-size: 0.9em; margin-top: 10px;">Si no figurás, contactate con la <strong>Lista Roja</strong> para denunciar posibles irregularidades en el padrón.</p>
         `;
+      }
     }
-}
-// Esperamos a que cargue el documento para asignar el evento
-document.addEventListener("DOMContentLoaded", function() {
-    const input = document.getElementById('buscadorDni');
+    // Esperamos a que cargue el documento para asignar el evento
+    document.addEventListener("DOMContentLoaded", function () {
+      const input = document.getElementById('buscadorDni');
 
-    // Escuchamos cuando el usuario presiona una tecla
-    input.addEventListener("keypress", function(event) {
+      // Escuchamos cuando el usuario presiona una tecla
+      input.addEventListener("keypress", function (event) {
         // Si la tecla presionada es "Enter" (código 13)
         if (event.key === "Enter") {
-            // Cancelamos el comportamiento por defecto (evitar que recargue la página)
-            event.preventDefault();
-            // Ejecutamos la función de búsqueda
-            buscarMesa();
+          // Cancelamos el comportamiento por defecto (evitar que recargue la página)
+          event.preventDefault();
+          // Ejecutamos la función de búsqueda
+          buscarMesa();
         }
+      });
     });
-});
-    </script>
+  </script>
 </body>
+
 </html>

@@ -196,6 +196,21 @@ a {
   color: var(--negro);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.section-spacing {
+    padding: 4rem 0;
+}
+
+.intro__card {
+  background-color: var(--primarioClaro);
+  padding: 3rem;
+  border-left: 0.6rem solid var(--primario);
+  border-radius: 0 0.8rem 0.8rem 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+.intro__card p {
+  margin-bottom: 1.5rem;
+}
 /* --- Formulario --- */
 .calculoSalarial {
   max-width: 90%;
@@ -578,4 +593,63 @@ details.desplegable[open] summary::after {
     color: var(--blanco) !important; 
     border-color: var(--secundarioOscuro) !important; /* Borde oscuro para definir */
     transform: scale(1.05); /* Pequeño zoom */
+}
+
+.video-container {
+    width: 100%;
+    max-width: 80rem; /* Ajustá este ancho a tu gusto */
+    margin: 2rem auto; /* Lo centra y le da aire arriba/abajo */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border-radius: 0.8rem;
+    overflow: hidden; /* Para que las puntas del video respeten el redondeado */
+    border: 3px solid var(--primario); /* El toque de la Lista Roja */
+}
+
+.video-container video {
+    width: 50%;
+    height: auto;
+    display: block;
+}
+
+.contenedor-imagen {
+    display: flex;       /* Usamos flexbox para centrar */
+    justify-content: center; 
+    align-items: center;
+    padding: 1rem 0;
+    width: 100%;
+}
+
+.imagen-destacada {
+    width: 100%;         /* Se adapta al ancho del dispositivo */
+    max-width: 400px;    /* TAMAÑO: Aquí la haces más chica (antes estaba libre) */
+    height: auto;        /* Evita que se deforme */
+    border-radius: 0.8rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-bottom: 4px solid var(--primario); /* Detalle estético de la Lista Roja */
+}
+
+/* --- Estilos para el Buscador (Evita que se ensucie en móvil) --- */
+.container--padron {
+    text-align: center;
+    padding: 3rem 2rem;
+}
+
+.buscador-grupo {
+    display: flex;
+    flex-direction: column; /* Se apilan en móvil */
+    gap: 1.5rem;
+    align-items: center;
+}
+
+@media (min-width: 768px) {
+    .buscador-grupo {
+        flex-direction: row; /* Se ponen uno al lado del otro en PC */
+        justify-content: center;
+    }
+}
+
+.nota-privacidad {
+    font-size: 1.3rem;
+    color: #666;
+    margin-top: 2rem;
 }
