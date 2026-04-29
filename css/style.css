@@ -86,6 +86,12 @@ h3 {
   padding: 0rem 2rem 2rem;
 }
 
+.header__texto1 {
+  color: var(--negro);
+  font-size: 5rem;
+  padding: 1rem 2rem;
+}
+
 .header__imagen {
   display: flex;
   margin: -20rem auto -10rem;
@@ -198,7 +204,7 @@ a {
 }
 
 .section-spacing {
-    padding: 4rem 0;
+    padding: 2rem 0;
 }
 
 .intro__card {
@@ -315,6 +321,7 @@ th span {
     border: none;
     box-sizing: border-box; 
     transition: background-color 0.3s ease;
+    font-family: 'montserrat', sans-serif;
 }
 
 .boton:hover {
@@ -546,18 +553,28 @@ details.desplegable[open] summary::after {
 }
 
 #buscadorDni {
-    width: 100%; /* Ocupa todo el ancho en móviles */
-    max-width: 100%; 
-    padding: 1.2rem;
-    border: 1px solid var(--terciario);
-    border-radius: 0.5rem;
+    width: 100%;
+    max-width: 40rem;
+    padding: 1.5rem;
     font-size: 1.6rem;
-    outline: none;
-    box-sizing: border-box; /* Para que no se desborde */
+    outline: none; /* Quita el borde azul por defecto del navegador */
+    
+    /* BORDE INICIAL: Más visible y definido */
+    border: 2px solid var(--terciario); 
+    border-radius: 0.5rem;
+    background-color: var(--blanco);
+    transition: all 0.3s ease; /* Suaviza el cambio al hacer foco */
 }
 
+/* BORDE AL HACER CLIC (FOCUS): Para que resalte la identidad de la lista */
 #buscadorDni:focus {
-  border: 1px solid var(--primario); /* Solo se marca al hacer click */
+    border: 2px solid var(--primario); /* El rojo óxido de la agrupación */
+    box-shadow: 0 0 5px rgba(163, 59, 50, 0.2); /* Un resplandor sutil */
+}
+
+/* Estilo para el placeholder (el texto de fondo) */
+#buscadorDni::placeholder {
+    color: #888; /* Un gris un poco más oscuro para que se lea mejor */
 }
 
 #resultado {
