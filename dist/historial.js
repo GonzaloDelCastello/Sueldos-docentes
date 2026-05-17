@@ -56,6 +56,7 @@ export const HISTORIAL_BASICA = [
         },
         fonid: 28700, // Por hs cátedra
         sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+        bonoExtraordinario: 0 // No aplica
     },
     {
         fecha: "2025-11",
@@ -68,6 +69,7 @@ export const HISTORIAL_BASICA = [
         },
         fonid: 1913.3333, // Por hs cátedra
         sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+        bonoExtraordinario: 0 // No aplica
     },
     {
         fecha: "2026-01",
@@ -80,6 +82,7 @@ export const HISTORIAL_BASICA = [
         },
         fonid: 1913.3333, // Por hs cátedra
         sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+        bonoExtraordinario: 0 // No aplica
     },
     {
         fecha: "2026-02",
@@ -92,6 +95,7 @@ export const HISTORIAL_BASICA = [
         },
         fonid: 1913.3333, // Por hs cátedra
         sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+        bonoExtraordinario: 0 // No aplica
     },
     {
         fecha: "2026-04",
@@ -104,6 +108,20 @@ export const HISTORIAL_BASICA = [
         },
         fonid: 1913.3333, // Por hs cátedra
         sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+        bonoExtraordinario: 0 // No aplica
+    },
+    {
+        fecha: "2026-05",
+        descripcion: "Actualización Mayo 2026",
+        basicoCargo_Hora: 16963.44, // [calculo basado en aumento del 10% sobre 15421.30]
+        porcentajes: {
+            remunerativo: 1.30, // 130% [cite: 538]
+            noRemunerativo: 1.07, // 107% [cite: 554]
+            adicionalCargo: 0.33
+        },
+        fonid: 1913.3333, // Por hs cátedra
+        sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+        bonoExtraordinario: 20000 //suma extraordinaria por única vez
     }
     // Aquí podrás agregar futuros aumentos simplemente copiando un bloque y cambiando fecha/valores.
 ];
@@ -120,6 +138,7 @@ export const HISTORIAL_IFDC = [
         },
         fonid: 57400, // FONID Noviembre (según recibo)
         sumaNoRemunerativa: 157894.07, // No aplica
+        bonoExtraordinario: 0 // No aplica
     },
     {
         fecha: "2026-02", // Febrero 2026
@@ -132,6 +151,7 @@ export const HISTORIAL_IFDC = [
         },
         fonid: 57400, // FONID Noviembre (según recibo)
         sumaNoRemunerativa: 157894.07, // No aplica
+        bonoExtraordinario: 0 // No aplica
     },
     {
         fecha: "2026-04", // Abril 2026
@@ -144,29 +164,20 @@ export const HISTORIAL_IFDC = [
         },
         fonid: 57400, // FONID Noviembre (según recibo)
         sumaNoRemunerativa: 157894.07, // No aplica
+        bonoExtraordinario: 0 // No aplica
+    },
+    {
+        fecha: "2026-05", // Mayo 2026
+        descripcion: "Actualización Mayo 2026",
+        basicoCargo_Hora: 616042.59, // (Tu valor de hora secundaria)
+        porcentajes: {
+            remunerativo: 0.65, // 65% (Item 100-24)
+            noRemunerativo: 0.30, // 30% (Item 100-25)
+            adicionalCargo: 0.34999 // 34.996%
+        },
+        fonid: 57400, // FONID Noviembre (según recibo)
+        sumaNoRemunerativa: 157894.07, // No aplica
+        bonoExtraordinario: 300000 // suma extraordinaria por única vez
     }
-    // },
-    // {
-    //     fechaVigencia: "2025-07-01", // JULIO 2025 
-    //     basicoIFDC: 540859.32, // <--- Básico del recibo Jul
-    //     porcentajes: {  
-    //         remunerativo: 0.60,    // 60%
-    //         noRemunerativo: 0.35   // 35%
-    //         adicionalCargo: 0.34999 // 34.996%
-    //     },
-    //     fonid: 57400, Revisar
-    // },
-    // {
-    //     fechaVigencia: "2025-02-01", // FEBRERO 2025
-    //     basicoCargo_Hora: 0, 
-    //     basicoIFDC: 431536.69, // <--- Básico del recibo Feb
-    //     porcentajes: { remunerativo: 0, noRemunerativo: 0, adicionalCargo: 0 },
-    //     porcentajesIFDC: { 
-    //         remunerativo: 0.54,    // 54%
-    //         noRemunerativo: 0.41   // 41%
-    //     },
-    //     fijos: { conectividad: 0, fonid: 28700 }
-    // }
-    // // ...
 ];
 //# sourceMappingURL=historial.js.map

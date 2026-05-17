@@ -1,10 +1,14 @@
 import { setPeriodoCalculo, resetearResultados, mostrarResultadoActual as mostrarResultadoActual } from './funciones.js';
 let cargo = 0; // Variable global para el cargo seleccionado
 let nivel = 0; // Variable global para el nivel seleccionado
+const btnMostrarResultadoActual = document.getElementById("btnMostrarResultadoActual");
+const btnGraficos = document.getElementById("botonGraficos");
 const contenedorResultados = document.getElementById('resultados');
 document.addEventListener("DOMContentLoaded", function () {
     const menuToggle = document.querySelector('.menu-toggle');
     const navegacion = document.querySelector('.navegacion');
+    btnMostrarResultadoActual?.classList.add("oculto"); // Ocultamos el botón de resultado actual al cargar la página, se mostrará solo para cargos con datos cargados
+    btnGraficos?.classList.add("oculto"); // Ocultamos el botón de gráficos al cargar la página, se mostrará solo para cargos con datos cargados
     if (menuToggle && navegacion) {
         // Abre/cierra con el botón hamburguesa
         menuToggle.addEventListener('click', function (event) {
@@ -146,6 +150,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // ... aquí termina tu switch(cargo) { ... }
         // Damos un pequeño respiro (150ms) para que el navegador dibuje los formularios nuevos
         setTimeout(() => {
+            btnMostrarResultadoActual?.classList.remove("oculto"); // Mostramos el botón de resultado actual solo después de que el usuario haya seleccionado un cargo, para evitar confusiones
+            btnGraficos?.classList.remove("oculto"); // Mostramos el botón de gráficos solo después de que el usuario haya seleccionado un cargo, para evitar confusiones
             if (formFijo && !formFijo.classList.contains("oculto")) {
                 formFijo.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
@@ -179,26 +185,25 @@ document.addEventListener("DOMContentLoaded", function () {
         formFijo.addEventListener("change", limpiarPantallaAlEscribir);
     }
 });
-const btnMostrarResultadoActual = document.getElementById("btnMostrarResultadoActual");
 if (btnMostrarResultadoActual) {
     btnMostrarResultadoActual.addEventListener("click", () => {
-        setPeriodoCalculo("2026-02"); //Periodo actual 02/26
+        setPeriodoCalculo("2026-05"); //Periodo actual 05/26
         mostrarResultadoActual();
         setTimeout(() => {
             contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 250);
     });
 }
-const btnMostrarResultado1 = document.getElementById("btnMostrarResultado1");
-if (btnMostrarResultado1) {
-    btnMostrarResultado1.addEventListener("click", () => {
-        setPeriodoCalculo("2026-04"); //Periodo actual 04/26
-        mostrarResultadoActual();
-        setTimeout(() => {
-            contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 250);
-    });
-}
+// const btnMostrarResultado1 = document.getElementById("btnMostrarResultado1") as HTMLButtonElement | null;
+// if (btnMostrarResultado1) {
+//   btnMostrarResultado1.addEventListener("click", () => {
+//     setPeriodoCalculo("2026-04"); //Periodo actual 04/26
+//     mostrarResultadoActual();
+//     setTimeout(() => {
+//       contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
+//     }, 250);
+//   });
+// }
 // Mostrar fecha actual en formato legible 
 document.addEventListener("DOMContentLoaded", () => {
     const opciones = { day: 'numeric', month: 'long', year: 'numeric' };

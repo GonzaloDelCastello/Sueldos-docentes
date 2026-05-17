@@ -4,22 +4,22 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  
+
   <title>Calculadora Salarial</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/normalize.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="css/style.css">
-  
+
   <link href="https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap" rel="stylesheet">
-   <script>
+  <script>
     if (window.location.hostname.includes("github.io")) {
       // 1. Obtenemos la ruta actual (ej: /Sueldos-docentes/calculadora.html)
       let ruta = window.location.pathname;
-      
+
       // 2. Le borramos el nombre del repositorio para dejarla limpia
       // Importante: respeta las mayúsculas de tu repositorio
       ruta = ruta.replace('/Sueldos-docentes', '');
-      
+
       // 3. Redirigimos a Vercel con la ruta ya corregida
       window.location.href = "https://sueldos-docentes-sanluis.vercel.app" + ruta;
     }
@@ -57,7 +57,7 @@
 
   <div class="contenedorBody">
     <section class="intro">
-      <h4>Actualizada a valores de abril 2026</h4>
+      <h4>Actualizada a valores de mayo 2026</h4>
       <p>
         Esta herramienta permite estimar el sueldo docente en San Luis según la cantidad de horas, el tipo de cargo,
         ítems
@@ -65,7 +65,7 @@
         Completá los datos y presioná <strong>Calcular</strong>.
       </p>
       Actualmente funciona para cargo de hs. en secundaria, cargo de Preceptor, Maestrx de Grado y Maestrx Celador, .
-        Espero pronto brindar cálculo para otros cargos y niveles educativos.</p>
+      Espero pronto brindar cálculo para otros cargos y niveles educativos.</p>
       <p><strong>¿Qué hace esta herramienta?</strong> Calcula un aproximado de cada concepto
         del salario por cargo. La herramienta solo funciona por CARGO. Si quiere calcular
         varios cargos, por ejemplo: cargo de Preceptor y cargo de Maestrx, deberá sumar los montos
@@ -73,6 +73,10 @@
       <p>En el caso de hs en secundaria, si las horas tienen la misma zona,
         puedo colocarlas todas juntas. Pero si la zona es distinta, las tendrá que sumar por
         separado para saber el total a cobrar por varios cargos.</p>
+        <p>
+          El <strong>"Bono Extraordinario"</strong> anunciado por el gobierno lo estoy cargando. Actualmente solo funciona para el cargo de hs de secundaria. 
+        </p>
+      <p>Sobre el descuento del item <strong>"Presentismo"</strong> para Inicial y Primaria, estoy investigando y desarrollando su aplicacion.
     </section>
 
     <div class="calculoSalarial">
@@ -132,8 +136,8 @@
                   <option value="11">Más de 24 años (120%)</option>
                 </select>
               </label></span>
-            <span><label for="cantHijxs">Cantidad de Hijxs <input type="number" id="cantHijxs"
-                  name="cantHijxs" disabled></label></span>
+            <span><label for="cantHijxs">Cantidad de Hijxs <input type="number" id="cantHijxs" name="cantHijxs"
+                  disabled></label></span>
             <span><label for="afiliacionSindical">Afiliación Sindical</label><select name="afiliacionSindical"
                 id="afiliacionSindical">
                 <option value="0">No afiliado</option>
@@ -143,141 +147,149 @@
           </fieldset>
         </form>
         <!--Fin formulario fijo-->
-        <button type="button" class="boton" id="btnMostrarResultadoActual">Cálculo liquidación Feb/Mar</button>
-        <button type="button" class="boton" id="btnMostrarResultado1">Cálculo liquidación Abril</button>
+        <button type="button" class="boton" id="btnMostrarResultadoActual">Cálculo liquidación Mayo</button>
+
       </div>
       <!-- Fin del div del form -->
       <div id="resultados" style="display:none;">
-    
-    <div class="tarjeta-total">
-        <h3>Total de Bolsillo</h3>
-        <p class="precio-gigante" id="totalBolsillo">$0.00</p>
-        <div class="resumen-total">
+
+        <div class="tarjeta-total">
+          <h3>Total de Bolsillo</h3>
+          <p class="precio-gigante" id="totalBolsillo">$0.00</p>
+          <div class="resumen-total">
             <span>Bruto: <strong id="totalBruto">$0.00</strong></span>
             <span> | </span>
             <span>Descuentos: <strong id="totalDescuentos">$0.00</strong></span>
+          </div>
         </div>
-    </div>
 
-    <details class="desplegable">
-        <summary>🟢 Conceptos Remunerativos</summary>
-        <table class="tabla-detalle">
+        <details class="desplegable">
+          <summary>🟢 Conceptos Remunerativos</summary>
+          <table class="tabla-detalle">
             <tr id="filaSueldoBasico" class="fila-resultado">
-                <td>Sueldo Básico</td>
-                <td id="resultadoSueldo">$0.00</td>
+              <td>Sueldo Básico</td>
+              <td id="resultadoSueldo">$0.00</td>
             </tr>
             <tr id="filaZona" class="fila-resultado">
-                <td>Pago por Zona</td>
-                <td id="pagoZona">$0.00</td>
+              <td>Pago por Zona</td>
+              <td id="pagoZona">$0.00</td>
             </tr>
             <tr id="filaAntiguedad" class="fila-resultado">
-                <td>Pago por Antigüedad</td>
-                <td id="pagoAntiguedad">$0.00</td>
+              <td>Pago por Antigüedad</td>
+              <td id="pagoAntiguedad">$0.00</td>
             </tr>
             <tr id="filaComplementoRem" class="fila-resultado">
-                <td>Complemento Remunerativo</td>
-                <td id="complementoRemunerativo">$0.00</td>
+              <td>Complemento Remunerativo</td>
+              <td id="complementoRemunerativo">$0.00</td>
             </tr>
             <tr id="filaAdicionalCargo" class="fila-resultado">
-                <td>Adicional Por Cargo</td>
-                <td id="adicionalPorCargo">$0.00</td>
+              <td>Adicional Por Cargo</td>
+              <td id="adicionalPorCargo">$0.00</td>
             </tr>
             <tr class="fila-subtotal">
-                <th>Total Remunerativo</th>
-                <th id="totalCAportes">$0.00</th>
+              <th>Total Remunerativo</th>
+              <th id="totalCAportes">$0.00</th>
             </tr>
-        </table>
-    </details>
+          </table>
+        </details>
 
-    <details class="desplegable">
-        <summary>🔵 Conceptos No Remunerativos</summary>
-        <table class="tabla-detalle">
+        <details class="desplegable">
+          <summary>🔵 Conceptos No Remunerativos</summary>
+          <table class="tabla-detalle">
             <tr id="filaComplementoNoRem" class="fila-resultado">
-                <td>Complemento No Remunerativo</td>
-                <td id="complementoNoRemunerativo">$0.00</td>
+              <td>Complemento No Remunerativo</td>
+              <td id="complementoNoRemunerativo">$0.00</td>
             </tr>
             <tr id="filaSumaNoRem" class="fila-resultado">
-                <td>Suma No Remunerativa</td>
-                <td id="sumaNoRemunerativa">$0.00</td>
+              <td>Suma No Remunerativa</td>
+              <td id="sumaNoRemunerativa">$0.00</td>
             </tr>
-            <tr id="filaIncentivoDocente" class="fila-resultado"> <td>Incentivo Docente</td>
-                <td id="incentivoDocente">$0.00</td>
+            <tr id="filaIncentivoDocente" class="fila-resultado">
+              <td>Incentivo Docente</td>
+              <td id="incentivoDocente">$0.00</td>
             </tr>
             <tr id="filaAsignacionXHijxs" class="fila-resultado">
-                <td>Asignación por hijxs</td>
-                <td id="asignacionXHijxs">$0.00</td>
+              <td>Asignación por hijxs</td>
+              <td id="asignacionXHijxs">$0.00</td>
+            </tr>
+            <tr>
+              <td id="filaBonoExtraordinario" class="fila-resultado">Bono Extraordinario por única vez</td>
+              <td id="bonoExtraordinario">$0.00</td>
             </tr>
             <tr class="fila-subtotal">
-                <th>Total No Remunerativo</th>
-                <th id="totalSAportes">$0.00</th>
+              <th>Total No Remunerativo</th>
+              <th id="totalSAportes">$0.00</th>
             </tr>
-        </table>
-    </details>
+          </table>
+        </details>
 
-    <details class="desplegable">
-        <summary>🔴 Descuentos </summary>
-        <table class="tabla-detalle">
+        <details class="desplegable">
+          <summary>🔴 Descuentos </summary>
+          <table class="tabla-detalle">
             <tr class="fila-resultado">
-                <td>Jubilación (11%)</td>
-                <td id="aporteJubilatorio">$0.00</td>
+              <td>Jubilación (11%)</td>
+              <td id="aporteJubilatorio">$0.00</td>
             </tr>
             <tr class="fila-resultado">
-                <td>Jubilación Reg. Esp.</td>
-                <td id="aporteJubilatorioEsp">$0.00</td>
+              <td>Jubilación Reg. Esp.</td>
+              <td id="aporteJubilatorioEsp">$0.00</td>
             </tr>
             <tr class="fila-resultado">
-                <td>Obra Social</td>
-                <td id="obraSocial">$0.00</td>
+              <td>Obra Social</td>
+              <td id="obraSocial">$0.00</td>
             </tr>
             <tr id="filaDescuentoSindical" class="fila-resultado">
-                <td>Afiliación Sindical</td>
-                <td id="descuentoSindical">$0.00</td>
+              <td>Afiliación Sindical</td>
+              <td id="descuentoSindical">$0.00</td>
             </tr>
             <tr class="fila-resultado">
-                <td>Seguro Obligatorio</td>
-                <td id="seguroObligatorio">$0.00</td>
+              <td>Seguro Obligatorio</td>
+              <td id="seguroObligatorio">$0.00</td>
             </tr>
             <tr class="fila-subtotal">
-                <th>Total Descuentos</th>
-                <th id="totalDescuentosTexto">$0.00</th> 
-                </tr>
-        </table>
-    </details>
-    <details class="desplegable">
-    <summary>🎄 Aguinaldo (SAC) Estimado</summary>
-    <table class="tabla-detalle">
-        <tr class="fila-resultado">
-            <td>SAC Bruto (50% Remunerativo)</td>
-            <td id="sacBruto">$0.00</td>
-        </tr>
-        <tr class="fila-resultado" style="color: #dc3545;"> <td>Descuentos de Ley (Jub. + Obra Soc.)</td>
-            <td id="sacDescuentos">-$0.00</td>
-        </tr>
-        <tr class="fila-subtotal" style="background-color: #d4edda; color: #155724;"> <th>SAC de Bolsillo (A Cobrar)</th>
-            <th id="sacNeto">$0.00</th>
-        </tr>
-        <tr>
-            <td colspan="2" style="font-size: 0.85rem; color: #666; padding: 8px; font-style: italic;">
+              <th>Total Descuentos</th>
+              <th id="totalDescuentosTexto">$0.00</th>
+            </tr>
+          </table>
+        </details>
+        <details class="desplegable">
+          <summary>🎄 Aguinaldo (SAC) Estimado</summary>
+          <table class="tabla-detalle">
+            <tr class="fila-resultado">
+              <td>SAC Bruto (50% Remunerativo)</td>
+              <td id="sacBruto">$0.00</td>
+            </tr>
+            <tr class="fila-resultado" style="color: #dc3545;">
+              <td>Descuentos de Ley (Jub. + Obra Soc.)</td>
+              <td id="sacDescuentos">-$0.00</td>
+            </tr>
+            <tr class="fila-subtotal" style="background-color: #d4edda; color: #155724;">
+              <th>SAC de Bolsillo (A Cobrar)</th>
+              <th id="sacNeto">$0.00</th>
+            </tr>
+            <tr>
+              <td colspan="2" style="font-size: 0.85rem; color: #666; padding: 8px; font-style: italic;">
                 * No incluye sumas fijas (FONID/Conectividad) ni descuentos de seguros fijos.
-            </td>
-        </tr>
-    </table>
-</details>
-</div>
-    <div class="contenedorGraficos">
-          <details style="margin: 20px auto; text-align: center;">
-        
-        <summary style="cursor: pointer; padding: 12px; background-color: #e9ecef; border-radius: 8px; font-weight: bold; list-style: none; display: inline-block;">
-          📊 Ver gráfico de proporciones sobre el sueldo bruto.
-        </summary>
-        
-        <div style="max-width: 280px; margin: 20px auto;">
-          <canvas id="miGrafico"></canvas>
-        </div>
-        
-      </details>
+              </td>
+            </tr>
+          </table>
+        </details>
       </div>
-    
+      <div class="contenedorGraficos" id="botonGraficos">
+        <details style="margin: 20px auto; text-align: center;">
+
+          <summary 
+            style="cursor: pointer; padding: 12px; background-color: #e9ecef; border-radius: 8px; font-weight: bold; list-style: none; display: inline-block;">
+            📊 Ver gráfico de proporciones sobre el sueldo bruto.
+          </summary>
+
+          <div style="max-width: 280px; margin: 20px auto;">
+            <canvas id="miGrafico"></canvas>
+          </div>
+
+        </details>
+      </div>
+
     </div>
   </div>
   <footer class="footer">
@@ -287,10 +299,10 @@
 
     </div>
   </footer>
-    <script type="module">
-  import { inject } from 'https://cdn.jsdelivr.net/npm/@vercel/analytics/+esm';
-  inject();
-</script>
+  <script type="module">
+    import { inject } from 'https://cdn.jsdelivr.net/npm/@vercel/analytics/+esm';
+    inject();
+  </script>
   <script type="module" src="dist/main.js"></script>
 </body>
 

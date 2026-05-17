@@ -24,6 +24,7 @@ export interface ConfiguracionBase {
     };
     fonid: number;
     sumaNoRemunerativa: number;
+    bonoExtraordinario: number;
 }
 export interface ConfiguracionSalarial1 extends ConfiguracionBase {
     fecha: string;
@@ -36,6 +37,7 @@ export interface ConfiguracionSalarial1 extends ConfiguracionBase {
     };
     fonid: number;
     sumaNoRemunerativa: number;
+    bonoExtraordinario: number;
 }
 export interface ConfiguracionSalarial2 extends ConfiguracionBase {
     fecha: string;
@@ -48,6 +50,7 @@ export interface ConfiguracionSalarial2 extends ConfiguracionBase {
     };
     fonid: number;
     sumaNoRemunerativa: number;
+    bonoExtraordinario: number;
 }
 export declare function obtenerConfiguracionActual1(fecha: string): ConfiguracionBase;
 export declare function obtenerConfiguracionActual2(fecha?: string): ConfiguracionBase;

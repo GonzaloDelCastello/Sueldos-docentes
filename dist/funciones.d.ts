@@ -16,6 +16,7 @@ interface Resultados {
     asignacionXHijxs?: number;
     aguinaldoBruto?: number;
     aguinaldoNeto?: number;
+    bonoExtraordinario?: number;
 }
 interface Descuentos {
     descuentoJubilacion: number;

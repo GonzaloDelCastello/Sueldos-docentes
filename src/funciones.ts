@@ -4,7 +4,7 @@ declare const Chart: any; // Declaración para usar Chart.js sin errores de Type
 let miGraficoSueldo: any = null; // Variable global para almacenar la instancia del gráfico
 
 // Variable que guarda el mes que el usuario quiere calcular (por defecto Febrero 26)
-export let periodoCalculo: string = "2026-02"; 
+export let periodoCalculo: string = "2026-05";
 
 // Función para cambiar el mes desde los botones
 export function setPeriodoCalculo(periodo: string) {
@@ -19,7 +19,7 @@ let cargo: number = 0; // Variable global para el cargo seleccionado
 
 // Defino la interfaz para los resultados
 interface Resultados {
-  basico?: number; 
+  basico?: number;
   pagoDeZona?: number;
   pagoAntiguedad?: number;
   complementoRemunerativo?: number;
@@ -34,7 +34,8 @@ interface Resultados {
   asignacionXHijxs?: number;
   aguinaldoBruto?: number; // La mitad del remunerativo
   aguinaldoNeto?: number;  // Lo que te queda en mano
-} 
+  bonoExtraordinario?: number; // Bonificación extraordinaria
+}
 
 // Interfaz para los descuentos
 interface Descuentos {
@@ -166,7 +167,7 @@ export function mostrarResultadoActual(): void {
   //Mostrar sección de resultados
   const resultadosSection = document.getElementById("resultados") as HTMLElement | null;
   if (resultadosSection) resultadosSection.style.display = "block";
-    
+
   // Ocultar todas las filas antes de mostrar resultados nuevos
   document.querySelectorAll<HTMLTableRowElement>("#tablaResultados tr").forEach(fila => {
     fila.style.display = "none";
@@ -233,21 +234,21 @@ function mostrarCalculoSecundario(): void {
   const resultados: Resultados = calcularSalarioHsSecundario();
   const descuentos: Descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
   let totalBolsillo = resultados.totalBruto - descuentos.totalDescuentos;
-  
+
   // Mostrar resultados en la tabla
   mostrarResultados(
     resultados,
     descuentos,
-    ["filaTotalNeto", "filaSueldoBasico", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem", "filaAsignacionXHijxs"], // mostrar
+    ["filaTotalNeto", "filaSueldoBasico", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem", "filaAsignacionXHijxs", "filaBonoExtraordinario"], // mostrar
     ["filaTotalBolsillo1", "filaAdicionalCargo", "filaAdicionalPorDedicacion"]      // ocultar
   );
-  
+
 }
 
 // Función para el cálculo de hs de secundaria
 function calcularSalarioHsSecundario(): Resultados {
   let cantHsV = document.getElementById("cantHs") as HTMLInputElement | null;
-  if (!cantHsV) return 0 as unknown as Resultados; 
+  if (!cantHsV) return 0 as unknown as Resultados;
   const cantHs = parseInt(cantHsV.value);
 
   // OBTENER CONFIGURACIÓN VIGENTE 
@@ -260,7 +261,7 @@ function calcularSalarioHsSecundario(): Resultados {
   // CALCULAR BÁSICO (Valor Hora * Cantidad)
   let basicoXHs = cantHs * valorHora;
 
-    
+
   let bonificacionZona = basicoXHs * calculoZona();
   let bonificacionAntiguedad = basicoXHs * calculoAntiguedad();
 
@@ -271,21 +272,23 @@ function calcularSalarioHsSecundario(): Resultados {
   // USAR FIJOS DEL HISTORIAL
   // Nota: Asumimos que el incentivo y conectividad son por cargo (proporcional a 15hs)
   // Si en tu recibo es un monto fijo sin importar las horas, borra la división.
-  let sumaNoRemunerativa = (config1.sumaNoRemunerativa) * cantHs; 
-  let incentivoDocente = (config1.fonid) * cantHs; 
-  
+  let sumaNoRemunerativa = (config1.sumaNoRemunerativa) * cantHs;
+  let incentivoDocente = (config1.fonid) * cantHs;
+  let bonoExtraordinario: number;
+  bonoExtraordinario = (cantHs <= 15) ? (config1.bonoExtraordinario * cantHs) : 300000;
   let asignacionXHijxs1 = calcularAsignacionXHijxs();
 
   // Suma y resultados finales
   let totalRemunerativo1 = basicoXHs + complementoRemunerativo1 + bonificacionZona + bonificacionAntiguedad;
-  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs1;
+  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs1 + bonoExtraordinario;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
 
-  
+
   // --- CÁLCULO SAC ---
   let sacBruto = totalRemunerativo1 / 2;
   let descuentosSAC = calcularDescuentosSAC(sacBruto);
   let sacNeto = sacBruto - descuentosSAC;
+
 
   return {
     basico: basicoXHs,
@@ -299,13 +302,14 @@ function calcularSalarioHsSecundario(): Resultados {
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
     asignacionXHijxs: asignacionXHijxs1,
-    aguinaldoBruto: sacBruto, 
-    aguinaldoNeto: sacNeto    
+    aguinaldoBruto: sacBruto,
+    aguinaldoNeto: sacNeto,
+    bonoExtraordinario: bonoExtraordinario
   };
 }
 
 // Mostrar calculo de preceptor
-function mostrarCalculoPreceptor(): void{
+function mostrarCalculoPreceptor(): void {
   const resultados = calcularSalarioPreceptor();
   const descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
 
@@ -314,18 +318,18 @@ function mostrarCalculoPreceptor(): void{
     descuentos,
     ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargo", "filaZona",
       "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
-      "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs"], // mostrar
+      "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs", "filaBonoExtraordinario"], // mostrar
     ["filaTotalBolsillo1", "filaAdicionalPorDedicacion"]      // ocultar    
   );
 }
 //Función para el cálculo de preceptor
 function calcularSalarioPreceptor() {
   const config = obtenerConfiguracionActual1(periodoCalculo);
-  
+
 
   // CALCULAR BÁSICO AUTOMÁTICO
   // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
-  let basico1 = calcularBasicoCargo('preceptor', config); 
+  let basico1 = calcularBasicoCargo('preceptor', config);
 
   let bonificacionZona = basico1 * calculoZona();
   let bonificacionAntiguedad = basico1 * calculoAntiguedad();
@@ -364,8 +368,8 @@ function calcularSalarioPreceptor() {
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
     asignacionXHijxs: asignacionXHijxs,
-    aguinaldoBruto: sacBruto, 
-    aguinaldoNeto: sacNeto    
+    aguinaldoBruto: sacBruto,
+    aguinaldoNeto: sacNeto
   };
 }
 
@@ -393,7 +397,7 @@ function calcularSalarioMaestrCelador() {
 
   // CALCULAR BÁSICO AUTOMÁTICO
   // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
-  let basico1 = calcularBasicoCargo('maestroCelador', config); 
+  let basico1 = calcularBasicoCargo('maestroCelador', config);
 
   let bonificacionZona = basico1 * calculoZona();
   let bonificacionAntiguedad = basico1 * calculoAntiguedad();
@@ -404,8 +408,8 @@ function calcularSalarioMaestrCelador() {
   let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
 
   // COMPLEMENTOS NO REMUNERATIVOS FIJOS
-  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroCelador; 
-  let incentivoDocente = config.fonid * 15;          
+  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroCelador;
+  let incentivoDocente = config.fonid * 15;
 
   let asignacionXHijxs = calcularAsignacionXHijxs();
 
@@ -414,7 +418,7 @@ function calcularSalarioMaestrCelador() {
   let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
 
-    // --- CÁLCULO SAC ---
+  // --- CÁLCULO SAC ---
   let sacBruto = totalRemunerativo1 / 2;
   let descuentosSAC = calcularDescuentosSAC(sacBruto);
   let sacNeto = sacBruto - descuentosSAC;
@@ -432,8 +436,8 @@ function calcularSalarioMaestrCelador() {
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
     asignacionXHijxs: asignacionXHijxs,
-    aguinaldoBruto: sacBruto, 
-    aguinaldoNeto: sacNeto    
+    aguinaldoBruto: sacBruto,
+    aguinaldoNeto: sacNeto
   };
 }
 
@@ -442,7 +446,7 @@ function calcularSalarioMaestrCelador() {
 function mostrarCalculoMaestrGrado(): void {
   const resultados = calcularSalarioMaestrGrado();
   const descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
-  
+
   // Mostrar resultados en la tabla
   mostrarResultados(
     resultados,
@@ -462,7 +466,7 @@ function calcularSalarioMaestrGrado() {
 
   // CALCULAR BÁSICO AUTOMÁTICO
   // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
-  let basico1 = calcularBasicoCargo('maestroGrado', config); 
+  let basico1 = calcularBasicoCargo('maestroGrado', config);
 
   let bonificacionZona = basico1 * calculoZona();
   let bonificacionAntiguedad = basico1 * calculoAntiguedad();
@@ -473,8 +477,8 @@ function calcularSalarioMaestrGrado() {
   let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
 
   // COMPLEMENTOS NO REMUNERATIVOS FIJOS
-  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroGrado; 
-  let incentivoDocente = config.fonid * 15;          
+  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroGrado;
+  let incentivoDocente = config.fonid * 15;
 
   let asignacionXHijxs = calcularAsignacionXHijxs();
 
@@ -483,7 +487,7 @@ function calcularSalarioMaestrGrado() {
   let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
 
-    // --- CÁLCULO SAC ---
+  // --- CÁLCULO SAC ---
   let sacBruto = totalRemunerativo1 / 2;
   let descuentosSAC = calcularDescuentosSAC(sacBruto);
   let sacNeto = sacBruto - descuentosSAC;
@@ -501,8 +505,8 @@ function calcularSalarioMaestrGrado() {
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
     asignacionXHijxs: asignacionXHijxs,
-    aguinaldoBruto: sacBruto, 
-    aguinaldoNeto: sacNeto    
+    aguinaldoBruto: sacBruto,
+    aguinaldoNeto: sacNeto
   };
 }
 // Nivel Inicial
@@ -531,7 +535,7 @@ function calcularSalarioMaestrxJardin() {
 
   // CALCULAR BÁSICO AUTOMÁTICO
   // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
-  let basico1 = calcularBasicoCargo('maestroJardin', config); 
+  let basico1 = calcularBasicoCargo('maestroJardin', config);
 
   let bonificacionZona = basico1 * calculoZona();
   let bonificacionAntiguedad = basico1 * calculoAntiguedad();
@@ -542,8 +546,8 @@ function calcularSalarioMaestrxJardin() {
   let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
 
   // COMPLEMENTOS NO REMUNERATIVOS FIJOS
-  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroJardin; 
-  let incentivoDocente = config.fonid * 15;          
+  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroJardin;
+  let incentivoDocente = config.fonid * 15;
 
   let asignacionXHijxs = calcularAsignacionXHijxs();
 
@@ -552,7 +556,7 @@ function calcularSalarioMaestrxJardin() {
   let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
 
-  
+
   // --- CÁLCULO SAC ---
   let sacBruto = totalRemunerativo1 / 2;
   let descuentosSAC = calcularDescuentosSAC(sacBruto);
@@ -571,7 +575,7 @@ function calcularSalarioMaestrxJardin() {
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
     asignacionXHijxs: asignacionXHijxs,
-    aguinaldoBruto: sacBruto, 
+    aguinaldoBruto: sacBruto,
     aguinaldoNeto: sacNeto
   };
 }
@@ -585,12 +589,12 @@ function mostrarCalculoIfdcExclusivo(): void {
     resultados,
     descuentos,
     [
-      "filaTotalNeto", "filaSueldoBasico", 
+      "filaTotalNeto", "filaSueldoBasico",
       "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
       "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs",
       "filaAsignacionXHijxs", "filaAdicionalCargo"
     ], // mostrar
-    ["filaZona","filaTotalBolsillo1" ]      // ocultar    
+    ["filaZona", "filaTotalBolsillo1"]      // ocultar    
   );
 }
 // Función calcular IFDC
@@ -601,8 +605,8 @@ function calcularSalarioIfdcExclusivo() {
 
   // CALCULAR BÁSICO AUTOMÁTICO
   // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
-  let basico1 = config.basicoCargo_Hora; 
-  
+  let basico1 = config.basicoCargo_Hora;
+
   let bonificacionAntiguedad = basico1 * calculoAntiguedad();
 
   // PORCENTAJES DEL HISTORIAL
@@ -611,8 +615,8 @@ function calcularSalarioIfdcExclusivo() {
   let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
 
   // COMPLEMENTOS NO REMUNERATIVOS FIJOS
-  let sumaNoRemunerativa = config.sumaNoRemunerativa; 
-  let incentivoDocente = config.fonid;          
+  let sumaNoRemunerativa = config.sumaNoRemunerativa;
+  let incentivoDocente = config.fonid;
   let adicionalPorDedicacion1 = config.porcentajes.adicionalCargo * basico1;
   let asignacionXHijxs = calcularAsignacionXHijxs();
 
@@ -621,7 +625,7 @@ function calcularSalarioIfdcExclusivo() {
   let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
 
-  
+
   // --- CÁLCULO SAC ---
   let sacBruto = totalRemunerativo1 / 2;
   let descuentosSAC = calcularDescuentosSAC(sacBruto);
@@ -641,7 +645,7 @@ function calcularSalarioIfdcExclusivo() {
     totalBruto: totalBruto1,
     asignacionXHijxs: asignacionXHijxs,
     adicionalPorDedicacion: adicionalPorDedicacion1,
-    aguinaldoBruto: sacBruto, 
+    aguinaldoBruto: sacBruto,
     aguinaldoNeto: sacNeto
   };
 }
@@ -655,12 +659,12 @@ function mostrarCalculoIfdcSemiExclusivo(): void {
     resultados,
     descuentos,
     [
-      "filaTotalNeto", "filaSueldoBasico", 
+      "filaTotalNeto", "filaSueldoBasico",
       "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
       "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs",
       "filaAsignacionXHijxs", "filaAdicionalCargo"
     ], // mostrar
-    ["filaZona","filaTotalBolsillo1" ]      // ocultar    
+    ["filaZona", "filaTotalBolsillo1"]      // ocultar    
   );
 }
 // Función calcular IFDC
@@ -671,8 +675,8 @@ function calcularSalarioIfdcSemiExclusivo() {
 
   // CALCULAR BÁSICO AUTOMÁTICO
   // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
-  let basico1 = config.basicoCargo_Hora * COEFICIENTES_CARGOS.ifdcSemiExclusivo; 
-  
+  let basico1 = config.basicoCargo_Hora * COEFICIENTES_CARGOS.ifdcSemiExclusivo;
+
   let bonificacionAntiguedad = basico1 * calculoAntiguedad();
 
   // PORCENTAJES DEL HISTORIAL
@@ -681,8 +685,8 @@ function calcularSalarioIfdcSemiExclusivo() {
   let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
 
   // COMPLEMENTOS NO REMUNERATIVOS FIJOS
-  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.ifdcSemiExclusivo; 
-  let incentivoDocente = config.fonid;          
+  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.ifdcSemiExclusivo;
+  let incentivoDocente = config.fonid;
   let adicionalPorDedicacion1 = config.porcentajes.adicionalCargo * basico1;
   let asignacionXHijxs = calcularAsignacionXHijxs();
 
@@ -691,7 +695,7 @@ function calcularSalarioIfdcSemiExclusivo() {
   let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
 
-  
+
   // --- CÁLCULO SAC ---
   let sacBruto = totalRemunerativo1 / 2;
   let descuentosSAC = calcularDescuentosSAC(sacBruto);
@@ -711,7 +715,7 @@ function calcularSalarioIfdcSemiExclusivo() {
     totalBruto: totalBruto1,
     asignacionXHijxs: asignacionXHijxs,
     adicionalPorDedicacion: adicionalPorDedicacion1,
-    aguinaldoBruto: sacBruto, 
+    aguinaldoBruto: sacBruto,
     aguinaldoNeto: sacNeto
   };
 }
@@ -736,7 +740,7 @@ export function resetearResultados(): void {
   }
 }
 function mostrarResultados(
-  resultados: Resultados, 
+  resultados: Resultados,
   descuentos: Descuentos,
   filasMostrar: string[],
   filasOcultar: string[]
@@ -766,7 +770,8 @@ function mostrarResultados(
   setText("descuentoSindical", descuentos.descuentoSindical);
   setText("asignacionXHijxs", resultados.asignacionXHijxs);
   setText("totalDescuentosTexto", descuentos.totalDescuentos);
-  
+  setText("bonoExtraordinario", resultados.bonoExtraordinario);
+
 
 
   // Aguinaldo
@@ -778,7 +783,7 @@ function mostrarResultados(
   setText("sacDescuentos", sacDesc); // Mostramos cuánto se descontó
   setText("sacNeto", sacN);
   mostrarFilas(filasMostrar, filasOcultar);
-  
+
   // Gráfico de torta
   crearGraficoTorta(resultados, descuentos);
 }
@@ -794,25 +799,25 @@ function calculoTotalNeto() {
 //Aguinaldo
 // Función auxiliar para descuentos de SAC (Solo porcentajes, sin fijos)
 function calcularDescuentosSAC(brutoSAC: number): number {
-    // 1. Jubilación (11%) + Ley Esp. (2%) + Obra Social (6%) = 19%
-    // Nota: Si la Obra Social varía, puedes leer el select, pero por defecto suele ser el total.
-    let porcentajeLey = 0.19; 
+  // 1. Jubilación (11%) + Ley Esp. (2%) + Obra Social (6%) = 19%
+  // Nota: Si la Obra Social varía, puedes leer el select, pero por defecto suele ser el total.
+  let porcentajeLey = 0.19;
 
-    // 2. Sindicato (Si está afiliado)
-    let porcentajeSindical = 0;
-    const afiliacion = document.getElementById("afiliacionSindical") as HTMLSelectElement | null;
-    if (afiliacion && (afiliacion.value === "1" || afiliacion.value === "2")) {
-        porcentajeSindical = 0.015; // 1.5%
-    }
+  // 2. Sindicato (Si está afiliado)
+  let porcentajeSindical = 0;
+  const afiliacion = document.getElementById("afiliacionSindical") as HTMLSelectElement | null;
+  if (afiliacion && (afiliacion.value === "1" || afiliacion.value === "2")) {
+    porcentajeSindical = 0.015; // 1.5%
+  }
 
-    // Total de descuento
-    return brutoSAC * (porcentajeLey + porcentajeSindical);
+  // Total de descuento
+  return brutoSAC * (porcentajeLey + porcentajeSindical);
 }
 
 // Función para el gráfico de torta Chart.js
 export function crearGraficoTorta(resultados: Resultados, descuentos: Descuentos): void {
   const lienzo = document.getElementById('miGrafico') as HTMLCanvasElement;
-  if (!lienzo) return; 
+  if (!lienzo) return;
 
   if (typeof miGraficoSueldo !== 'undefined' && miGraficoSueldo !== null) {
     miGraficoSueldo.destroy();
@@ -827,7 +832,7 @@ export function crearGraficoTorta(resultados: Resultados, descuentos: Descuentos
     { etiqueta: 'Antigüedad', valor: resultados.pagoAntiguedad ?? 0, color: '#28a745' },
     { etiqueta: 'Adicional Cargo', valor: resultados.adicionalXCargo ?? 0, color: '#a3d139' },
     { etiqueta: 'Comp. Remunerativo', valor: resultados.complementoRemunerativo ?? 0, color: '#1fde4c' },
-    
+
     // --- NO REMUNERATIVOS ---
     { etiqueta: 'Comp. No Remunerativo', valor: resultados.complementoNoRemunerativo ?? 0, color: '#0dcaf0' },
     { etiqueta: 'Suma No Remunerativa', valor: resultados.pagoSumaNoRemunerativa ?? 0, color: '#0d6efd' },
@@ -851,7 +856,7 @@ export function crearGraficoTorta(resultados: Resultados, descuentos: Descuentos
       datasets: [{
         data: valoresGrafico,   // Usamos la lista filtrada
         backgroundColor: coloresGrafico, // Usamos la lista filtrada
-        borderColor: '#ffffff', 
+        borderColor: '#ffffff',
         borderWidth: 2
       }]
     },
@@ -867,13 +872,13 @@ export function crearGraficoTorta(resultados: Resultados, descuentos: Descuentos
         },
         tooltip: {
           callbacks: {
-            label: function(context: any) {
+            label: function (context: any) {
               const etiqueta = context.label || '';
               const valorEnPesos = context.raw;
               // Calculamos el porcentaje sobre el total bruto
               const total = context.chart._metasets[context.datasetIndex].total;
               const porcentaje = ((valorEnPesos / total) * 100).toFixed(1);
-              
+
               const valorFormateado = valorEnPesos.toLocaleString('es-AR', { minimumFractionDigits: 2 });
               return `${etiqueta}: $${valorFormateado} (${porcentaje}%)`;
             }
@@ -881,7 +886,7 @@ export function crearGraficoTorta(resultados: Resultados, descuentos: Descuentos
         }
       }
     }
-  }); 
+  });
 }
 
 // Mostrar u ocultar filas de la tabla de resultados

@@ -2,12 +2,15 @@ import { setPeriodoCalculo, resetearResultados, mostrarResultadoActual as mostra
 
 let cargo: number = 0; // Variable global para el cargo seleccionado
 let nivel: number = 0; // Variable global para el nivel seleccionado
+const btnMostrarResultadoActual = document.getElementById("btnMostrarResultadoActual") as HTMLButtonElement | null;
+const btnGraficos = document.getElementById("botonGraficos") as HTMLButtonElement | null;
 const contenedorResultados = document.getElementById('resultados') as HTMLDivElement;
 
 document.addEventListener("DOMContentLoaded", function () {
   const menuToggle = document.querySelector('.menu-toggle') as HTMLElement | null;
   const navegacion = document.querySelector('.navegacion') as HTMLElement | null;
-  
+  btnMostrarResultadoActual?.classList.add("oculto"); // Ocultamos el botón de resultado actual al cargar la página, se mostrará solo para cargos con datos cargados
+  btnGraficos?.classList.add("oculto"); // Ocultamos el botón de gráficos al cargar la página, se mostrará solo para cargos con datos cargados
    if (menuToggle && navegacion) {
     // Abre/cierra con el botón hamburguesa
     menuToggle.addEventListener('click', function (event: MouseEvent) {
@@ -143,6 +146,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Damos un pequeño respiro (150ms) para que el navegador dibuje los formularios nuevos
     setTimeout(() => {
       
+      btnMostrarResultadoActual?.classList.remove("oculto"); // Mostramos el botón de resultado actual solo después de que el usuario haya seleccionado un cargo, para evitar confusiones
+      btnGraficos?.classList.remove("oculto"); // Mostramos el botón de gráficos solo después de que el usuario haya seleccionado un cargo, para evitar confusiones
       if (formFijo && !formFijo.classList.contains("oculto")) {
         formFijo.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
@@ -182,11 +187,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-const btnMostrarResultadoActual = document.getElementById("btnMostrarResultadoActual") as HTMLButtonElement | null;
+
 
 if (btnMostrarResultadoActual) {
   btnMostrarResultadoActual.addEventListener("click", () => {
-    setPeriodoCalculo("2026-02"); //Periodo actual 02/26
+    setPeriodoCalculo("2026-05"); //Periodo actual 05/26
     mostrarResultadoActual();
     setTimeout(() => {
       contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -194,18 +199,18 @@ if (btnMostrarResultadoActual) {
     
   });
 }
-const btnMostrarResultado1 = document.getElementById("btnMostrarResultado1") as HTMLButtonElement | null;
+// const btnMostrarResultado1 = document.getElementById("btnMostrarResultado1") as HTMLButtonElement | null;
 
-if (btnMostrarResultado1) {
-  btnMostrarResultado1.addEventListener("click", () => {
-    setPeriodoCalculo("2026-04"); //Periodo actual 04/26
-    mostrarResultadoActual();
-    setTimeout(() => {
-      contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 250);
+// if (btnMostrarResultado1) {
+//   btnMostrarResultado1.addEventListener("click", () => {
+//     setPeriodoCalculo("2026-04"); //Periodo actual 04/26
+//     mostrarResultadoActual();
+//     setTimeout(() => {
+//       contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
+//     }, 250);
     
-  });
-}
+//   });
+// }
 
 // Mostrar fecha actual en formato legible 
 document.addEventListener("DOMContentLoaded", () => {

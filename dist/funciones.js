@@ -1,7 +1,7 @@
 import { obtenerConfiguracionActual2, obtenerConfiguracionActual1, calcularBasicoCargo, COEFICIENTES_CARGOS, HISTORIAL_IFDC, COEFICIENTES_CARGOS1 } from "./historial.js";
 let miGraficoSueldo = null; // Variable global para almacenar la instancia del gráfico
 // Variable que guarda el mes que el usuario quiere calcular (por defecto Febrero 26)
-export let periodoCalculo = "2026-02";
+export let periodoCalculo = "2026-05";
 // Función para cambiar el mes desde los botones
 export function setPeriodoCalculo(periodo) {
     periodoCalculo = periodo;
@@ -184,7 +184,7 @@ function mostrarCalculoSecundario() {
     const descuentos = calculoDescuentos(resultados.totalRemunerativo);
     let totalBolsillo = resultados.totalBruto - descuentos.totalDescuentos;
     // Mostrar resultados en la tabla
-    mostrarResultados(resultados, descuentos, ["filaTotalNeto", "filaSueldoBasico", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem", "filaAsignacionXHijxs"], // mostrar
+    mostrarResultados(resultados, descuentos, ["filaTotalNeto", "filaSueldoBasico", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem", "filaAsignacionXHijxs", "filaBonoExtraordinario"], // mostrar
     ["filaTotalBolsillo1", "filaAdicionalCargo", "filaAdicionalPorDedicacion"] // ocultar
     );
 }
@@ -212,10 +212,12 @@ function calcularSalarioHsSecundario() {
     // Si en tu recibo es un monto fijo sin importar las horas, borra la división.
     let sumaNoRemunerativa = (config1.sumaNoRemunerativa) * cantHs;
     let incentivoDocente = (config1.fonid) * cantHs;
+    let bonoExtraordinario;
+    bonoExtraordinario = (cantHs <= 15) ? (config1.bonoExtraordinario * cantHs) : 300000;
     let asignacionXHijxs1 = calcularAsignacionXHijxs();
     // Suma y resultados finales
     let totalRemunerativo1 = basicoXHs + complementoRemunerativo1 + bonificacionZona + bonificacionAntiguedad;
-    let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs1;
+    let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs1 + bonoExtraordinario;
     let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
     // --- CÁLCULO SAC ---
     let sacBruto = totalRemunerativo1 / 2;
@@ -234,7 +236,8 @@ function calcularSalarioHsSecundario() {
         totalBruto: totalBruto1,
         asignacionXHijxs: asignacionXHijxs1,
         aguinaldoBruto: sacBruto,
-        aguinaldoNeto: sacNeto
+        aguinaldoNeto: sacNeto,
+        bonoExtraordinario: bonoExtraordinario
     };
 }
 // Mostrar calculo de preceptor
@@ -243,7 +246,7 @@ function mostrarCalculoPreceptor() {
     const descuentos = calculoDescuentos(resultados.totalRemunerativo);
     mostrarResultados(resultados, descuentos, ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargo", "filaZona",
         "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
-        "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs"], // mostrar
+        "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs", "filaBonoExtraordinario"], // mostrar
     ["filaTotalBolsillo1", "filaAdicionalPorDedicacion"] // ocultar    
     );
 }
@@ -615,6 +618,7 @@ function mostrarResultados(resultados, descuentos, filasMostrar, filasOcultar) {
     setText("descuentoSindical", descuentos.descuentoSindical);
     setText("asignacionXHijxs", resultados.asignacionXHijxs);
     setText("totalDescuentosTexto", descuentos.totalDescuentos);
+    setText("bonoExtraordinario", resultados.bonoExtraordinario);
     // Aguinaldo
     const sacB = resultados.aguinaldoBruto ?? 0;
     const sacN = resultados.aguinaldoNeto ?? 0;
