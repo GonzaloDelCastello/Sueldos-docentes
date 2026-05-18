@@ -17,6 +17,7 @@ interface Resultados {
     aguinaldoBruto?: number;
     aguinaldoNeto?: number;
     bonoExtraordinario?: number;
+    enseñanzaEnAula?: number;
 }
 interface Descuentos {
     descuentoJubilacion: number;
