@@ -851,7 +851,7 @@ export function crearGraficoTorta(resultados: Resultados, descuentos: Descuentos
     { etiqueta: 'Comp. No Remunerativo', valor: resultados.complementoNoRemunerativo ?? 0, color: '#0dcaf0' },
     { etiqueta: 'Suma No Remunerativa', valor: resultados.pagoSumaNoRemunerativa ?? 0, color: '#0d6efd' },
     { etiqueta: 'Incentivo Docente', valor: resultados.pagoIncentivoDocente ?? 0, color: '#a27ae3' },
-    { etiqueta: 'Asig. por Hijxs', valor: resultados.asignacionXHijxs ?? 0, color: '#e83e8c' }
+    { etiqueta: 'Asig. por Hijxs', valor: resultados.asignacionXHijxs ?? 0, color: '#e83e8c' },
     { etiqueta: 'Bono Extraordinario', valor: resultados.bonoExtraordinario ?? 0, color: '#6f42c1' }
   ];
 
