@@ -275,7 +275,7 @@ function calcularSalarioHsSecundario(): Resultados {
   // Si en tu recibo es un monto fijo sin importar las horas, borra la división.
   let sumaNoRemunerativa = (config1.sumaNoRemunerativa) * cantHs;
   let incentivoDocente = (config1.fonid) * cantHs;
-  let bonoExtraordinario = (cantHs <= 15) ? (config1.bonoExtraordinario * cantHs) : 300000;
+  let bonoExtraordinario = (cantHs <= 15) ? (config1.bonoExtraordinario * cantHs) : config1.bonoExtraordinario * 15;
   let asignacionXHijxs1 = calcularAsignacionXHijxs();
 
   // Suma y resultados finales
@@ -611,21 +611,20 @@ function calcularSalarioIfdcExclusivo() {
   // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
   const config = obtenerConfiguracionActual2(periodoCalculo);
 
-  // CALCULAR BÁSICO AUTOMÁTICO
-  // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
+  // Calculos remunerativos
+  
   let basico1 = config.basicoCargo_Hora;
-
-  let bonificacionAntiguedad = basico1 * calculoAntiguedad();
-
-  // PORCENTAJES DEL HISTORIAL
   let complementoRemunerativo1 = basico1 * config.porcentajes.remunerativo;
+  let bonificacionAntiguedad = basico1 * calculoAntiguedad();
   let adicionalXCargo1 = basico1 * config.porcentajes.adicionalCargo;
+  let adicionalPorDedicacion1 = config.porcentajes.adicionalCargo * basico1;
+
+  // Calculos no remunerativos
   let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
 
-  // COMPLEMENTOS NO REMUNERATIVOS FIJOS
+  
   let sumaNoRemunerativa = config.sumaNoRemunerativa;
   let incentivoDocente = config.fonid;
-  let adicionalPorDedicacion1 = config.porcentajes.adicionalCargo * basico1;
   let asignacionXHijxs = calcularAsignacionXHijxs();
   let bonoExtraordinario = config.bonoExtraordinario;
 

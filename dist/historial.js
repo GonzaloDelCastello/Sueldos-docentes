@@ -121,7 +121,20 @@ export const HISTORIAL_BASICA = [
         },
         fonid: 1913.3333, // Por hs cátedra
         sumaNoRemunerativa: 4667.33333, //Por hs cátedra
-        bonoExtraordinario: 20000 //suma extraordinaria por única vez
+        bonoExtraordinario: 0 //Por hs cátedra - suma extraordinaria por única vez
+    },
+    {
+        fecha: "2026-05-B",
+        descripcion: "Actualización Mayo 2026",
+        basicoCargo_Hora: 16963.44, // [calculo basado en aumento del 10% sobre 15421.30]
+        porcentajes: {
+            remunerativo: 1.30, // 130% [cite: 538]
+            noRemunerativo: 1.07, // 107% [cite: 554]
+            adicionalCargo: 0.33
+        },
+        fonid: 1913.3333, // Por hs cátedra
+        sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+        bonoExtraordinario: 20000 //Por hs cátedra - suma extraordinaria por única vez
     }
     // Aquí podrás agregar futuros aumentos simplemente copiando un bloque y cambiando fecha/valores.
 ];
@@ -168,6 +181,19 @@ export const HISTORIAL_IFDC = [
     },
     {
         fecha: "2026-05", // Mayo 2026
+        descripcion: "Actualización Mayo 2026",
+        basicoCargo_Hora: 616042.59, // (Tu valor de hora secundaria)
+        porcentajes: {
+            remunerativo: 0.65, // 65% (Item 100-24)
+            noRemunerativo: 0.30, // 30% (Item 100-25)
+            adicionalCargo: 0.34999 // 34.996%
+        },
+        fonid: 57400, // FONID Noviembre (según recibo)
+        sumaNoRemunerativa: 157894.07, // No aplica
+        bonoExtraordinario: 0 // suma extraordinaria por única vez
+    },
+    {
+        fecha: "2026-05-B", // Mayo 2026
         descripcion: "Actualización Mayo 2026",
         basicoCargo_Hora: 616042.59, // (Tu valor de hora secundaria)
         porcentajes: {

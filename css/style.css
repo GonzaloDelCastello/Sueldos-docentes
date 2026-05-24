@@ -307,7 +307,7 @@ th span {
 }
 /* --- Botón --- */
 .boton {
-    display: block; /* Ocupa su propia línea */
+    display: inline-block; /* Ocupa su propia línea */
     width: 100%;
     max-width: 35rem; /* Ancho máximo para que no se estire en PC */
     margin: 1.5rem auto; /* Los centra y los separa */

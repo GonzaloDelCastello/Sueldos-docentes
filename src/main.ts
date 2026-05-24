@@ -3,6 +3,7 @@ import { setPeriodoCalculo, resetearResultados, mostrarResultadoActual as mostra
 let cargo: number = 0; // Variable global para el cargo seleccionado
 let nivel: number = 0; // Variable global para el nivel seleccionado
 const btnMostrarResultadoActual = document.getElementById("btnMostrarResultadoActual") as HTMLButtonElement | null;
+const btnMostrarResultadoActualBono = document.getElementById("btnMostrarResultadoActualBono") as HTMLButtonElement | null;
 const btnGraficos = document.getElementById("botonGraficos") as HTMLButtonElement | null;
 const contenedorResultados = document.getElementById('resultados') as HTMLDivElement;
 
@@ -10,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const menuToggle = document.querySelector('.menu-toggle') as HTMLElement | null;
   const navegacion = document.querySelector('.navegacion') as HTMLElement | null;
   btnMostrarResultadoActual?.classList.add("oculto"); // Ocultamos el botón de resultado actual al cargar la página, se mostrará solo para cargos con datos cargados
+  btnMostrarResultadoActualBono?.classList.add("oculto"); // Ocultamos el botón de resultado actual con bonoal cargar la página, se mostrará solo para cargos con datos cargados
   btnGraficos?.classList.add("oculto"); // Ocultamos el botón de gráficos al cargar la página, se mostrará solo para cargos con datos cargados
    if (menuToggle && navegacion) {
     // Abre/cierra con el botón hamburguesa
@@ -147,6 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
     setTimeout(() => {
       
       btnMostrarResultadoActual?.classList.remove("oculto"); // Mostramos el botón de resultado actual solo después de que el usuario haya seleccionado un cargo, para evitar confusiones
+      btnMostrarResultadoActualBono?.classList.remove("oculto"); // Mostramos el botón de resultado actual con bonosolo después de que el usuario haya seleccionado un cargo, para evitar confusiones
       btnGraficos?.classList.remove("oculto"); // Mostramos el botón de gráficos solo después de que el usuario haya seleccionado un cargo, para evitar confusiones
       if (formFijo && !formFijo.classList.contains("oculto")) {
         formFijo.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -188,10 +191,22 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-
+// Función para nostrar resultados periodo actual sin bono
 if (btnMostrarResultadoActual) {
   btnMostrarResultadoActual.addEventListener("click", () => {
     setPeriodoCalculo("2026-05"); //Periodo actual 05/26
+    mostrarResultadoActual();
+    setTimeout(() => {
+      contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 250);
+    
+  });
+}
+
+// Función para mostrar resultados periodo actual con bono
+if (btnMostrarResultadoActualBono) {
+  btnMostrarResultadoActualBono.addEventListener("click", () => {
+    setPeriodoCalculo("2026-05-B"); //Periodo actual 05/26
     mostrarResultadoActual();
     setTimeout(() => {
       contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
