@@ -77,7 +77,8 @@ h3 {
   color: var(--blanco);
   margin-left: 2rem;
   font-family: var(--fuenteTitulo);
-  font-weight: 400;
+  font-weight: 200;
+  font-size: 3rem;
 }
 
 .header__texto2 {
@@ -87,7 +88,7 @@ h3 {
 
 h2.header__texto2  {
   color: var(--blanco);
-  font-size: 6rem;
+  font-size: 5rem;
   margin: 0rem;
 }
 
@@ -99,8 +100,8 @@ h2.header__texto2  {
 
 .header__imagen {
   display: flex;
-  margin: -20rem auto -10rem;
-  max-width: 300px;
+  margin: -15rem auto -5rem;
+  max-width: 20rem;
   height: auto;
   border-radius: 8px;
 }
@@ -108,7 +109,7 @@ h2.header__texto2  {
   .header__imagen {
     display: flex;
   margin: -5rem auto -5rem;
-  max-width: 250px;
+  max-width: 15rem;
   height: auto;
   border-radius: 8px;
   }
@@ -131,11 +132,11 @@ h2.header__texto2  {
 a {
   color: var(--blanco);
   font-family: var(--fuenteTitulo);
-  font-size: 2rem;
+  font-size: 1.5rem;
   text-decoration: none;
 }
 #fechaActual {
-  font-size: 2.6rem;
+  font-size: 2.0rem;
   color: var(--blanco);
   margin-left: 70%;
 }
