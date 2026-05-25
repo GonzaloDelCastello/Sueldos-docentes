@@ -720,7 +720,7 @@ details.desplegable[open] summary::after {
 /* El texto de adentro */
 .contenido-acordeon {
   padding: 15px;
-  font-size: 0.95rem;
+  font-size: 1.5rem;
   color: var(--texto-secundario, #555);
   border-top: 1px solid #ddd;
 }
@@ -730,4 +730,37 @@ details.desplegable[open] summary::after {
 }
 .contenido-acordeon p:last-child {
   margin-bottom: 0;
+}
+
+/* Botón estilo Mercado Pago */
+.boton-mp {
+  display: inline-block;
+  background-color: #2b059e; /* Azul oficial de Mercado Pago */
+  color: #ffffff !important;
+  text-decoration: none;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 1.5rem;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 100%;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 158, 227, 0.2);
+  width: 100%; /* Para que ocupe todo el ancho en celulares */
+  max-width: 35rem; /* Para que no se vea gigante en computadoras */
+  margin: 1.5rem auto; /* Centrado y separación */
+}
+
+/* Efecto al pasar el mouse o tocarlo */
+.boton-mp:hover {
+  background-color: #007eb5;
+  transform: translateY(-2px); /* Se levanta un poquito */
+}
+
+/* Estilo sutil para el texto del alias */
+.alias-texto {
+  font-size: 0.9rem;
+  color: var(--texto-secundario, #666);
+  margin-top: 15px;
 }
