@@ -924,7 +924,7 @@ if (btnEnviarRecibo) {
   btnEnviarRecibo.addEventListener("click", () => {
     // 1. Rompemos tu correo en dos partes para engañar a los bots de spam
     // Ejemplo: si tu correo es "calculadora.docente@gmail.com"
-    const usuario = "gonzafokito@"; 
+    const usuario = "gonzafokito"; 
     const dominio = "gmail.com";
     
     // 2. Pre-armamos el asunto del correo para facilitarle la vida al docente
