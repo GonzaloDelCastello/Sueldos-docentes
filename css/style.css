@@ -676,3 +676,58 @@ details.desplegable[open] summary::after {
     color: #666;
     margin-top: 2rem;
 }
+
+/* Estilos de acordeon en calculadora.html */
+/* Estilos para los desplegables de información */
+.acordeon-info {
+  background-color: var(--color-tarjeta, #ffffff);
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  overflow: hidden; /* Para que los bordes redondeados no se rompan */
+}
+
+/* El "botón" principal del acordeón */
+.acordeon-info summary {
+  padding: 12px 15px;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: #f8f9fa;
+  color: var(--color-primario, #004a8c);
+  list-style: none; /* Quita la flechita fea por defecto en algunos navegadores */
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+/* Flecha personalizada (opcional pero queda genial) */
+.acordeon-info summary::before {
+  content: "▶";
+  font-size: 0.8em;
+  margin-right: 10px;
+  transition: transform 0.2s;
+}
+
+/* Cuando el acordeón está abierto, la flecha gira hacia abajo */
+.acordeon-info[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.acordeon-info summary:hover {
+  background-color: #e9ecef;
+}
+
+/* El texto de adentro */
+.contenido-acordeon {
+  padding: 15px;
+  font-size: 0.95rem;
+  color: var(--texto-secundario, #555);
+  border-top: 1px solid #ddd;
+}
+
+.contenido-acordeon p {
+  margin-bottom: 10px;
+}
+.contenido-acordeon p:last-child {
+  margin-bottom: 0;
+}

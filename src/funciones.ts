@@ -916,3 +916,25 @@ function mostrarFilas(filasMostrar: string[] = [], filasOcultar: string[] = []):
     if (fila) fila.style.display = "none";
   });
 }
+
+// Mail de contacto
+const btnEnviarRecibo = document.getElementById("btnEnviarRecibo") as HTMLButtonElement | null;
+
+if (btnEnviarRecibo) {
+  btnEnviarRecibo.addEventListener("click", () => {
+    // 1. Rompemos tu correo en dos partes para engañar a los bots de spam
+    // Ejemplo: si tu correo es "calculadora.docente@gmail.com"
+    const usuario = "gonzafokito@"; 
+    const dominio = "gmail.com";
+    
+    // 2. Pre-armamos el asunto del correo para facilitarle la vida al docente
+    const asunto = "Consulta o aporte para la calculadora de sueldos docentes";
+    const cuerpo = " ";
+    
+    // 3. Juntamos las piezas
+    const correoArmado = `${usuario}@${dominio}`;
+    
+    // 4. Activamos la apertura del correo en el dispositivo del usuario
+    window.location.href = `mailto:${correoArmado}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+  });
+}

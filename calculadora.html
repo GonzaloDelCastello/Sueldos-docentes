@@ -58,26 +58,52 @@
   <div class="contenedorBody">
     <section class="intro">
       <h4>Actualizada a valores de mayo 2026</h4>
-      <p>
-        Esta herramienta permite estimar el sueldo docente en San Luis según la cantidad de horas, el tipo de cargo,
-        ítems
-        Zona e ítems Antigüedad.
-        Completá los datos y presioná <strong>Calcular</strong>.
-      </p>
-      Actualmente funciona para cargo de hs. en secundaria y cargo de Preceptor para el nivel medio. Maestrx de Grado y Maestrx Celador del nivel primario, maestrx de jardín en nivel inicial y de nivel superior: Cargo prof. 30 hs y semiexclusivo de 25 hs.
-      Espero pronto brindar cálculo para otros cargos y niveles educativos.</p>
-      <p><strong>¿Qué hace esta herramienta?</strong> Calcula un aproximado de cada concepto
-        del salario por cargo. La herramienta solo funciona por CARGO. Si quiere calcular
-        varios cargos, por ejemplo: cargo de Preceptor y cargo de Maestrx, deberá sumar los montos
-        de cada cargo por separado.</p>
-      <p>En el caso de hs en secundaria, si las horas tienen la misma zona,
-        puedo colocarlas todas juntas. Pero si la zona es distinta, las tendrá que sumar por
-        separado para saber el total a cobrar por varios cargos.</p>
-        <p>
-          El <strong>"Bono Extraordinario"</strong> anunciado por el gobierno, que se cobra de forma exepcional en la liquidación de mayo, está funcionando. El bono se cobra por agente. Con un cobro máximo de $300.000 para quienes posean un cargo o 15 hs cátedra en secundaria. Se cobra de manera proporcional en los casos en los que el agente tenga menos de 15 hs. cátedra. Por eso la posibilidad de calcular el sueldo sin el bono.
-        </p>
-      <p>Sobre el descuento del item <strong>"Presentismo"</strong> para Inicial y Primaria, todavía no está la opción de cargar las faltas justificadas. La calculadora muestra los datos cobrando el total del ítem (sin faltas justificadas). El descuento por faltas justificadas está en investigación.</p> 
-      <p>El ítem <strong>"Asignación familiar"</strong>, dependiente de la cantidad de hijxs escolarizados, no está habilitado porque estamos investigando los parámetros a partir de los cuales se calcula. </p>
+    <details class="acordeon-info">
+    <summary>📌 ¿Para qué cargos y niveles funciona?</summary>
+    <div class="contenido-acordeon">
+      <p>Actualmente funciona para:</p>
+      <ul>
+        <li><strong>Nivel Medio:</strong> Cargo de hs. en secundaria y cargo de Preceptor.</li>
+        <li><strong>Nivel Primario:</strong> Maestrx de Grado y Maestrx Celador.</li>
+        <li><strong>Nivel Inicial:</strong> Maestrx de jardín.</li>
+        <li><strong>Nivel Superior:</strong> Cargo prof. 30 hs y semiexclusivo de 25 hs.</li>
+      </ul>
+      <p><em>Espero pronto brindar cálculo para otros cargos y niveles educativos.</em></p>
+    </div>
+  </details>
+
+  <details class="acordeon-info">
+    <summary>⚙️ ¿Cómo calcular si tengo varios cargos o zonas distintas?</summary>
+    <div class="contenido-acordeon">
+      <p><strong>La herramienta solo funciona por CARGO individual.</strong></p>
+      <p>Si quieres calcular varios cargos (por ejemplo: cargo de Preceptor y cargo de Maestrx), deberás hacer el cálculo de cada uno por separado y sumar los resultados finales.</p>
+      <p>En el caso de <strong>horas en secundaria</strong>: si todas tus horas tienen la misma zona, puedes colocarlas todas juntas. Pero si trabajas en escuelas con zonas distintas, tendrás que sumarlas por separado.</p>
+    </div>
+  </details>
+
+  <details class="acordeon-info">
+    <summary>⚠️ Aclaraciones sobre el Bono, Presentismo y Asignaciones</summary>
+    <div class="contenido-acordeon">
+      <p><strong>Bono Extraordinario:</strong> Se cobra por agente (máximo $300.000 para quienes posean un cargo o 15 hs cátedra en secundaria). Si tienes menos horas, se calcula proporcional. La calculadora te permite incluirlo o quitarlo del cálculo.</p>
+      <p><strong>Presentismo (Inicial y Primaria):</strong> Todavía no está la opción de cargar las faltas justificadas. La calculadora muestra los datos asumiendo el cobro total del ítem. El descuento por inasistencias está en investigación.</p>
+      <p><strong>Asignación familiar:</strong> No está habilitada porque estamos investigando los parámetros provinciales exactos a partir de los cuales se calcula según la cantidad de hijxs.</p>
+    </div>
+  </details>
+
+</div>
+
+<section class="contenedorAyuda intro">
+  <details class="acordeon-info">
+    <summary>🤝 ¿Te sirve este proyecto? ¿Quieres colaborar?</summary>
+    <div class="contenido-acordeon">
+      <p>Si tu cargo no aparece, notas diferencias en el cálculo, tienes dudas o aportes que quieres compartir, envíanos una foto o PDF de tu recibo (puedes tachar tu nombre y CUIL). ¡Nos ayuda a sumar más cargos al sistema!</p>
+      
+      <button id="btnEnviarRecibo" class="boton mt-2">📩 Enviar Recibo por Correo</button>
+    </div>
+  </details>
+</section>
+  
+</section>
     </section>
 
     <div class="calculoSalarial">
