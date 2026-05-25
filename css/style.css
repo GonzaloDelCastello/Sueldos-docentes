@@ -651,31 +651,6 @@ details.desplegable[open] summary::after {
     border-bottom: 4px solid var(--primario); /* Detalle estético de la Lista Roja */
 }
 
-/* --- Estilos para el Buscador (Evita que se ensucie en móvil) --- */
-.container--padron {
-    text-align: center;
-    padding: 3rem 2rem;
-}
-
-.buscador-grupo {
-    display: flex;
-    flex-direction: column; /* Se apilan en móvil */
-    gap: 1.5rem;
-    align-items: center;
-}
-
-@media (min-width: 768px) {
-    .buscador-grupo {
-        flex-direction: row; /* Se ponen uno al lado del otro en PC */
-        justify-content: center;
-    }
-}
-
-.nota-privacidad {
-    font-size: 1.3rem;
-    color: #666;
-    margin-top: 2rem;
-}
 
 /* Estilos de acordeon en calculadora.html */
 /* Estilos para los desplegables de información */
@@ -735,7 +710,7 @@ details.desplegable[open] summary::after {
 /* Botón estilo Mercado Pago */
 .boton-mp {
   display: inline-block;
-  background-color: #2b059e; /* Azul oficial de Mercado Pago */
+  background-color: var(--primario); /* Azul oficial de Mercado Pago */
   color: #ffffff !important;
   text-decoration: none;
   font-family: 'Montserrat', sans-serif;
@@ -754,13 +729,13 @@ details.desplegable[open] summary::after {
 
 /* Efecto al pasar el mouse o tocarlo */
 .boton-mp:hover {
-  background-color: #007eb5;
+  background-color: #2b2020;
   transform: translateY(-2px); /* Se levanta un poquito */
 }
 
 /* Estilo sutil para el texto del alias */
 .alias-texto {
-  font-size: 0.9rem;
+  font-size: 1.5rem;
   color: var(--texto-secundario, #666);
   margin-top: 15px;
 }
