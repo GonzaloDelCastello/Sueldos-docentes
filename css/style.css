@@ -244,7 +244,7 @@ a {
 #formularioCargo {
   width: 95%;
   max-width: 100%;
-  margin: 0; /* que no desplace nada en flex */
+  margin: auto; /* que no desplace nada en flex */
 }
 
 label,
