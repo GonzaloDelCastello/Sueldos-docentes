@@ -4,12 +4,16 @@ declare const Chart: any; // Declaración para usar Chart.js sin errores de Type
 let miGraficoSueldo: any = null; // Variable global para almacenar la instancia del gráfico
 
 // Variable que guarda el mes que el usuario quiere calcular (por defecto Febrero 26)
-export let periodoCalculo: string = "2026-05";
+export let periodoCalculo: string = "2026-06";
 
 // Función para cambiar el mes desde los botones
 export function setPeriodoCalculo(periodo: string) {
   periodoCalculo = periodo;
 }
+// Llave de luz del SAC
+export let incluirSAC: boolean = false;
+export function setIncluirSAC(valor: boolean) { incluirSAC = valor; }
+
 let cargo: number = 0; // Variable global para el cargo seleccionado
 //let calculoBasicoHsSecundario: number = 15421.3; //11/25
 //let calculoBasicoHsSecundario: number = 14854.34; 07/25
@@ -234,7 +238,7 @@ export function mostrarResultadoActual(): void {
 function mostrarCalculoSecundario(): void {
   const resultados: Resultados = calcularSalarioHsSecundario();
   const descuentos: Descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
-  let totalBolsillo = resultados.totalBruto - descuentos.totalDescuentos;
+  // let totalBolsillo = resultados.totalBruto - descuentos.totalDescuentos;
 
   // Mostrar resultados en la tabla
   mostrarResultados(
@@ -272,7 +276,6 @@ function calcularSalarioHsSecundario(): Resultados {
 
   // USAR FIJOS DEL HISTORIAL
   // Nota: Asumimos que el incentivo y conectividad son por cargo (proporcional a 15hs)
-  // Si en tu recibo es un monto fijo sin importar las horas, borra la división.
   let sumaNoRemunerativa = (config1.sumaNoRemunerativa) * cantHs;
   let incentivoDocente = (config1.fonid) * cantHs;
   let bonoExtraordinario = (cantHs <= 15) ? (config1.bonoExtraordinario * cantHs) : config1.bonoExtraordinario * 15;

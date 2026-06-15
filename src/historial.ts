@@ -191,9 +191,23 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
         fonid: 1913.3333, // Por hs cátedra
         sumaNoRemunerativa: 4667.33333, //Por hs cátedra
         bonoExtraordinario: 20000 //Por hs cátedra - suma extraordinaria por única vez
-    }
-    // Aquí podrás agregar futuros aumentos simplemente copiando un bloque y cambiando fecha/valores.
+    },
+    
+    {
+    fecha: "2026-06",
+    descripcion: "Actualización Junio 2026",
+    basicoCargo_Hora: 16963.44, 
+    porcentajes: {
+        remunerativo: 1.30, 
+        noRemunerativo: 1.07, 
+        adicionalCargo: 0.33
+    },
+    fonid: 1913.3333,
+    sumaNoRemunerativa: 4667.33333,
+    bonoExtraordinario: 0 
+}
 ];
+
 // HISTORIAL DE AUMENTOS SALARIALES - IFDC
 export const HISTORIAL_IFDC: ConfiguracionSalarial2[] = [
 
@@ -262,6 +276,20 @@ export const HISTORIAL_IFDC: ConfiguracionSalarial2[] = [
         fonid: 57400,  // FONID Noviembre (según recibo)
         sumaNoRemunerativa: 157894.07, // No aplica
         bonoExtraordinario: 300000 // suma extraordinaria por única vez
-    }
+    },
+
+    {
+    fecha: "2026-06", 
+    descripcion: "Actualización Junio 2026 (Cálculo SAC)",
+    basicoCargo_Hora: 616042.59, 
+    porcentajes: {
+        remunerativo: 0.65, 
+        noRemunerativo: 0.30, 
+        adicionalCargo: 0.34999 
+    },
+    fonid: 57400, 
+    sumaNoRemunerativa: 157894.07, 
+    bonoExtraordinario: 0 
+}
     
 ];
