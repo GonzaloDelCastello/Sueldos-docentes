@@ -775,6 +775,7 @@ function mostrarResultados(
 
 
   // Aguinaldo
+
   const sacB = resultados.aguinaldoBruto ?? 0;
   const sacN = resultados.aguinaldoNeto ?? 0;
   const sacDesc = sacB - sacN;
@@ -782,6 +783,22 @@ function mostrarResultados(
   setText("sacBruto", sacB);
   setText("sacDescuentos", sacDesc); // Mostramos cuánto se descontó
   setText("sacNeto", sacN);
+
+  // 1. Calculamos el sueldo normal
+  let bolsilloFinal = (resultados.totalBruto ?? 0) - (descuentos.totalDescuentos ?? 0);
+
+  // 2. Evaluamos si el usuario pidió incluir el SAC
+  if (incluirSAC) {
+    bolsilloFinal += sacN; // Sumamos el aguinaldo neto en mano
+    // Le decimos a la tabla que haga visibles las filas del aguinaldo
+    filasMostrar.push("filaAguinaldoBruto", "filaAguinaldoDescuento", "filaAguinaldoNeto");
+  } else {
+    // Si la llave está apagada, ocultamos las filas del aguinaldo
+    filasOcultar.push("filaAguinaldoBruto", "filaAguinaldoDescuento", "filaAguinaldoNeto");
+  }
+
+  // 3. Inyectamos el total corregido y actualizamos las filas
+  setText("totalBolsillo", bolsilloFinal);
   mostrarFilas(filasMostrar, filasOcultar);
 
   // Gráfico de torta
@@ -841,6 +858,7 @@ export function crearGraficoTorta(resultados: Resultados, descuentos: Descuentos
     { etiqueta: 'Adicional Cargo', valor: resultados.adicionalXCargo ?? 0, color: '#a3d139' },
     { etiqueta: 'Comp. Remunerativo', valor: resultados.complementoRemunerativo ?? 0, color: '#1fde4c' },
     { etiqueta: 'Enseñanza en Aula', valor: resultados.enseñanzaEnAula ?? 0, color: '#198754' },
+    { etiqueta: 'Aguinaldo Bruto', valor: resultados.aguinaldoBruto ?? 0, color: '#198754' },
 
     // --- NO REMUNERATIVOS ---
     { etiqueta: 'Comp. No Remunerativo', valor: resultados.complementoNoRemunerativo ?? 0, color: '#0dcaf0' },
