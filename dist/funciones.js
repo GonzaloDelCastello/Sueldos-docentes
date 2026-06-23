@@ -1,11 +1,14 @@
 import { obtenerConfiguracionActual2, obtenerConfiguracionActual1, calcularBasicoCargo, COEFICIENTES_CARGOS, HISTORIAL_IFDC, COEFICIENTES_CARGOS1 } from "./historial.js";
 let miGraficoSueldo = null; // Variable global para almacenar la instancia del gráfico
 // Variable que guarda el mes que el usuario quiere calcular (por defecto Febrero 26)
-export let periodoCalculo = "2026-05";
+export let periodoCalculo = "2026-06";
 // Función para cambiar el mes desde los botones
 export function setPeriodoCalculo(periodo) {
     periodoCalculo = periodo;
 }
+// Llave de luz del SAC
+export let incluirSAC = false;
+export function setIncluirSAC(valor) { incluirSAC = valor; }
 let cargo = 0; // Variable global para el cargo seleccionado
 //Función cálculo Zona
 export function calculoZona() {
@@ -182,7 +185,7 @@ export function mostrarResultadoActual() {
 function mostrarCalculoSecundario() {
     const resultados = calcularSalarioHsSecundario();
     const descuentos = calculoDescuentos(resultados.totalRemunerativo);
-    let totalBolsillo = resultados.totalBruto - descuentos.totalDescuentos;
+    // let totalBolsillo = resultados.totalBruto - descuentos.totalDescuentos;
     // Mostrar resultados en la tabla
     mostrarResultados(resultados, descuentos, ["filaTotalNeto", "filaSueldoBasico", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem", "filaAsignacionXHijxs", "filaBonoExtraordinario"], // mostrar
     ["filaTotalBolsillo1", "filaAdicionalCargo", "filaAdicionalPorDedicacion"] // ocultar
@@ -209,7 +212,6 @@ function calcularSalarioHsSecundario() {
     let complementoNoRemunerativo1 = basicoXHs * config1.porcentajes.noRemunerativo;
     // USAR FIJOS DEL HISTORIAL
     // Nota: Asumimos que el incentivo y conectividad son por cargo (proporcional a 15hs)
-    // Si en tu recibo es un monto fijo sin importar las horas, borra la división.
     let sumaNoRemunerativa = (config1.sumaNoRemunerativa) * cantHs;
     let incentivoDocente = (config1.fonid) * cantHs;
     let bonoExtraordinario = (cantHs <= 15) ? (config1.bonoExtraordinario * cantHs) : config1.bonoExtraordinario * 15;
@@ -219,9 +221,7 @@ function calcularSalarioHsSecundario() {
     let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs1 + bonoExtraordinario;
     let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
     // --- CÁLCULO SAC ---
-    let sacBruto = totalRemunerativo1 / 2;
-    let descuentosSAC = calcularDescuentosSAC(sacBruto);
-    let sacNeto = sacBruto - descuentosSAC;
+    const aguinaldo = calcularSAC(totalRemunerativo1);
     return {
         basico: basicoXHs,
         pagoDeZona: bonificacionZona,
@@ -234,8 +234,8 @@ function calcularSalarioHsSecundario() {
         totalNRemunerativo: totalNRemunerativo1,
         totalBruto: totalBruto1,
         asignacionXHijxs: asignacionXHijxs1,
-        aguinaldoBruto: sacBruto,
-        aguinaldoNeto: sacNeto,
+        aguinaldoBruto: aguinaldo.sacBruto,
+        aguinaldoNeto: aguinaldo.sacNeto,
         bonoExtraordinario: bonoExtraordinario
     };
 }
@@ -271,9 +271,7 @@ function calcularSalarioPreceptor() {
     let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs + bonoExtraordinario;
     let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
     // --- CÁLCULO SAC ---
-    let sacBruto = totalRemunerativo1 / 2;
-    let descuentosSAC = calcularDescuentosSAC(sacBruto);
-    let sacNeto = sacBruto - descuentosSAC;
+    const aguinaldo = calcularSAC(totalRemunerativo1);
     return {
         basico: basico1,
         pagoDeZona: bonificacionZona,
@@ -287,8 +285,8 @@ function calcularSalarioPreceptor() {
         totalNRemunerativo: totalNRemunerativo1,
         totalBruto: totalBruto1,
         asignacionXHijxs: asignacionXHijxs,
-        aguinaldoBruto: sacBruto,
-        aguinaldoNeto: sacNeto,
+        aguinaldoBruto: aguinaldo.sacBruto,
+        aguinaldoNeto: aguinaldo.sacNeto,
         bonoExtraordinario: bonoExtraordinario
     };
 }
@@ -326,9 +324,7 @@ function calcularSalarioMaestrCelador() {
     let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs + bonoExtraordinario;
     let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
     // --- CÁLCULO SAC ---
-    let sacBruto = totalRemunerativo1 / 2;
-    let descuentosSAC = calcularDescuentosSAC(sacBruto);
-    let sacNeto = sacBruto - descuentosSAC;
+    const aguinaldo = calcularSAC(totalRemunerativo1);
     return {
         basico: basico1,
         pagoDeZona: bonificacionZona,
@@ -343,8 +339,8 @@ function calcularSalarioMaestrCelador() {
         totalNRemunerativo: totalNRemunerativo1,
         totalBruto: totalBruto1,
         asignacionXHijxs: asignacionXHijxs,
-        aguinaldoBruto: sacBruto,
-        aguinaldoNeto: sacNeto,
+        aguinaldoBruto: aguinaldo.sacBruto,
+        aguinaldoNeto: aguinaldo.sacNeto,
         bonoExtraordinario: bonoExtraordinario
     };
 }
@@ -382,9 +378,7 @@ function calcularSalarioMaestrGrado() {
     let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs + bonoExtraordinario;
     let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
     // --- CÁLCULO SAC ---
-    let sacBruto = totalRemunerativo1 / 2;
-    let descuentosSAC = calcularDescuentosSAC(sacBruto);
-    let sacNeto = sacBruto - descuentosSAC;
+    const aguinaldo = calcularSAC(totalRemunerativo1);
     return {
         basico: basico1,
         pagoDeZona: bonificacionZona,
@@ -399,8 +393,8 @@ function calcularSalarioMaestrGrado() {
         totalNRemunerativo: totalNRemunerativo1,
         totalBruto: totalBruto1,
         asignacionXHijxs: asignacionXHijxs,
-        aguinaldoBruto: sacBruto,
-        aguinaldoNeto: sacNeto,
+        aguinaldoBruto: aguinaldo.sacBruto,
+        aguinaldoNeto: aguinaldo.sacNeto,
         bonoExtraordinario: bonoExtraordinario
     };
 }
@@ -444,9 +438,7 @@ function calcularSalarioMaestrxJardin() {
     let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs + bonoExtraordinario;
     let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
     // --- CÁLCULO SAC ---
-    let sacBruto = totalRemunerativo1 / 2;
-    let descuentosSAC = calcularDescuentosSAC(sacBruto);
-    let sacNeto = sacBruto - descuentosSAC;
+    const aguinaldo = calcularSAC(totalRemunerativo1);
     return {
         basico: basico1,
         pagoDeZona: bonificacionZona,
@@ -461,8 +453,8 @@ function calcularSalarioMaestrxJardin() {
         totalNRemunerativo: totalNRemunerativo1,
         totalBruto: totalBruto1,
         asignacionXHijxs: asignacionXHijxs,
-        aguinaldoBruto: sacBruto,
-        aguinaldoNeto: sacNeto,
+        aguinaldoBruto: aguinaldo.sacBruto,
+        aguinaldoNeto: aguinaldo.sacNeto,
         bonoExtraordinario: bonoExtraordinario
     };
 }
@@ -502,9 +494,7 @@ function calcularSalarioIfdcExclusivo() {
     let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs + bonoExtraordinario;
     let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
     // --- CÁLCULO SAC ---
-    let sacBruto = totalRemunerativo1 / 2;
-    let descuentosSAC = calcularDescuentosSAC(sacBruto);
-    let sacNeto = sacBruto - descuentosSAC;
+    const aguinaldo = calcularSAC(totalRemunerativo1);
     return {
         basico: basico1,
         //pagoDeZona: bonificacionZona,
@@ -519,8 +509,8 @@ function calcularSalarioIfdcExclusivo() {
         totalBruto: totalBruto1,
         asignacionXHijxs: asignacionXHijxs,
         adicionalPorDedicacion: adicionalPorDedicacion1,
-        aguinaldoBruto: sacBruto,
-        aguinaldoNeto: sacNeto,
+        aguinaldoBruto: aguinaldo.sacBruto,
+        aguinaldoNeto: aguinaldo.sacNeto,
         bonoExtraordinario: bonoExtraordinario
     };
 }
@@ -562,9 +552,7 @@ function calcularSalarioIfdcSemiExclusivo() {
     let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs + bonoExtraordinario;
     let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
     // --- CÁLCULO SAC ---
-    let sacBruto = totalRemunerativo1 / 2;
-    let descuentosSAC = calcularDescuentosSAC(sacBruto);
-    let sacNeto = sacBruto - descuentosSAC;
+    const aguinaldo = calcularSAC(totalRemunerativo1);
     return {
         basico: basico1,
         //pagoDeZona: bonificacionZona,
@@ -579,8 +567,8 @@ function calcularSalarioIfdcSemiExclusivo() {
         totalBruto: totalBruto1,
         asignacionXHijxs: asignacionXHijxs,
         adicionalPorDedicacion: adicionalPorDedicacion1,
-        aguinaldoBruto: sacBruto,
-        aguinaldoNeto: sacNeto,
+        aguinaldoBruto: aguinaldo.sacBruto,
+        aguinaldoNeto: aguinaldo.sacNeto,
         bonoExtraordinario: bonoExtraordinario
     };
 }
@@ -651,12 +639,19 @@ function calculoTotalNeto() {
     };
 }
 //Aguinaldo
+// Función centralizada para calcular el Aguinaldo (SAC) de cualquier cargo
+function calcularSAC(totalRemunerativo) {
+    const sacBruto = totalRemunerativo / 2;
+    const descuentosSAC = calcularDescuentosSAC(sacBruto);
+    const sacNeto = sacBruto - descuentosSAC;
+    // Devolvemos ambos resultados empaquetados en un objeto
+    return { sacBruto, sacNeto };
+}
 // Función auxiliar para descuentos de SAC (Solo porcentajes, sin fijos)
 function calcularDescuentosSAC(brutoSAC) {
-    // 1. Jubilación (11%) + Ley Esp. (2%) + Obra Social (6%) = 19%
-    // Nota: Si la Obra Social varía, puedes leer el select, pero por defecto suele ser el total.
+    // Jubilación (11%) + Ley Esp. (2%) + Obra Social (6%) = 19%
     let porcentajeLey = 0.19;
-    // 2. Sindicato (Si está afiliado)
+    // Descuento Sindicato (Si está afiliado)
     let porcentajeSindical = 0;
     const afiliacion = document.getElementById("afiliacionSindical");
     if (afiliacion && (afiliacion.value === "1" || afiliacion.value === "2")) {
@@ -756,7 +751,7 @@ if (btnEnviarRecibo) {
     btnEnviarRecibo.addEventListener("click", () => {
         // 1. Rompemos tu correo en dos partes para engañar a los bots de spam
         // Ejemplo: si tu correo es "calculadora.docente@gmail.com"
-        const usuario = "gonzafokito@";
+        const usuario = "gonzafokito";
         const dominio = "gmail.com";
         // 2. Pre-armamos el asunto del correo para facilitarle la vida al docente
         const asunto = "Consulta o aporte para la calculadora de sueldos docentes";

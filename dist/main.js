@@ -1,4 +1,4 @@
-import { setPeriodoCalculo, resetearResultados, mostrarResultadoActual as mostrarResultadoActual } from './funciones.js';
+import { setPeriodoCalculo, resetearResultados, setIncluirSAC, mostrarResultadoActual as mostrarResultadoActual } from './funciones.js';
 let cargo = 0; // Variable global para el cargo seleccionado
 let nivel = 0; // Variable global para el nivel seleccionado
 const btnMostrarResultadoActual = document.getElementById("btnMostrarResultadoActual");
@@ -152,8 +152,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // ... aquí termina tu switch(cargo) { ... }
         // Damos un pequeño respiro (150ms) para que el navegador dibuje los formularios nuevos
         setTimeout(() => {
-            btnMostrarResultadoActual?.classList.remove("oculto"); // Mostramos el botón de resultado actual solo después de que el usuario haya seleccionado un cargo, para evitar confusiones
-            btnMostrarResultadoActualBono?.classList.remove("oculto"); // Mostramos el botón de resultado actual con bonosolo después de que el usuario haya seleccionado un cargo, para evitar confusiones
+            btnCalcularSueldo?.classList.remove("oculto");
+            btnGraficos?.classList.remove("oculto");
             btnGraficos?.classList.remove("oculto"); // Mostramos el botón de gráficos solo después de que el usuario haya seleccionado un cargo, para evitar confusiones
             if (formFijo && !formFijo.classList.contains("oculto")) {
                 formFijo.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -188,26 +188,49 @@ document.addEventListener("DOMContentLoaded", function () {
         formFijo.addEventListener("change", limpiarPantallaAlEscribir);
     }
 });
+const selectMesCalculo = document.getElementById("mesCalculo");
+const btnCalcularSueldo = document.getElementById("btnCalcularSueldo");
+// Nuevo motor centralizado de cálculo
+if (btnCalcularSueldo && selectMesCalculo) {
+    btnCalcularSueldo.addEventListener("click", () => {
+        // Leemos qué eligió el docente
+        const valorSeleccionado = selectMesCalculo.value;
+        // ¿El valor elegido incluye la palabra SAC?
+        if (valorSeleccionado.includes("-SAC")) {
+            // Le quitamos el "-SAC" para que historial.ts entienda la fecha (ej: queda "2026-06")
+            setPeriodoCalculo(valorSeleccionado.replace("-SAC", ""));
+            setIncluirSAC(true); // Prendemos la suma del aguinaldo
+        }
+        else {
+            // Es un mes normal o con bono (ej: "2026-05" o "2026-05-B")
+            setPeriodoCalculo(valorSeleccionado);
+            setIncluirSAC(false); // Apagamos el aguinaldo
+        }
+        // Ejecutamos la matemática y deslizamos la pantalla
+        mostrarResultadoActual();
+        setTimeout(() => { contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 250);
+    });
+}
 // Función para nostrar resultados periodo actual sin bono
-if (btnMostrarResultadoActual) {
-    btnMostrarResultadoActual.addEventListener("click", () => {
-        setPeriodoCalculo("2026-05"); //Periodo actual 05/26
-        mostrarResultadoActual();
-        setTimeout(() => {
-            contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 250);
-    });
-}
+// if (btnMostrarResultadoActual) {
+//   btnMostrarResultadoActual.addEventListener("click", () => {
+//     setPeriodoCalculo("2026-05"); //Periodo actual 05/26
+//     mostrarResultadoActual();
+//     setTimeout(() => {
+//       contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
+//     }, 250);
+//   });
+// }
 // Función para mostrar resultados periodo actual con bono
-if (btnMostrarResultadoActualBono) {
-    btnMostrarResultadoActualBono.addEventListener("click", () => {
-        setPeriodoCalculo("2026-05-B"); //Periodo actual 05/26
-        mostrarResultadoActual();
-        setTimeout(() => {
-            contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 250);
-    });
-}
+// if (btnMostrarResultadoActualBono) {
+//   btnMostrarResultadoActualBono.addEventListener("click", () => {
+//     setPeriodoCalculo("2026-05-B"); //Periodo actual 05/26
+//     mostrarResultadoActual();
+//     setTimeout(() => {
+//       contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
+//     }, 250);
+//   });
+// }
 // const btnMostrarResultado1 = document.getElementById("btnMostrarResultado1") as HTMLButtonElement | null;
 // if (btnMostrarResultado1) {
 //   btnMostrarResultado1.addEventListener("click", () => {

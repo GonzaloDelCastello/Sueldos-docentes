@@ -1,5 +1,7 @@
 export declare let periodoCalculo: string;
 export declare function setPeriodoCalculo(periodo: string): void;
+export declare let incluirSAC: boolean;
+export declare function setIncluirSAC(valor: boolean): void;
 interface Resultados {
     basico?: number;
     pagoDeZona?: number;
