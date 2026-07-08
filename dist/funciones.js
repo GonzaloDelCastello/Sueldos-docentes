@@ -694,6 +694,9 @@ export function crearGraficoTorta(resultados, descuentos) {
     if (typeof miGraficoSueldo !== 'undefined' && miGraficoSueldo !== null) {
         miGraficoSueldo.destroy();
     }
+    if (!incluirSAC) {
+        resultados.aguinaldoBruto = 0;
+    }
     // 1. DICCIONARIO DE DATOS: Preparamos todas las posibles porciones de la torta
     // Agrupamos en tonos de VERDE (Remunerativo) y AZUL/VIOLETA (No Remunerativo)
     const conceptos = [
