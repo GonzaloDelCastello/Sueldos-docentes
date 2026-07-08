@@ -77,6 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const formSecundario = document.getElementById("formSecundario") as HTMLSelectElement | null;
     const formFijo = document.getElementById("formFijo")  as HTMLSelectElement | null;  
     const zona = document.getElementById("zona1")  as HTMLSelectElement | null;
+    const presencialidad = document.getElementById("presencialidadCont") as HTMLSelectElement | null;
     if (!selectNivel || !selectCargo) return;
      // Función para actualizar las opciones del select de cargo según el nivel seleccionado
     function actualizarOpcionesCargo(nivelSeleccionado: number) {
@@ -106,6 +107,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (formSecundario) formSecundario.classList.add("oculto");
     if (formFijo) formFijo.classList.add("oculto");
 
+
     // Resetear resultados al cambiar cargo
     resetearResultados();
     // Mostrar según selección
@@ -114,25 +116,27 @@ document.addEventListener("DOMContentLoaded", function () {
         if (formSecundario) formSecundario.classList.remove("oculto");
         if (formFijo) formFijo.classList.remove("oculto");
         if (zona) zona.classList.remove("oculto");
+        if (presencialidad) presencialidad.classList.add("oculto"); // Ocualtamos el ítem de presencialidad
         break;
       case 2: // Preceptor
-        //formPreceptor.classList.remove("oculto");
         if (formFijo) formFijo.classList.remove("oculto");
         if (zona) zona.classList.remove("oculto");
+        if (presencialidad) presencialidad.classList.add("oculto"); // Ocualtamos el ítem de presencialidad
         break;
       case 3: // Maestrx Celador
-        //formMaestrCelador.classList.remove("oculto");
         if (formFijo) formFijo.classList.remove("oculto");
         if (zona) zona.classList.remove("oculto");
+        if (presencialidad) presencialidad.classList.remove("oculto"); // Agregamos el ítem de presencialidad
         break;
       case 4: // Maestrx de grado
-        //formMaestrGrado.classList.remove("oculto");
         if (formFijo) formFijo.classList.remove("oculto");
         if (zona) zona.classList.remove("oculto");
+        if (presencialidad) presencialidad.classList.remove("oculto"); // Agregamos el ítem de presencialidad
         break;
       case 6:// Maestrx Jardín
         if (formFijo) formFijo.classList.remove("oculto");
         if (zona) zona.classList.remove("oculto");
+        if (presencialidad) presencialidad.classList.remove("oculto"); // Agregamos el ítem de presencialidad
         break;
       case 7: // IFDC Prof. tiempo completo, 30 hs.
         if (formFijo) formFijo.classList.remove("oculto");
@@ -215,43 +219,6 @@ if (btnCalcularSueldo && selectMesCalculo) {
         setTimeout(() => { contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 250);
     });
 }
-
-// Función para nostrar resultados periodo actual sin bono
-// if (btnMostrarResultadoActual) {
-//   btnMostrarResultadoActual.addEventListener("click", () => {
-//     setPeriodoCalculo("2026-05"); //Periodo actual 05/26
-//     mostrarResultadoActual();
-//     setTimeout(() => {
-//       contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
-//     }, 250);
-    
-//   });
-// }
-
-// Función para mostrar resultados periodo actual con bono
-// if (btnMostrarResultadoActualBono) {
-//   btnMostrarResultadoActualBono.addEventListener("click", () => {
-//     setPeriodoCalculo("2026-05-B"); //Periodo actual 05/26
-//     mostrarResultadoActual();
-//     setTimeout(() => {
-//       contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
-//     }, 250);
-    
-//   });
-// }
-// const btnMostrarResultado1 = document.getElementById("btnMostrarResultado1") as HTMLButtonElement | null;
-
-// if (btnMostrarResultado1) {
-//   btnMostrarResultado1.addEventListener("click", () => {
-//     setPeriodoCalculo("2026-04"); //Periodo actual 04/26
-//     mostrarResultadoActual();
-//     setTimeout(() => {
-//       contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
-//     }, 250);
-    
-//   });
-// }
-
 // Mostrar fecha actual en formato legible 
 document.addEventListener("DOMContentLoaded", () => {
   const opciones: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
@@ -261,3 +228,4 @@ document.addEventListener("DOMContentLoaded", () => {
     fechaEl.textContent = new Date().toLocaleDateString("es-AR", opciones);
   }
 });
+

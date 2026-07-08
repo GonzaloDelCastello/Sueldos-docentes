@@ -306,13 +306,17 @@ function mostrarCalculoMaestrCelador() {
 function calcularSalarioMaestrCelador() {
     // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
     const config = obtenerConfiguracionActual1(periodoCalculo);
+    // Select de presencialidad y multiplicador según la opción seleccionada (1 si, 0 no)
+    const selectPresencialidad = document.getElementById("presencialidad");
+    const multiplicadorPresencialidad = selectPresencialidad ? parseInt(selectPresencialidad.value) : 0;
+    console.log("Multiplicador de presencialidad:", multiplicadorPresencialidad); // Prueba de valor
     // Conceptos remunerativos
     let basico1 = calcularBasicoCargo('maestroCelador', config);
     let bonificacionZona = basico1 * calculoZona();
     let bonificacionAntiguedad = basico1 * calculoAntiguedad();
     let complementoRemunerativo1 = basico1 * config.porcentajes.remunerativo;
     let adicionalXCargo1 = basico1 * config.porcentajes.adicionalCargo;
-    let enseñanzaEnAula = 125000;
+    let enseñanzaEnAula = 125000 * multiplicadorPresencialidad;
     // COMPLEMENTOS NO REMUNERATIVOS FIJOS
     let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
     let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroCelador;
@@ -360,13 +364,17 @@ function mostrarCalculoMaestrGrado() {
 function calcularSalarioMaestrGrado() {
     // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
     const config = obtenerConfiguracionActual1(periodoCalculo);
+    // Select de presencialidad y multiplicador según la opción seleccionada (1 si, 0 no)
+    const selectPresencialidad = document.getElementById("presencialidad");
+    const multiplicadorPresencialidad = selectPresencialidad ? parseInt(selectPresencialidad.value) : 0;
+    console.log("Multiplicador de presencialidad:", multiplicadorPresencialidad); // Prueba de valor
     // Conceptos remunerativos
     let basico1 = calcularBasicoCargo('maestroGrado', config);
     let bonificacionZona = basico1 * calculoZona();
     let bonificacionAntiguedad = basico1 * calculoAntiguedad();
     let complementoRemunerativo1 = basico1 * config.porcentajes.remunerativo;
     let adicionalXCargo1 = basico1 * config.porcentajes.adicionalCargo;
-    let enseñanzaEnAula = 125000;
+    let enseñanzaEnAula = 125000 * multiplicadorPresencialidad;
     // COMPLEMENTOS NO REMUNERATIVOS FIJOS
     let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
     let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroGrado;
@@ -418,6 +426,10 @@ function mostrarCalculoMaestrxJardin() {
 function calcularSalarioMaestrxJardin() {
     // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
     const config = obtenerConfiguracionActual1(periodoCalculo);
+    // Select de presencialidad y multiplicador según la opción seleccionada (1 si, 0 no)
+    const selectPresencialidad = document.getElementById("presencialidad");
+    const multiplicadorPresencialidad = selectPresencialidad ? parseInt(selectPresencialidad.value) : 0;
+    console.log("Multiplicador de presencialidad:", multiplicadorPresencialidad); // Prueba de valor
     // CALCULAR BÁSICO AUTOMÁTICO
     // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
     let basico1 = calcularBasicoCargo('maestroJardin', config);
