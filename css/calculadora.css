@@ -1,0 +1,296 @@
+table {
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+th {
+    background-color: var(--primarioClaro);
+    color: var(--negro);
+    font-weight: bold;
+}
+
+td,
+th {
+    padding: 1rem;
+    border: 1px solid var(--primarioClaro);
+}
+
+tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+td span {
+    display: block;
+    text-align: right;
+    font-family: monospace;
+}
+
+th span {
+    display: block;
+    text-align: right;
+    font-family: monospace;
+}
+
+@media (max-width: 768px) {
+
+    table,
+    td,
+    th {
+        font-size: 1.2rem;
+        padding: 0.5rem;
+    }
+}
+
+label,
+select,
+input {
+    display: block;
+    width: 90%;
+    max-width: 30rem;
+    margin: 1rem auto;
+    font-size: 1.6rem;
+}
+
+.tarjeta-total {
+    background-color: var(--primario);
+    /* Verde oscuro */
+    color: var(--blanco);
+    padding: 2.5rem 2rem;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-bottom: 5px solid var(--secundario);
+    /* Detalle amarillo abajo */
+}
+
+.tarjeta-total h3 {
+    color: var(--blanco);
+    /* Forzamos blanco */
+    font-family: var(--fuenteTitulo);
+    font-size: 2.4rem;
+    margin-bottom: 0.5rem;
+}
+
+
+.resumen-total {
+    background-color: rgba(255, 255, 255, 0.15);
+    /* Transparencia blanca */
+    padding: 0.8rem 1.5rem;
+    border-radius: 20px;
+    font-size: 1.4rem;
+    display: inline-block;
+}
+
+/* 2. Acordeones (Details) */
+details.desplegable {
+    background-color: var(--blanco);
+    border: 1px solid var(--primarioClaro);
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+details.desplegable[open] {
+    border-color: var(--primario);
+    /* Borde verde al abrir */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* El encabezado clickeable */
+details.desplegable summary {
+    background-color: var(--terciario);
+    /* Verde muy clarito */
+    padding: 1.5rem;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.6rem;
+    color: var(--primario);
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "Franklin Gothic Medium", Arial, sans-serif;
+}
+
+details.desplegable summary:hover {
+    background-color: var(--primarioClaro);
+    color: var(--primario);
+    /* En vez de blanco, usamos el rojo óxido para que resalte */
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Flechita personalizada (+ / -) */
+details.desplegable summary::after {
+    content: '+';
+    font-size: 2rem;
+    font-weight: bold;
+    color: inherit;
+}
+
+details.desplegable[open] summary::after {
+    content: '-';
+}
+
+/* 3. Tablas Internas */
+.tabla-detalle {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0;
+    /* Sobrescribe el margen global de tablas */
+    box-shadow: none;
+    /* Quitamos sombra global */
+    border-radius: 0;
+}
+
+.tabla-detalle td,
+.tabla-detalle th {
+    padding: 1.2rem;
+    border-bottom: 1px solid #eee;
+    /* Borde suave */
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    color: var(--negro);
+}
+
+.tabla-detalle tr:last-child td {
+    border-bottom: none;
+}
+
+/* Alinear números a la derecha */
+.tabla-detalle td:last-child,
+.tabla-detalle th:last-child {
+    text-align: right;
+    font-family: monospace;
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+/* Filas de Subtotal */
+.fila-subtotal {
+    background-color: #fffbe6;
+    /* Un amarillo muy pálido para destacar */
+    font-weight: bold;
+    border-top: 2px solid var(--primarioClaro);
+}
+
+.fila-subtotal th {
+    color: var(--primario);
+    font-size: 1.5rem;
+}
+
+/* --- Grid formulario --- */
+.grid-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 2rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.formulario_secundario {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 2rem;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    justify-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.formulario_secundario input {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+#resultado {
+    margin-top: 2rem;
+    padding: 2rem;
+    background-color: var(--blanco);
+    border: 1px solid var(--terciario);
+    border-left: 8px solid var(--primario);
+    border-radius: 0.8rem;
+    display: none;
+    /* Se activa por JS */
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hover con color arena bien definido para que se note */
+#resultado:hover {
+    background-color: #f2eee2 !important;
+    border-color: var(--primario) !important;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-2px);
+}
+
+#resultado .boton {
+    background-color: var(--primario);
+    color: var(--blanco);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+#resultado .boton:hover {
+    background-color: #8a2f28 !important;
+    /* Un tono más oscuro del rojo óxido */
+    color: var(--blanco) !important;
+    border-color: var(--secundarioOscuro) !important;
+    /* Borde oscuro para definir */
+    transform: scale(1.05);
+    /* Pequeño zoom */
+}
+
+
+#formularioCalculo {
+  background-color: var(--terciario);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  border-right: 5px solid var(--primario);
+}
+
+#formularioCalculo,
+#formularioCargo {
+  width: 95%;
+  max-width: 100%;
+  margin: auto;
+  /* que no desplace nada en flex */
+}
+
+
+
+#resultado {
+  margin-top: 20px;
+  font-weight: bold;
+  border: 1px solid var(--terciario);
+  border-left: 5px solid var(--primario);
+  /* La marca de la Lista Roja */
+  padding: 15px;
+  background-color: var(--secundario);
+  /* El fondo rosáceo sutil */
+  color: var(--negro);
+}
+
+#resultados h2 {
+  color: var(--primario);
+  /* Antes era secundario, ahora verde para el título principal */
+  font-family: var(--fuenteTitulo);
+  margin-bottom: 2rem;
+}

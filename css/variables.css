@@ -1,0 +1,15 @@
+:root {
+    --primario: #a33b32;
+    /* Rojo Óxido sobrio */
+    --primarioClaro: #f9f7f2;
+    /* Crema suave para fondos */
+    --secundario: #d9c5b2;
+    /* Arena desaturado */
+    --secundarioOscuro: #343a40;
+    /* Gris grafito */
+    --terciario: #e9ecef;
+    /* Gris claro para bordes */
+    --blanco: #ffffff;
+    --negro: #212529;
+    --fuenteTitulo: "Fredericka the Great", serif;
+}
