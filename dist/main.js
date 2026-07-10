@@ -198,7 +198,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 const selectMesCalculo = document.getElementById("mesCalculo");
 const btnCalcularSueldo = document.getElementById("btnCalcularSueldo");
-// Nuevo motor centralizado de cálculo
+// Motor centralizado de cálculo
 if (btnCalcularSueldo && selectMesCalculo) {
     btnCalcularSueldo.addEventListener("click", () => {
         // Leemos qué eligió el docente

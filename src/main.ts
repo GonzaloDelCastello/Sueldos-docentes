@@ -197,7 +197,7 @@ document.addEventListener("DOMContentLoaded", function () {
 const selectMesCalculo = document.getElementById("mesCalculo") as HTMLSelectElement | null;
 const btnCalcularSueldo = document.getElementById("btnCalcularSueldo") as HTMLButtonElement | null;
 
-// Nuevo motor centralizado de cálculo
+// Motor centralizado de cálculo
 if (btnCalcularSueldo && selectMesCalculo) {
     btnCalcularSueldo.addEventListener("click", () => {
         // Leemos qué eligió el docente

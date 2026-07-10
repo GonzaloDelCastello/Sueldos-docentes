@@ -148,6 +148,19 @@ export const HISTORIAL_BASICA = [
         fonid: 1913.3333,
         sumaNoRemunerativa: 4667.33333,
         bonoExtraordinario: 0
+    },
+    {
+        fecha: "2026-07",
+        descripcion: "Actualización Julio 2026",
+        basicoCargo_Hora: 17734.50,
+        porcentajes: {
+            remunerativo: 1.30,
+            noRemunerativo: 1.07,
+            adicionalCargo: 0.33
+        },
+        fonid: 1913.3333,
+        sumaNoRemunerativa: 4667.33333,
+        bonoExtraordinario: 0
     }
 ];
 // HISTORIAL DE AUMENTOS SALARIALES - IFDC
@@ -155,6 +168,19 @@ export const HISTORIAL_IFDC = [
     {
         fecha: "2025-11", // NOVIEMBRE 2025
         descripcion: "Actualización Noviembre",
+        basicoCargo_Hora: 560038.73, // (Tu valor de hora secundaria)
+        porcentajes: {
+            remunerativo: 0.65, // 65% (Item 100-24)
+            noRemunerativo: 0.30, // 30% (Item 100-25)
+            adicionalCargo: 0.34999 // 34.996%
+        },
+        fonid: 57400, // FONID Noviembre (según recibo)
+        sumaNoRemunerativa: 157894.07, // No aplica
+        bonoExtraordinario: 0 // No aplica
+    },
+    {
+        fecha: "2026-01", // Enero 2026
+        descripcion: "Actualización Enero 2026",
         basicoCargo_Hora: 560038.73, // (Tu valor de hora secundaria)
         porcentajes: {
             remunerativo: 0.65, // 65% (Item 100-24)
@@ -221,6 +247,19 @@ export const HISTORIAL_IFDC = [
         fecha: "2026-06",
         descripcion: "Actualización Junio 2026 (Cálculo SAC)",
         basicoCargo_Hora: 616042.59,
+        porcentajes: {
+            remunerativo: 0.65,
+            noRemunerativo: 0.30,
+            adicionalCargo: 0.34999
+        },
+        fonid: 57400,
+        sumaNoRemunerativa: 157894.07,
+        bonoExtraordinario: 0
+    },
+    {
+        fecha: "2026-07",
+        descripcion: "Actualización Julio 2026",
+        basicoCargo_Hora: 644044.53,
         porcentajes: {
             remunerativo: 0.65,
             noRemunerativo: 0.30,
