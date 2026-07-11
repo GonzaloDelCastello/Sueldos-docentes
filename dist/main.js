@@ -1,10 +1,27 @@
-import { setPeriodoCalculo, resetearResultados, setIncluirSAC, mostrarResultadoActual as mostrarResultadoActual } from './funciones.js';
+import { setPeriodoCalculo, resetearResultados, setIncluirSAC, mostrarResultadoActual as mostrarResultadoActual, ejecutarComparativa } from './funciones.js';
 let cargo = 0; // Variable global para el cargo seleccionado
 let nivel = 0; // Variable global para el nivel seleccionado
 const btnMostrarResultadoActual = document.getElementById("btnMostrarResultadoActual");
 const btnMostrarResultadoActualBono = document.getElementById("btnMostrarResultadoActualBono");
 const btnGraficos = document.getElementById("botonGraficos");
 const contenedorResultados = document.getElementById('resultados');
+//Vistas calculadora y comparador
+const tabCalculadora = document.getElementById("tab-calculadora");
+const tabInflacion = document.getElementById("tab-inflacion");
+const vistaCalculadora = document.getElementById("vista-calculadora");
+const vistaInflacion = document.getElementById("vista-inflacion");
+tabInflacion?.addEventListener("click", () => {
+    vistaCalculadora?.classList.add("oculto");
+    vistaInflacion?.classList.remove("oculto");
+    tabCalculadora?.classList.remove("activo");
+    tabInflacion?.classList.add("activo");
+});
+tabCalculadora?.addEventListener("click", () => {
+    vistaInflacion?.classList.add("oculto");
+    vistaCalculadora?.classList.remove("oculto");
+    tabInflacion?.classList.remove("activo");
+    tabCalculadora?.classList.add("activo");
+});
 document.addEventListener("DOMContentLoaded", function () {
     const menuToggle = document.querySelector('.menu-toggle');
     const navegacion = document.querySelector('.navegacion');
@@ -227,5 +244,32 @@ document.addEventListener("DOMContentLoaded", () => {
     if (fechaEl) {
         fechaEl.textContent = new Date().toLocaleDateString("es-AR", opciones);
     }
+});
+// Comparativa de inflación
+const btnComparar = document.getElementById("btnComparar");
+const inputInicio = document.getElementById("mesInicio");
+const inputFin = document.getElementById("mesFin");
+btnComparar.addEventListener("click", () => {
+    const inicio = inputInicio.value;
+    const fin = inputFin.value;
+    if (!inicio || !fin) {
+        alert("Por favor, seleccioná ambos meses.");
+        return;
+    }
+    const resultado = ejecutarComparativa(inicio, fin);
+    if (resultado) {
+        const divRes = document.getElementById("resultadoInflacion");
+        const pTexto = document.getElementById("textoResultado");
+        pTexto.innerText = `En este periodo, la inflación acumulada fue del ${resultado.inflacion.toFixed(1)}%`;
+        divRes.classList.remove("oculto");
+    }
+    else {
+        // Opcional: manejar el caso donde el resultado fue undefined
+        console.error("No se pudo realizar el cálculo");
+    }
+    const divRes = document.getElementById("resultadoInflacion");
+    const pTexto = document.getElementById("textoResultado");
+    pTexto.innerText = `En este periodo, la inflación acumulada fue del ${resultado?.inflacion.toFixed(1)}%`;
+    divRes.classList.remove("oculto");
 });
 //# sourceMappingURL=main.js.map

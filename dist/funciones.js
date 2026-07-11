@@ -1,4 +1,5 @@
 import { obtenerConfiguracionActual2, obtenerConfiguracionActual1, calcularBasicoCargo, COEFICIENTES_CARGOS, HISTORIAL_IFDC, COEFICIENTES_CARGOS1 } from "./historial.js";
+import { HISTORIAL_INFLACION } from './inflacion.js';
 let miGraficoSueldo = null; // Variable global para almacenar la instancia del gráfico
 // Variable que guarda el mes que el usuario quiere calcular (por defecto Febrero 26)
 export let periodoCalculo = "2026-06";
@@ -791,5 +792,25 @@ if (btnEnviarRecibo) {
         // 4. Activamos la apertura del correo en el dispositivo del usuario
         window.location.href = `mailto:${correoArmado}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
     });
+}
+//Comparativo sueldos vs inflación
+function calcularInflacionAcumulada(mesInicio, mesFin) {
+    const mesesFiltrados = HISTORIAL_INFLACION.filter(mes => {
+        mes.fecha >= mesInicio && mes.fecha <= mesFin;
+    });
+    let acumulado = 1;
+    for (let mes of mesesFiltrados) {
+        acumulado *= (1 + mes.inflacionMensual / 100);
+    }
+    return (acumulado - 1) * 100;
+    ;
+}
+export function ejecutarComparativa(mesInicio, mesFin) {
+    if (mesInicio > mesFin) {
+        alert("El mes de inicio debe ser anterior al mes final");
+        return;
+    }
+    const inflacion = calcularInflacionAcumulada(mesInicio, mesFin);
+    return { inflacion };
 }
 //# sourceMappingURL=funciones.js.map

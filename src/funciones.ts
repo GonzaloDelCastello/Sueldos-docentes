@@ -1,4 +1,5 @@
 import { obtenerConfiguracionActual2, obtenerConfiguracionActual1, calcularBasicoCargo, COEFICIENTES_CARGOS, HISTORIAL_IFDC, COEFICIENTES_CARGOS1 } from "./historial.js";
+import { HISTORIAL_INFLACION } from './inflacion.js';
 
 declare const Chart: any; // Declaración para usar Chart.js sin errores de TypeScript
 let miGraficoSueldo: any = null; // Variable global para almacenar la instancia del gráfico
@@ -969,3 +970,30 @@ if (btnEnviarRecibo) {
     window.location.href = `mailto:${correoArmado}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
   });
 }
+
+//Comparativo sueldos vs inflación
+function calcularInflacionAcumulada(mesInicio: string, mesFin: string): number {
+  const mesesFiltrados = HISTORIAL_INFLACION.filter(mes => {
+    mes.fecha >= mesInicio && mes.fecha <= mesFin;
+  });
+
+  let acumulado = 1;
+  for (let mes of mesesFiltrados) {
+    acumulado *= (1 + mes.inflacionMensual / 100);
+
+  }
+  return (acumulado -1) *100;;
+}
+
+export function ejecutarComparativa(mesInicio: string, mesFin: string) {
+  if (mesInicio > mesFin) {
+    alert("El mes de inicio debe ser anterior al mes final");
+    return;
+  }
+  
+  const inflacion: number = calcularInflacionAcumulada(mesInicio, mesFin);
+  
+  return {inflacion};
+
+}
+
