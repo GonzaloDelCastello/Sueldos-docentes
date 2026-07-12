@@ -55,6 +55,9 @@
     </div>
   </header>
 
+  <div class="contenedorBody">
+    <section class="intro">
+      <h4>Actualizada a valores de julio 2026</h4>
   <main class="contenedor">
     <section class="contenedorAyuda intro">
       <div class="mensaje-comunitario mb-3">
@@ -69,6 +72,14 @@
       <details class="acordeon-info">
         <summary>🤝 ¿Te sirve este proyecto? ¿Quieres colaborar?</summary>
         <div class="contenido-acordeon">
+          <p>Actualmente funciona para:</p>
+          <ul>
+            <li><strong>Nivel Medio:</strong> Cargo de hs. en secundaria y cargo de Preceptor.</li>
+            <li><strong>Nivel Primario:</strong> Maestrx de Grado y Maestrx Celador.</li>
+            <li><strong>Nivel Inicial:</strong> Maestrx de jardín.</li>
+            <li><strong>Nivel Superior:</strong> Cargo prof. 30 hs (I.F.D.C) y semiexclusivo de 25 hs. (I.F.D.C)</li>
+          </ul>
+          <p><em>Espero pronto brindar cálculo para otros cargos y niveles educativos.</em></p>
           <p>Esta página basa su información de la lectura y análisis de recibos de sueldo compartidos. Si tu cargo no
             aparece,
             notás diferencias en el cálculo, tenés dudas o algún aporte que quieras compartir, envíanos un mail. Podés
@@ -187,6 +198,118 @@
                 <option value="2026-07">Julio 2026</option>
               </select>
 
+      <details class="acordeon-info">
+        <summary>⚠️ Aclaraciones sobre el Bono, Presentismo y Asignaciones</summary>
+        <div class="contenido-acordeon">
+          <p><strong>Bono Extraordinario de mayo:</strong> Se cobró por agente (máximo $300.000 para quienes poseen un
+            cargo o
+            15 hs cátedra en secundaria). Si tienes menos horas, se calcula proporcional. La calculadora te permite
+            incluirlo o quitarlo del cálculo.</p>
+          <p><strong>Presentismo (Inicial y Primaria):</strong> Todavía no está la opción de cargar las faltas
+            justificadas. La calculadora muestra los datos asumiendo el cobro total del ítem. El descuento por
+            inasistencias está en investigación.</p>
+          <p><strong>Asignación familiar:</strong> No está habilitada porque estamos investigando los parámetros
+            provinciales exactos a partir de los cuales se calcula según la cantidad de hijxs.</p>
+        </div>
+      </details>
+
+    </div>
+
+    </section>
+  </section>
+
+  <div class="calculoSalarial">
+
+    <div id="formularioCalculo">
+
+      <h3> Cálculo de sueldo docente San Luis</h3>
+      <div class="formCargo">
+        <span>
+          <label for="nivel">Nivel educativo <select id="nivel" name="nivel">
+              <option value="0" selected>Selecciona un nivel</option>
+              <option value="1">Inicial</option>
+              <option value="2">Primario</option>
+              <option value="3">Secundario</option>
+              <option value="4">Superior</option>
+            </select></label>
+        </span>
+        <span><label for="cargo">Tipo de cargo <select id="cargo" name="cargo">
+              <option value="0" selected>Seleccione un nivel</option>
+              <option value="1">Hs. en Secundario</option>
+              <option value="2">Cargo Preceptor (213p)</option>
+              <option value="3">Maestra/o Celador (259p)</option>
+            </select></label></span>
+      </div>
+      <!--Inicio formulario Hs secundario-->
+      <form id="formSecundario" class="formulario_secundario oculto">
+        <fieldset class="formulario_secundario">
+          <legend>Sueldo por cargo</legend>
+          <p><label for="cantHs">Cantidad de hs<input type="number" id="cantHs" name="cantHs"></label></p>
+
+        </fieldset>
+      </form>
+      <!--Inicio formulario fijo-->
+      <form id="formFijo" class="formFijo oculto">
+        <fieldset class="grid-form">
+          <span><label for="zona" id="zona1">Bonificación por zona<select id="zona" name="zona">
+                <option value="1">0%</option>
+                <option value="2">20%</option>
+                <option value="3">40%</option>
+                <option value="4">60%</option>
+                <option value="5">80%</option>
+                <option value="6">100%</option>
+
+              </select></label></span>
+          <span><label for="antiguedad">Antiguedad docente <select id="antiguedad" name="antiguedad">
+                <option value="0">0 años (0%)</option>
+                <option value="1">1 año (10%)</option>
+                <option value="2">2 a 4 años (15%)</option>
+                <option value="3">5 a 6 años (30%)</option>
+                <option value="4">7 a 9 años (40%)</option>
+                <option value="5">10 a 11 años (50%)</option>
+                <option value="6">12 a 14 años (60%)</option>
+                <option value="7">15 a 16 años (70%)</option>
+                <option value="8">17 a 18 años (80%)</option>
+                <option value="9">20 a 21 años (100%)</option>
+                <option value="10">22 a 23 años (110%)</option>
+                <option value="11">Más de 24 años (120%)</option>
+              </select>
+            </label></span>
+          <span><label for="cantHijxs">Cantidad de Hijxs <input type="number" id="cantHijxs" name="cantHijxs"
+                disabled></label></span>
+          <span><label for="afiliacionSindical">Afiliación Sindical</label><select name="afiliacionSindical"
+              id="afiliacionSindical">
+              <option value="0">No afiliado</option>
+              <option value="1">Amet</option>
+              <option value="2">Uda</option>
+            </select></span>
+          <span id="presencialidadCont">
+            <label for="presencialidad">Ítem Presencialidad
+              <select name="presencialidad" id="presencialidad">
+                <option value="1">Sí</option>
+                <option value="0">No</option>
+              </select>
+            </label>
+          </span>
+        </fieldset>
+      </form>
+      <!--Fin formulario fijo-->
+      <!--Botón de selección de mes para cálculo-->
+      <div style="margin: 2rem auto; text-align: center; max-width: 35rem;">
+        <label for="mesCalculo" style="font-weight: bold; color: var(--primario); font-size: 1.6rem;">Seleccioná el mes
+          a calcular:</label>
+        <select id="mesCalculo" class="boton"
+          style="background-color: var(--blanco); color: var(--negro); border: 2px solid var(--primario); margin-bottom: 1rem; width: 100%;">
+          <option value="2026-05">Mayo 2026</option>
+          <option value="2026-05-B">Mayo 2026 (+ Bono Excepcional)</option>
+          <option value="2026-06">Junio 2026</option>
+          <option value="2026-06-SAC" style="background-color: #e8f5e9;">Junio 2026 (+ Aguinaldo)</option>
+          <option value="2026-07" selected>Julio 2026</option>
+        </select>
+
+        <button type="button" id="btnCalcularSueldo" class="boton oculto">
+          Calcular Sueldo
+        </button>
               <button type="button" id="btnCalcularSueldo" class="boton oculto">
                 Calcular Sueldo
               </button>
@@ -358,6 +481,170 @@
     </section>
   </main>
 
+      <details class="desplegable">
+        <summary>🟢 Conceptos Remunerativos</summary>
+        <table class="tabla-detalle">
+          <tr id="filaSueldoBasico" class="fila-resultado">
+            <td>Sueldo Básico</td>
+            <td id="resultadoSueldo">$0.00</td>
+          </tr>
+          <tr id="filaZona" class="fila-resultado">
+            <td>Pago por Zona</td>
+            <td id="pagoZona">$0.00</td>
+          </tr>
+          <tr id="filaAntiguedad" class="fila-resultado">
+            <td>Pago por Antigüedad</td>
+            <td id="pagoAntiguedad">$0.00</td>
+          </tr>
+          <tr id="filaComplementoRem" class="fila-resultado">
+            <td>Complemento Remunerativo</td>
+            <td id="complementoRemunerativo">$0.00</td>
+          </tr>
+          <tr id="filaAdicionalCargo" class="fila-resultado">
+            <td>Adicional Por Cargo</td>
+            <td id="adicionalPorCargo">$0.00</td>
+          </tr>
+          <tr id="filaEnseñanzaEnAula" class="fila-resultado">
+            <td>Enseñanza en aula (presentismo)</td>
+            <td id="enseñanzaEnAula">$0.00</td>
+          </tr>
+          <tr class="fila-subtotal">
+            <th>Total Remunerativo</th>
+            <th id="totalCAportes">$0.00</th>
+          </tr>
+        </table>
+      </details>
+
+      <details class="desplegable">
+        <summary>🔵 Conceptos No Remunerativos</summary>
+        <table class="tabla-detalle">
+          <tr id="filaComplementoNoRem" class="fila-resultado">
+            <td>Complemento No Remunerativo</td>
+            <td id="complementoNoRemunerativo">$0.00</td>
+          </tr>
+          <tr id="filaSumaNoRem" class="fila-resultado">
+            <td>Suma No Remunerativa</td>
+            <td id="sumaNoRemunerativa">$0.00</td>
+          </tr>
+          <tr id="filaIncentivoDocente" class="fila-resultado">
+            <td>Incentivo Docente</td>
+            <td id="incentivoDocente">$0.00</td>
+          </tr>
+          <tr id="filaAsignacionXHijxs" class="fila-resultado">
+            <td>Asignación por hijxs</td>
+            <td id="asignacionXHijxs">$0.00</td>
+          </tr>
+          <tr id="filaBonoExtraordinario" class="fila-resultado">
+            <td class="fila-resultado">Bono Extraordinario por única vez</td>
+            <td id="bonoExtraordinario">$0.00</td>
+          </tr>
+          <tr class="fila-subtotal">
+            <th>Total No Remunerativo</th>
+            <th id="totalSAportes">$0.00</th>
+          </tr>
+        </table>
+      </details>
+
+      <details class="desplegable">
+        <summary>🔴 Descuentos </summary>
+        <table class="tabla-detalle">
+          <tr class="fila-resultado">
+            <td>Jubilación (11%)</td>
+            <td id="aporteJubilatorio">$0.00</td>
+          </tr>
+          <tr class="fila-resultado">
+            <td>Jubilación Reg. Esp.</td>
+            <td id="aporteJubilatorioEsp">$0.00</td>
+          </tr>
+          <tr class="fila-resultado">
+            <td>Obra Social</td>
+            <td id="obraSocial">$0.00</td>
+          </tr>
+          <tr id="filaDescuentoSindical" class="fila-resultado">
+            <td>Afiliación Sindical</td>
+            <td id="descuentoSindical">$0.00</td>
+          </tr>
+          <tr class="fila-resultado">
+            <td>Seguro Obligatorio</td>
+            <td id="seguroObligatorio">$0.00</td>
+          </tr>
+          <tr class="fila-subtotal">
+            <th>Total Descuentos</th>
+            <th id="totalDescuentosTexto">$0.00</th>
+          </tr>
+        </table>
+      </details>
+      <details class="desplegable">
+        <summary>🎄 Aguinaldo (SAC) Estimado</summary>
+        <table class="tabla-detalle">
+          <tr class="fila-resultado">
+            <td>SAC Bruto (50% Remunerativo)</td>
+            <td id="sacBruto">$0.00</td>
+          </tr>
+          <tr class="fila-resultado" style="color: #dc3545;">
+            <td>Descuentos de Ley (Jub. + Obra Soc.)</td>
+            <td id="sacDescuentos">-$0.00</td>
+          </tr>
+          <tr class="fila-subtotal" style="background-color: #d4edda; color: #155724;">
+            <th>SAC de Bolsillo (A Cobrar)</th>
+            <th id="sacNeto">$0.00</th>
+          </tr>
+          <tr>
+            <td colspan="2" style="font-size: 0.85rem; color: #666; padding: 8px; font-style: italic;">
+              * No incluye sumas fijas (FONID/Conectividad) ni descuentos de seguros fijos.
+            </td>
+          </tr>
+        </table>
+      </details>
+    </div>
+    <div class="contenedorGraficos" id="botonGraficos">
+      <details style="margin: 20px auto; text-align: center;">
+
+        <summary
+          style="cursor: pointer; padding: 12px; background-color: #e9ecef; border-radius: 8px; font-weight: bold; list-style: none; display: inline-block;">
+          📊 Ver gráfico de proporciones sobre el sueldo bruto.
+        </summary>
+
+        <div style="max-width: 480px; margin: 20px auto;">
+          <canvas id="miGrafico"></canvas>
+        </div>
+
+      </details>
+    </div>
+
+  </div>
+  <section class="contenedorAyuda intro">
+    <div class="mensaje-comunitario mb-3">
+      <h3>Sobre este proyecto</h3>
+      <p>Esta calculadora es una herramienta de uso gratuito y sin fines de lucro, desarrollada (con mucho esfuerzo y
+        tiempo dedicado) por docentes con el objetivo de brindar transparencia y claridad sobre nuestra liquidación de
+        sueldos. Creemos firmemente que entender nuestro recibo de sueldo es un paso
+        para defender nuestras condiciones laborales. Este proyecto se sostiene gracias al esfuerzo colectivo y a la
+        convicción de democratizar esta información. Al ser un desarrollo en constante evolución y actualización,
+        necesitamos construirlo entre todxs. Tu aporte también lo hace posible.</p>
+    </div>
+    <details class="acordeon-info">
+      <summary>🤝 ¿Te sirve este proyecto? ¿Quieres colaborar?</summary>
+      <div class="contenido-acordeon">
+        <p>Esta página basa su información de la lectura y análisis de recibos de sueldo compartidos. Si tu cargo no
+          aparece,
+          notás diferencias en el cálculo, tenés dudas o algún aporte que quieras compartir, envíanos un mail. Podés
+          agregar una foto o PDF de tu recibo (puedes tachar tu nombre y CUIL). ¡Nos ayuda a sumar más cargos al
+          sistema!</p>
+        <button id="btnEnviarRecibo" class="boton mt-2">📩 Enviar e-mail </button>
+        <div class="seccion-colaboracion mt-3" style="text-align: center;">
+          <p>¿Te sirvió la herramienta? Podés ayudar a mantenerla activa:</p>
+
+          <a href="https://mpago.la/2dPdKPu" target="_blank" class="boton-mp">
+            Aporte económico al proyecto ($1.000)
+          </a>
+
+          <p class="alias-texto mt-2">
+            O por transferencia al Alias: <br>
+            <strong>gonzalodelcastello</strong>
+          </p>
+        </div>
+      </div>
 
 
   <footer class="footer">
