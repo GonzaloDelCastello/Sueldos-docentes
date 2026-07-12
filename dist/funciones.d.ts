@@ -39,9 +39,12 @@ export declare function crearGraficoTorta(resultados: Resultados, descuentos: De
 export declare function ejecutarComparativa(mesInicio: string, mesFin: string): {
     inflacion: number;
 } | undefined;
-export declare function compararPeriodo(mesInicio: string, mesFin: string, cargoKey: keyof typeof COEFICIENTES_CARGOS): {
+export declare function compararPeriodo(mesInicio: string, mesFin: string): {
     inflacionPorcentual: number;
     variacionSalarial: number;
+    basicoInicio: number;
+    basicoFin: number;
 };
+export declare function obtenerClaveCargo(value: string): keyof typeof COEFICIENTES_CARGOS;
 export {};
 //# sourceMappingURL=funciones.d.ts.map

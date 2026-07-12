@@ -814,24 +814,35 @@ export function ejecutarComparativa(mesInicio, mesFin) {
     const inflacion = calcularInflacionAcumulada(mesInicio, mesFin);
     return { inflacion };
 }
-export function compararPeriodo(mesInicio, mesFin, cargoKey) {
-    // 1. Inflación acumulada en el periodo (Interés compuesto)
+export function compararPeriodo(mesInicio, mesFin) {
+    // ... (el cálculo de la inflación queda igual) ...
     const mesesFiltrados = HISTORIAL_INFLACION.filter(m => m.fecha > mesInicio && m.fecha <= mesFin);
     let inflacionAcumulada = 1;
     for (const mes of mesesFiltrados) {
         inflacionAcumulada *= (1 + (mes.inflacionMensual / 100));
     }
     const inflacionPorcentual = (inflacionAcumulada - 1) * 100;
-    // 2. Variación salarial en el periodo (Basado en el valor hora)
+    // ... (el cálculo del salario queda igual) ...
     const basicoInicio = HISTORIAL_BASICO[mesInicio]?.valorHora || 0;
     const basicoFin = HISTORIAL_BASICO[mesFin]?.valorHora || 0;
-    // Si no tenemos datos, evitamos dividir por cero
-    if (basicoInicio === 0)
-        return { inflacionPorcentual, variacionSalarial: 0 };
-    const variacionSalarial = ((basicoFin / basicoInicio) - 1) * 100;
+    let variacionSalarial = 0;
+    if (basicoInicio !== 0) {
+        variacionSalarial = ((basicoFin / basicoInicio) - 1) * 100;
+    }
+    // 📍 ACÁ ESTÁ EL CAMBIO: Agregamos las dos variables al resultado final
     return {
         inflacionPorcentual,
-        variacionSalarial
+        variacionSalarial,
+        basicoInicio, // <--- Agregado
+        basicoFin // <--- Agregado
     };
+}
+export function obtenerClaveCargo(value) {
+    const mapa = {
+        "1": "horaSecundaria",
+        "2": "preceptor",
+        "3": "maestroGrado"
+    };
+    return mapa[value] || "horaSecundaria";
 }
 //# sourceMappingURL=funciones.js.map
