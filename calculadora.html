@@ -99,13 +99,11 @@
       <h2>Comparativa Salario vs. Inflación</h2>
 
       <div class="contenedor-form-inflacion">
-        <label for="mesInicio">Desde (Mes de cobro):</label>
-        <input type="month" id="mesInicio" name="mesInicio" min="2023-06">
-
-        <label for="mesFin">Hasta (Mes a comparar):</label>
-        <input type="month" id="mesFin" name="mesFin">
-
-        <button id="btnComparar" class="boton">Realizar comparativa</button>
+        <label>Periodo de análisis:</label>
+        <input type="month" id="mesInicio" value="2023-06">
+        <span>a</span>
+        <input type="month" id="mesFin" value="2026-06">
+        <button id="btnComparar">Comparar</button>
       </div>
 
       <div id="resultadoInflacion" class="oculto">

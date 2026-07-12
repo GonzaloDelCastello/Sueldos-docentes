@@ -1,6 +1,6 @@
 import { obtenerConfiguracionActual2, obtenerConfiguracionActual1, calcularBasicoCargo, COEFICIENTES_CARGOS, HISTORIAL_IFDC, COEFICIENTES_CARGOS1 } from "./historial.js";
 import { HISTORIAL_INFLACION } from './inflacion.js';
-import { HISTORIAL_BASICO } from './historialBasicos.js';
+import { HISTORIAL_BASICO } from './historial.js';
 
 declare const Chart: any; // Declaración para usar Chart.js sin errores de TypeScript
 let miGraficoSueldo: any = null; // Variable global para almacenar la instancia del gráfico
@@ -996,5 +996,29 @@ export function ejecutarComparativa(mesInicio: string, mesFin: string) {
   
   return {inflacion};
 
+}
+
+export function compararPeriodo(mesInicio: string, mesFin: string, cargoKey: keyof typeof COEFICIENTES_CARGOS) {
+    // 1. Inflación acumulada en el periodo (Interés compuesto)
+    const mesesFiltrados = HISTORIAL_INFLACION.filter(m => m.fecha > mesInicio && m.fecha <= mesFin);
+    let inflacionAcumulada = 1;
+    for (const mes of mesesFiltrados) {
+        inflacionAcumulada *= (1 + (mes.inflacionMensual / 100));
+    }
+    const inflacionPorcentual = (inflacionAcumulada - 1) * 100;
+
+    // 2. Variación salarial en el periodo (Basado en el valor hora)
+    const basicoInicio = HISTORIAL_BASICO[mesInicio]?.valorHora || 0;
+    const basicoFin = HISTORIAL_BASICO[mesFin]?.valorHora || 0;
+    
+    // Si no tenemos datos, evitamos dividir por cero
+    if (basicoInicio === 0) return { inflacionPorcentual, variacionSalarial: 0 };
+
+    const variacionSalarial = ((basicoFin / basicoInicio) - 1) * 100;
+
+    return { 
+        inflacionPorcentual, 
+        variacionSalarial 
+    };
 }
 
