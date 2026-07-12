@@ -1,4 +1,6 @@
 import { obtenerConfiguracionActual2, obtenerConfiguracionActual1, calcularBasicoCargo, COEFICIENTES_CARGOS, HISTORIAL_IFDC, COEFICIENTES_CARGOS1 } from "./historial.js";
+import { HISTORIAL_INFLACION } from './inflacion.js';
+import { HISTORIAL_BASICO } from './historial.js';
 
 declare const Chart: any; // Declaración para usar Chart.js sin errores de TypeScript
 let miGraficoSueldo: any = null; // Variable global para almacenar la instancia del gráfico
@@ -969,3 +971,66 @@ if (btnEnviarRecibo) {
     window.location.href = `mailto:${correoArmado}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
   });
 }
+
+//Comparativo sueldos vs inflación
+function calcularInflacionAcumulada(mesInicio: string, mesFin: string): number {
+  const mesesFiltrados = HISTORIAL_INFLACION.filter(mes => {
+    mes.fecha >= mesInicio && mes.fecha <= mesFin;
+  });
+
+  let acumulado = 1;
+  for (let mes of mesesFiltrados) {
+    acumulado *= (1 + mes.inflacionMensual / 100);
+
+  }
+  return (acumulado -1) *100;;
+}
+
+export function ejecutarComparativa(mesInicio: string, mesFin: string) {
+  if (mesInicio > mesFin) {
+    alert("El mes de inicio debe ser anterior al mes final");
+    return;
+  }
+  
+  const inflacion: number = calcularInflacionAcumulada(mesInicio, mesFin);
+  
+  return {inflacion};
+
+}
+
+export function compararPeriodo(mesInicio: string, mesFin: string) {
+    // ... (el cálculo de la inflación queda igual) ...
+    const mesesFiltrados = HISTORIAL_INFLACION.filter(m => m.fecha > mesInicio && m.fecha <= mesFin);
+    let inflacionAcumulada = 1;
+    for (const mes of mesesFiltrados) {
+        inflacionAcumulada *= (1 + (mes.inflacionMensual / 100));
+    }
+    const inflacionPorcentual = (inflacionAcumulada - 1) * 100;
+
+    // ... (el cálculo del salario queda igual) ...
+    const basicoInicio = HISTORIAL_BASICO[mesInicio]?.valorHora || 0;
+    const basicoFin = HISTORIAL_BASICO[mesFin]?.valorHora || 0;
+    
+    let variacionSalarial = 0;
+    if (basicoInicio !== 0) {
+        variacionSalarial = ((basicoFin / basicoInicio) - 1) * 100;
+    }
+
+    // 📍 ACÁ ESTÁ EL CAMBIO: Agregamos las dos variables al resultado final
+    return { 
+        inflacionPorcentual, 
+        variacionSalarial,
+        basicoInicio,   // <--- Agregado
+        basicoFin       // <--- Agregado
+    };
+}
+export function obtenerClaveCargo(value: string): keyof typeof COEFICIENTES_CARGOS {
+    const mapa: Record<string, keyof typeof COEFICIENTES_CARGOS> = {
+        "1": "horaSecundaria",
+        "2": "preceptor",
+        "3": "maestroGrado"
+        
+    };
+    return mapa[value] || "horaSecundaria";
+}
+

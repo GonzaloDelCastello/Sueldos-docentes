@@ -57,4 +57,9 @@ export declare function obtenerConfiguracionActual2(fecha?: string): Configuraci
 export declare function calcularBasicoCargo(tipoCargo: keyof typeof COEFICIENTES_CARGOS, config: ConfiguracionSalarial1): number;
 export declare const HISTORIAL_BASICA: ConfiguracionSalarial1[];
 export declare const HISTORIAL_IFDC: ConfiguracionSalarial2[];
+export interface MesBasico {
+    valorHora: number;
+    nota?: string;
+}
+export declare const HISTORIAL_BASICO: Record<string, MesBasico>;
 //# sourceMappingURL=historial.d.ts.map

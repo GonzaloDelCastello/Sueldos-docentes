@@ -1,3 +1,4 @@
+import { COEFICIENTES_CARGOS } from "./historial.js";
 export declare let periodoCalculo: string;
 export declare function setPeriodoCalculo(periodo: string): void;
 export declare let incluirSAC: boolean;
@@ -35,5 +36,15 @@ export declare function aPesos(valor: number): string;
 export declare function mostrarResultadoActual(): void;
 export declare function resetearResultados(): void;
 export declare function crearGraficoTorta(resultados: Resultados, descuentos: Descuentos): void;
+export declare function ejecutarComparativa(mesInicio: string, mesFin: string): {
+    inflacion: number;
+} | undefined;
+export declare function compararPeriodo(mesInicio: string, mesFin: string): {
+    inflacionPorcentual: number;
+    variacionSalarial: number;
+    basicoInicio: number;
+    basicoFin: number;
+};
+export declare function obtenerClaveCargo(value: string): keyof typeof COEFICIENTES_CARGOS;
 export {};
 //# sourceMappingURL=funciones.d.ts.map

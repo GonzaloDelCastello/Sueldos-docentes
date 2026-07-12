@@ -1,11 +1,31 @@
-import { setPeriodoCalculo, resetearResultados, setIncluirSAC, mostrarResultadoActual as mostrarResultadoActual } from './funciones.js';
-
+import { setPeriodoCalculo,aPesos, resetearResultados, setIncluirSAC, mostrarResultadoActual as mostrarResultadoActual, ejecutarComparativa, obtenerClaveCargo, compararPeriodo } from './funciones.js';
 let cargo: number = 0; // Variable global para el cargo seleccionado
 let nivel: number = 0; // Variable global para el nivel seleccionado
 const btnMostrarResultadoActual = document.getElementById("btnMostrarResultadoActual") as HTMLButtonElement | null;
 const btnMostrarResultadoActualBono = document.getElementById("btnMostrarResultadoActualBono") as HTMLButtonElement | null;
 const btnGraficos = document.getElementById("botonGraficos") as HTMLButtonElement | null;
 const contenedorResultados = document.getElementById('resultados') as HTMLDivElement;
+
+//Vistas calculadora y comparador
+const tabCalculadora = document.getElementById("tab-calculadora") as HTMLButtonElement | null;
+const tabInflacion = document.getElementById("tab-inflacion") as HTMLButtonElement | null;
+const vistaCalculadora = document.getElementById("vista-calculadora") as HTMLDivElement | null;
+const vistaInflacion = document.getElementById("vista-inflacion") as HTMLDivElement | null;
+
+tabInflacion?.addEventListener("click", () => {
+  vistaCalculadora?.classList.add("oculto");
+  vistaInflacion?.classList.remove("oculto");
+  tabCalculadora?.classList.remove("activo");
+  tabInflacion?.classList.add("activo");
+})
+
+tabCalculadora?.addEventListener("click", () => {
+  vistaInflacion?.classList.add("oculto");
+  vistaCalculadora?.classList.remove("oculto");
+  tabInflacion?.classList.remove("activo");
+  tabCalculadora?.classList.add("activo");
+})
+
 
 document.addEventListener("DOMContentLoaded", function () {
   const menuToggle = document.querySelector('.menu-toggle') as HTMLElement | null;
@@ -229,3 +249,51 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// Comparativa de inflación
+const btnComparar = document.getElementById("btnComparar") as HTMLButtonElement;
+const inputInicio = document.getElementById("mesInicio") as HTMLInputElement;
+const inputFin = document.getElementById("mesFin") as HTMLInputElement;
+
+btnComparar.addEventListener("click", () => {
+    const inicio = inputInicio.value; 
+    const fin = inputFin.value;       
+
+    if (!inicio || !fin) {
+        alert("Seleccioná ambos meses.");
+        return;
+    }
+
+    // Ya no le pasamos el cargo, solo las fechas
+    const resultado = compararPeriodo(inicio, fin);
+
+    if (resultado) {
+        const divRes = document.getElementById("resultadoInflacion") as HTMLElement | null;
+        const pTexto = document.getElementById("textoResultado") as HTMLElement | null;
+        
+        if (divRes && pTexto) {
+            
+            // Usamos tu función para formatear la plata
+            const plataInicio = aPesos(resultado.basicoInicio);
+            const plataFin = aPesos(resultado.basicoFin);
+
+            // Armamos el texto
+            pTexto.innerHTML = `
+                El valor de la hora cátedra en <strong>${inicio}</strong> era de <strong>${plataInicio}</strong>.<br>
+                El valor de la hora cátedra en <strong>${fin}</strong> es de <strong>${plataFin}</strong>.<br><br>
+                En este periodo, la inflación acumulada fue del <strong>${resultado.inflacionPorcentual.toFixed(1)}%</strong>, 
+                mientras que tu sueldo básico aumentó un <strong>${resultado.variacionSalarial.toFixed(1)}%</strong>.
+            `;
+            
+            // Calculamos y mostramos quién ganó
+            const diferencia = resultado.variacionSalarial - resultado.inflacionPorcentual;
+            
+            if (diferencia < 0) {
+                pTexto.innerHTML += `<br><br><span style="color:var(--primario); font-size: 1.2em;"><strong>⚠️ Perdiste ${Math.abs(diferencia).toFixed(1)}% de poder adquisitivo frente a la inflación.</strong></span>`;
+            } else {
+                pTexto.innerHTML += `<br><br><span style="color:green; font-size: 1.2em;"><strong>✅ Le ganaste a la inflación por ${diferencia.toFixed(1)}%.</strong></span>`;
+            }
+            
+            divRes.classList.remove("oculto");
+        }
+    }
+});
