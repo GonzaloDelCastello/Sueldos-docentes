@@ -272,13 +272,7 @@ btnComparar.addEventListener("click", () => {
         pTexto.innerText = `En este periodo, la inflación acumulada fue del ${resultado.inflacion.toFixed(1)}%`;
         divRes.classList.remove("oculto");
     } else {
-        // Opcional: manejar el caso donde el resultado fue undefined
         console.error("No se pudo realizar el cálculo");
     }
 
-    const divRes = document.getElementById("resultadoInflacion") as HTMLElement;
-    const pTexto = document.getElementById("textoResultado") as HTMLElement;
-    
-    pTexto.innerText = `En este periodo, la inflación acumulada fue del ${resultado?.inflacion.toFixed(1)}%`;
-    divRes.classList.remove("oculto");
 });

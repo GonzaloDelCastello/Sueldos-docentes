@@ -1,5 +1,6 @@
 import { obtenerConfiguracionActual2, obtenerConfiguracionActual1, calcularBasicoCargo, COEFICIENTES_CARGOS, HISTORIAL_IFDC, COEFICIENTES_CARGOS1 } from "./historial.js";
 import { HISTORIAL_INFLACION } from './inflacion.js';
+import { HISTORIAL_BASICO } from './historialBasicos.js';
 
 declare const Chart: any; // Declaración para usar Chart.js sin errores de TypeScript
 let miGraficoSueldo: any = null; // Variable global para almacenar la instancia del gráfico
