@@ -1,4 +1,4 @@
-import { setPeriodoCalculo, resetearResultados, setIncluirSAC, mostrarResultadoActual as mostrarResultadoActual } from './funciones.js';
+import { setPeriodoCalculo, resetearResultados, setIncluirSAC, mostrarResultadoActual as mostrarResultadoActual, compararPeriodo, aPesos } from './funciones.js';
 let cargo = 0; // Variable global para el cargo seleccionado
 let nivel = 0; // Variable global para el nivel seleccionado
 const btnMostrarResultadoActual = document.getElementById("btnMostrarResultadoActual");
@@ -243,6 +243,44 @@ document.addEventListener("DOMContentLoaded", () => {
     const fechaEl = document.getElementById("fechaActual");
     if (fechaEl) {
         fechaEl.textContent = new Date().toLocaleDateString("es-AR", opciones);
+    }
+});
+const btnComparar = document.getElementById("btnComparar");
+const inputInicio = document.getElementById("mesInicio");
+const inputFin = document.getElementById("mesFin");
+btnComparar.addEventListener("click", () => {
+    const inicio = inputInicio.value;
+    const fin = inputFin.value;
+    if (!inicio || !fin) {
+        alert("Seleccioná ambos meses.");
+        return;
+    }
+    // Ya no le pasamos el cargo, solo las fechas
+    const resultado = compararPeriodo(inicio, fin);
+    if (resultado) {
+        const divRes = document.getElementById("resultadoInflacion");
+        const pTexto = document.getElementById("textoResultado");
+        if (divRes && pTexto) {
+            // Usamos tu función para formatear la plata
+            const plataInicio = aPesos(resultado.basicoInicio);
+            const plataFin = aPesos(resultado.basicoFin);
+            // Armamos el texto
+            pTexto.innerHTML = `
+                El valor de la hora cátedra en <strong>${inicio}</strong> era de <strong>${plataInicio}</strong>.<br>
+                El valor de la hora cátedra en <strong>${fin}</strong> es de <strong>${plataFin}</strong>.<br><br>
+                En este periodo, la inflación acumulada fue del <strong>${resultado.inflacionPorcentual.toFixed(1)}%</strong>, 
+                mientras que tu sueldo básico aumentó un <strong>${resultado.variacionSalarial.toFixed(1)}%</strong>.
+            `;
+            // Calculamos y mostramos quién ganó
+            const diferencia = resultado.variacionSalarial - resultado.inflacionPorcentual;
+            if (diferencia < 0) {
+                pTexto.innerHTML += `<br><br><span style="color:var(--primario); font-size: 1.2em;"><strong>⚠️ Perdiste ${Math.abs(diferencia).toFixed(1)}% de poder adquisitivo frente a la inflación.</strong></span>`;
+            }
+            else {
+                pTexto.innerHTML += `<br><br><span style="color:green; font-size: 1.2em;"><strong>✅ Le ganaste a la inflación por ${diferencia.toFixed(1)}%.</strong></span>`;
+            }
+            divRes.classList.remove("oculto");
+        }
     }
 });
 //# sourceMappingURL=main.js.map
