@@ -255,7 +255,7 @@ details.desplegable[open] summary::after {
 }
 
 
-#formularioCalculo {
+.formularioCalculo, .contenedor-form-inflacion {
   background-color: var(--terciario);
   padding: 2rem;
   border-radius: 10px;
@@ -266,8 +266,8 @@ details.desplegable[open] summary::after {
   border-right: 5px solid var(--primario);
 }
 
-#formularioCalculo,
-#formularioCargo {
+.formularioCalculo,
+.formularioCargo {
   width: 95%;
   max-width: 100%;
   margin: auto;
