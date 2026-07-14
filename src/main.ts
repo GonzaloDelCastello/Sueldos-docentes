@@ -279,8 +279,8 @@ btnComparar.addEventListener("click", () => {
 
             // Armamos el texto
             pTexto.innerHTML = `
-                El valor de la hora cátedra en <strong>${inicio}</strong> era de <strong>${plataInicio}</strong>.<br>
-                El valor de la hora cátedra en <strong>${fin}</strong> es de <strong>${plataFin}</strong>.<br><br>
+                El valor del básico por hora cátedra en <strong>${inicio}</strong> era de <strong>${plataInicio}</strong>.<br>
+                El valor del básico por hora cátedra en <strong>${fin}</strong> es de <strong>${plataFin}</strong>.<br><br>
                 En este periodo, la inflación acumulada fue del <strong>${resultado.inflacionPorcentual.toFixed(1)}%</strong>, 
                 mientras que tu sueldo básico aumentó un <strong>${resultado.variacionSalarial.toFixed(1)}%</strong>.
             `;
@@ -289,9 +289,9 @@ btnComparar.addEventListener("click", () => {
             const diferencia = resultado.variacionSalarial - resultado.inflacionPorcentual;
             
             if (diferencia < 0) {
-                pTexto.innerHTML += `<br><br><span style="color:var(--primario); font-size: 1.2em;"><strong>⚠️ Perdiste ${Math.abs(diferencia).toFixed(1)}% de poder adquisitivo frente a la inflación.</strong></span>`;
+                pTexto.innerHTML += `<br><br><span style="color:var(--primario); font-size: 1.2em;"><strong>⚠️ El básico por hora cátedra perdió ${Math.abs(diferencia).toFixed(1)}% de poder adquisitivo frente a la inflación en este periodo.</strong></span>`;
             } else {
-                pTexto.innerHTML += `<br><br><span style="color:green; font-size: 1.2em;"><strong>✅ Le ganaste a la inflación por ${diferencia.toFixed(1)}%.</strong></span>`;
+                pTexto.innerHTML += `<br><br><span style="color:green; font-size: 1.2em;"><strong>✅ El básico por hora cátedra ganó ${diferencia.toFixed(1)}% de poder adquisitivo frente a la inflación en este periodo.</strong></span>`;
             }
             
             divRes.classList.remove("oculto");
