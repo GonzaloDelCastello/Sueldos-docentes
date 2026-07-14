@@ -294,3 +294,56 @@ details.desplegable[open] summary::after {
   font-family: var(--fuenteTitulo);
   margin-bottom: 2rem;
 }
+
+.contenedorTabs {
+    display: flex;
+    justify-content: center; /* Centra los botones. Podés cambiarlo a flex-start si los querés a la izquierda */
+    gap: 5px; /* Separación entre botones */
+    border-bottom: 2px solid var(--primario); /* La línea roja que une todo */
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+/* 2. El diseño base de CADA botón (Estado inactivo) */
+.btn-tab {
+    background-color: var(--terciario); /* Gris clarito de fondo */
+    color: var(--secundarioOscuro); /* Texto en gris oscuro */
+    border: 2px solid var(--terciario);
+    border-bottom: none; /* Le sacamos el borde de abajo para que apoye en la línea del contenedor */
+    padding: 12px 24px;
+    font-size: 1.6rem;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0; /* Redondeamos SOLO las esquinas de arriba */
+    transition: all 0.3s ease; /* Suaviza el cambio de color al pasar el mouse */
+}
+
+/* 3. Efecto al pasar el mouse por una pestaña inactiva */
+.btn-tab:hover:not(.activo) {
+    background-color: #d1d5db; /* Un gris apenas más oscuro */
+    color: var(--negro);
+}
+
+/* 4. El diseño de la pestaña ACTIVA (Donde está el usuario) */
+.btn-tab.activo {
+    background-color: var(--blanco);
+    color: var(--primario);
+    border: 2px solid var(--primario);
+    border-bottom: 2px solid var(--blanco); /* Línea blanca para "borrar" la línea del contenedor */
+    margin-bottom: -2px; /* ¡El truco de magia! Baja la pestaña 2px para superponerse a la línea base */
+}
+
+/* Diseño responsivo: En celulares, que los botones ocupen todo el ancho y el texto se ajuste */
+@media (max-width: 768px) {
+    .contenedorTabs {
+        flex-direction: row;
+        width: 100%;
+    }
+    .btn-tab {
+        flex: 1; /* Hace que ambos botones midan exactamente lo mismo */
+        padding: 12px 10px;
+        font-size: 1.4rem;
+        text-align: center;
+    }
+}
