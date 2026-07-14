@@ -5,6 +5,23 @@ const btnMostrarResultadoActual = document.getElementById("btnMostrarResultadoAc
 const btnMostrarResultadoActualBono = document.getElementById("btnMostrarResultadoActualBono");
 const btnGraficos = document.getElementById("botonGraficos");
 const contenedorResultados = document.getElementById('resultados');
+//Vistas calculadora y comparador
+const tabCalculadora = document.getElementById("tab-calculadora");
+const tabInflacion = document.getElementById("tab-inflacion");
+const vistaCalculadora = document.getElementById("vista-calculadora");
+const vistaInflacion = document.getElementById("vista-inflacion");
+tabInflacion?.addEventListener("click", () => {
+    vistaCalculadora?.classList.add("oculto");
+    vistaInflacion?.classList.remove("oculto");
+    tabCalculadora?.classList.remove("activo");
+    tabInflacion?.classList.add("activo");
+});
+tabCalculadora?.addEventListener("click", () => {
+    vistaInflacion?.classList.add("oculto");
+    vistaCalculadora?.classList.remove("oculto");
+    tabInflacion?.classList.remove("activo");
+    tabCalculadora?.classList.add("activo");
+});
 document.addEventListener("DOMContentLoaded", function () {
     const menuToggle = document.querySelector('.menu-toggle');
     const navegacion = document.querySelector('.navegacion');
