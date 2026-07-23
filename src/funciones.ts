@@ -987,17 +987,6 @@ function calcularInflacionAcumulada(mesInicio: string, mesFin: string): number {
   return (acumulado - 1) * 100;;
 }
 
-export function ejecutarComparativa(mesInicio: string, mesFin: string) {
-  if (mesInicio > mesFin) {
-    alert("El mes de inicio debe ser anterior al mes final");
-    return;
-  }
-
-  const inflacion: number = calcularInflacionAcumulada(mesInicio, mesFin);
-
-  return { inflacion };
-
-}
 
 export function compararPeriodo(mesInicio: string, mesFin: string) {
 
