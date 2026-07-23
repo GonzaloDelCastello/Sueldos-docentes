@@ -815,26 +815,24 @@ export function ejecutarComparativa(mesInicio, mesFin) {
     return { inflacion };
 }
 export function compararPeriodo(mesInicio, mesFin) {
-    // ... (el cálculo de la inflación queda igual) ...
-    const mesesFiltrados = HISTORIAL_INFLACION.filter(m => m.fecha > mesInicio && m.fecha <= mesFin);
-    let inflacionAcumulada = 1;
-    for (const mes of mesesFiltrados) {
-        inflacionAcumulada *= (1 + (mes.inflacionMensual / 100));
-    }
-    const inflacionPorcentual = (inflacionAcumulada - 1) * 100;
-    // ... (el cálculo del salario queda igual) ...
+    let inflacionPorcentual = calcularInflacionAcumulada(mesInicio, mesFin);
+    // const mesesFiltrados = HISTORIAL_INFLACION.filter(m => m.fecha > mesInicio && m.fecha <= mesFin);
+    // let inflacionAcumulada = 1;
+    // for (const mes of mesesFiltrados) {
+    //     inflacionAcumulada *= (1 + (mes.inflacionMensual / 100));
+    // }
+    // const inflacionPorcentual = (inflacionAcumulada - 1) * 100;
     const basicoInicio = HISTORIAL_BASICO[mesInicio]?.valorHora || 0;
     const basicoFin = HISTORIAL_BASICO[mesFin]?.valorHora || 0;
     let variacionSalarial = 0;
     if (basicoInicio !== 0) {
         variacionSalarial = ((basicoFin / basicoInicio) - 1) * 100;
     }
-    // 📍 ACÁ ESTÁ EL CAMBIO: Agregamos las dos variables al resultado final
     return {
         inflacionPorcentual,
         variacionSalarial,
-        basicoInicio, // <--- Agregado
-        basicoFin // <--- Agregado
+        basicoInicio,
+        basicoFin
     };
 }
 //# sourceMappingURL=funciones.js.map
