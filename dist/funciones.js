@@ -815,13 +815,19 @@ export function ejecutarComparativa(mesInicio, mesFin) {
     return { inflacion };
 }
 export function compararPeriodo(mesInicio, mesFin) {
+    if (mesInicio > mesFin) {
+        alert("El mes de inicio debe ser anterior al mes final");
+        return;
+    }
+    if (mesInicio < "2023-06") {
+        alert("Existen datos a partir de Junio de 2023. Seleccione una fecha posterior a este periodo.");
+        return;
+    }
+    if (mesFin > "2026-06") {
+        alert("Existen datos hasta de Junio de 2026. Seleccione una fecha anterior a este periodo.");
+        return;
+    }
     let inflacionPorcentual = calcularInflacionAcumulada(mesInicio, mesFin);
-    // const mesesFiltrados = HISTORIAL_INFLACION.filter(m => m.fecha > mesInicio && m.fecha <= mesFin);
-    // let inflacionAcumulada = 1;
-    // for (const mes of mesesFiltrados) {
-    //     inflacionAcumulada *= (1 + (mes.inflacionMensual / 100));
-    // }
-    // const inflacionPorcentual = (inflacionAcumulada - 1) * 100;
     const basicoInicio = HISTORIAL_BASICO[mesInicio]?.valorHora || 0;
     const basicoFin = HISTORIAL_BASICO[mesFin]?.valorHora || 0;
     let variacionSalarial = 0;

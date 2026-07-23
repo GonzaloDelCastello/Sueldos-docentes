@@ -865,7 +865,7 @@ export function crearGraficoTorta(resultados: Resultados, descuentos: Descuentos
   if (typeof miGraficoSueldo !== 'undefined' && miGraficoSueldo !== null) {
     miGraficoSueldo.destroy();
   }
-  if (!incluirSAC) {resultados.aguinaldoBruto = 0 } 
+  if (!incluirSAC) { resultados.aguinaldoBruto = 0 }
 
   // 1. DICCIONARIO DE DATOS: Preparamos todas las posibles porciones de la torta
   // Agrupamos en tonos de VERDE (Remunerativo) y AZUL/VIOLETA (No Remunerativo)
@@ -984,7 +984,7 @@ function calcularInflacionAcumulada(mesInicio: string, mesFin: string): number {
     acumulado *= (1 + mes.inflacionMensual / 100);
 
   }
-  return (acumulado -1) *100;;
+  return (acumulado - 1) * 100;;
 }
 
 export function ejecutarComparativa(mesInicio: string, mesFin: string) {
@@ -992,29 +992,43 @@ export function ejecutarComparativa(mesInicio: string, mesFin: string) {
     alert("El mes de inicio debe ser anterior al mes final");
     return;
   }
-  
+
   const inflacion: number = calcularInflacionAcumulada(mesInicio, mesFin);
-  
-  return {inflacion};
+
+  return { inflacion };
 
 }
 
 export function compararPeriodo(mesInicio: string, mesFin: string) {
 
-    let inflacionPorcentual = calcularInflacionAcumulada(mesInicio, mesFin);
+  if (mesInicio > mesFin) {
+    alert("El mes de inicio debe ser anterior al mes final");
+    return;
+  }
+  if (mesInicio < "2023-06") {
+    alert("Existen datos a partir de Junio de 2023. Seleccione una fecha posterior a este periodo.");
+    return;
+  }
+  if (mesFin > "2026-06") {
+    alert("Existen datos hasta de Junio de 2026. Seleccione una fecha anterior a este periodo.");
+    return;
+  }
 
-    const basicoInicio = HISTORIAL_BASICO[mesInicio]?.valorHora || 0;
-    const basicoFin = HISTORIAL_BASICO[mesFin]?.valorHora || 0;
-    
-    let variacionSalarial = 0;
-    if (basicoInicio !== 0) {
-        variacionSalarial = ((basicoFin / basicoInicio) - 1) * 100;
-    }
+  
+  let inflacionPorcentual = calcularInflacionAcumulada(mesInicio, mesFin);
 
-    return { 
-        inflacionPorcentual, 
-        variacionSalarial,
-        basicoInicio,   
-        basicoFin       
-    };
+  const basicoInicio = HISTORIAL_BASICO[mesInicio]?.valorHora || 0;
+  const basicoFin = HISTORIAL_BASICO[mesFin]?.valorHora || 0;
+
+  let variacionSalarial = 0;
+  if (basicoInicio !== 0) {
+    variacionSalarial = ((basicoFin / basicoInicio) - 1) * 100;
+  }
+
+  return {
+    inflacionPorcentual,
+    variacionSalarial,
+    basicoInicio,
+    basicoFin
+  };
 }

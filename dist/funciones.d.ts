@@ -43,6 +43,6 @@ export declare function compararPeriodo(mesInicio: string, mesFin: string): {
     variacionSalarial: number;
     basicoInicio: number;
     basicoFin: number;
-};
+} | undefined;
 export {};
 //# sourceMappingURL=funciones.d.ts.map
