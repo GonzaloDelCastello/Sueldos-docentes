@@ -796,17 +796,18 @@ if (btnEnviarRecibo) {
 }
 // Funciones comparador de inflacion
 function calcularInflacionAcumulada(mesInicio, mesFin) {
-    const mesesFiltrados = HISTORIAL_INFLACION.filter(mes => {
-        mes.fecha >= mesInicio && mes.fecha <= mesFin;
-    });
+    const mesesFiltrados = HISTORIAL_INFLACION.filter(mes => mes.fecha >= mesInicio && mes.fecha <= mesFin);
+    console.log("Entra en calcularInflacion()");
     let acumulado = 1;
     for (let mes of mesesFiltrados) {
         acumulado *= (1 + mes.inflacionMensual / 100);
     }
+    console.log("acumulado " + acumulado);
     return (acumulado - 1) * 100;
     ;
 }
 export function compararPeriodo(mesInicio, mesFin) {
+    console.log("Entró en la función compararPeriodo");
     if (mesInicio > mesFin) {
         alert("El mes de inicio debe ser anterior al mes final");
         return;
@@ -826,6 +827,7 @@ export function compararPeriodo(mesInicio, mesFin) {
     if (basicoInicio !== 0) {
         variacionSalarial = ((basicoFin / basicoInicio) - 1) * 100;
     }
+    console.log(inflacionPorcentual);
     return {
         inflacionPorcentual,
         variacionSalarial,

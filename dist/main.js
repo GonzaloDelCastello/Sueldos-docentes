@@ -10,16 +10,16 @@ const tabCalculadora = document.getElementById("tab-calculadora");
 const tabInflacion = document.getElementById("tab-inflacion");
 const vistaCalculadora = document.getElementById("vista-calculadora");
 const vistaInflacion = document.getElementById("vista-inflacion");
-tabInflacion?.addEventListener("click", () => {
-    alert("En mantenimiento.");
-    return;
-});
 // tabInflacion?.addEventListener("click", () => {
-//   vistaCalculadora?.classList.add("oculto");
-//   vistaInflacion?.classList.remove("oculto");
-//   tabCalculadora?.classList.remove("activo");
-//   tabInflacion?.classList.add("activo");
+//   alert("En mantenimiento.");
+//   return;
 // })
+tabInflacion?.addEventListener("click", () => {
+    vistaCalculadora?.classList.add("oculto");
+    vistaInflacion?.classList.remove("oculto");
+    tabCalculadora?.classList.remove("activo");
+    tabInflacion?.classList.add("activo");
+});
 tabCalculadora?.addEventListener("click", () => {
     vistaInflacion?.classList.add("oculto");
     vistaCalculadora?.classList.remove("oculto");
@@ -259,7 +259,6 @@ btnComparar.addEventListener("click", () => {
         alert("Seleccioná ambos meses.");
         return;
     }
-    // Ya no le pasamos el cargo, solo las fechas
     const resultado = compararPeriodo(inicio, fin);
     if (resultado) {
         const divRes = document.getElementById("resultadoInflacion");
