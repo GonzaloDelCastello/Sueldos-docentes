@@ -276,8 +276,9 @@ btnComparar.addEventListener("click", () => {
             `;
             // Calculamos y mostramos quién ganó
             const diferencia = resultado.variacionSalarial - resultado.inflacionPorcentual;
+            const razon = (resultado.variacionSalarial / resultado.inflacionPorcentual) * 100;
             if (diferencia < 0) {
-                pTexto.innerHTML += `<br><br><span style="color:var(--primario); font-size: 1.2em;"><strong>⚠️ El básico por hora cátedra perdió ${Math.abs(diferencia).toFixed(1)}% de poder adquisitivo frente a la inflación en este periodo.</strong></span>`;
+                pTexto.innerHTML += `<br><br><span style="color:var(--primario); font-size: 1.2em;"><strong>⚠️ El básico por hora cátedra perdió ${Math.abs(diferencia).toFixed(1)}% de poder adquisitivo frente a la inflación en este periodo. <br> Es decir que el salario hoy es ${razon.toFixed(1)}% de tu poder de compra con el mes comparado.</strong></span>`;
             }
             else {
                 pTexto.innerHTML += `<br><br><span style="color:green; font-size: 1.2em;"><strong>✅ El básico por hora cátedra ganó ${diferencia.toFixed(1)}% de poder adquisitivo frente a la inflación en este periodo.</strong></span>`;
