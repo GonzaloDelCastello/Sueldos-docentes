@@ -806,14 +806,6 @@ function calcularInflacionAcumulada(mesInicio, mesFin) {
     return (acumulado - 1) * 100;
     ;
 }
-export function ejecutarComparativa(mesInicio, mesFin) {
-    if (mesInicio > mesFin) {
-        alert("El mes de inicio debe ser anterior al mes final");
-        return;
-    }
-    const inflacion = calcularInflacionAcumulada(mesInicio, mesFin);
-    return { inflacion };
-}
 export function compararPeriodo(mesInicio, mesFin) {
     if (mesInicio > mesFin) {
         alert("El mes de inicio debe ser anterior al mes final");
