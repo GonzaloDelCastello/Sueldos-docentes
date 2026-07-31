@@ -322,8 +322,8 @@ export const HISTORIAL_IFDC: ConfiguracionSalarial2[] = [
     descripcion: "Actualización Julio 2026",
     basicoCargo_Hora: 644044.53, 
     porcentajes: {
-        remunerativo: 0.65, 
-        noRemunerativo: 0.30, 
+        remunerativo: 0.70, //Nueva estructura
+        noRemunerativo: 0.25, //Nueva estructura 
         adicionalCargo: 0.34999 
     },
     fonid: 57400, 
