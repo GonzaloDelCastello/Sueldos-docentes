@@ -154,8 +154,8 @@ export const HISTORIAL_BASICA = [
         descripcion: "Actualización Julio 2026",
         basicoCargo_Hora: 17734.50,
         porcentajes: {
-            remunerativo: 1.30,
-            noRemunerativo: 1.07,
+            remunerativo: 1.40,
+            noRemunerativo: 0.97,
             adicionalCargo: 0.33
         },
         fonid: 1913.3333,
