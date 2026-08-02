@@ -13,16 +13,16 @@ const tabInflacion = document.getElementById("tab-inflacion") as HTMLButtonEleme
 const vistaCalculadora = document.getElementById("vista-calculadora") as HTMLDivElement | null;
 const vistaInflacion = document.getElementById("vista-inflacion") as HTMLDivElement | null;
 
+ tabInflacion?.addEventListener("click", () => {
+   alert("En mantenimiento.");
+   return;
+ })
 // tabInflacion?.addEventListener("click", () => {
-//   alert("En mantenimiento.");
-//   return;
+//   vistaCalculadora?.classList.add("oculto");
+//   vistaInflacion?.classList.remove("oculto");
+//   tabCalculadora?.classList.remove("activo");
+//   tabInflacion?.classList.add("activo");
 // })
-tabInflacion?.addEventListener("click", () => {
-  vistaCalculadora?.classList.add("oculto");
-  vistaInflacion?.classList.remove("oculto");
-  tabCalculadora?.classList.remove("activo");
-  tabInflacion?.classList.add("activo");
-})
 
 tabCalculadora?.addEventListener("click", () => {
   vistaInflacion?.classList.add("oculto");
