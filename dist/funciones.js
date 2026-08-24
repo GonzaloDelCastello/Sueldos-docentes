@@ -3,7 +3,7 @@ import { HISTORIAL_BASICO } from "./historial.js";
 import { HISTORIAL_INFLACION } from "./inflacion.js";
 let miGraficoSueldo = null; // Variable global para almacenar la instancia del gráfico
 // Variable que guarda el mes que el usuario quiere calcular (por defecto Febrero 26)
-export let periodoCalculo = "2026-06";
+export let periodoCalculo = "2026-08";
 // Función para cambiar el mes desde los botones
 export function setPeriodoCalculo(periodo) {
     periodoCalculo = periodo;

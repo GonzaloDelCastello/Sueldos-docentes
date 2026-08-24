@@ -161,6 +161,19 @@ export const HISTORIAL_BASICA = [
         fonid: 1913.3333,
         sumaNoRemunerativa: 4667.33333,
         bonoExtraordinario: 0
+    },
+    {
+        fecha: "2026-08",
+        descripcion: "Actualización Agosto 2026",
+        basicoCargo_Hora: 18505.56,
+        porcentajes: {
+            remunerativo: 1.40,
+            noRemunerativo: 0.97,
+            adicionalCargo: 0.33
+        },
+        fonid: 1913.3333,
+        sumaNoRemunerativa: 4667.33333,
+        bonoExtraordinario: 0
     }
 ];
 // HISTORIAL DE AUMENTOS SALARIALES - IFDC
@@ -260,6 +273,19 @@ export const HISTORIAL_IFDC = [
         fecha: "2026-07",
         descripcion: "Actualización Julio 2026",
         basicoCargo_Hora: 644044.53,
+        porcentajes: {
+            remunerativo: 0.70, //Nueva estructura
+            noRemunerativo: 0.25, //Nueva estructura 
+            adicionalCargo: 0.34999
+        },
+        fonid: 57400,
+        sumaNoRemunerativa: 157894.07,
+        bonoExtraordinario: 0
+    },
+    {
+        fecha: "2026-08",
+        descripcion: "Actualización Agosto 2026",
+        basicoCargo_Hora: 672046.44,
         porcentajes: {
             remunerativo: 0.70, //Nueva estructura
             noRemunerativo: 0.25, //Nueva estructura 

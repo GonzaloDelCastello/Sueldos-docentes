@@ -6,7 +6,7 @@ declare const Chart: any; // Declaración para usar Chart.js sin errores de Type
 let miGraficoSueldo: any = null; // Variable global para almacenar la instancia del gráfico
 
 // Variable que guarda el mes que el usuario quiere calcular (por defecto Febrero 26)
-export let periodoCalculo: string = "2026-06";
+export let periodoCalculo: string = "2026-08";
 
 // Función para cambiar el mes desde los botones
 export function setPeriodoCalculo(periodo: string) {
@@ -17,11 +17,6 @@ export let incluirSAC: boolean = false;
 export function setIncluirSAC(valor: boolean) { incluirSAC = valor; }
 
 let cargo: number = 0; // Variable global para el cargo seleccionado
-//let calculoBasicoHsSecundario: number = 15421.3; //11/25
-//let calculoBasicoHsSecundario: number = 14854.34; 07/25
-//let calculoBasicoHsSecundario: number = 14173.99; Básico hs secundaria 04/25
-//let calculoBasicoHsSecundario: number = 12756.59; Básico hs secundaria 02/25
-//let calculoBasicoHsSecundario: number = 11339.19; Básico hs secundaria 01/25
 
 // Defino la interfaz para los resultados
 interface Resultados {
