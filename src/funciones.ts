@@ -735,7 +735,7 @@ function calcularSalarioIfdcSemiExclusivo() {
 }
 
 // Función calcular IFDC Full Time (Trabajar aquí)
-function calcularSalarioIfdcSemiExclusivo() {
+function calcularSalarioIfdcFullTime() {
   // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
   const config = obtenerConfiguracionActual2(periodoCalculo);
 
