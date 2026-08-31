@@ -226,6 +226,9 @@ export function mostrarResultadoActual(): void {
     case 8:
       mostrarCalculoIfdcSemiExclusivo();
       break;
+    case 9:
+      mostrarCalculoIfdcFullTime();
+      break;
     default:
       //Por si selecciona otro valor no calculado
       alert("Este tipo de cargo aún no tiene cálculo implementado.");
@@ -679,8 +682,7 @@ function mostrarCalculoIfdcSemiExclusivo(): void {
     ["filaZona", "filaTotalBolsillo1"]      // ocultar    
   );
 }
-// Función calcular IFDC
-// Función calcular maestrx jardín
+// Función calcular IFDC semi exclusivo
 function calcularSalarioIfdcSemiExclusivo() {
   // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
   const config = obtenerConfiguracionActual2(periodoCalculo);
@@ -732,6 +734,57 @@ function calcularSalarioIfdcSemiExclusivo() {
   };
 }
 
+// Función calcular IFDC Full Time (Trabajar aquí)
+function calcularSalarioIfdcSemiExclusivo() {
+  // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
+  const config = obtenerConfiguracionActual2(periodoCalculo);
+
+  // CALCULAR BÁSICO AUTOMÁTICO
+  // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
+  let basico1 = config.basicoCargo_Hora * COEFICIENTES_CARGOS.ifdcSemiExclusivo;
+
+  let bonificacionAntiguedad = basico1 * calculoAntiguedad();
+
+  // PORCENTAJES DEL HISTORIAL
+  let complementoRemunerativo1 = basico1 * config.porcentajes.remunerativo;
+  let adicionalXCargo1 = basico1 * config.porcentajes.adicionalCargo;
+  let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
+
+  // COMPLEMENTOS NO REMUNERATIVOS FIJOS
+  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.ifdcSemiExclusivo;
+  let incentivoDocente = config.fonid;
+  let adicionalPorDedicacion1 = config.porcentajes.adicionalCargo * basico1;
+  let asignacionXHijxs = calcularAsignacionXHijxs();
+  let bonoExtraordinario = config.bonoExtraordinario;
+
+  // Suma y resultados finales
+  let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalPorDedicacion1 + bonificacionAntiguedad;
+  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs + bonoExtraordinario;
+  let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
+
+
+  // --- CÁLCULO SAC ---
+  const aguinaldo = calcularSAC(totalRemunerativo1);
+
+  return {
+    basico: basico1,
+    //pagoDeZona: bonificacionZona,
+    pagoAntiguedad: bonificacionAntiguedad,
+    complementoRemunerativo: complementoRemunerativo1,
+    adicionalXCargo: adicionalXCargo1,
+    complementoNoRemunerativo: complementoNoRemunerativo1,
+    pagoSumaNoRemunerativa: sumaNoRemunerativa,
+    pagoIncentivoDocente: incentivoDocente,
+    totalRemunerativo: totalRemunerativo1,
+    totalNRemunerativo: totalNRemunerativo1,
+    totalBruto: totalBruto1,
+    asignacionXHijxs: asignacionXHijxs,
+    adicionalPorDedicacion: adicionalPorDedicacion1,
+    aguinaldoBruto: aguinaldo.sacBruto,
+    aguinaldoNeto: aguinaldo.sacNeto,
+    bonoExtraordinario: bonoExtraordinario
+  };
+}
 export function resetearResultados(): void {
   const ids = [
     "resultadoSueldo", "pagoZona", "pagoAntiguedad", "complementoRemunerativo",

@@ -95,6 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
       { value: 0, text: "Selecciona un cargo" },
       { value: 7, text: "Prof. tiempo completo, 30 hs." },
       { value: 8, text: "Prof. semiexclusivo, 25 hs." },
+      { value: 9, text: "Prof. full time, 40 hs." },
     ] // Nivel superior no tiene cargos implementados
   };
     const selectNivel = document.getElementById("nivel") as HTMLSelectElement | null; 
@@ -109,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Limpiar opciones actuales
       selectCargo!.innerHTML = "";
       // Agregar nuevas opciones basadas en el nivel seleccionado
-      (cargosPorNivel[nivel] || [{ value: 0, text: "Selecciona un Nivel ⬆ ⬆" }]).forEach(opcion => {
+      (cargosPorNivel[nivelSeleccionado] || [{ value: 0, text: "Selecciona un Nivel ⬆ ⬆" }]).forEach(opcion => {
       const opt = document.createElement("option");
       opt.value = opcion.value.toString();
       opt.textContent = opcion.text;
