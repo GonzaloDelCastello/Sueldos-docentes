@@ -5,6 +5,7 @@ export declare const COEFICIENTES_CARGOS: {
     maestroJardin: number;
     maestroCelador: number;
     ifdcSemiExclusivo: number;
+    ifdcFullTime: number;
 };
 export declare const COEFICIENTES_CARGOS1: {
     horaSecundaria: number;

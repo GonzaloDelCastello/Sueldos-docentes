@@ -733,7 +733,23 @@ function calcularSalarioIfdcSemiExclusivo() {
     bonoExtraordinario: bonoExtraordinario
   };
 }
-
+// Función mostrar resultados IFDC Full Time
+function mostrarCalculoIfdcFullTime(): void {
+  const resultados: Resultados = calcularSalarioIfdcFullTime();
+  const descuentos: Descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
+  // Mostrar resultados en la tabla
+  mostrarResultados(
+    resultados,
+    descuentos,
+    [
+      "filaTotalNeto", "filaSueldoBasico",
+      "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
+      "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs",
+      "filaAsignacionXHijxs", "filaAdicionalCargo"
+    ], // mostrar
+    ["filaZona", "filaTotalBolsillo1"]      // ocultar    
+  );
+}
 // Función calcular IFDC Full Time (Trabajar aquí)
 function calcularSalarioIfdcFullTime() {
   // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
@@ -741,7 +757,7 @@ function calcularSalarioIfdcFullTime() {
 
   // CALCULAR BÁSICO AUTOMÁTICO
   // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
-  let basico1 = config.basicoCargo_Hora * COEFICIENTES_CARGOS.ifdcSemiExclusivo;
+  let basico1 = config.basicoCargo_Hora * COEFICIENTES_CARGOS.ifdcFullTime;
 
   let bonificacionAntiguedad = basico1 * calculoAntiguedad();
 
@@ -751,7 +767,7 @@ function calcularSalarioIfdcFullTime() {
   let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
 
   // COMPLEMENTOS NO REMUNERATIVOS FIJOS
-  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.ifdcSemiExclusivo;
+  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.ifdcFullTime;
   let incentivoDocente = config.fonid;
   let adicionalPorDedicacion1 = config.porcentajes.adicionalCargo * basico1;
   let asignacionXHijxs = calcularAsignacionXHijxs();
