@@ -8,7 +8,7 @@ export const COEFICIENTES_CARGOS = {
     maestroJardin: 15.1964, // ($234,349 / $15,421)
     maestroCelador: 17.1871, // ($252,909 / $15,421)
     ifdcSemiExclusivo: 0.83333,
-    ifdcFullTime: 1.166666
+    ifdcFullTime: 1.166668931
 };
 // Relación matemática basada en los Puntos del Estatuto (Art. 64).
 // Base: 1 Hora Cátedra (15 puntos) = 1.0
