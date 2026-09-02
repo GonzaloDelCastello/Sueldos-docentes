@@ -226,7 +226,8 @@ const btnCalcularSueldo = document.getElementById("btnCalcularSueldo") as HTMLBu
 // Motor centralizado de cálculo
 if (btnCalcularSueldo && selectMesCalculo) {
     btnCalcularSueldo.addEventListener("click", () => {
-        // Leemos qué eligió el docente
+        
+      // Leemos qué eligió el docente
         const valorSeleccionado = selectMesCalculo.value;
 
         // ¿El valor elegido incluye la palabra SAC?

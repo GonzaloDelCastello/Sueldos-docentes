@@ -156,6 +156,8 @@ export function mostrarResultadoActual() {
         case 0:
             // Si no se seleccionó un cargo válido, mostrar mensaje de error
             alert("Por favor, selecciona un cargo válido.");
+            if (resultadosSection)
+                resultadosSection.style.display = "none"; // Ocultar sección de resultados
             resetearResultados();
             return;
         case 1:
