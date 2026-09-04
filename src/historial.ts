@@ -155,6 +155,19 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
         bonoExtraordinario: 0 // No aplica
     },
     {
+        fecha: "2026-03",
+        descripcion: "Actualización Marzo 2026",
+        basicoCargo_Hora: 16192.37, // [calculo basado en aumento del 5% sobre 15421.30]
+        porcentajes: {
+            remunerativo: 1.30,      // 130% [cite: 538]
+            noRemunerativo: 1.07,    // 107% [cite: 554]
+            adicionalCargo: 0.33
+        },
+        fonid: 1913.3333, // Por hs cátedra
+        sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+        bonoExtraordinario: 0 // No aplica
+    },
+    {
         fecha: "2026-04",
         descripcion: "Actualización Abril 2026",
         basicoCargo_Hora: 16963.44, // [calculo basado en aumento del 10% sobre 15421.30]
@@ -232,6 +245,19 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
     fonid: 1913.3333,
     sumaNoRemunerativa: 4667.33333,
     bonoExtraordinario: 0 
+},
+{
+    fecha: "2026-09",
+    descripcion: "Actualización Septiembre 2026",
+    basicoCargo_Hora: 19276.625, 
+    porcentajes: {
+        remunerativo: 1.40, 
+        noRemunerativo: 0.97, 
+        adicionalCargo: 0.33
+    },
+    fonid: 1913.3333,
+    sumaNoRemunerativa: 4667.33333,
+    bonoExtraordinario: 0 
 }
 ];
 
@@ -241,7 +267,7 @@ export const HISTORIAL_IFDC: ConfiguracionSalarial2[] = [
     {
         fecha: "2025-11", // NOVIEMBRE 2025
         descripcion: "Actualización Noviembre",
-        basicoCargo_Hora: 560038.73, // (Tu valor de hora secundaria)
+        basicoCargo_Hora: 560038.73, // (Cargo tiempo completo IFDC tomado como referencia)
         porcentajes: {
             remunerativo: 0.65,    // 65% (Item 100-24)
             noRemunerativo: 0.30,   // 30% (Item 100-25)
@@ -347,10 +373,24 @@ export const HISTORIAL_IFDC: ConfiguracionSalarial2[] = [
 {
      fecha: "2026-08", 
     descripcion: "Actualización Agosto 2026",
-    basicoCargo_Hora: 672046.44, 
+    basicoCargo_Hora: 672046.47, 
     porcentajes: {
-        remunerativo: 0.70, //Nueva estructura
-        noRemunerativo: 0.25, //Nueva estructura 
+        remunerativo: 0.70, 
+        noRemunerativo: 0.25,  
+        adicionalCargo: 0.34999 
+    },
+    fonid: 57400, 
+    sumaNoRemunerativa: 157894.07, 
+    bonoExtraordinario: 0 
+
+},
+{
+     fecha: "2026-09", 
+    descripcion: "Actualización Septiembre 2026",
+    basicoCargo_Hora: 700048.41, 
+    porcentajes: {
+        remunerativo: 0.70, 
+        noRemunerativo: 0.25,  
         adicionalCargo: 0.34999 
     },
     fonid: 57400, 
@@ -366,6 +406,7 @@ export interface MesBasico {
     valorHora: number;
     nota?: string; 
 }
+// Historial de sueldo básico de hs de secundaria, para referencia de cálculos y comparaciones
 export const HISTORIAL_BASICO: Record<string, MesBasico> = {
     "2023-06": { valorHora: 4899.23 },
     "2023-07": { valorHora: 5262.14 },
