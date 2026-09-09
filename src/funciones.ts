@@ -1053,37 +1053,60 @@ function calcularInflacionAcumulada(mesInicio: string, mesFin: string): number {
   return (acumulado - 1) * 100;;
 }
 
+export function calcularVariacionSalarial(mesInicio: string, mesFin: string) {
+    // 1. Buscamos directamente en el diccionario usando tu método (es el más eficiente)
+    const basicoInicio = HISTORIAL_BASICO[mesInicio]?.valorHora || 0;
+    const basicoFin = HISTORIAL_BASICO[mesFin]?.valorHora || 0;
+    
+    // 2. Calculamos la diferencia en pesos (Nominal)
+    const diferenciaAbsoluta = basicoFin - basicoInicio;
+    
+    // 3. Calculamos la diferencia en porcentaje (Relativa)
+    let diferenciaPorcentual = 0;
+
+    // Patovica: evitamos que intente dividir por cero si el mes no existe
+    if (basicoInicio !== 0) {
+        diferenciaPorcentual = ((basicoFin / basicoInicio) - 1) * 100;
+    }
+
+    // 4. Devolvemos el "paquete" con los datos absolutos y relativos
+    return {
+        basicoInicio,
+        basicoFin,
+        diferenciaAbsoluta,
+        diferenciaPorcentual
+    };
+}
 
 export function compararPeriodo(mesInicio: string, mesFin: string) {
-  console.log("Entró en la función compararPeriodo")
-  if (mesInicio > mesFin) {
-    alert("El mes de inicio debe ser anterior al mes final");
-    return;
-  }
-  if (mesInicio < "2023-06") {
-    alert("Existen datos a partir de Junio de 2023. Seleccione una fecha posterior a este periodo.");
-    return;
-  }
-  if (mesFin > "2026-06") {
-    alert("Existen datos hasta de Junio de 2026. Seleccione una fecha anterior a este periodo.");
-    return;
-  }
+    console.log("Entró en la función compararPeriodo");
 
-  
-  let inflacionPorcentual = calcularInflacionAcumulada(mesInicio, mesFin);
+    // 1. Patovicas (Control de errores)
+    if (mesInicio > mesFin) {
+        alert("El mes de inicio debe ser anterior al mes final");
+        return;
+    }
+    if (mesInicio < "2023-06") {
+        alert("Existen datos a partir de Junio de 2023. Seleccione una fecha posterior a este periodo.");
+        return;
+    }
+    if (mesFin > "2026-06") {
+        alert("Existen datos hasta de Junio de 2026. Seleccione una fecha anterior a este periodo.");
+        return;
+    }
 
-  const basicoInicio = HISTORIAL_BASICO[mesInicio]?.valorHora || 0;
-  const basicoFin = HISTORIAL_BASICO[mesFin]?.valorHora || 0;
+    // 2. Llamamos al Especialista en Inflación
+    const inflacionPorcentual = calcularInflacionAcumulada(mesInicio, mesFin);
 
-  let variacionSalarial = 0;
-  if (basicoInicio !== 0) {
-    variacionSalarial = ((basicoFin / basicoInicio) - 1) * 100;
-  }
-  console.log(inflacionPorcentual);
-  return {
-    inflacionPorcentual,
-    variacionSalarial,
-    basicoInicio,
-    basicoFin
-  };
+    // 3. Llamamos al Especialista en Salarios (¡Este es el enganche!)
+    const datosSalariales = calcularVariacionSalarial(mesInicio, mesFin);
+
+    // 4. Empaquetamos todo y lo devolvemos
+    return {
+        inflacionPorcentual,
+        variacionSalarial: datosSalariales.diferenciaPorcentual, // Lo sacamos del paquete nuevo
+        diferenciaAbsoluta: datosSalariales.diferenciaAbsoluta,  // Lo agregamos por si querés mostrar los pesos
+        basicoInicio: datosSalariales.basicoInicio,
+        basicoFin: datosSalariales.basicoFin
+    };
 }
