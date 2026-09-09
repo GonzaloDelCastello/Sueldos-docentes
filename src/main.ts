@@ -13,16 +13,16 @@ const tabInflacion = document.getElementById("tab-inflacion") as HTMLButtonEleme
 const vistaCalculadora = document.getElementById("vista-calculadora") as HTMLDivElement | null;
 const vistaInflacion = document.getElementById("vista-inflacion") as HTMLDivElement | null;
 
- tabInflacion?.addEventListener("click", () => {
-   alert("En mantenimiento.");
-   return;
- })
-// tabInflacion?.addEventListener("click", () => {
-//   vistaCalculadora?.classList.add("oculto");
-//   vistaInflacion?.classList.remove("oculto");
-//   tabCalculadora?.classList.remove("activo");
-//   tabInflacion?.classList.add("activo");
-// })
+//  tabInflacion?.addEventListener("click", () => {
+//    alert("En mantenimiento.");
+//    return;
+//  })
+tabInflacion?.addEventListener("click", () => {
+  vistaCalculadora?.classList.add("oculto");
+  vistaInflacion?.classList.remove("oculto");
+  tabCalculadora?.classList.remove("activo");
+  tabInflacion?.classList.add("activo");
+})
 
 tabCalculadora?.addEventListener("click", () => {
   vistaInflacion?.classList.add("oculto");
@@ -38,15 +38,15 @@ document.addEventListener("DOMContentLoaded", function () {
   btnMostrarResultadoActual?.classList.add("oculto"); // Ocultamos el botón de resultado actual al cargar la página, se mostrará solo para cargos con datos cargados
   btnMostrarResultadoActualBono?.classList.add("oculto"); // Ocultamos el botón de resultado actual con bonoal cargar la página, se mostrará solo para cargos con datos cargados
   btnGraficos?.classList.add("oculto"); // Ocultamos el botón de gráficos al cargar la página, se mostrará solo para cargos con datos cargados
-   if (menuToggle && navegacion) {
+  if (menuToggle && navegacion) {
     // Abre/cierra con el botón hamburguesa
     menuToggle.addEventListener('click', function (event: MouseEvent) {
       event.stopPropagation(); // evita que se dispare el click global
       navegacion.classList.toggle('activo');
       if (navegacion.classList.contains('activo')) {
-        menuToggle.classList.add('oculto');  
+        menuToggle.classList.add('oculto');
       } else {
-        menuToggle.classList.remove('oculto');  
+        menuToggle.classList.remove('oculto');
       }
     });
 
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
         !menuToggle.contains(event.target as Node)
       ) {
         navegacion.classList.remove('activo');
-        menuToggle.classList.remove('oculto'); 
+        menuToggle.classList.remove('oculto');
       }
     });
 
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener('scroll', function () {
       if (navegacion.classList.contains('activo')) {
         navegacion.classList.remove('activo');
-        menuToggle.classList.remove('oculto'); 
+        menuToggle.classList.remove('oculto');
       }
     });
   }
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
       { value: 0, text: "Selecciona un cargo" },
       { value: 6, text: "Maestrx Jardín" },
     ],
-    
+
     2: [ // Primaria
       { value: 0, text: "Selecciona un cargo" },
       { value: 3, text: "Cargo Maestrx Celador" },
@@ -98,35 +98,35 @@ document.addEventListener("DOMContentLoaded", function () {
       { value: 9, text: "Prof. full time, 40 hs." },
     ] // Nivel superior no tiene cargos implementados
   };
-    const selectNivel = document.getElementById("nivel") as HTMLSelectElement | null; 
-    const selectCargo = document.getElementById("cargo")  as HTMLSelectElement | null;
-    const formSecundario = document.getElementById("formSecundario") as HTMLSelectElement | null;
-    const formFijo = document.getElementById("formFijo")  as HTMLSelectElement | null;  
-    const zona = document.getElementById("zona1")  as HTMLSelectElement | null;
-    const presencialidad = document.getElementById("presencialidadCont") as HTMLSelectElement | null;
-    if (!selectNivel || !selectCargo) return;
-     // Función para actualizar las opciones del select de cargo según el nivel seleccionado
-    function actualizarOpcionesCargo(nivelSeleccionado: number) {
-      // Limpiar opciones actuales
-      selectCargo!.innerHTML = "";
-      // Agregar nuevas opciones basadas en el nivel seleccionado
-      (cargosPorNivel[nivelSeleccionado] || [{ value: 0, text: "Selecciona un Nivel ⬆ ⬆" }]).forEach(opcion => {
+  const selectNivel = document.getElementById("nivel") as HTMLSelectElement | null;
+  const selectCargo = document.getElementById("cargo") as HTMLSelectElement | null;
+  const formSecundario = document.getElementById("formSecundario") as HTMLSelectElement | null;
+  const formFijo = document.getElementById("formFijo") as HTMLSelectElement | null;
+  const zona = document.getElementById("zona1") as HTMLSelectElement | null;
+  const presencialidad = document.getElementById("presencialidadCont") as HTMLSelectElement | null;
+  if (!selectNivel || !selectCargo) return;
+  // Función para actualizar las opciones del select de cargo según el nivel seleccionado
+  function actualizarOpcionesCargo(nivelSeleccionado: number) {
+    // Limpiar opciones actuales
+    selectCargo!.innerHTML = "";
+    // Agregar nuevas opciones basadas en el nivel seleccionado
+    (cargosPorNivel[nivelSeleccionado] || [{ value: 0, text: "Selecciona un Nivel ⬆ ⬆" }]).forEach(opcion => {
       const opt = document.createElement("option");
       opt.value = opcion.value.toString();
       opt.textContent = opcion.text;
       selectCargo!.appendChild(opt);
-      });
-    }
-    // Evento al cambiar el nivel
-    selectNivel.addEventListener("change", function (this: HTMLSelectElement) {
-      const nivelSeleccionado = this.value;
-      nivel = parseInt(this.value);
-      actualizarOpcionesCargo(nivel); // Actualizar cargos
-      resetearResultados(); // Reiniciar resultados al cambiar nivel
-      contenedorResultados.style.display = "none"; // Ocultar resultados al cambiar nivel
     });
-     
-    // Muestra el formulario correspondiente al cargo seleccionado
+  }
+  // Evento al cambiar el nivel
+  selectNivel.addEventListener("change", function (this: HTMLSelectElement) {
+    const nivelSeleccionado = this.value;
+    nivel = parseInt(this.value);
+    actualizarOpcionesCargo(nivel); // Actualizar cargos
+    resetearResultados(); // Reiniciar resultados al cambiar nivel
+    contenedorResultados.style.display = "none"; // Ocultar resultados al cambiar nivel
+  });
+
+  // Muestra el formulario correspondiente al cargo seleccionado
   selectCargo.addEventListener("change", function (this: HTMLSelectElement) {
     cargo = parseInt(this.value);
     // Ocultar todos
@@ -177,9 +177,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Damos un pequeño respiro (150ms) para que el navegador dibuje los formularios nuevos
     setTimeout(() => {
-      
+
       btnCalcularSueldo?.classList.remove("oculto");
-      btnGraficos?.classList.remove("oculto");      
+      btnGraficos?.classList.remove("oculto");
       btnGraficos?.classList.remove("oculto"); // Mostramos el botón de gráficos solo después de que el usuario haya seleccionado un cargo, para evitar confusiones
       if (formFijo && !formFijo.classList.contains("oculto")) {
         formFijo.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -187,10 +187,10 @@ document.addEventListener("DOMContentLoaded", function () {
       if (cargo === 1) {
         const inputHoras = document.getElementById("cantHs") as HTMLInputElement | null;
         if (inputHoras) {
-          inputHoras.focus(); 
+          inputHoras.focus();
         }
       }
-      
+
     }, 150);
 
     resetearResultados(); // Reiniciar resultados al cambiar cargo
@@ -200,24 +200,24 @@ document.addEventListener("DOMContentLoaded", function () {
   actualizarOpcionesCargo(parseInt(selectNivel.value));
 
   // Función que oculta resultados y borra el gráfico si tocamos algo
-    function limpiarPantallaAlEscribir() {
-      // Asumiendo que contenedorResultados está declarado al principio de tu main.ts
-      if (typeof contenedorResultados !== 'undefined' && contenedorResultados) {
-        contenedorResultados.style.display = "none";
-      }
-      resetearResultados(); // Esto borra el texto y destruye el gráfico
+  function limpiarPantallaAlEscribir() {
+    // Asumiendo que contenedorResultados está declarado al principio de tu main.ts
+    if (typeof contenedorResultados !== 'undefined' && contenedorResultados) {
+      contenedorResultados.style.display = "none";
     }
+    resetearResultados(); // Esto borra el texto y destruye el gráfico
+  }
 
-    // Le decimos a los formularios (que ya buscaste arriba) que escuchen los cambios
-    if (formSecundario) {
-      formSecundario.addEventListener("input", limpiarPantallaAlEscribir);
-      formSecundario.addEventListener("change", limpiarPantallaAlEscribir);
-    }
-    
-    if (formFijo) {
-      formFijo.addEventListener("input", limpiarPantallaAlEscribir);
-      formFijo.addEventListener("change", limpiarPantallaAlEscribir);
-    }
+  // Le decimos a los formularios (que ya buscaste arriba) que escuchen los cambios
+  if (formSecundario) {
+    formSecundario.addEventListener("input", limpiarPantallaAlEscribir);
+    formSecundario.addEventListener("change", limpiarPantallaAlEscribir);
+  }
+
+  if (formFijo) {
+    formFijo.addEventListener("input", limpiarPantallaAlEscribir);
+    formFijo.addEventListener("change", limpiarPantallaAlEscribir);
+  }
 });
 
 const selectMesCalculo = document.getElementById("mesCalculo") as HTMLSelectElement | null;
@@ -225,26 +225,26 @@ const btnCalcularSueldo = document.getElementById("btnCalcularSueldo") as HTMLBu
 
 // Motor centralizado de cálculo
 if (btnCalcularSueldo && selectMesCalculo) {
-    btnCalcularSueldo.addEventListener("click", () => {
-        
-      // Leemos qué eligió el docente
-        const valorSeleccionado = selectMesCalculo.value;
+  btnCalcularSueldo.addEventListener("click", () => {
 
-        // ¿El valor elegido incluye la palabra SAC?
-        if (valorSeleccionado.includes("-SAC")) {
-            // Le quitamos el "-SAC" para que historial.ts entienda la fecha (ej: queda "2026-06")
-            setPeriodoCalculo(valorSeleccionado.replace("-SAC", ""));
-            setIncluirSAC(true); // Prendemos la suma del aguinaldo
-        } else {
-            // Es un mes normal o con bono (ej: "2026-05" o "2026-05-B")
-            setPeriodoCalculo(valorSeleccionado);
-            setIncluirSAC(false); // Apagamos el aguinaldo
-        }
+    // Leemos qué eligió el docente
+    const valorSeleccionado = selectMesCalculo.value;
 
-        // Ejecutamos la matemática y deslizamos la pantalla
-        mostrarResultadoActual();
-        setTimeout(() => { contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 250);
-    });
+    // ¿El valor elegido incluye la palabra SAC?
+    if (valorSeleccionado.includes("-SAC")) {
+      // Le quitamos el "-SAC" para que historial.ts entienda la fecha (ej: queda "2026-06")
+      setPeriodoCalculo(valorSeleccionado.replace("-SAC", ""));
+      setIncluirSAC(true); // Prendemos la suma del aguinaldo
+    } else {
+      // Es un mes normal o con bono (ej: "2026-05" o "2026-05-B")
+      setPeriodoCalculo(valorSeleccionado);
+      setIncluirSAC(false); // Apagamos el aguinaldo
+    }
+
+    // Ejecutamos la matemática y deslizamos la pantalla
+    mostrarResultadoActual();
+    setTimeout(() => { contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 250);
+  });
 }
 // Mostrar fecha actual en formato legible 
 document.addEventListener("DOMContentLoaded", () => {
@@ -256,50 +256,90 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-
+// Comparador de inflación
 const btnComparar = document.getElementById("btnComparar") as HTMLButtonElement;
 const inputInicio = document.getElementById("mesInicio") as HTMLInputElement;
 const inputFin = document.getElementById("mesFin") as HTMLInputElement;
 
 btnComparar.addEventListener("click", () => {
-    const inicio = inputInicio.value; 
-    const fin = inputFin.value;       
+  const inicio = inputInicio.value;
+  const fin = inputFin.value;
 
-    if (!inicio || !fin) {
-        alert("Seleccioná ambos meses.");
-        return;
-    }
-    const resultado = compararPeriodo(inicio, fin);
+  if (!inicio || !fin) {
+    alert("Seleccioná ambos meses.");
+    return;
+  }
+  const resultado = compararPeriodo(inicio, fin);
 
-    if (resultado) {
-        const divRes = document.getElementById("resultadoInflacion") as HTMLElement | null;
-        const pTexto = document.getElementById("textoResultado") as HTMLElement | null;
+  if (resultado) {
+    const divRes = document.getElementById("resultadoInflacion") as HTMLElement | null;
+    const pTexto = document.getElementById("textoResultado") as HTMLElement | null;
+
+    if (divRes && pTexto) {
+
+      // Usamos tu función para formatear la plata
+      const plataInicio = aPesos(resultado.basicoInicio);
+      const plataFin = aPesos(resultado.basicoFin);
+
+      // Armamos el texto
+      // 1. Calculamos los Índices Reales (Base 1 + porcentaje)
+      const indiceSalario = 1 + (resultado.variacionSalarial / 100);
+      const indiceInflacion = 1 + (resultado.inflacionPorcentual / 100);
+
+      // 2. Calculamos el Poder Adquisitivo Real y el Sueldo Ideal
+      const proporcionReal = (indiceSalario / indiceInflacion) * 100;
+      const diferenciaPoderCompra = 100 - proporcionReal;
+      
+      // Matemática para el ejemplo: Sueldo base * factor de inflación
+      const sueldoIdealNominal = resultado.basicoInicio * indiceInflacion; 
+      const plataIdeal = aPesos(sueldoIdealNominal); // Lo formateamos a pesos
+
+      // 3. Armamos el texto base
+      pTexto.innerHTML = `
+        El valor del básico por hora cátedra en <strong>${inicio}</strong> era de <strong>${plataInicio}</strong>.<br>
+        El valor del básico por hora cátedra en <strong>${fin}</strong> es de <strong>${plataFin}</strong>.<br><br>
+        En este periodo, la inflación acumulada fue del <strong>${resultado.inflacionPorcentual.toFixed(1)}%</strong>, 
+        mientras que tu sueldo básico aumentó un <strong>${resultado.variacionSalarial.toFixed(1)}%</strong>.
+      `;
+
+      // 4. Elaboración de Textos Finales con el Ejemplo Práctico
+      if (indiceSalario < indiceInflacion) {
+        // Hubo pérdida
         
-        if (divRes && pTexto) {
-            
-            // Usamos tu función para formatear la plata
-            const plataInicio = aPesos(resultado.basicoInicio);
-            const plataFin = aPesos(resultado.basicoFin);
+        // 1. Calculamos el multiplicador para el bolsillo del usuario
+        const multiplicadorBolsillo = indiceInflacion / indiceSalario;
 
-            // Armamos el texto
-            pTexto.innerHTML = `
-                El valor del básico por hora cátedra en <strong>${inicio}</strong> era de <strong>${plataInicio}</strong>.<br>
-                El valor del básico por hora cátedra en <strong>${fin}</strong> es de <strong>${plataFin}</strong>.<br><br>
-                En este periodo, la inflación acumulada fue del <strong>${resultado.inflacionPorcentual.toFixed(1)}%</strong>, 
-                mientras que tu sueldo básico aumentó un <strong>${resultado.variacionSalarial.toFixed(1)}%</strong>.
-            `;
+        pTexto.innerHTML += `
+          <br><br>
+          <div style="background-color: #fff3cd; padding: 15px; border-left: 5px solid #ffeeba; border-radius: 4px; color: #856404;">
+            <strong>⚠️ Pérdida de Poder Adquisitivo: ${diferenciaPoderCompra.toFixed(1)}%</strong><br>
+            A pesar de los aumentos nominales, el salario actual equivale solo al <strong>${proporcionReal.toFixed(1)}%</strong> de lo que debería ser para igualar el costo de vida.<br><br>
             
-            // Calculamos y mostramos quién ganó
-            const diferencia = resultado.variacionSalarial - resultado.inflacionPorcentual;
-            const razon = (resultado.variacionSalarial / resultado.inflacionPorcentual)*100;
+            <strong>💡 En resumen:</strong> La hora cátedra que en <strong>${inicio}</strong> valía <strong>${plataInicio}</strong>, si hubiese aumentado al ritmo de la inflación hoy debería valer <strong>${plataIdeal}</strong>, pero actualmente vale solo <strong>${plataFin}</strong>.<br><br>
+
+            <hr style="border: 0; border-top: 1px solid #ffeeba; margin: 12px 0;">
             
-            if (diferencia < 0) {
-                pTexto.innerHTML += `<br><br><span style="color:var(--primario); font-size: 1.2em;"><strong>⚠️ El básico por hora cátedra quedó un ${Math.abs(diferencia).toFixed(1)}% por debajo del aumento de precios. <br> Es decir que el salario hoy es ${razon.toFixed(1)}% de lo que sería el sueldo si hubiese acompañado el ritmo de la inflación.</strong></span>`;
-            } else {
-                pTexto.innerHTML += `<br><br><span style="color:green; font-size: 1.2em;"><strong>✅ El básico por hora cátedra ganó ${diferencia.toFixed(1)}% de poder adquisitivo frente a la inflación en este periodo.</strong></span>`;
-            }
-            
-            divRes.classList.remove("oculto");
-        }
+            <strong>🧮 Calculá tu sueldo de bolsillo ideal:</strong><br>
+            Como los aumentos impactan de forma proporcional, podés hacer tu propio cálculo. Multiplicá tu sueldo de bolsillo actual por <strong>${multiplicadorBolsillo.toFixed(2)}</strong> para saber cuánto deberías estar cobrando hoy si tu salario hubiera empatado a la inflación en este periodo.
+          </div>
+        `;
+      } else if (indiceSalario > indiceInflacion) {
+        // Hubo ganancia
+        const gananciaReal = proporcionReal - 100;
+        pTexto.innerHTML += `
+          <br><br>
+          <div style="background-color: #d4edda; padding: 15px; border-left: 5px solid #c3e6cb; border-radius: 4px; color: #155724;">
+            <strong>✅ Recuperación Salarial: ${gananciaReal.toFixed(1)}%</strong><br>
+            El salario superó a la inflación del período.<br><br>
+            <strong>💡 En resumen:</strong> La hora cátedra que en <strong>${inicio}</strong> valía <strong>${plataInicio}</strong>, para empatar la inflación hoy debería valer <strong>${plataIdeal}</strong>. Como actualmente vale <strong>${plataFin}</strong>, tuviste un incremento real en tu poder de compra.
+          </div>
+        `;
+      } else {
+        // Empate
+        pTexto.innerHTML += `<br><br><span style="color:var(--secundarioOscuro);"><strong>⚖️ El salario empató exactamente con la inflación en este período.</strong><br>La hora cátedra que valía ${plataInicio} hoy vale ${plataFin}, lo que representa un empate exacto con la inflación (${plataIdeal}).</span>`;
+      }
+
+      divRes.classList.remove("oculto");
     }
+  }
 });

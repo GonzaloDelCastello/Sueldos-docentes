@@ -1110,3 +1110,4 @@ export function compararPeriodo(mesInicio: string, mesFin: string) {
         basicoFin: datosSalariales.basicoFin
     };
 }
+
