@@ -1,4 +1,3 @@
-// historial.ts
 // COEFICIENTES DE CARGOS (Relación fija respecto a 1 Hora Cátedra)
 // Calculados en base a Noviembre 2025. Se asume que esta relación es estable.
 export const COEFICIENTES_CARGOS = {

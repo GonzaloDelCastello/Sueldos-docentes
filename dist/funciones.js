@@ -867,8 +867,29 @@ function calcularInflacionAcumulada(mesInicio, mesFin) {
     return (acumulado - 1) * 100;
     ;
 }
+export function calcularVariacionSalarial(mesInicio, mesFin) {
+    // 1. Buscamos directamente en el diccionario usando tu método (es el más eficiente)
+    const basicoInicio = HISTORIAL_BASICO[mesInicio]?.valorHora || 0;
+    const basicoFin = HISTORIAL_BASICO[mesFin]?.valorHora || 0;
+    // 2. Calculamos la diferencia en pesos (Nominal)
+    const diferenciaAbsoluta = basicoFin - basicoInicio;
+    // 3. Calculamos la diferencia en porcentaje (Relativa)
+    let diferenciaPorcentual = 0;
+    // Patovica: evitamos que intente dividir por cero si el mes no existe
+    if (basicoInicio !== 0) {
+        diferenciaPorcentual = ((basicoFin / basicoInicio) - 1) * 100;
+    }
+    // 4. Devolvemos el "paquete" con los datos absolutos y relativos
+    return {
+        basicoInicio,
+        basicoFin,
+        diferenciaAbsoluta,
+        diferenciaPorcentual
+    };
+}
 export function compararPeriodo(mesInicio, mesFin) {
     console.log("Entró en la función compararPeriodo");
+    // Validación de fechas
     if (mesInicio > mesFin) {
         alert("El mes de inicio debe ser anterior al mes final");
         return;
@@ -881,19 +902,17 @@ export function compararPeriodo(mesInicio, mesFin) {
         alert("Existen datos hasta de Junio de 2026. Seleccione una fecha anterior a este periodo.");
         return;
     }
-    let inflacionPorcentual = calcularInflacionAcumulada(mesInicio, mesFin);
-    const basicoInicio = HISTORIAL_BASICO[mesInicio]?.valorHora || 0;
-    const basicoFin = HISTORIAL_BASICO[mesFin]?.valorHora || 0;
-    let variacionSalarial = 0;
-    if (basicoInicio !== 0) {
-        variacionSalarial = ((basicoFin / basicoInicio) - 1) * 100;
-    }
-    console.log(inflacionPorcentual);
+    // Llamamos a la función para calcular la inflación acumulada 
+    const inflacionPorcentual = calcularInflacionAcumulada(mesInicio, mesFin);
+    // Llamamos a la función para calcular la variación salarial
+    const datosSalariales = calcularVariacionSalarial(mesInicio, mesFin);
+    // Empaquetamos todo y lo devolvemos
     return {
         inflacionPorcentual,
-        variacionSalarial,
-        basicoInicio,
-        basicoFin
+        variacionSalarial: datosSalariales.diferenciaPorcentual, // 
+        diferenciaAbsoluta: datosSalariales.diferenciaAbsoluta, // 
+        basicoInicio: datosSalariales.basicoInicio,
+        basicoFin: datosSalariales.basicoFin
     };
 }
 //# sourceMappingURL=funciones.js.map
