@@ -1081,7 +1081,7 @@ export function calcularVariacionSalarial(mesInicio: string, mesFin: string) {
 export function compararPeriodo(mesInicio: string, mesFin: string) {
     console.log("Entró en la función compararPeriodo");
 
-    // 1. Patovicas (Control de errores)
+    // Validación de fechas
     if (mesInicio > mesFin) {
         alert("El mes de inicio debe ser anterior al mes final");
         return;
@@ -1095,17 +1095,17 @@ export function compararPeriodo(mesInicio: string, mesFin: string) {
         return;
     }
 
-    // 2. Llamamos al Especialista en Inflación
+    // Llamamos a la función para calcular la inflación acumulada 
     const inflacionPorcentual = calcularInflacionAcumulada(mesInicio, mesFin);
 
-    // 3. Llamamos al Especialista en Salarios (¡Este es el enganche!)
+    // Llamamos a la función para calcular la variación salarial
     const datosSalariales = calcularVariacionSalarial(mesInicio, mesFin);
 
-    // 4. Empaquetamos todo y lo devolvemos
+    // Empaquetamos todo y lo devolvemos
     return {
         inflacionPorcentual,
-        variacionSalarial: datosSalariales.diferenciaPorcentual, // Lo sacamos del paquete nuevo
-        diferenciaAbsoluta: datosSalariales.diferenciaAbsoluta,  // Lo agregamos por si querés mostrar los pesos
+        variacionSalarial: datosSalariales.diferenciaPorcentual, // 
+        diferenciaAbsoluta: datosSalariales.diferenciaAbsoluta,  // 
         basicoInicio: datosSalariales.basicoInicio,
         basicoFin: datosSalariales.basicoFin
     };
