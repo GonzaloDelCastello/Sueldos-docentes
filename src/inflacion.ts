@@ -47,5 +47,8 @@ export const HISTORIAL_INFLACION: MesInflacion[] = [
     { fecha: "2026-03", inflacionMensual: 3.4 },
     { fecha: "2026-04", inflacionMensual: 2.6 },
     { fecha: "2026-05", inflacionMensual: 2.1 },
-    { fecha: "2026-06", inflacionMensual: 2.0 } // Estimado REM
+    { fecha: "2026-06", inflacionMensual: 1.9 },
+    { fecha: "2026-06", inflacionMensual: 2.1 },
+    { fecha: "2026-06", inflacionMensual: 1.7 },
+    
 ];
