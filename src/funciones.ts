@@ -1082,6 +1082,10 @@ export function compararPeriodo(mesInicio: string, mesFin: string) {
     console.log("Entró en la función compararPeriodo");
 
     // Validación de fechas
+    if (mesInicio === mesFin) {
+        alert("Para calcular una variación, el mes de inicio y el mes final deben ser diferentes.");
+        return;
+    }
     if (mesInicio > mesFin) {
         alert("El mes de inicio debe ser anterior al mes final");
         return;

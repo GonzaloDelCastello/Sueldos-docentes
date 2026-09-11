@@ -302,7 +302,7 @@ btnComparar.addEventListener("click", () => {
             <hr style="border: 0; border-top: 1px solid #ffeeba; margin: 12px 0;">
             
             <strong>🧮 Calculá tu sueldo de bolsillo ideal:</strong><br>
-            Como los aumentos impactan de forma proporcional, podés hacer tu propio cálculo. Multiplicá tu sueldo de bolsillo actual por <strong>${multiplicadorBolsillo.toFixed(2)}</strong> para saber cuánto deberías estar cobrando hoy si tu salario hubiera empatado a la inflación en este periodo.
+            Como los aumentos impactan de forma proporcional, podés hacer tu propio cálculo. Multiplicá tu sueldo de bolsillo del mes ${fin} por <strong>${multiplicadorBolsillo.toFixed(2)}</strong> para saber cuánto deberías haber cobrado en este periodo si tu salario hubiera empatado a la inflación.
           </div>
         `;
             }
