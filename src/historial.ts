@@ -470,5 +470,7 @@ export const HISTORIAL_BASICO: Record<string, MesBasico> = {
     "2026-05": { valorHora: 16963.43 },
     "2026-06": { valorHora: 16963.43 },
     "2026-07": { valorHora: 17734.50 },
-    
+    "2026-08": { valorHora: 18505.56 },
+    "2026-09": { valorHora: 19276.62 },
+    "2026-10": { valorHora: 20047.69 }
 };
