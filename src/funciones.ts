@@ -32,7 +32,7 @@ interface Resultados {
   totalNRemunerativo?: number;
   adicionalPorDedicacion?: number;
   totalBruto: number;
-  asignacionXHijxs?: number;
+  //asignacionXHijxs?: number;
   aguinaldoBruto?: number; // La mitad del remunerativo
   aguinaldoNeto?: number;  // Lo que te queda en mano
   bonoExtraordinario?: number; // Bonificación extraordinaria
@@ -76,7 +76,10 @@ export function calcularAsignacionXHijxs(): number {
   if (!cantHijxs) return 0;
   const cantHijxsValue = parseInt(cantHijxs.value);
   let asignacionXHijxs = 0;
+
+
   if (cantHijxsValue > 0) {
+    
     asignacionXHijxs = cantHijxsValue * 51280; //Asignación por hijx
   }
   //document.getElementById("asignacionXHijxs").textContent = aPesos(asignacionXHijxs1);
@@ -280,11 +283,11 @@ function calcularSalarioHsSecundario(): Resultados {
   let sumaNoRemunerativa = (config1.sumaNoRemunerativa) * cantHs;
   let incentivoDocente = (config1.fonid) * cantHs;
   let bonoExtraordinario = (cantHs <= 15) ? (config1.bonoExtraordinario * cantHs) : config1.bonoExtraordinario * 15;
-  let asignacionXHijxs1 = calcularAsignacionXHijxs();
+  //let asignacionXHijxs1 = calcularAsignacionXHijxs();
 
   // Suma y resultados finales
   let totalRemunerativo1 = basicoXHs + complementoRemunerativo1 + bonificacionZona + bonificacionAntiguedad;
-  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs1 + bonoExtraordinario;
+  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + bonoExtraordinario;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
 
 
@@ -302,7 +305,7 @@ function calcularSalarioHsSecundario(): Resultados {
     totalRemunerativo: totalRemunerativo1,
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
-    asignacionXHijxs: asignacionXHijxs1,
+    //asignacionXHijxs: asignacionXHijxs1,
     aguinaldoBruto: aguinaldo.sacBruto,
     aguinaldoNeto: aguinaldo.sacNeto,
     bonoExtraordinario: bonoExtraordinario
@@ -345,11 +348,11 @@ function calcularSalarioPreceptor() {
   let incentivoDocente = config.fonid * 15;          // Valor entero
   let bonoExtraordinario = COEFICIENTES_CARGOS.preceptor * config.bonoExtraordinario;
 
-  let asignacionXHijxs = calcularAsignacionXHijxs();
+  //let asignacionXHijxs = calcularAsignacionXHijxs();
 
   // Suma y resultados finales
   let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalXCargo1 + bonificacionZona + bonificacionAntiguedad;
-  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs + bonoExtraordinario;
+  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + bonoExtraordinario;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
 
   // --- CÁLCULO SAC ---
@@ -367,7 +370,7 @@ function calcularSalarioPreceptor() {
     totalRemunerativo: totalRemunerativo1,
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
-    asignacionXHijxs: asignacionXHijxs,
+    //asignacionXHijxs: asignacionXHijxs,
     aguinaldoBruto: aguinaldo.sacBruto,
     aguinaldoNeto: aguinaldo.sacNeto,
     bonoExtraordinario: bonoExtraordinario
@@ -417,11 +420,11 @@ function calcularSalarioMaestrCelador() {
   let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroCelador;
   let incentivoDocente = config.fonid * 15;
   let bonoExtraordinario = config.bonoExtraordinario * 15;
-  let asignacionXHijxs = calcularAsignacionXHijxs();
+  //let asignacionXHijxs = calcularAsignacionXHijxs();
 
   // Suma y resultados finales
   let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalXCargo1 + bonificacionZona + bonificacionAntiguedad + enseñanzaEnAula;
-  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs + bonoExtraordinario;
+  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + bonoExtraordinario;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
 
   // --- CÁLCULO SAC ---
@@ -440,7 +443,7 @@ function calcularSalarioMaestrCelador() {
     totalRemunerativo: totalRemunerativo1,
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
-    asignacionXHijxs: asignacionXHijxs,
+    //asignacionXHijxs: asignacionXHijxs,
     aguinaldoBruto: aguinaldo.sacBruto,
     aguinaldoNeto: aguinaldo.sacNeto,
     bonoExtraordinario: bonoExtraordinario
@@ -489,12 +492,12 @@ function calcularSalarioMaestrGrado() {
   let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroGrado;
   let incentivoDocente = config.fonid * 15;
   let bonoExtraordinario = config.bonoExtraordinario * 15;
-  let asignacionXHijxs = calcularAsignacionXHijxs();
+  //let asignacionXHijxs = calcularAsignacionXHijxs();
 
 
   // Suma y resultados finales
   let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalXCargo1 + bonificacionZona + bonificacionAntiguedad + enseñanzaEnAula;
-  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs + bonoExtraordinario;
+  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + bonoExtraordinario;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
 
   // --- CÁLCULO SAC ---
@@ -513,7 +516,7 @@ function calcularSalarioMaestrGrado() {
     totalRemunerativo: totalRemunerativo1,
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
-    asignacionXHijxs: asignacionXHijxs,
+    //asignacionXHijxs: asignacionXHijxs,
     aguinaldoBruto: aguinaldo.sacBruto,
     aguinaldoNeto: aguinaldo.sacNeto,
     bonoExtraordinario: bonoExtraordinario
@@ -566,11 +569,11 @@ function calcularSalarioMaestrxJardin() {
   let incentivoDocente = config.fonid * 15;
   let bonoExtraordinario = config.bonoExtraordinario * 15;
 
-  let asignacionXHijxs = calcularAsignacionXHijxs();
+  //let asignacionXHijxs = calcularAsignacionXHijxs();
 
   // Suma y resultados finales
   let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalXCargo1 + bonificacionZona + bonificacionAntiguedad + enseñanzaEnAula;
-  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs + bonoExtraordinario;
+  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + bonoExtraordinario;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
 
 
@@ -590,7 +593,7 @@ function calcularSalarioMaestrxJardin() {
     totalRemunerativo: totalRemunerativo1,
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
-    asignacionXHijxs: asignacionXHijxs,
+    //asignacionXHijxs: asignacionXHijxs,
     aguinaldoBruto: aguinaldo.sacBruto,
     aguinaldoNeto: aguinaldo.sacNeto,
     bonoExtraordinario: bonoExtraordinario
@@ -634,12 +637,12 @@ function calcularSalarioIfdcExclusivo() {
 
   let sumaNoRemunerativa = config.sumaNoRemunerativa;
   let incentivoDocente = config.fonid;
-  let asignacionXHijxs = calcularAsignacionXHijxs();
+  //let asignacionXHijxs = calcularAsignacionXHijxs();
   let bonoExtraordinario = config.bonoExtraordinario;
 
   // Suma y resultados finales
   let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalPorDedicacion1 + bonificacionAntiguedad;
-  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs + bonoExtraordinario;
+  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente +  bonoExtraordinario;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
 
 
@@ -658,7 +661,7 @@ function calcularSalarioIfdcExclusivo() {
     totalRemunerativo: totalRemunerativo1,
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
-    asignacionXHijxs: asignacionXHijxs,
+    //asignacionXHijxs: asignacionXHijxs,
     adicionalPorDedicacion: adicionalPorDedicacion1,
     aguinaldoBruto: aguinaldo.sacBruto,
     aguinaldoNeto: aguinaldo.sacNeto,
@@ -703,12 +706,12 @@ function calcularSalarioIfdcSemiExclusivo() {
   let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.ifdcSemiExclusivo;
   let incentivoDocente = config.fonid;
   let adicionalPorDedicacion1 = config.porcentajes.adicionalCargo * basico1;
-  let asignacionXHijxs = calcularAsignacionXHijxs();
+  //let asignacionXHijxs = calcularAsignacionXHijxs();
   let bonoExtraordinario = config.bonoExtraordinario;
 
   // Suma y resultados finales
   let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalPorDedicacion1 + bonificacionAntiguedad;
-  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs + bonoExtraordinario;
+  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + bonoExtraordinario;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
 
 
@@ -727,7 +730,7 @@ function calcularSalarioIfdcSemiExclusivo() {
     totalRemunerativo: totalRemunerativo1,
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
-    asignacionXHijxs: asignacionXHijxs,
+    //asignacionXHijxs: asignacionXHijxs,
     adicionalPorDedicacion: adicionalPorDedicacion1,
     aguinaldoBruto: aguinaldo.sacBruto,
     aguinaldoNeto: aguinaldo.sacNeto,
@@ -771,12 +774,12 @@ function calcularSalarioIfdcFullTime() {
   let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.ifdcFullTime;
   let incentivoDocente = config.fonid;
   let adicionalPorDedicacion1 = config.porcentajes.adicionalCargo * basico1;
-  let asignacionXHijxs = calcularAsignacionXHijxs();
+  //let asignacionXHijxs = calcularAsignacionXHijxs();
   let bonoExtraordinario = config.bonoExtraordinario;
 
   // Suma y resultados finales
   let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalPorDedicacion1 + bonificacionAntiguedad;
-  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + asignacionXHijxs + bonoExtraordinario;
+  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + bonoExtraordinario;
   let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
 
 
@@ -795,7 +798,7 @@ function calcularSalarioIfdcFullTime() {
     totalRemunerativo: totalRemunerativo1,
     totalNRemunerativo: totalNRemunerativo1,
     totalBruto: totalBruto1,
-    asignacionXHijxs: asignacionXHijxs,
+    //asignacionXHijxs: asignacionXHijxs,
     adicionalPorDedicacion: adicionalPorDedicacion1,
     aguinaldoBruto: aguinaldo.sacBruto,
     aguinaldoNeto: aguinaldo.sacNeto,
@@ -850,7 +853,7 @@ function mostrarResultados(
   setText("seguroObligatorio", descuentos.seguroObligatorio);
   //setText("totalBolsillo", (resultados.totalBruto ?? 0) - (descuentos.totalDescuentos ?? 0));
   setText("descuentoSindical", descuentos.descuentoSindical);
-  setText("asignacionXHijxs", resultados.asignacionXHijxs);
+  //setText("asignacionXHijxs", resultados.asignacionXHijxs);
   setText("totalDescuentosTexto", descuentos.totalDescuentos);
   setText("bonoExtraordinario", resultados.bonoExtraordinario);
   setText("enseñanzaEnAula", resultados.enseñanzaEnAula);
@@ -948,7 +951,7 @@ export function crearGraficoTorta(resultados: Resultados, descuentos: Descuentos
     { etiqueta: 'Comp. No Remunerativo', valor: resultados.complementoNoRemunerativo ?? 0, color: '#0dcaf0' },
     { etiqueta: 'Suma No Remunerativa', valor: resultados.pagoSumaNoRemunerativa ?? 0, color: '#0d6efd' },
     { etiqueta: 'Incentivo Docente', valor: resultados.pagoIncentivoDocente ?? 0, color: '#a27ae3' },
-    { etiqueta: 'Asig. por Hijxs', valor: resultados.asignacionXHijxs ?? 0, color: '#e83e8c' },
+    // { etiqueta: 'Asig. por Hijxs', valor: resultados.asignacionXHijxs ?? 0, color: '#e83e8c' },
     { etiqueta: 'Bono Extraordinario', valor: resultados.bonoExtraordinario ?? 0, color: '#6f42c1' }
   ];
 
@@ -1094,8 +1097,8 @@ export function compararPeriodo(mesInicio: string, mesFin: string) {
         alert("Existen datos a partir de Junio de 2023. Seleccione una fecha posterior a este periodo.");
         return;
     }
-    if (mesFin > "2026-06") {
-        alert("Existen datos hasta de Junio de 2026. Seleccione una fecha anterior a este periodo.");
+    if (mesFin > "2026-08") {
+        alert("Existen datos hasta de Agosto de 2026. Seleccione una fecha anterior a este periodo.");
         return;
     }
 

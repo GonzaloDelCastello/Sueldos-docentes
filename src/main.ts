@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const cargosPorNivel: Record<number, Opcion[]> = {
     1: [ // Inicial
       { value: 0, text: "Selecciona un cargo" },
-      { value: 6, text: "Maestrx Jardín" },
+      { value: 6, text: "Maestrx Jardín / Maestrx aux. de Jardín" },
     ],
 
     2: [ // Primaria
@@ -169,6 +169,10 @@ document.addEventListener("DOMContentLoaded", function () {
         if (zona) zona.classList.add("oculto");
         break;
       case 8: // IFDC Prof. semiexclusivo, 25 hs.
+        if (formFijo) formFijo.classList.remove("oculto");
+        if (zona) zona.classList.add("oculto");
+        break;
+      case 9: // IFDC Prof. full time, 40 hs.
         if (formFijo) formFijo.classList.remove("oculto");
         if (zona) zona.classList.add("oculto");
         break;

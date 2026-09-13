@@ -15,7 +15,6 @@ interface Resultados {
     totalNRemunerativo?: number;
     adicionalPorDedicacion?: number;
     totalBruto: number;
-    asignacionXHijxs?: number;
     aguinaldoBruto?: number;
     aguinaldoNeto?: number;
     bonoExtraordinario?: number;
