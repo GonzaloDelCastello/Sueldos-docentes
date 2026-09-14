@@ -171,18 +171,24 @@ document.addEventListener("DOMContentLoaded", function () {
                     formFijo.classList.remove("oculto");
                 if (zona)
                     zona.classList.add("oculto");
+                if (presencialidad)
+                    presencialidad.classList.add("oculto"); // Ocualtamos el ítem de presencialidad
                 break;
             case 8: // IFDC Prof. semiexclusivo, 25 hs.
                 if (formFijo)
                     formFijo.classList.remove("oculto");
                 if (zona)
                     zona.classList.add("oculto");
+                if (presencialidad)
+                    presencialidad.classList.add("oculto"); // Ocualtamos el ítem de presencialidad
                 break;
             case 9: // IFDC Prof. full time, 40 hs.
                 if (formFijo)
                     formFijo.classList.remove("oculto");
                 if (zona)
                     zona.classList.add("oculto");
+                if (presencialidad)
+                    presencialidad.classList.add("oculto"); // Ocualtamos el ítem de presencialidad
                 break;
         }
         // ... aquí termina tu switch(cargo) { ... }

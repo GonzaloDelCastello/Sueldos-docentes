@@ -167,14 +167,17 @@ document.addEventListener("DOMContentLoaded", function () {
       case 7: // IFDC Prof. tiempo completo, 30 hs.
         if (formFijo) formFijo.classList.remove("oculto");
         if (zona) zona.classList.add("oculto");
+        if (presencialidad) presencialidad.classList.add("oculto"); // Ocualtamos el ítem de presencialidad
         break;
       case 8: // IFDC Prof. semiexclusivo, 25 hs.
         if (formFijo) formFijo.classList.remove("oculto");
         if (zona) zona.classList.add("oculto");
+        if (presencialidad) presencialidad.classList.add("oculto"); // Ocualtamos el ítem de presencialidad
         break;
       case 9: // IFDC Prof. full time, 40 hs.
         if (formFijo) formFijo.classList.remove("oculto");
         if (zona) zona.classList.add("oculto");
+        if (presencialidad) presencialidad.classList.add("oculto"); // Ocualtamos el ítem de presencialidad
         break;
     }
     // ... aquí termina tu switch(cargo) { ... }
@@ -293,9 +296,9 @@ btnComparar.addEventListener("click", () => {
       // 2. Calculamos el Poder Adquisitivo Real y el Sueldo Ideal
       const proporcionReal = (indiceSalario / indiceInflacion) * 100;
       const diferenciaPoderCompra = 100 - proporcionReal;
-      
+
       // Matemática para el ejemplo: Sueldo base * factor de inflación
-      const sueldoIdealNominal = resultado.basicoInicio * indiceInflacion; 
+      const sueldoIdealNominal = resultado.basicoInicio * indiceInflacion;
       const plataIdeal = aPesos(sueldoIdealNominal); // Lo formateamos a pesos
 
       // 3. Armamos el texto base
@@ -309,7 +312,7 @@ btnComparar.addEventListener("click", () => {
       // 4. Elaboración de Textos Finales con el Ejemplo Práctico
       if (indiceSalario < indiceInflacion) {
         // Hubo pérdida
-        
+
         // 1. Calculamos el multiplicador para el bolsillo del usuario
         const multiplicadorBolsillo = indiceInflacion / indiceSalario;
 
