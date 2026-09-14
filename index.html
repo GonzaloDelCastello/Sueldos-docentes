@@ -26,15 +26,9 @@
 
       let ruta = window.location.pathname;
 
-
-
       // 2. Le borramos el nombre del repositorio para dejarla limpia
 
-      // Importante: respeta las mayúsculas de tu repositorio
-
       ruta = ruta.replace('/Sueldos-docentes', '');
-
-
 
       // 3. Redirigimos a Vercel con la ruta ya corregida
 
@@ -273,13 +267,15 @@
 
                       <option value="2">20%</option>
 
-                      <option value="3">40%</option>
+                      <option value="3">30%</option>
+                      
+                      <option value="4">40%</option>
 
-                      <option value="4">60%</option>
+                      <option value="5">60%</option>
 
-                      <option value="5">80%</option>
+                      <option value="6">80%</option>
 
-                      <option value="6">100%</option>
+                      <option value="7">100%</option>
 
 
 
@@ -691,8 +687,8 @@
         <p >Esta herramienta permite calcular la evolución real del poder adquisitivo
           docente en un período determinado. Para garantizar un cálculo objetivo, utiliza los siguientes parámetros:</p>
         <ul>
-          <li ><strong>Salario Básico:</strong> Toma como referencia el valor de la
-            hora cátedra en el básico de horas de secundaria en cada período. Se utiliza este índice porque es el valor base a partir del cual se calculan los demás ítems y
+          <li ><strong>Salario Básico:</strong> Toma como referencia el valor histórico de la
+            hora cátedra. Se utiliza este índice porque es el valor base a partir del cual se calculan los demás ítems y
             bonificaciones del recibo de sueldo.</li>
           <li ><strong>Inflación Oficial:</strong> Aplica el Índice de Precios al Consumidor
             (IPC) a nivel nacional, publicado mensualmente por el INDEC.</li>
