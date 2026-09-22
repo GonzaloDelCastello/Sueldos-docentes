@@ -418,6 +418,8 @@ function calcularSalarioMaestrCelador() {
   // Acá revisar 
   let parametroEEA;
   if (cargo === 3 || cargo === 4) {
+    parametroEEA = 1;
+  };
   let enseñanzaEnAula = 125000 * multiplicadorPresencialidad; // por 20 hs
 
   // COMPLEMENTOS NO REMUNERATIVOS FIJOS
