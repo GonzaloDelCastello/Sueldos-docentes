@@ -353,3 +353,7 @@ a {
 .footer__contenido {
   padding-top: 2rem; 
 }
+
+ #resultadoInflacion {
+  margin: 5rem 0 -15rem 0;
+} 
