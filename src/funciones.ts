@@ -415,7 +415,8 @@ function calcularSalarioMaestrCelador() {
 
   let complementoRemunerativo1 = basico1 * config.porcentajes.remunerativo;
   let adicionalXCargo1 = basico1 * config.porcentajes.adicionalCargo;
-  let enseñanzaEnAula = 125000 * multiplicadorPresencialidad;
+  // Acá revisar 
+  let enseñanzaEnAula = 125000 * multiplicadorPresencialidad; // por 20 hs
 
   // COMPLEMENTOS NO REMUNERATIVOS FIJOS
   let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
