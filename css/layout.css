@@ -27,55 +27,85 @@
     padding: 2rem 0;
 }
 
-.header__texto {
-    color: var(--blanco);
-    margin-left: 2rem;
-    font-family: var(--fuenteTitulo);
-    font-weight: 200;
-    font-size: 3rem;
+/* =========================================
+   ESTILOS DE LA CABECERA (HEADER)
+   ========================================= */
+
+/* --- El contenedor principal del logo --- */
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
-.header__texto2 {
-    color: var(--blanco);
-    font-size: 6rem;
+.header__enlace-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  gap: 1rem; /* Aumentamos el espacio para que respire */
 }
 
-h2.header__texto2 {
-    color: var(--blanco);
-    font-size: 5rem;
-    margin: 0rem;
+/* El H1 actúa como contenedor vertical */
+.header__texto-completo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--blanco);
+  font-family: var(--fuenteTitulo);
+  margin: 0;
+  text-align: center;
+  font-weight: 200;
 }
 
-.header__texto1 {
-    color: var(--negro);
-    font-size: 5rem;
-    padding: 1rem 2rem;
+/* Los textos dentro del H1 */
+.texto-superior {
+  font-size: 5rem !important; /* Forzamos tamaño grande, ajustá a gusto */
+  line-height: 1.1;
 }
 
-.header__imagen {
-    display: flex;
-    margin: -15rem auto -5rem;
-    max-width: 20rem;
-    height: auto;
-    border-radius: 8px;
+.texto-inferior {
+  font-size: 4.5rem !important; /* Un poco más chico que el superior */
+  line-height: 1.1;
 }
 
+/* La Imagen Centrada */
+.header__imagen-centro {
+  width: 20rem !important;  /* Forzamos el ancho en REM */
+  max-width: 100%;
+  height: auto !important;
+  margin: -3rem auto;
+  border-radius: 8px;
+  display: block; /* Aseguramos que ocupe su propio renglón */
+}
+
+/* El "Qué es" (Plataforma...) */
+.header__descripcion {
+  color: var(--blanco);
+  font-family: 'Arial', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.8;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* --- Ajustes Responsivos (Celulares) --- */
 @media (max-width: 768px) {
-    .header__imagen {
-        display: flex;
-        margin: -5rem auto -5rem;
-        max-width: 15rem;
-        height: auto;
-        border-radius: 8px;
-    }
-}
-
-.barra {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0rem 2rem;
-    position: relative;
+  .texto-superior { 
+      font-size: 3.5rem !important; 
+  }
+  .texto-inferior { 
+      font-size: 3rem !important; 
+  }
+  .header__imagen-centro { 
+      width: 20rem !important; /* Más chica en celular */
+  }
+  .header__descripcion {
+      font-size: 1.1rem;
+  }
 }
 
 .navegacion {
@@ -85,43 +115,11 @@ h2.header__texto2 {
 }
 
 .navegacion,
-#fechaActual,
 a {
     color: var(--blanco);
     font-family: var(--fuenteTitulo);
     font-size: 1.5rem;
     text-decoration: none;
-}
-
-#fechaActual {
-    font-size: 2.0rem;
-    color: var(--blanco);
-    margin-left: 70%;
-}
-
-@media (max-width: 768px) {
-    #fechaActual {
-        display: none;
-        font-size: 2rem;
-        margin-left: 40%;
-    }
-}
-
-.navegacion a:hover {
-    color: var(--blanco);
-    /* por ejemplo, azul apagado */
-    font-size: 2.3rem;
-    transition: color 0.3s ease;
-}
-
-@media (max-width: 768px) {
-    .navegacion a:hover {
-        color: var(--negro);
-        /* por ejemplo, azul apagado */
-        font-size: 3rem;
-        transition: color 0.3s ease;
-    }
-
 }
 
 /* --- Intro --- */
@@ -355,3 +353,7 @@ a {
 .footer__contenido {
   padding-top: 2rem; 
 }
+
+ #resultadoInflacion {
+  margin: 5rem 0 -15rem 0;
+} 

@@ -253,15 +253,6 @@ if (btnCalcularSueldo && selectMesCalculo) {
         setTimeout(() => { contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 250);
     });
 }
-// Mostrar fecha actual en formato legible 
-document.addEventListener("DOMContentLoaded", () => {
-    const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
-    // Obtener el elemento y asignar si existe (no usar optional chaining en LHS)
-    const fechaEl = document.getElementById("fechaActual");
-    if (fechaEl) {
-        fechaEl.textContent = new Date().toLocaleDateString("es-AR", opciones);
-    }
-});
 // Comparador de inflación
 const btnComparar = document.getElementById("btnComparar");
 const inputInicio = document.getElementById("mesInicio");

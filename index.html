@@ -49,56 +49,100 @@
     <div class="contenedor">
 
       <div class="barra">
-
         <div class="logo">
+          <a href="index.html" class="header__enlace-logo">
+            <h1 class="header__texto-completo">
+              <span class="texto-superior">Trabajadorxs de la Educación</span>
+              
+              <!-- La imagen ahora vive DENTRO del H1, es semánticamente correcta -->
+              <img src="img/1000158611-Photoroom.png" alt="Logo Plataforma" class="header__imagen-centro">
+              
+              <span class="texto-inferior">San Luis</span>
+            </h1>
+            
+            <span class="header__descripcion">Plataforma de Herramientas y Recursos</span>
+          </a>
+        </div>
+      
+    </div>
 
-          <a href="index.html">
+  </header>
 
-            <h1 class="header__texto">Trabajadores de la educación<br>San Luis</h1>
+  <section class="contenedorAyuda intro">
+
+    <div class="mensaje-comunitario mb-3">
+
+      <h3>Sobre este proyecto</h3>
+
+      <p>Esta calculadora es una herramienta de uso gratuito y sin fines de lucro, desarrollada (con mucho esfuerzo y
+
+        tiempo dedicado) por docentes con el objetivo de brindar transparencia y claridad sobre nuestra liquidación de
+
+        sueldos. Creemos firmemente que entender nuestro recibo de sueldo es un paso
+
+        para defender nuestras condiciones laborales. Este proyecto se sostiene gracias al esfuerzo colectivo y a la
+
+        convicción de democratizar esta información. Al ser un desarrollo en constante evolución y actualización,
+
+        necesitamos construirlo entre todxs. Tu aporte también lo hace posible.</p>
+
+    </div>
+
+    <details class="acordeon-info">
+
+      <summary>🤝 ¿Te sirve este proyecto? ¿Quieres colaborar?</summary>
+
+      <div class="contenido-acordeon">
+
+        <p>Esta página basa su información de la lectura y análisis de recibos de sueldo compartidos. Si tu cargo no
+
+          aparece,
+
+          notás diferencias en el cálculo, tenés dudas o algún aporte que quieras compartir, envíanos un mail. Podés
+
+          agregar una foto o PDF de tu recibo (puedes tachar tu nombre y CUIL). ¡Nos ayuda a sumar más cargos al
+
+          sistema!</p>
+
+        <button id="btnEnviarRecibo" class="boton mt-2">📩 Enviar e-mail </button>
+
+        <div class="seccion-colaboracion mt-3" style="text-align: center;">
+
+          <p>¿Te sirvió la herramienta? Podés ayudar a mantenerla activa:</p>
+
+
+
+          <a href="https://mpago.la/2dPdKPu" target="_blank" class="boton-mp">
+
+            Aporte económico al proyecto ($1.000)
 
           </a>
 
-        </div>
 
-        <!-- Botón hamburguesa para móviles -->
 
-        <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú">
+          <p class="alias-texto mt-2">
 
-          ☰
+            O por transferencia al Alias: <br>
 
-        </button>
+            <strong>gonzalodelcastello</strong>
 
-        <!--Menú de navegación-->
-
-        <div class="navegacion" id="navegacion">
-
-          <a href="sobreNosotros.html">Sobre nosotros</a>
-
-          <a href="recursos.html">Recursos</a>
+          </p>
 
         </div>
 
       </div>
 
-      <!-- Fecha actual -->
-
-      <p id="fechaActual"></p>
-
-      <img src="img/1000158611-Photoroom.png" alt="Bienvenida" class="header__imagen">
-
-      <h2 class="header__texto2">Bienvenidxs</h2>
 
 
+    </details>
 
-    </div>
-
-  </header>
-
+  </section>
+  
   <main class="contenedor">
 
     <div class="contenedorTabs">
 
-      <button id="tab-calculadora" class="btn-tab activo">Calcula de sueldos</button>
+      <button id="tab-calculadora" class="btn-tab activo">Calculadora de sueldos</button>
 
       <button id="tab-inflacion" class="btn-tab">Comparativa sueldos vs inflación</button>
 
@@ -701,85 +745,16 @@
 
   </main>
 
-  <section class="contenedorAyuda intro">
-
-    <div class="mensaje-comunitario mb-3">
-
-      <h3>Sobre este proyecto</h3>
-
-      <p>Esta calculadora es una herramienta de uso gratuito y sin fines de lucro, desarrollada (con mucho esfuerzo y
-
-        tiempo dedicado) por docentes con el objetivo de brindar transparencia y claridad sobre nuestra liquidación de
-
-        sueldos. Creemos firmemente que entender nuestro recibo de sueldo es un paso
-
-        para defender nuestras condiciones laborales. Este proyecto se sostiene gracias al esfuerzo colectivo y a la
-
-        convicción de democratizar esta información. Al ser un desarrollo en constante evolución y actualización,
-
-        necesitamos construirlo entre todxs. Tu aporte también lo hace posible.</p>
-
-    </div>
-
-    <details class="acordeon-info">
-
-      <summary>🤝 ¿Te sirve este proyecto? ¿Quieres colaborar?</summary>
-
-      <div class="contenido-acordeon">
-
-        <p>Esta página basa su información de la lectura y análisis de recibos de sueldo compartidos. Si tu cargo no
-
-          aparece,
-
-          notás diferencias en el cálculo, tenés dudas o algún aporte que quieras compartir, envíanos un mail. Podés
-
-          agregar una foto o PDF de tu recibo (puedes tachar tu nombre y CUIL). ¡Nos ayuda a sumar más cargos al
-
-          sistema!</p>
-
-        <button id="btnEnviarRecibo" class="boton mt-2">📩 Enviar e-mail </button>
-
-        <div class="seccion-colaboracion mt-3" style="text-align: center;">
-
-          <p>¿Te sirvió la herramienta? Podés ayudar a mantenerla activa:</p>
-
-
-
-          <a href="https://mpago.la/2dPdKPu" target="_blank" class="boton-mp">
-
-            Aporte económico al proyecto ($1.000)
-
-          </a>
-
-
-
-          <p class="alias-texto mt-2">
-
-            O por transferencia al Alias: <br>
-
-            <strong>gonzalodelcastello</strong>
-
-          </p>
-
-        </div>
-
-      </div>
-
-
-
-    </details>
-
-  </section>
 
 <footer class="footer">
     <!-- SECCIÓN 1: Pre-footer (Navegación secundaria) -->
-    <div class="footer__enlaces contenedor">
+    <!-- <div class="footer__enlaces contenedor">
       <a href="recursos.html">Recursos</a>
       <a href="sobreNosotros.html">¿Quienes somos?</a>
-    </div>
+    </div> -->
 
     <!-- Línea divisoria sutil -->
-    <hr class="footer__divisor">
+    <!-- <hr class="footer__divisor"> -->
 
     <!-- SECCIÓN 2: Créditos del desarrollador -->
     <div class="contenedor footer__contenido">
