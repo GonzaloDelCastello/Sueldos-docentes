@@ -1,0 +1,541 @@
+# Apuntes para entender los cambios técnicos
+
+Material de estudio escrito para acompañar los cambios que hicimos en el proyecto de la calculadora de sueldos docentes.
+
+---
+
+## Cómo usar estos apuntes
+
+Este documento tiene dos partes bien distintas.
+
+El cuerpo principal, desde la Parte 1 hasta la Parte 10, está escrito para ser leído o escuchado. No tiene tablas ni símbolos raros. Las frases son cortas a propósito. Los términos técnicos se repiten en lugar de reemplazarse por pronombres, porque cuando uno escucha no puede volver atrás con la vista para ver a qué se refería "esto".
+
+El Anexo, al final, tiene el código. Ese anexo está pensado para leer con los ojos, nunca con los oídos. Si estás escuchando el documento, salteá el anexo entero.
+
+Una recomendación práctica: no intentes escuchar todo de una vez. Cada Parte es una unidad que se sostiene sola. La Parte 2 y la Parte 3 son las más importantes para entender los tests.
+
+---
+
+# Parte 1. Qué es un test automatizado y por qué existe
+
+## El problema que resuelve
+
+Imaginate que tenés una balanza. Para saber si está bien calibrada, ponés una pesa de un kilo y mirás si marca un kilo. Si marca un kilo, confiás en ella para pesar otra cosa.
+
+Un test automatizado es exactamente eso: una pesa patrón para el código. Escribís una situación donde ya sabés cuál tiene que ser el resultado, y dejás que la computadora verifique si el programa devuelve ese resultado.
+
+En tu caso concreto: si el historial de inflación dice que entre junio de 2023 y junio de 2026 los precios subieron un 624,24 por ciento, entonces el programa tiene que devolver 624,24. Si devuelve otra cosa, algo se rompió.
+
+## Por qué no alcanza con probar a mano
+
+Probar a mano funciona. De hecho, es lo que venías haciendo: abrís la página, cambiás un mes, mirás si el número parece razonable.
+
+El problema es que probar a mano tiene tres límites muy duros.
+
+El primero es que no te acordás. Dentro de seis meses, cuando agregues un mes nuevo al historial de inflación, no te vas a acordar de que el mes de junio de 2026 tenía que dar 624,24. Vas a mirar el número nuevo, te va a parecer razonable, y vas a seguir.
+
+El segundo es que probar a mano cuesta tiempo y por eso se hace poco. Si cada cambio en el código te obliga a abrir el navegador y hacer veinte clics, al final lo hacés una vez y con apuro. Y el apuro es donde se escapan los errores.
+
+El tercero es el más importante, y es psicológico. Cuando un programa no tiene tests, cada cambio da miedo. Uno empieza a evitar tocar el código, a copiar y pegar en lugar de refactorizar, a agregar condiciones para casos raros en vez de arreglar el problema de fondo. El código se degrada no por falta de capacidad técnica, sino por miedo a romper algo que funciona.
+
+Un test automatizado devuelve la confianza. Cambiás algo, corrés los tests en dos segundos, y sabés si rompiste algo. Eso es lo que hace posible mejorar el código.
+
+## Lo que un test no es
+
+Un test no prueba que el programa sea correcto. Prueba que el programa hace lo que vos dijiste que tenía que hacer.
+
+Esa diferencia es enorme. Si tu tabla de inflación tiene un valor equivocado, el test va a pasar, porque el test verifica la cuenta, no el dato. Un test no reemplaza revisar la fuente de la información.
+
+Por eso los tests que escribimos tienen dos clases distintas: unos verifican cuentas, y otros verifican la integridad de los datos. Los segundos son los que atrapan valores repetidos o meses que faltan.
+
+---
+
+# Parte 2. Los cuatro conceptos que hacen posible testear
+
+Acá está el corazón del asunto. Tu motor de cálculo no se podía testear, y no era por falta de tests. Era porque estaba construido de una forma que lo hacía imposible.
+
+## Concepto uno: efecto secundario
+
+Un efecto secundario es cualquier cosa que una función hace además de devolver un valor.
+
+Si una función suma dos números y devuelve el resultado, no tiene efectos secundarios.
+
+Si una función suma dos números, y además escribe en la pantalla, y además modifica una variable global, y además pide datos por internet, entonces tiene tres efectos secundarios.
+
+Los efectos secundarios no son malos. Un programa que no escribiera nada en ningún lado no serviría para nada. El problema es que los efectos secundarios hacen que el código sea difícil de probar y difícil de razonar.
+
+## Concepto dos: función pura
+
+Una función es pura cuando cumple dos condiciones.
+
+La primera: el resultado depende solamente de los argumentos que recibe. No lee variables globales, no lee la pantalla, no pregunta la hora.
+
+La segunda: no modifica nada de afuera. No escribe en la pantalla, no cambia variables globales, no altera los objetos que recibe.
+
+Las funciones puras son maravillosas por tres razones. Son fáciles de probar, porque solo hay que darles datos y mirar qué devuelven. Son fáciles de entender, porque para saber qué hacen alcanza con leer la función. Y se pueden usar en cualquier lugar, porque no dependen del ambiente.
+
+## Concepto tres: acoplamiento y cohesión
+
+El acoplamiento mide cuánto depende una parte del código de otra parte. La cohesión mide cuánto tienen que ver entre sí las cosas que están juntas en un mismo lugar.
+
+Queremos acoplamiento bajo y cohesión alta.
+
+En tu proyecto, el archivo de cálculo tenía acoplamiento altísimo con la página. La función que calculaba la bonificación por zona leía directamente el menú desplegable de la página. Eso significa que esa función no se podía usar sin una página web, y no se podía probar sin un navegador.
+
+## Concepto cuatro: inyección de dependencias
+
+La inyección de dependencias suena complicado y es una idea simple: en lugar de que una función vaya a buscar lo que necesita, se lo pasás vos.
+
+Antes, la función de inflación buscaba el historial por su cuenta, leyendo una variable del módulo. Ahora el historial entra por parámetro.
+
+Parece un cambio trivial, y sin embargo es lo que convierte una función imposible de probar en una función trivial de probar. Porque ahora, en un test, le podés pasar tres meses inventados y verificar el resultado a mano.
+
+---
+
+# Parte 3. Anatomía de un test
+
+## Las tres fases
+
+Todo test bien escrito tiene tres fases, en este orden.
+
+La primera es preparar. Se arman los datos de entrada y se deja el ambiente como tiene que estar.
+
+La segunda es actuar. Se llama a la función que se quiere probar, una sola vez.
+
+La tercera es verificar. Se compara el resultado con el resultado esperado.
+
+Cuando un test tiene las tres fases mezcladas, cuesta entenderlo. Cuando las tres fases están claras, el test se lee casi como una frase.
+
+## La aserción
+
+Una aserción es la afirmación que el test hace sobre el resultado. Es la parte que dice "esto tiene que ser igual a aquello".
+
+Si la aserción se cumple, el test pasa. Si no se cumple, el test falla y muestra qué esperaba y qué obtuvo.
+
+La calidad de un test se mide, en gran parte, por la calidad de sus aserciones. Un test que no afirma nada no verifica nada.
+
+## Por qué los decimales no se comparan con igualdad exacta
+
+Esto es importante y es contraintuitivo.
+
+Las computadoras guardan los números decimales en un formato binario que no puede representar exactamente cosas como un décimo. Entonces, cuando multiplicás porcentajes, el resultado arrastra errores minúsculos.
+
+Por ejemplo, uno coma uno por uno coma dos debería dar uno coma treinta y dos. Pero en el mundo de los números decimales de la computadora puede dar uno coma treinta y uno nueve nueve nueve nueve, con muchos nueves.
+
+Por eso los tests no comparan decimales con igualdad exacta. Comparan con una tolerancia, que es un margen aceptable de diferencia.
+
+Esto tiene una consecuencia práctica para tu proyecto. Los porcentajes de inflación se comparan con una tolerancia de una milésima. Y los importes en pesos, que la gente ve en pantalla, van a seguir teniendo diferencias de centavos mientras el cálculo no redondee a dos decimales. Ese es un problema pendiente y es un tema aparte de los tests.
+
+## Un test tiene que poder fallar
+
+Esta es la regla más importante de todo el documento.
+
+Un test que no puede fallar no sirve para nada. Es peor que no tener test, porque da una falsa sensación de seguridad.
+
+Por eso, cuando escribas un test, la pregunta no es "¿pasa?". La pregunta es "¿lo probé roto?".
+
+La forma de comprobarlo es romper el código a propósito y ver si el test se pone en rojo. Eso fue exactamente lo que hicimos: reintrodujimos el mes duplicado en el historial de inflación, corrimos los tests, y tres de ellos fallaron. Después restauramos el archivo.
+
+Si el test hubiera seguido en verde con el código roto, el test no servía.
+
+---
+
+# Parte 4. Los tipos de tests y por qué el costo importa
+
+## Tests unitarios
+
+Un test unitario prueba una sola cosa, aislada del resto. Una función, un cálculo, una regla.
+
+Son rapidísimos, se escriben fácil y cuando fallan te dicen con precisión dónde está el problema.
+
+Los trece tests que escribimos son unitarios. Por eso corren en cincuenta y siete milésimas de segundo.
+
+## Tests de integración
+
+Un test de integración prueba varias partes juntas: por ejemplo, que el cálculo y el historial se entiendan bien entre sí.
+
+Son más lentos y más difíciles de escribir, pero atrapan errores que los tests unitarios no ven, porque los errores suelen vivir justo en las uniones entre las partes.
+
+## Tests de punta a punta
+
+Un test de punta a punta maneja el programa como lo haría una persona. Abre el navegador, completa el formulario, hace clic, y verifica lo que aparece en pantalla.
+
+Son los más realistas y los más caros. Son lentos, se rompen por cosas que no tienen que ver con tu código, y cuando fallan cuesta mucho saber por qué.
+
+## La pirámide
+
+La recomendación clásica es una pirámide: muchos tests unitarios en la base, algunos de integración en el medio, y pocos de punta a punta en la punta.
+
+La razón es el costo. Un test unitario cuesta poco escribirlo y poco mantenerlo. Un test de punta a punta cuesta muchísimo de las dos cosas. Si invertís la pirámide, terminás con una suite que tarda veinte minutos y que nadie quiere tocar.
+
+## Tres tipos especiales que vale la pena conocer
+
+El primero es el test de regresión. Su nombre viene de "regresión" en el sentido de volver atrás, de retroceder. Un test de regresión se escribe después de arreglar un error, para asegurar que ese error no vuelva a aparecer. El test que verifica que no haya meses duplicados en el historial de inflación es un test de regresión.
+
+El segundo es el test de integridad de datos. No prueba una función: prueba una propiedad de tus datos. Por ejemplo, que no haya meses repetidos, que no falte ningún mes en el medio, que todos los valores sean positivos. Este tipo de test es especialmente valioso cuando los datos son la fuente de verdad de todo lo demás.
+
+El tercero es el test de caracterización. Se usa cuando heredás código que no entendés bien y no tiene tests. En lugar de escribir tests que digan lo que el código debería hacer, escribís tests que registren lo que el código hace hoy. Así, cuando lo refactorices, te enterás si cambiaste el comportamiento. Tu archivo de JavaScript viejo es un candidato ideal para este tipo de test, si algún día decidís rescatarlo.
+
+---
+
+# Parte 5. Herramientas: qué es un runner y qué es TAP
+
+## El runner
+
+El runner, o corredor de tests, es el programa que busca los archivos de test, los ejecuta, y te informa cuáles pasaron y cuáles fallaron.
+
+La mayoría de los proyectos usa un framework externo, como Jest o Vitest, que hay que instalar y configurar.
+
+En tu caso no hizo falta, y eso es una buena noticia. Node, el programa que ejecuta JavaScript fuera del navegador, trae un runner incorporado desde la versión dieciocho. Se llama simplemente módulo de test, y se usa escribiendo al principio del archivo una línea que dice importar test desde node, dos puntos, test.
+
+Eso significa cero dependencias nuevas, cero configuración, y una sola orden para correr todo.
+
+## TAP
+
+Cuando corrés los tests, la salida empieza diciendo TAP version 13.
+
+TAP son las siglas de Test Anything Protocol, o protocolo de cualquier cosa que sea un test. Es un formato de texto viejo y simple, de los años ochenta, que sirve para que cualquier herramienta pueda leer resultados de tests sin importar en qué lenguaje estén escritos.
+
+Un test que pasó se anuncia con la palabra ok. Un test que falló se anuncia con not ok. Al final hay un resumen con la cantidad de tests, cuántos pasaron y cuántos fallaron.
+
+Saber esto te sirve para una cosa muy concreta: si un test falla, el proceso termina con un código de salida distinto de cero. Ese código es lo que permite que un servidor automático se niegue a publicar una versión rota. Todavía no tenés eso configurado, pero es el paso natural siguiente.
+
+## Fases de un test dentro del runner
+
+El runner te da algunas herramientas que conviene conocer.
+
+La función describe agrupa varios tests bajo un mismo nombre. Sirve para organizar.
+
+Las funciones before y after se ejecutan antes y después de todo el grupo. Las funciones beforeEach y afterEach se ejecutan antes y después de cada test individual. Sirven para preparar y limpiar.
+
+Y la opción skip permite saltear un test temporalmente, dejando claro en el código que está salteado a propósito y no olvidado.
+
+---
+
+# Parte 6. Cobertura: qué mide y qué no
+
+La cobertura es un porcentaje que dice qué proporción de las líneas de tu código se ejecutaron al menos una vez durante los tests.
+
+Es una métrica útil y peligrosa al mismo tiempo.
+
+Es útil porque te muestra zonas del código que ningún test toca. Esas zonas son las más peligrosas, porque nadie sabe si funcionan.
+
+Es peligrosa porque mide ejecución, no verificación. Una línea puede ejecutarse y que nadie verifique su resultado. Podés tener cien por ciento de cobertura y cero tests útiles. Eso se llama cobertura por accidente y es más común de lo que parece.
+
+La regla práctica es esta: usá la cobertura para encontrar huecos, nunca como objetivo a alcanzar. Un equipo que persigue un número de cobertura escribe tests malos para llegar al número.
+
+En tu proyecto, correr la cobertura te mostraría algo muy informativo: el archivo de funciones de cálculo va a tener cobertura casi nula, porque casi todo su contenido toca la pantalla y no se puede ejecutar sin navegador. Ese mapa es, en sí mismo, el argumento para el refactor.
+
+---
+
+# Parte 7. Desarrollo guiado por tests
+
+## El ciclo
+
+El desarrollo guiado por tests, conocido por sus siglas en inglés TDD, propone invertir el orden habitual.
+
+En lugar de escribir el código y después los tests, se escribe primero el test.
+
+El ciclo tiene tres pasos y se repite una y otra vez.
+
+Primer paso, rojo. Escribís un test para algo que todavía no existe. Corrés los tests y falla. Eso es lo correcto: el test tiene que fallar, porque si pasa es que no está probando nada nuevo.
+
+Segundo paso, verde. Escribís el código más simple posible para que el test pase. Sin elegancia, sin generalizar. Lo mínimo.
+
+Tercer paso, refactorizar. Con el test en verde como red de seguridad, mejorás el código.
+
+## Para qué sirve de verdad
+
+La parte más valiosa de TDD no es la que la gente suele mencionar. No es "así tenés tests". La parte valiosa es que escribir el test primero te obliga a decidir cómo querés que se use tu función antes de escribirla.
+
+Si el test es incómodo de escribir, eso es información. Significa que la función tiene una interfaz incómoda, o que está haciendo demasiadas cosas, o que depende de algo que no debería.
+
+Eso es exactamente lo que te pasó con la función de inflación: cuando quisiste probarla, no podías, porque pedía el historial por su cuenta. La incomodidad del test reveló un problema de diseño.
+
+## Cuándo no sirve
+
+TDD no es una religión. Sirve muy bien cuando la lógica es clara y sabés de antemano qué resultado esperás, como en los cálculos.
+
+Sirve mal cuando estás explorando, cuando no sabés todavía qué tiene que hacer el código, o cuando el valor está en lo visual y lo subjetivo. Nadie escribe un test para decidir si un color queda bien.
+
+---
+
+# Parte 8. Los otros conceptos que aparecieron en estos cambios
+
+## Módulos
+
+Un módulo es un archivo de código que expone algunas cosas hacia afuera y mantiene otras privadas.
+
+En JavaScript moderno se usan dos palabras: export para decir qué ofrece el archivo, e import para decir qué necesita de otros archivos.
+
+Antes de los módulos, todo el código de una página compartía un mismo espacio y las variables se pisaban entre sí. Los módulos resuelven eso: cada archivo tiene su propio ámbito.
+
+Un detalle práctico que te va a morder alguna vez: en el navegador, un archivo que usa import y export tiene que cargarse con la etiqueta script marcada como módulo. Si no, el navegador tira un error y no ejecuta nada. Tu calculadora carga el archivo compilado justamente así.
+
+## Compilar
+
+TypeScript es JavaScript con anotaciones de tipo. El navegador no entiende TypeScript, así que hay que traducirlo.
+
+Ese proceso se llama compilar, y el programa que lo hace se llama compilador. En tu proyecto el compilador es tsc, la herramienta oficial de TypeScript.
+
+El compilador lee los archivos de la carpeta de código fuente, llamada src, y escribe los archivos de JavaScript resultantes en otra carpeta, llamada dist.
+
+Por eso hay que correr la compilación cada vez que cambiás el código fuente. Si no lo hacés, el navegador sigue usando la versión vieja.
+
+Las anotaciones de tipo sirven para dos cosas. La primera es que el editor te avisa de errores mientras escribís, sin necesidad de ejecutar nada. La segunda es que documentan la intención: cuando una función dice que devuelve un número, cualquiera que la lea lo sabe sin adivinar.
+
+## El DOM
+
+El DOM son las siglas de Document Object Model, o modelo de objetos del documento. Es la representación en memoria de la página web, en forma de árbol.
+
+Cuando tu código hace document punto getElementById, está buscando un nodo de ese árbol.
+
+Entender esto importa porque explica el acoplamiento del que hablamos antes. Cuando una función de cálculo busca un elemento del DOM, está diciendo que necesita una página web para funcionar. Y eso la vuelve imposible de probar en un test unitario.
+
+## Build y deploy
+
+Estas dos palabras se confunden seguido y conviene separarlas.
+
+El build, o compilación del proyecto, es el proceso de transformar el código fuente en los archivos que el navegador va a usar. En tu caso, traducir TypeScript y escribir la carpeta dist.
+
+El deploy, o despliegue, es el proceso de publicar esos archivos en un servidor para que la gente los vea.
+
+Vercel hace las dos cosas cuando subís cambios a GitHub. Instala las dependencias, corre la compilación, y publica el resultado.
+
+Acá hay una distinción que en tu proyecto generó confusión: la carpeta dist estaba a la vez ignorada por Git y versionada. Ignorada quiere decir que Git debería no darle bolilla. Versionada quiere decir que sus archivos están guardados en el repositorio. Las dos cosas juntas no tienen sentido, y la razón es que Git nunca deja de seguir un archivo por el solo hecho de agregarlo a la lista de ignorados: hay que sacarlo del seguimiento explícitamente.
+
+Eso importaba porque si Vercel compilaba, los archivos versionados eran redundantes. Y si no compilaba, el sitio dependía de que alguien se acordara de recompilar antes de cada commit. La forma de saberlo fue buscar un archivo que existiera en el sitio publicado pero nunca hubiera estado en el repositorio. Existía. Entonces Vercel compila.
+
+Ese razonamiento es un ejemplo de algo que vas a usar toda la vida: cuando no podés observar un proceso directamente, buscá una huella que solo ese proceso podría haber dejado.
+
+## Imágenes y peso
+
+Tres conceptos alcanzan para entender lo que hicimos con las imágenes.
+
+El primero es la resolución contra el tamaño de visualización. Una imagen de mil novecientos veinte píxeles de ancho se ve, en la mayoría de las pantallas, a unos mil cuatrocientos píxeles. Todo lo que sobra se descarga y no se usa.
+
+El segundo es la diferencia entre compresión con pérdida y sin pérdida. Sin pérdida, el archivo se reconstruye idéntico. Con pérdida, se descarta información que el ojo humano no distingue bien, y el archivo baja muchísimo. JPEG y WebP con calidad son compresiones con pérdida.
+
+El tercero, y el más interesante, es que la compresión con pérdida funciona mucho mejor cuando la imagen tiene zonas parejas que cuando tiene ruido. Una foto de pizarra tiene grano por todos lados, y ese grano es carísimo de guardar. Por eso bajar la calidad no alcanzaba: el archivo seguía pesando mucho. Un desenfoque mínimo, de un píxel y medio, elimina el grano, y ahí la compresión se desploma. El resultado se ve igual, porque va detrás de un texto.
+
+Ese es un buen ejemplo de que optimizar no es aplicar una receta. Es entender qué está costando y por qué.
+
+## Accesibilidad
+
+La accesibilidad es diseñar para que las personas puedan usar el sitio independientemente de cómo perciben o navegan.
+
+No es solo para personas ciegas. Incluye contraste de colores para quien tiene baja visión, navegación por teclado para quien no usa mouse, y respetar preferencias del sistema como reducir el movimiento, que ayuda a quien se marea con las animaciones.
+
+El concepto más útil para recordar es la relación de contraste, que es un número que compara la luminosidad del texto con la del fondo. La regla internacional pide un mínimo de cuatro coma cinco a uno para texto normal.
+
+En tu proyecto había un caso extremo: un texto negro sobre una foto oscura, que da una relación cercana a uno a uno. Eso no es "poco legible", es invisible. Y no era un problema de diseño, era que faltaba la regla de estilo. El navegador usó el color por defecto.
+
+## Deuda técnica
+
+La deuda técnica es una metáfora financiera. Es el costo futuro que genera una solución rápida de hoy.
+
+No es lo mismo que código malo. A veces uno toma deuda a propósito, porque necesita entregar algo ya, y sabe que después lo va a pagar.
+
+El problema no es tener deuda, es no saber que la tenés. La deuda que no se registra se convierte en un problema que aparece en el peor momento.
+
+Tu archivo de JavaScript viejo es deuda técnica pura: es una copia obsoleta del motor de cálculo, con precios de julio de dos mil veinticinco y una tabla de zonas anterior a la que agregaste. No se usa en ninguna parte, pero está ahí, y el día que alguien lo reconecte va a calcular mal sin que nadie lo note durante meses.
+
+## Refactorizar
+
+Refactorizar es mejorar la estructura del código sin cambiar lo que hace.
+
+La clave está en la segunda mitad: sin cambiar lo que hace. Por eso refactorizar sin tests es peligroso, porque no tenés forma de saber si cambiaste el comportamiento sin querer.
+
+El refactor que hicimos fue chico y quirúrgico: mover dos funciones de un archivo a otro, y cambiar de dónde sacan los datos. El comportamiento es idéntico. Lo que cambió es que ahora se pueden probar.
+
+## La caché del navegador
+
+Esto explica el problema del favicon y es un concepto que vas a encontrar todo el tiempo.
+
+La caché es una memoria temporal donde el navegador guarda copias de los archivos que descargó, para no volver a pedirlos.
+
+Funciona con una idea simple: el mismo nombre de archivo se considera el mismo contenido. Si el navegador ya tiene una copia de un archivo, no lo vuelve a pedir.
+
+El problema aparece con las respuestas negativas. Antes de que existiera el favicon, el navegador pidió el archivo, recibió un error de no encontrado, y guardó ese error en la caché. Cuando después publicamos el archivo, el navegador ya "sabía" que no existía, y no lo volvió a pedir.
+
+Por eso funcionaba en el servidor local, que es un origen distinto sin caché previa, y no funcionaba en el sitio publicado.
+
+Las soluciones son tres. Recargar forzando el borrado de la caché. Esperar a que la entrada expire. O la más elegante: cambiarle el nombre al archivo. Un nombre nuevo es una entrada nueva en la caché, y el navegador está obligado a pedirlo.
+
+Eso último fue lo que hicimos con los favicons en formato PNG: son archivos con nombres nuevos, nunca vistos por el navegador, así que se descargan sí o sí.
+
+---
+
+# Parte 9. Glosario
+
+Aserción. La afirmación que un test hace sobre un resultado esperado.
+
+Build. Proceso de transformar el código fuente en los archivos que usa el navegador.
+
+Caché. Memoria temporal del navegador donde guarda copias de archivos ya descargados.
+
+Cobertura. Porcentaje de líneas de código que se ejecutan durante los tests.
+
+Cohesión. Medida de cuánto tienen que ver entre sí las cosas agrupadas en un mismo lugar.
+
+Compilar. Traducir código de un lenguaje a otro. En tu caso, de TypeScript a JavaScript.
+
+Acoplamiento. Medida de cuánto depende una parte del código de otra.
+
+Deploy. Publicar los archivos en un servidor para que la gente los vea.
+
+DOM. Representación en memoria de la página web, en forma de árbol de nodos.
+
+Efecto secundario. Todo lo que una función hace además de devolver un valor.
+
+Función pura. Función cuyo resultado depende solo de sus argumentos y que no modifica nada externo.
+
+Inyección de dependencias. Pasarle a una función lo que necesita, en lugar de que lo vaya a buscar.
+
+Módulo. Archivo de código que expone cosas hacia afuera y mantiene otras privadas.
+
+Refactorizar. Mejorar la estructura del código sin cambiar su comportamiento.
+
+Runner. Programa que busca, ejecuta e informa el resultado de los tests.
+
+TAP. Formato de texto estándar para informar resultados de tests.
+
+Test de regresión. Test escrito después de arreglar un error, para que no vuelva a aparecer.
+
+Test unitario. Test que prueba una sola cosa de forma aislada.
+
+---
+
+# Parte 10. Ruta de estudio y materiales
+
+## El orden que te recomiendo
+
+Primero, consolidá JavaScript moderno si te quedan dudas: funciones, objetos, arrays, y sobre todo módulos. Sin eso, lo demás se vuelve memorizar sin entender.
+
+Segundo, aprendé a leer la documentación oficial. Es una habilidad y se entrena. La documentación de Node sobre el módulo de test está en inglés pero es clara y tiene ejemplos completos.
+
+Tercero, practicá con el código que ya tenés. Es la mejor fuente de ejercicios porque te importa.
+
+Cuarto, recién después, mirá un framework de tests como Vitest. Vas a entender por qué existe y qué te agrega, en lugar de aprenderlo como una receta.
+
+## Ejercicios concretos sobre tu propio proyecto
+
+Uno. Escribí un test para la función que arma el mensaje de comparación de inflación. Esa función usa alert, así que vas a tener que pasarle una función de alerta falsa. Ese ejercicio te enseña qué es un doble de prueba.
+
+Dos. Escribí un test de integridad que verifique que todos los meses del historial de básicos tengan un mes correspondiente en el historial de inflación. Vas a descubrir que los últimos meses no lo tienen, y eso es información valiosa.
+
+Tres. Agregá un test que falle a propósito. Cambiá un número esperado por uno equivocado, mirá el mensaje de error, y entendé qué te está diciendo. El mensaje de error de un test es una herramienta, y hay que aprender a leerla.
+
+## Materiales
+
+Empezá por estos dos, que son gratuitos y en español.
+
+El Tutorial de JavaScript Moderno, en su versión en español, disponible en es punto javascript punto info. Es la mejor referencia gratuita de JavaScript que existe. Los capítulos que te sirven ahora son los de módulos, el de documentos y el de formularios y eventos. Tiene un capítulo sobre automatización de pruebas que usa una herramienta vieja llamada Mocha, pero el concepto que enseña es el mismo.
+
+La documentación oficial del corredor de tests de Node, disponible en nodejs punto org barra api barra test punto html. Está en inglés. Es la referencia exacta de las herramientas que estás usando, incluye cómo medir cobertura y cómo simular funciones.
+
+Después, si querés profundizar en tests en serio, estos son los que valen la pena.
+
+El libro Unit Testing, Principles, Practices and Patterns, de Vladimir Khorikov. Es el mejor libro sobre el tema. Explica con muchísimo criterio qué conviene testear y qué no, y por qué la mayoría de los equipos escribe tests que no sirven. Está en inglés.
+
+El curso Testing JavaScript, de Kent C. Dodds. Es pago. Es muy bueno y muy práctico, pero está pensado para JavaScript en el navegador y en React, así que te va a resultar más útil cuando avances en esa dirección.
+
+El libro Working Effectively with Legacy Code, de Michael Feathers. Es el libro que enseña cómo agregar tests a código que no los tiene. Es exactamente tu situación. Está en inglés.
+
+Los artículos de Martin Fowler en su sitio, martinfowler punto com. Buscá el artículo sobre dobles de prueba, que se llama Mocks Aren't Stubs. Está en inglés.
+
+## Sobre los videos
+
+No te voy a recomendar un canal específico, por una razón honesta: no puedo verificar el contenido actual de un canal sin buscarlo, y la búsqueda web no está disponible en este entorno. Prefiero no inventarte un nombre.
+
+Lo que sí te puedo decir es cómo elegir. Buscá videos que expliquen el concepto antes de mostrar el código, no al revés. Y desconfiá de cualquier video de testing que no incluya en algún momento la frase "ahora vamos a hacerlo fallar a propósito". Si nunca muestran un test en rojo, no están enseñando a testear, están enseñando a escribir archivos que dicen que todo está bien.
+
+## Una última advertencia
+
+Los tests son una herramienta, no un fin. He visto proyectos con miles de tests que igual se rompían todas las semanas, porque los tests verificaban cosas que no le importaban a nadie.
+
+La pregunta correcta no es "¿cuántos tests tengo?". La pregunta correcta es "si rompo algo importante, ¿me voy a enterar antes que los usuarios?".
+
+En tu caso, lo importante son los cálculos de sueldos. Ahí es donde conviene gastar el esfuerzo de testear.
+
+---
+
+# Anexo. El código, para leer con los ojos
+
+Si estás escuchando la versión en audio, salteá esta sección completa.
+
+## La función pura, tal como quedó
+
+```ts
+export function calcularInflacionAcumulada(
+  historial: readonly MesInflacion[],
+  mesInicio: string,
+  mesFin: string
+): number {
+  let acumulado = 1;
+  for (const mes of historial) {
+    if (mes.fecha >= mesInicio && mes.fecha <= mesFin) {
+      acumulado *= 1 + mes.inflacionMensual / 100;
+    }
+  }
+  return (acumulado - 1) * 100;
+}
+```
+
+El historial entra por parámetro. Esa es toda la diferencia.
+
+## Un test unitario, con datos inventados
+
+```ts
+const INFLACION_FIXTURE = [
+  { fecha: "2024-01", inflacionMensual: 10 },
+  { fecha: "2024-02", inflacionMensual: 20 },
+];
+
+test("acumula los meses del rango (10% y 20% dan 32%, no 30%)", () => {
+  casiIgual(calcularInflacionAcumulada(INFLACION_FIXTURE, "2024-01", "2024-02"), 32);
+});
+```
+
+## La comparación con tolerancia
+
+```ts
+function casiIgual(actual: number, esperado: number, tolerancia = 1e-6): void {
+  assert.ok(
+    Math.abs(actual - esperado) < tolerancia,
+    `esperaba ${esperado} (± ${tolerancia}) pero obtuve ${actual}`
+  );
+}
+```
+
+## El test de regresión
+
+```ts
+test("HISTORIAL_INFLACION no tiene meses repetidos", () => {
+  assert.deepEqual(fechasDuplicadas(HISTORIAL_INFLACION), []);
+});
+```
+
+## La función que detecta los duplicados
+
+```ts
+export function fechasDuplicadas(historial: readonly MesInflacion[]): string[] {
+  const vistas = new Set<string>();
+  const repetidas = new Set<string>();
+  for (const mes of historial) {
+    if (vistas.has(mes.fecha)) repetidas.add(mes.fecha);
+    vistas.add(mes.fecha);
+  }
+  return [...repetidas];
+}
+```
+
+## Cómo se corre
+
+En el archivo package.json, dentro de la sección scripts, quedó esta línea.
+
+```json
+"test": "node tests/calculos.test.ts"
+```
+
+Y se ejecuta escribiendo en la terminal la palabra npm seguida de la palabra test.
