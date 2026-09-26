@@ -45,6 +45,15 @@ Estos afectan a gente real que confía en la calculadora. Van antes que la limpi
   Unificar el historial de básicos con el de valores por mes · 🍅2 · Datos · Hay dos listas de valores que ya divergieron en centavos. Una sola fuente de verdad. Antes de tocar nada, escribí un test que compare las dos y te muestre exactamente dónde difieren.
   Impedir que la tecla Enter recargue la página · 🍅1 · Bug · El campo de cantidad de horas está dentro de un formulario real. Apretar Enter dispara el envío del formulario y recarga la página, y el usuario pierde el nivel, el cargo y el mes elegidos. Se arregla interceptando el evento de envío.
 
+Bloque 2b. El comparador de inflación
+
+Sale de la auditoría del comparador. El primer punto ya está hecho, y el segundo es la regla que evita que vuelva a pasar.
+  Verificar los valores de inflación contra la fuente oficial · 🍅2 · Datos · Hecho. Había 11 de los 12 meses de 2025 mal cargados, con un desvío de 8,68 puntos en el rango por defecto. Ahora se verifica con una orden que tarda diez segundos.
+  Adoptar la regla: ningún valor de inflación se carga sin correr el verificador · 🍅¼ · Datos · python tools/verificar-inflacion.py. Si además se toca el historial de básicos, correr los tests, porque el valor acumulado de referencia cambia y el test lo va a marcar.
+  Renombrar el comparador y corregir sus textos · 🍅1 · Interfaz · Hoy dice "Comparativa sueldos vs inflación" y en realidad mide el valor de la hora cátedra, no el salario de bolsillo. Es el cambio más barato con más impacto: decir la verdad sobre qué se está midiendo.
+  Quitar la palabra "exacta" y redondear el resultado a números enteros · 🍅½ · Interfaz · El propio texto promete "la diferencia porcentual exacta". Hay un desvío residual de redondeo de 0,80 puntos, así que no es exacta. Mostrar dos decimales sobre esa base es exagerar la confianza.
+  Primer paso de la canasta básica: decidir qué falta para terminarla · 🍅1 · Interfaz · Los datos ya están y son buenos (verificados contra el IPC). Falta definir cómo se traduce un sueldo a cantidad de canastas y cómo se muestra.
+
 Bloque 3. Prevenir errores futuros
   Que los ayudantes del historial dejen de devolver el último valor en silencio · 🍅1 · Bug · Si pedís un mes que no existe, hoy devuelven la última configuración sin avisar. Un usuario puede ver un resultado con apariencia de correcto calculado con valores de otro mes. Deberían avisar o devolver el mes anterior, pero nunca mentir.
   Derivar los límites del comparador de inflación del propio historial · 🍅1 · Mejora · Las fechas mínima y máxima están escritas a mano, y ya quedaron desactualizadas. Si se derivan del historial, se actualizan solas cuando agregás meses.
@@ -73,6 +82,10 @@ Estas no se empiezan hasta que los bloques anteriores estén razonablemente orde
 Épica 2. Empaquetar los estilos. Hoy la hoja de estilos principal son cinco importaciones encadenadas, así que el navegador hace siete pedidos antes de poder pintar nada. Un paso de empaquetado lo reduce a uno.
 
 Épica 3. Buscador de padrón. La página de Sobre Nosotros lo menciona como parte de la misión, y es lo que motivó el archivo que tuvimos que borrar. Importante: no se puede resolver con un archivo de JavaScript estático. Todo lo que llega al navegador es público, y ahí adentro hay datos personales de terceros. Si se hace, necesita un servidor con autenticación. Mientras eso no exista, la respuesta correcta es no hacerlo.
+
+Épica 4. Comparador contra la canasta básica. Terminar la herramienta empezada, para traducir el sueldo a "cuántas canastas compra". Los datos ya están cargados y verificados; falta la interfaz y el cálculo. Es la mejora más valiosa pendiente en términos de lo que el usuario se lleva, porque una cantidad de canastas se entiende sin saber qué es un índice de precios.
+
+Épica 5. Incorporar las sumas fijas no remunerativas al comparador. Es el trabajo más grande y el más valioso conceptualmente: convertir el comparador de un indicador parcial del básico en una medición del salario real. Requiere datos que quizás no tengas, así que el primer paso no es programar, es averiguar si se consiguen.
 
 Una nota sobre el orden
 

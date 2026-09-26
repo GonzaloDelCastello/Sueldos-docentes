@@ -1,0 +1,169 @@
+# Auditoría del comparador de inflación
+
+Evaluación crítica de la herramienta que compara salarios docentes contra la inflación. Escrito para leerse o escucharse.
+
+---
+
+## Qué hace exactamente
+
+El comparador toma dos meses y calcula dos cosas.
+
+Por un lado, la inflación acumulada del período, multiplicando las variaciones mensuales del Índice de Precios al Consumidor.
+
+Por otro lado, la variación del valor de la hora cátedra, usando el valor histórico de la hora de secundaria.
+
+Después compara los dos números y dice si el poder de compra subió, bajó o empató.
+
+Eso es todo lo que hace. Y ahí está el problema principal, que no es de programación sino de método.
+
+---
+
+## Veredicto corto
+
+Como indicador de la tendencia del valor de la hora cátedra frente a la inflación nacional: es confiable, ahora que arreglamos los datos.
+
+Como medida de si los docentes ganaron o perdieron poder de compra: **no es confiable**, porque mide una sola parte del salario y la presenta como si fuera el salario entero.
+
+Y hasta el día de hoy, además, tenía once valores mensuales equivocados sobre treinta y nueve.
+
+Vamos por partes.
+
+---
+
+## Problema 1. Los datos estaban mal, y ya está resuelto
+
+Esto lo descubrimos hoy y es el hallazgo más concreto.
+
+Comparé los treinta y nueve valores de inflación cargados a mano contra la serie oficial de la API pública de datos.gob.ar, que publica el INDEC. Los valores de 2023, de 2024 y de 2026 son correctos: coinciden con un margen de centésimas, que es el redondeo a un decimal.
+
+Pero **once de los doce meses de 2025 estaban mal**. El peor era marzo de 2025: el proyecto decía 2,7 por ciento y el valor oficial es 3,73. Casi un punto y medio de diferencia en un solo mes.
+
+En el rango que el comparador usa por defecto, de junio de 2023 a junio de 2026, la inflación acumulada daba 624,24 por ciento cuando el valor real es 632,93. Un error de **8,68 puntos porcentuales**.
+
+Y el detalle que revela cómo se generó el error: en el archivo, el valor de marzo de 2025 tenía un comentario que decía "Pico estacional educativo". Eso no es una anotación sobre un dato, es una anotación sobre una **estimación**. Alguien —vos— completó los meses de 2025 con valores plausibles, con la intención de reemplazarlos después por los reales, y eso nunca pasó.
+
+La dirección del error importa. El comparador **subestimaba** la inflación, lo que hacía que el salario pareciera mejor de lo que fue. Para una herramienta cuyo propósito es mostrar la pérdida de poder adquisitivo, el sesgo corría justo en contra del objetivo.
+
+Ahora está corregido. La verificación se hace con una orden y tarda diez segundos, así que se puede repetir cada vez que se agreguen meses. El desvío bajó de 8,68 puntos a 0,80, y ese resto es puro redondeo mensual acumulado, que es inevitable y aceptable.
+
+**La lección no es que había un error. Es que no había ninguna forma de detectarlo.** El dato vivía en un archivo, escrito a mano, sin fuente declarada y sin verificación posible. Eso ya no es así.
+
+---
+
+## Problema 2. Mide la cosa equivocada, y es el más grave
+
+Este es el problema de fondo, y no se arregla con datos.
+
+El comparador usa el valor de la **hora cátedra de secundaria** como representante del salario docente. Pero el salario de bolsillo de un docente no es eso. Es la suma de un básico, más bonificaciones, más un conjunto de sumas fijas no remunerativas, menos descuentos.
+
+Y esas sumas fijas no son un detalle menor en la Argentina de estos años. El FONID, el incentivo docente, los bonos y las sumas por conectividad fueron, en varios momentos, una parte enorme del aumento salarial. Tienen una característica que los hace incompatibles con este método: **son montos fijos en pesos, no porcentajes del básico**.
+
+Eso significa que pueden crecer mucho, poco, o nada, independientemente de lo que crezca la hora cátedra. Si crecieron menos, el salario real subió menos de lo que dice el comparador. Si crecieron más, subió más.
+
+El comparador no lo sabe, porque no los mira. Y no avisa que no los mira.
+
+Hay un segundo efecto en la misma dirección: el comparador trabaja con valores brutos. Los descuentos de ley, y sobre todo los descuentos fijos, como el seguro, se comen una porción distinta del salario según cuánto ganes. Comparar brutos contra inflación ignora eso.
+
+**La conclusión honesta es que este comparador responde una pregunta distinta de la que sugiere.** Responde "¿el valor de la hora cátedra le ganó a la inflación nacional?". No responde "¿los docentes ganaron o perdieron poder de compra?". La segunda pregunta requiere el salario completo.
+
+Eso no invalida la herramienta. La primera pregunta es valiosa y tiene una respuesta clara. El problema es que está presentada como si respondiera la segunda.
+
+---
+
+## Problema 3. Dice "salario" donde debería decir "hora cátedra"
+
+Consecuencia directa del anterior, y es el arreglo más barato de todos.
+
+La página se llama "Comparativa sueldos vs inflación". El texto explica que se toma la hora cátedra "porque es el valor base a partir del cual se calculan los demás ítems". Ese argumento es parcialmente válido, pero lleva a una conclusión equivocada: que la variación del básico representa la variación del total.
+
+Los ítems que se calculan como porcentaje del básico sí la representan. Los que son sumas fijas, no. Y esos son justamente los que más se movieron.
+
+**Recomendación:** renombrarlo. "Evolución del valor de la hora cátedra frente a la inflación". Es más largo y menos marketinero, y es verdad. Y agregar una línea que diga explícitamente que mide el básico, no el salario de bolsillo.
+
+---
+
+## Problema 4. Precisión falsa
+
+El texto de la página dice que el resultado refleja "la diferencia porcentual exacta de pérdida o ganancia de poder de compra".
+
+No es exacta. Es una estimación construida sobre un índice parcial, con valores mensuales redondeados a un decimal, y con un desvío residual de redondeo que ya medimos: 0,80 puntos.
+
+Mostrar un resultado con dos decimales sobre una estimación con ese margen es una forma de exagerar la confianza. Y en una herramienta que la gente usa para discutir salarios, exagerar la confianza es contraproducente: si alguien verifica y encuentra diferencias, pierde la confianza en todo.
+
+**Recomendación:** redondear el resultado a números enteros, y borrar la palabra "exacta". Un resultado que dice "la pérdida fue de alrededor del 30 por ciento" es más creíble y más útil que uno que dice "31,47 por ciento".
+
+---
+
+## Problema 5. Hay dos copias de los valores de sueldo, y ya divergieron
+
+Los valores de la hora cátedra están cargados **dos veces** en el proyecto, en dos listas distintas. Una se usa para calcular sueldos, la otra para comparar contra la inflación.
+
+Y ya no coinciden. En abril de 2026 una dice 16963,43 y la otra 16963,44. En septiembre de 2026, 19276,62 contra 19276,625.
+
+Son diferencias de centavos, y no cambian nada hoy. Pero es una bomba de tiempo, por la misma razón que el archivo de JavaScript viejo: dos fuentes de verdad para el mismo dato, que se van a separar cada vez más, hasta que alguien mire un resultado y no sepa cuál de las dos está bien.
+
+**Recomendación:** una sola lista, y que la otra se derive de ella. Es un trabajo de un par de pomodoros.
+
+---
+
+## Problema 6. Los límites de fechas están escritos a mano
+
+El comparador rechaza períodos anteriores a junio de 2023 y posteriores a agosto de 2026. Esas dos fechas están escritas en el código, y ya quedaron desactualizadas: el historial de valores de sueldo llega hasta octubre de 2026, y el de inflación hasta agosto.
+
+Consecuencia práctica: quien intente comparar septiembre u octubre de 2026 va a recibir un mensaje de error que dice que no hay datos, cuando los datos de sueldo sí están.
+
+**Recomendación:** que los límites se calculen a partir del propio historial. Así se actualizan solos.
+
+---
+
+## Problema 7. La inflación nacional no es la inflación de San Luis
+
+El IPC que usa el comparador es el nacional, con la canasta y las ponderaciones del promedio del país. La inflación de una provincia puede diferir, y la canasta de consumo de una familia docente no es la canasta promedio.
+
+Es una limitación aceptable: el IPC nacional es el índice más creíble y más citado que existe, y usarlo es defendible. Pero conviene decirlo en lugar de dejarlo implícito.
+
+---
+
+## La oportunidad que dejaste a medias: la canasta básica
+
+Hay un archivo en el proyecto, llamado con el nombre de la canasta básica de ATE, que define una serie de valores mensuales de una canasta de consumo. **No se usa en ninguna parte.** Está ahí, empezado y abandonado.
+
+Y es una lástima, porque es una idea mejor que la que estás usando.
+
+El IPC responde "cuánto subieron los precios en promedio". La canasta básica responde "cuánto cuesta vivir". Y traducir un sueldo a cuántas canastas compra es una medida que cualquier trabajador entiende de inmediato, sin necesidad de entender qué es un índice.
+
+"Tu sueldo compraba tres canastas y media en 2023 y hoy compra dos" comunica mucho más que "el poder de compra cayó un 43 por ciento". Y como medida de poder adquisitivo real, la canasta es más honesta que comparar un componente del salario contra un índice general.
+
+**Recomendación:** terminarlo como una segunda vista del comparador. No como reemplazo, sino como complemento. Sería la mejora más valiosa de toda esta lista en términos de lo que la herramienta le dice a la gente.
+
+Y hay un dato que refuerza la recomendación: **sus valores son buenos.** Hice el control cruzado. Si la canasta es una canasta real, su costo tiene que crecer de forma parecida al índice general de precios. Lo verifiqué contra la serie oficial: entre junio de 2023 y abril de 2026 la canasta creció 560,17 por ciento y el IPC 564,66. Una diferencia de 4,49 puntos en casi tres años, y una discrepancia mensual máxima de 1,54 puntos.
+
+Eso significa que los 35 valores de la canasta están bien. El archivo no está abandonado por dudoso: está abandonado y bien hecho. Es el candidato ideal para el próximo empujón.
+
+---
+
+## Qué recomiendo, en orden
+
+**Primero, hecho: los datos.** Ya verificado y corregido. Ahora hay un script que lo chequea en diez segundos. La regla de aquí en adelante es que ningún valor de inflación se carga sin pasar por el verificador.
+
+**Segundo, y es barato: cambiar el nombre y los textos.** Que diga que mide la hora cátedra y no el salario de bolsillo. Que no diga "exacta". Que redondee. Son veinte minutos de trabajo y cambian radicalmente lo que la herramienta promete.
+
+**Tercero, la canasta básica.** Terminar lo que empezaste. Es la mejora con más impacto sobre lo que el usuario se lleva.
+
+**Cuarto, unificar las dos listas de valores de sueldo.** No es urgente, pero es la clase de problema que se paga solo.
+
+**Quinto, derivar los límites de fechas del historial.** Chico y elimina un error de confusión.
+
+**Sexto, evaluar si se puede incorporar el efecto de las sumas fijas no remunerativas.** Es el trabajo más grande y el más valioso conceptualmente. Requiere datos que quizás no tengas: la evolución de cada suma fija en el período. Si los conseguís, el comparador pasa de ser un indicador parcial a ser una medición seria.
+
+---
+
+## Una nota sobre el episodio
+
+Quiero cerrar con lo que me parece más importante de todo esto.
+
+Encontraste vos mismo el error del mes duplicado. Después verificamos y aparecieron once más. Eso no habla mal de tu trabajo: habla de que estabas manteniendo a mano, sin ninguna verificación automática, una serie de treinta y nueve datos que cambian todos los meses y que alimentan una herramienta que usa gente real para discutir su salario. Eso no se puede sostener a mano. No es un problema de atención, es un problema de diseño.
+
+Los tests y el verificador son exactamente la respuesta a eso. No te hacen más cuidadoso: te hacen **independiente de tener que ser cuidadoso**.
+
+Y hay una cosa que quiero que notes. El comparador hoy dice la verdad sobre una parte del salario, y eso ya es más de lo que hace la mayoría de las planillas de cálculo que circulan por los sindicatos. La diferencia entre lo que tenés y lo que podés tener no es enorme. Es terminar la canasta básica y ser preciso sobre qué se está midiendo.

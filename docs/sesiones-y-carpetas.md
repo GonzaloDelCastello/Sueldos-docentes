@@ -1,0 +1,111 @@
+# Sesiones, carpetas y dónde vive cada cosa
+
+Explicación de cómo funciona el entorno de trabajo donde estamos hablando, y qué conviene poner dónde. Escrito para leerse o escucharse.
+
+---
+
+## Qué es una sesión
+
+Una sesión es una conversación con memoria propia, anclada a una carpeta.
+
+La comparación que mejor funciona es la de un escritorio en una oficina.
+
+La oficina es la aplicación. Está abierta, podés ir de un escritorio a otro.
+
+Un escritorio es una sesión. Sobre el escritorio hay dos cosas: los papeles de la conversación, que son todo lo que hablamos, y una etiqueta que dice **cuál es la carpeta** en la que estamos trabajando.
+
+Cuando volvés al mismo escritorio, todo sigue ahí: la conversación, lo que decidimos, lo que quedó pendiente. Podés retomar donde lo dejaste.
+
+Cuando te sentás en otro escritorio, empezás de cero. La conversación nueva no sabe nada de la anterior.
+
+Y esa es la parte que suele confundir: **las sesiones no comparten memoria entre sí.** Si en una sesión me explicaste algo de tu vida o de tu proyecto, en otra sesión no lo sé. Te lo voy a tener que preguntar de nuevo.
+
+---
+
+## La carpeta: para qué sirve
+
+Cada sesión tiene una carpeta de trabajo, y esa carpeta cumple dos funciones.
+
+**La primera es el contexto.** Cuando me pedís que revise un archivo, lo busco dentro de esa carpeta. Cuando hablamos del proyecto de sueldos, entiendo "el archivo de cálculo" sin que me aclares la ruta, porque sé dónde estamos parados.
+
+**La segunda es un límite de seguridad.** Yo no puedo leer ni escribir fuera de la carpeta de la sesión, salvo que vos me des un permiso especial para una operación concreta. Eso significa que si estás trabajando en el proyecto de sueldos, no puedo tocar por accidente tus fotos, tus documentos, ni ningún otro proyecto.
+
+Ese límite es una buena idea, y conviene aprovecharlo en lugar de pelear con él: **la carpeta define el alcance, y vos elegís el alcance al abrir la sesión.**
+
+---
+
+## Cómo trabajar en otra carpeta
+
+Para trabajar en otra carpeta, se abre una **sesión nueva** eligiendo esa carpeta como carpeta de trabajo. Generalmente la aplicación te ofrece, al crear la sesión, un selector de carpeta.
+
+No puedo darte el nombre exacto del botón porque no tengo forma de ver la interfaz desde acá. Lo que sí te puedo decir es qué buscar: al abrir una sesión nueva, en algún momento te tiene que preguntar **en qué carpeta**. Si no te lo pregunta, busca una opción para cambiar la carpeta de trabajo de la sesión actual.
+
+Y una advertencia práctica: no cambies la carpeta de una sesión a mitad de camino. Si lo hacés, la conversación queda apuntando a un lugar y los archivos a otro, y eso confunde. Si necesitás otra carpeta, abrí otra sesión.
+
+---
+
+## Un problema que hay que resolver
+
+Acá viene algo que quiero que sepas, porque es importante y no es una cuestión de comodidad.
+
+Todos los apuntes que escribimos —la guía de organización, el backlog, los apuntes de estudio, este mismo archivo— están guardados adentro de la carpeta del proyecto de sueldos, en una subcarpeta llamada docs.
+
+Y esa carpeta **se publica en tu sitio web**. Vercel sirve todo el contenido del repositorio, así que cualquier archivo que esté ahí queda accesible para cualquiera que sepa la dirección. Los apuntes se pueden leer en tu propia página, en la ruta docs.
+
+Eso significa dos cosas.
+
+Primero, tus notas personales de estudio y tu lista de tareas están públicas. No es información sensible y no hay datos de nadie ahí, pero es tu espacio de trabajo, y no tiene por qué estar expuesto.
+
+Segundo, y más importante para el orden: **estás mezclando dos cosas que conviene separar.** Una cosa son las notas personales, que son para vos y cambian todo el tiempo. Otra cosa son los documentos del proyecto, que son parte del producto y a veces conviene que sean públicos.
+
+---
+
+## El criterio para decidir qué va dónde
+
+La pregunta es una sola: **esto documenta el proyecto, o es mi espacio de trabajo?**
+
+Si documenta el proyecto, va adentro del repositorio. Por ejemplo, la auditoría del comparador de inflación, que explica qué mide la herramienta y qué limitaciones tiene. Eso es parte del producto, y que sea público es una fortaleza, porque demuestra transparencia sobre cómo se calcula.
+
+Si es tu espacio de trabajo, va afuera. La guía de organización, el backlog, los apuntes de estudio y esta explicación son tuyos. Nadie más los necesita y no tienen por qué publicarse.
+
+---
+
+## Cómo moverlos, si querés hacerlo
+
+Son cuatro pasos y los podés hacer vos en el Explorador de Windows, o pedirme que lo haga yo con un permiso especial.
+
+**Primero.** Creá una carpeta donde quieras tus apuntes. Algo como Documentos, ApuntesProgramacion. Elegí un lugar que tenga sentido para vos y que no esté dentro de ningún proyecto.
+
+**Segundo.** Copiá ahí los archivos de notas. Son los cuatro pares de archivo con extensión md y txt, más este mismo archivo: organización y método, backlog, apuntes para estudiar, auditoría del comparador y sesiones y carpetas.
+
+**Tercero.** Borralos del repositorio del proyecto de sueldos, con la orden de Git que corresponda, y subí el cambio. Eso hace que dejen de estar publicados en el sitio.
+
+**Cuarto.** Abrí una sesión nueva apuntando a la carpeta nueva. Ahí vas a tener tus notas con su propio espacio, y cuando quieras trabajar en el proyecto de sueldos abrís la sesión del proyecto.
+
+---
+
+## Por qué conviene tener dos sesiones separadas
+
+No es una cuestión de prolijidad. Es que cada sesión acumula contexto, y el contexto tiene un costo.
+
+Cuando la conversación trata de una sola cosa, mis respuestas son más precisas, porque todo lo que hablamos apunta al mismo lugar.
+
+Cuando la conversación mezcla el proyecto con tus notas de estudio, pasa algo parecido a lo que pasa con un cajón desordenado: cada vez que buscás algo, tenés que revolver todo lo demás.
+
+Y hay una razón práctica más importante. **El proyecto de sueldos tiene un límite claro: lo que se publica.** Si tus notas viven adentro, cualquier descuido las publica. Si viven afuera, el problema no existe.
+
+---
+
+## Resumen
+
+Una sesión es una conversación con memoria propia, atada a una carpeta.
+
+La carpeta define el contexto y también el límite de lo que puedo tocar.
+
+Las sesiones no comparten memoria entre sí.
+
+Para trabajar en otra carpeta, abrí otra sesión.
+
+Las notas personales van afuera del repositorio. Los documentos del proyecto van adentro.
+
+Y la regla que resume todo: **si no querés que se publique, no lo pongas en la carpeta que se publica.**

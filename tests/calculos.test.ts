@@ -109,11 +109,13 @@ describe("integridad de los datos del proyecto", () => {
 });
 
 describe("comparador con los datos reales", () => {
-  test("2023-06 a 2026-06 acumula 624,24% de inflación", () => {
-    // Valor de referencia calculado a mano sobre HISTORIAL_INFLACION.
+  test("2023-06 a 2026-06 acumula 631,96% de inflación", () => {
+    // Los valores de HISTORIAL_INFLACION estan verificados contra la serie
+    // oficial del INDEC (ver tools/verificar-inflacion.py). Si alguien cambia
+    // un mes, este test falla y obliga a recalcular el valor a mano.
     casiIgual(
       calcularInflacionAcumulada(HISTORIAL_INFLACION, "2023-06", "2026-06"),
-      624.244285,
+      631.957181,
       0.001
     );
   });

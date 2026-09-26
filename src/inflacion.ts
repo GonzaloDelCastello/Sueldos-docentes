@@ -28,18 +28,21 @@ export const HISTORIAL_INFLACION: MesInflacion[] = [
     { fecha: "2024-12", inflacionMensual: 2.7 },
 
     // --- AÑO 2025 ---
-    { fecha: "2025-01", inflacionMensual: 2.5 },
-    { fecha: "2025-02", inflacionMensual: 2.3 },
-    { fecha: "2025-03", inflacionMensual: 2.7 }, // Pico estacional educativo
-    { fecha: "2025-04", inflacionMensual: 2.2 },
-    { fecha: "2025-05", inflacionMensual: 2.0 },
-    { fecha: "2025-06", inflacionMensual: 2.1 },
-    { fecha: "2025-07", inflacionMensual: 2.2 },
-    { fecha: "2025-08", inflacionMensual: 2.4 },
+    // Valores verificados contra la serie oficial del INDEC
+    // (IPC Nivel General Nacional, base diciembre 2016).
+    // Se pueden re-verificar con: python tools/verificar-inflacion.py
+    { fecha: "2025-01", inflacionMensual: 2.2 },
+    { fecha: "2025-02", inflacionMensual: 2.4 },
+    { fecha: "2025-03", inflacionMensual: 3.7 }, // Pico estacional educativo
+    { fecha: "2025-04", inflacionMensual: 2.8 },
+    { fecha: "2025-05", inflacionMensual: 1.5 },
+    { fecha: "2025-06", inflacionMensual: 1.6 },
+    { fecha: "2025-07", inflacionMensual: 1.9 },
+    { fecha: "2025-08", inflacionMensual: 1.9 },
     { fecha: "2025-09", inflacionMensual: 2.1 },
-    { fecha: "2025-10", inflacionMensual: 2.0 },
-    { fecha: "2025-11", inflacionMensual: 1.9 },
-    { fecha: "2025-12", inflacionMensual: 2.2 },
+    { fecha: "2025-10", inflacionMensual: 2.3 },
+    { fecha: "2025-11", inflacionMensual: 2.5 },
+    { fecha: "2025-12", inflacionMensual: 2.8 },
 
     // --- AÑO 2026 ---
     { fecha: "2026-01", inflacionMensual: 2.9 },
