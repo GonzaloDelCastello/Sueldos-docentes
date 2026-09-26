@@ -62,7 +62,14 @@ def logo() -> None:
 
 
 def favicons() -> None:
-    """Favicons a partir del logo, recortado a un cuadrado centrado."""
+    """
+    Favicons a partir del logo, recortado a un cuadrado centrado.
+
+    Se generan tres formatos a propósito:
+      - favicon.ico  : el clásico, que los navegadores buscan por convención.
+      - PNG 32 y 192 : algunos navegadores prefieren PNG, y el de 192 lo usa
+                       Android cuando el sitio se agrega a la pantalla de inicio.
+    """
     im = Image.open(ORIGINALES / "1000158611-Photoroom.png").convert("RGBA")
     lado = max(im.size)
     cuadro = Image.new("RGBA", (lado, lado), (0, 0, 0, 0))
@@ -73,6 +80,11 @@ def favicons() -> None:
         icono, "ICO", sizes=[(16, 16), (32, 32), (48, 48)]
     )
     print(f"  {icono.name:24} 16/32/48  {kb(icono):5.0f} KB")
+
+    for tam in (32, 192):
+        destino = IMG / f"favicon-{tam}.png"
+        cuadro.resize((tam, tam), Image.LANCZOS).save(destino, "PNG", optimize=True)
+        print(f"  {destino.name:24} {tam}x{tam}    {kb(destino):5.0f} KB")
 
     apple = IMG / "apple-touch-icon.png"
     cuadro.resize((180, 180), Image.LANCZOS).save(apple, "PNG", optimize=True)
