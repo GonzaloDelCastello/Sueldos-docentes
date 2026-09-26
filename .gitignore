@@ -2,3 +2,8 @@ node_modules
 dist
 build
 .DS_Store
+
+# Padrón nominal con datos personales (nombre + CUIL).
+# NUNCA debe volver al repositorio ni al deploy: es información de terceros.
+padron.js
+padron*.js
