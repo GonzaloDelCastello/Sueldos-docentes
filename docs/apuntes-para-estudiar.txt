@@ -436,6 +436,6 @@ La pregunta correcta no es "¿cuántos tests tengo?". La pregunta correcta es "s
 
 En tu caso, lo importante son los cálculos de sueldos. Ahí es donde conviene gastar el esfuerzo de testear.
 
-Fin de los apuntes.
+Fin del documento.
 
 El anexo con el codigo quedo solo en la version escrita, para leer con los ojos.

@@ -7,3 +7,9 @@ build
 # NUNCA debe volver al repositorio ni al deploy: es información de terceros.
 padron.js
 padron*.js
+
+# Restos de un intento de instalar dependencias de Python (el sandbox los
+# dejo con permisos raros). Se pueden borrar a mano sin problema.
+.pip-tmp/
+.pip-cache/
+.pydeps/
