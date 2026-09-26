@@ -40,3 +40,19 @@ h3 {
 a {
     text-decoration: none;
 }
+
+/* Respeta la preferencia del sistema "reducir movimiento".
+   Aplica al scroll suave y a las transiciones del menú y los botones. */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

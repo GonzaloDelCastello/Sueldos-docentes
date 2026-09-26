@@ -20,11 +20,64 @@
 
 /* --- Header y barra --- */
 .header {
-    background-image: url(../img/PizarraNegra.jpg);
+    /* WebP 1600px, 60 KB. El JPG original pesaba 1347 KB (se cargaba en
+       todas las páginas y tardaba ~7 s en una conexión 4G lenta). */
+    background-image: url(../img/pizarra-negra.webp);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
     padding: 2rem 0;
+}
+
+/* --- Barra superior: el logo a la izquierda, el menú a la derecha --- */
+/* Antes .barra no tenía estilos: el botón ☰ quedaba apilado debajo del logo. */
+.barra {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+/* Título de las páginas internas (Recursos / Sobre nosotros).
+   No tenía estilos propios: solo se veía blanco porque hereda del <a>. */
+.header__texto {
+    color: var(--blanco);
+    font-family: var(--fuenteTitulo);
+    font-size: 3.2rem;
+    line-height: 1.1;
+    text-align: center;
+    margin: 0;
+}
+
+/* Subtítulo "Bienvenidxs" del header.
+   No tenía estilos: quedaba negro sobre la foto oscura = invisible. */
+.header__texto2 {
+    color: var(--blanco);
+    font-size: 3rem;
+    text-align: center;
+    margin: 1rem 0 0;
+}
+
+/* Logo de las páginas internas (clase .header__imagen, distinta de
+   .header__imagen-centro que usa el index). Sin estilos se mostraba
+   a tamaño completo y desbordaba. */
+.header__imagen {
+    display: block;
+    width: 20rem;
+    max-width: 60%;
+    height: auto;
+    margin: 1rem auto 0;
+    border-radius: 8px;
+}
+
+/* Fecha bajo el título. No tenía estilos: negro sobre fondo oscuro. */
+#fechaActual {
+    color: var(--blanco);
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+    text-align: center;
+    opacity: 0.85;
+    margin: 0.5rem 0 0;
 }
 
 /* =========================================
@@ -36,7 +89,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  /* Antes era width:100%, que en la .barra flexible podía empujar el botón ☰
+     fuera de pantalla. flex + min-width:0 deja que se achique en celular. */
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .header__enlace-logo {
@@ -95,16 +151,28 @@
 /* --- Ajustes Responsivos (Celulares) --- */
 @media (max-width: 768px) {
   .texto-superior { 
-      font-size: 3.5rem !important; 
+      font-size: 2.8rem !important; 
   }
   .texto-inferior { 
-      font-size: 3rem !important; 
+      font-size: 2.4rem !important; 
   }
   .header__imagen-centro { 
-      width: 20rem !important; /* Más chica en celular */
+      width: 14rem !important; /* Antes repetía 20rem: no se achicaba en celular */
+      margin: -1.5rem auto;
   }
   .header__descripcion {
       font-size: 1.1rem;
+  }
+  /* Los títulos del header nunca bajaban de tamaño */
+  .header__texto {
+      font-size: 2.6rem;
+  }
+  .header__texto2 {
+      font-size: 2.2rem;
+  }
+  .header__imagen {
+      width: 14rem;
+      max-width: 45%;
   }
 }
 
@@ -205,6 +273,7 @@ a {
 /* --- Responsive --- */
 .menu-toggle {
     display: none;
+    flex: 0 0 auto; /* nunca se achica ni se va de la barra */
     background: none;
     border: none;
     color: var(--blanco);
@@ -221,13 +290,13 @@ a {
         position: fixed;
         top: 0;
         right: 0;
-        width: 60%;
-        /* ajustá el ancho del menú */
-        height: 80%;
+        width: min(78vw, 32rem);
+        height: 100%;
         background-color: var(--blanco);
-        padding: 2rem 1rem;
+        padding: 7rem 1rem 2rem; /* deja libre la zona del botón ☰ */
         z-index: 100;
-        border-radius: 4%;
+        border-radius: 0 0 0 1rem;
+        box-shadow: -0.5rem 0 2rem rgba(0, 0, 0, 0.25);
 
         /* estado inicial: fuera de la pantalla */
         transform: translateX(100%);
@@ -236,25 +305,37 @@ a {
 
     .navegacion a {
         margin: 1rem 0;
-        font-size: 2.5rem;
+        font-size: 2.2rem;
         color: var(--negro);
     }
 
     .navegacion.activo {
         transform: translateX(0);
         /* entra desde la derecha */
+        /* Oscurece el resto: la pantalla queda "bloqueada" por el menú
+           y se cierra tocando afuera (lo maneja main1.js). */
+        box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.55);
     }
 
     .menu-toggle {
         display: block;
         background: none;
         border: none;
-        color: var(--negro);
+        /* Antes era --negro sobre el header oscuro: quedaba invisible.
+           Al abrir el menú, main1.js agrega .abierto y pasa a negro,
+           porque ahí el botón queda sobre el panel blanco. */
+        color: var(--blanco);
         font-size: 3rem;
+        line-height: 1;
         cursor: pointer;
+        padding: 0.5rem 1rem;
         position: relative;
-        z-index: 200;
-        /* arriba del menú */
+        z-index: 200; /* arriba del panel, para poder cerrarlo */
+        transition: color 0.2s ease;
+    }
+
+    .menu-toggle.abierto {
+        color: var(--negro);
     }
 }
 

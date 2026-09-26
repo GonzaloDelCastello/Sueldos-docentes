@@ -7,16 +7,36 @@ let calculoBasicoHsSecundario = 14854.34; //07/25
 document.addEventListener("DOMContentLoaded", function () {
   const menuToggle = document.querySelector('.menu-toggle');
   const navegacion = document.querySelector('.navegacion');
-  
-   if (menuToggle && navegacion) {
+
+  if (menuToggle && navegacion) {
+    // Un solo lugar que abre y cierra, para que no queden estados a medias
+    // (antes cada rama repetía el classList.add/remove del botón).
+    function cerrarMenu() {
+      if (!navegacion.classList.contains('activo')) return; // nada que hacer
+      navegacion.classList.remove('activo');
+      // El botón YA NO se oculta: si se ocultaba, el menú quedaba imposible de cerrar.
+      menuToggle.classList.remove('abierto');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }
+
+    function abrirMenu() {
+      navegacion.classList.add('activo');
+      menuToggle.classList.add('abierto');
+      menuToggle.setAttribute('aria-expanded', 'true');
+    }
+
+    // Accesibilidad: el lector de pantalla necesita saber que este botón
+    // controla el menú y si está abierto o cerrado.
+    menuToggle.setAttribute('aria-controls', 'navegacion');
+    menuToggle.setAttribute('aria-expanded', 'false');
+
     // Abre/cierra con el botón hamburguesa
     menuToggle.addEventListener('click', function (event) {
-      event.stopPropagation(); // evita que se dispare el click global
-      navegacion.classList.toggle('activo');
+      event.stopPropagation(); // evita que se dispare el click global de cierre
       if (navegacion.classList.contains('activo')) {
-        menuToggle.classList.add('oculto');  
+        cerrarMenu();
       } else {
-        menuToggle.classList.remove('oculto');  
+        abrirMenu();
       }
     });
 
@@ -27,17 +47,21 @@ document.addEventListener("DOMContentLoaded", function () {
         !navegacion.contains(event.target) &&
         !menuToggle.contains(event.target)
       ) {
-        navegacion.classList.remove('activo');
-        menuToggle.classList.remove('oculto'); 
+        cerrarMenu();
+      }
+    });
+
+    // Cerrar con Escape (se puede usar el menú solo con teclado)
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && navegacion.classList.contains('activo')) {
+        cerrarMenu();
+        menuToggle.focus();
       }
     });
 
     // Cerrar al hacer scroll
     window.addEventListener('scroll', function () {
-      if (navegacion.classList.contains('activo')) {
-        navegacion.classList.remove('activo');
-        menuToggle.classList.remove('oculto'); 
-      }
+      cerrarMenu();
     });
   }
   const cargosPorNivel = {
