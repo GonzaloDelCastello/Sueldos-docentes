@@ -1,6 +1,7 @@
 import { obtenerConfiguracionActual2, obtenerConfiguracionActual1, calcularBasicoCargo, COEFICIENTES_CARGOS, HISTORIAL_IFDC, COEFICIENTES_CARGOS1 } from "./historial.js";
 import { HISTORIAL_BASICO } from "./historial.js";
 import { HISTORIAL_INFLACION } from "./inflacion.js";
+import { calcularInflacionAcumulada, calcularVariacionSalarial } from "./calculos.js";
 
 declare const Chart: any; // Declaración para usar Chart.js sin errores de TypeScript
 let miGraficoSueldo: any = null; // Variable global para almacenar la instancia del gráfico
@@ -1044,45 +1045,6 @@ if (btnEnviarRecibo) {
 
 // Funciones comparador de inflacion
 
-function calcularInflacionAcumulada(mesInicio: string, mesFin: string): number {
-  const mesesFiltrados = HISTORIAL_INFLACION.filter(mes => 
-    mes.fecha >= mesInicio && mes.fecha <= mesFin
-  );
-  console.log("Entra en calcularInflacion()");
-  let acumulado = 1;
-  for (let mes of mesesFiltrados) {
-    acumulado *= (1 + mes.inflacionMensual / 100);
-
-  }
-  console.log("acumulado "+acumulado);
-  return (acumulado - 1) * 100;;
-}
-
-export function calcularVariacionSalarial(mesInicio: string, mesFin: string) {
-    // 1. Buscamos directamente en el diccionario usando tu método (es el más eficiente)
-    const basicoInicio = HISTORIAL_BASICO[mesInicio]?.valorHora || 0;
-    const basicoFin = HISTORIAL_BASICO[mesFin]?.valorHora || 0;
-    
-    // 2. Calculamos la diferencia en pesos (Nominal)
-    const diferenciaAbsoluta = basicoFin - basicoInicio;
-    
-    // 3. Calculamos la diferencia en porcentaje (Relativa)
-    let diferenciaPorcentual = 0;
-
-    // Patovica: evitamos que intente dividir por cero si el mes no existe
-    if (basicoInicio !== 0) {
-        diferenciaPorcentual = ((basicoFin / basicoInicio) - 1) * 100;
-    }
-
-    // 4. Devolvemos el "paquete" con los datos absolutos y relativos
-    return {
-        basicoInicio,
-        basicoFin,
-        diferenciaAbsoluta,
-        diferenciaPorcentual
-    };
-}
-
 export function compararPeriodo(mesInicio: string, mesFin: string) {
     console.log("Entró en la función compararPeriodo");
 
@@ -1105,10 +1067,10 @@ export function compararPeriodo(mesInicio: string, mesFin: string) {
     }
 
     // Llamamos a la función para calcular la inflación acumulada 
-    const inflacionPorcentual = calcularInflacionAcumulada(mesInicio, mesFin);
+    const inflacionPorcentual = calcularInflacionAcumulada(HISTORIAL_INFLACION, mesInicio, mesFin);
 
     // Llamamos a la función para calcular la variación salarial
-    const datosSalariales = calcularVariacionSalarial(mesInicio, mesFin);
+    const datosSalariales = calcularVariacionSalarial(HISTORIAL_BASICO, mesInicio, mesFin);
 
     // Empaquetamos todo y lo devolvemos
     return {

@@ -20,5 +20,8 @@
     "isolatedModules": true,
     "skipLibCheck": true,
     "esModuleInterop": true
-  }
+  },
+  // El build compila SOLO src/. Los tests viven en tests/ y no deben
+  // terminar dentro de dist/ (romperian el build de Vercel).
+  "include": ["src/**/*.ts"]
 }

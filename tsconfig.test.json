@@ -1,0 +1,19 @@
+{
+  // Configuración SOLO para chequear tipos de los tests.
+  // No emite nada: los tests los ejecuta Node directamente (Node 22+
+  // corre TypeScript nativo, sin necesidad de compilar).
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "declaration": false,
+    "declarationMap": false,
+    "rootDir": ".",
+    // src/ compila sin tipos externos ("types": []), pero los tests
+    // necesitan los tipos de los módulos nativos de Node (node:test, node:assert).
+    "types": ["node"],
+    // Node exige la extensión real del archivo al importar ("./x.ts"),
+    // mientras que el código de src/ usa la convención de TypeScript ("./x.js").
+    "allowImportingTsExtensions": true
+  },
+  "include": ["src/**/*.ts", "tests/**/*.ts"]
+}
