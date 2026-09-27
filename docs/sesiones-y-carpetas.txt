@@ -40,15 +40,44 @@ Un problema que hay que resolver
 
 Acá viene algo que quiero que sepas, porque es importante y no es una cuestión de comodidad.
 
-Todos los apuntes que escribimos —la guía de organización, el backlog, los apuntes de estudio, este mismo archivo— están guardados adentro de la carpeta del proyecto de sueldos, en una subcarpeta llamada docs.
+Verificado: todo el contenido del repositorio se puede descargar desde tu sitio web. No es una suposición, lo comprobé pidiendo los archivos a la dirección publicada.
+  La versión de audio de los apuntes se descarga y se lee completa.
+  El backlog también, entero.
+  El código fuente, o sea los archivos de la carpeta de origen, también.
+  Los archivos de herramientas de Python, también.
+  Y hasta el archivo de configuración de Git, que empieza con punto y uno supondría que está oculto.
 
-Y esa carpeta se publica en tu sitio web. Vercel sirve todo el contenido del repositorio, así que cualquier archivo que esté ahí queda accesible para cualquiera que sepa la dirección. Los apuntes se pueden leer en tu propia página, en la ruta docs.
+Curiosamente, el código fuente se descarga con una etiqueta de tipo incorrecta, porque la extensión se confunde con la de un formato de video. El efecto práctico es que el navegador no lo muestra como texto, pero descargarlo se descarga igual.
 
-Eso significa dos cosas.
+La regla que hay que entender es esta: en un sitio estático no existe el archivo privado.
 
-Primero, tus notas personales de estudio y tu lista de tareas están públicas. No es información sensible y no hay datos de nadie ahí, pero es tu espacio de trabajo, y no tiene por qué estar expuesto.
+Cuando publicás un sitio estático, todo lo que está en la carpeta del proyecto se copia al servidor y queda disponible en alguna dirección. No hay carpetas protegidas ni archivos ocultos. Si un archivo está ahí, es público. Lo único que lo hace menos visible es que nadie conozca la dirección exacta, y eso no es privacidad, es oscuridad.
 
-Segundo, y más importante para el orden: estás mezclando dos cosas que conviene separar. Una cosa son las notas personales, que son para vos y cambian todo el tiempo. Otra cosa son los documentos del proyecto, que son parte del producto y a veces conviene que sean públicos.
+Una advertencia importante
+
+Hay una solución que parece obvia y no funciona: hacer privado el repositorio de GitHub.
+
+Mucha gente cree que eso resuelve el problema. No lo resuelve, porque el repositorio y el sitio publicado son dos cosas distintas. GitHub guarda el código; el servidor publica una copia. Si el repositorio se vuelve privado, el código deja de verse en GitHub, pero el sitio sigue sirviendo los mismos archivos a cualquiera que los pida.
+
+Para dejar de servir un archivo no alcanza con ocultar la fuente. Hay que sacarlo de lo que se publica.
+
+Las dos soluciones
+
+La primera, y la única que es segura al cien por ciento: no tener el archivo adentro del repositorio.
+
+Si el archivo no está, no se publica. No hay configuración que se pueda olvidar ni ajuste que se pueda romper. Es la que recomiendo para cualquier cosa personal.
+
+La segunda: excluirlo del despliegue. El servidor que usás documenta un archivo de configuración, parecido al que le dice a Git qué ignorar, para que ciertas rutas no se suban. No pude cargar esa página de la documentación desde acá, así que no te lo puedo confirmar con la misma seguridad que lo anterior, pero existe y vale la pena que lo busques si querés mantener los archivos en el repositorio y solo evitar que se publiquen.
+
+Ojo con una limitación de esa segunda vía: no sirve para el código fuente. La compilación necesita leer la carpeta de origen para generar los archivos finales. Si la excluís del despliegue, el sitio deja de compilarse y se rompe. Para el código, la única forma de que no sea público sería reorganizar el proyecto para que solo se publique una subcarpeta, que es un trabajo bastante más grande.
+
+Qué hacer en tu caso
+
+Los apuntes, el backlog y esta explicación son tu espacio de trabajo. Se mudan afuera.
+
+La auditoría del comparador de inflación es distinto: documenta el proyecto, explica qué mide la herramienta y qué limitaciones tiene. Eso conviene que sea público, porque demuestra transparencia sobre cómo se calcula. Se queda adentro.
+
+Y el código fuente, aunque sea público, no es un problema: ya está publicado en GitHub y es el mismo contenido que la calculadora usa. Que se pueda leer es una fortaleza, no una debilidad.
 
 El criterio para decidir qué va dónde
 

@@ -108,6 +108,20 @@ Sale de la auditoría del comparador. El primer punto ya está hecho, y el segun
 
 - [ ] **Borrar los registros de depuración que quedaron en el motor** · 🍅½ · Limpieza · Hay varias líneas que escriben mensajes en la consola del navegador. No molestan a los usuarios, pero ensucian y delatan que el código quedó a medio limpiar.
 
+- [ ] **Sacar del repositorio los PDF que no usa el sitio** · 🍅½ · Limpieza · Hay tres documentos PDF en la carpeta de documentación, unos 3 MB, que el sitio no enlaza desde ningún lado: Recursos apunta a Google Drive. Se descargan del sitio publicado sin que nadie los use. Están en el historial de Git, así que se recuperan si hacen falta.
+
+---
+
+## Bloque 4b. Mover las notas personales afuera del repositorio
+
+Verificado: todo el contenido del repositorio se puede descargar desde el sitio publicado, incluido el código fuente y los archivos que empiezan con punto. En un sitio estático no existe el archivo privado.
+
+- [ ] **Crear la carpeta de apuntes fuera del proyecto** · 🍅¼ · Limpieza · Por ejemplo, en Documentos, una carpeta llamada ApuntesProgramacion. No adentro de ningún repositorio.
+
+- [ ] **Copiar ahí las notas y sacarlas del repositorio** · 🍅½ · Limpieza · Se van: la guía de organización, el backlog, los apuntes de estudio y la explicación de sesiones, en sus versiones de leer y de escuchar. Se queda: la auditoría del comparador, que documenta el proyecto y conviene que sea pública.
+
+- [ ] **Abrir una sesión nueva apuntando a la carpeta de apuntes** · 🍅¼ · Limpieza · Así el espacio de estudio queda separado del proyecto, y ninguna nota vuelve a publicarse por descuido.
+
 ---
 
 ## Bloque 5. Interfaz, segunda pasada
