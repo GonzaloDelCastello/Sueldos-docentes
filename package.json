@@ -8,7 +8,7 @@
   },
   "type": "module",
   "scripts": {
-    "test": "node tests/calculos.test.ts",
+    "test": "node tests/calculos.test.ts && node tests/cargos.test.ts && node tests/formulario.test.ts && node tests/referencias.test.ts && node tests/humo.test.ts",
     "typecheck": "tsc --noEmit",
     "build": "npx tsc"
   },

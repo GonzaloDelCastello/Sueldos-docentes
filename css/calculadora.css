@@ -347,3 +347,135 @@ details.desplegable[open] summary::after {
         text-align: center;
     }
 }
+
+/* --- Varios cargos a la vez --- */
+
+.ayuda-varios-cargos {
+    font-size: 1.4rem;
+    color: var(--secundarioOscuro);
+    max-width: 70rem;
+    margin: 0 auto 1rem;
+}
+
+.contenedorPuestos {
+    display: grid;
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+/* Una tarjeta por cada cargo cargado */
+.card-puesto {
+    background-color: var(--blanco);
+    border: 1px solid var(--terciario);
+    border-left: 6px solid var(--primario);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: left;
+}
+
+.card-puesto__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--terciario);
+    padding-bottom: 1rem;
+}
+
+.card-puesto__titulo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: 1.6rem;
+    margin: 0;
+}
+
+.badge-puesto {
+    background-color: var(--primario);
+    color: var(--blanco);
+    border-radius: 20px;
+    padding: 0.4rem 1.2rem;
+    font-size: 1.3rem;
+    white-space: nowrap;
+}
+
+.resumen-puesto {
+    font-weight: normal;
+    color: var(--secundarioOscuro);
+}
+
+.btn-quitar-puesto {
+    background: none;
+    border: 1px solid var(--primario);
+    color: var(--primario);
+    border-radius: 6px;
+    padding: 0.5rem 1.2rem;
+    font-size: 1.3rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-quitar-puesto:hover {
+    background-color: var(--primario);
+    color: var(--blanco);
+}
+
+.boton-agregar {
+    background-color: var(--blanco);
+    color: var(--primario);
+    border: 2px dashed var(--primario);
+    cursor: pointer;
+}
+
+.boton-agregar:hover {
+    background-color: var(--primarioClaro);
+    color: var(--primario);
+}
+
+/* Antigüedad y afiliación: son iguales para todos los cargos */
+.datos-comunes {
+    margin-top: 2rem;
+}
+
+.selector-mes {
+    margin: 2rem auto 0;
+    max-width: 35rem;
+}
+
+.etiqueta-mes {
+    font-weight: bold;
+    color: var(--primario);
+    font-size: 1.6rem;
+}
+
+.select-mes {
+    background-color: var(--blanco);
+    color: var(--negro);
+    border: 2px solid var(--primario);
+    width: 100%;
+}
+
+.cantidad-puestos {
+    font-size: 1.4rem;
+    margin-top: 0.5rem;
+}
+
+/* Tabla de desglose por cargo */
+.tabla-desglose th,
+.tabla-desglose td {
+    font-size: 1.3rem;
+}
+
+@media (max-width: 768px) {
+    .grid-form {
+        grid-template-columns: 1fr;
+    }
+
+    .card-puesto__header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

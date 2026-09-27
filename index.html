@@ -234,25 +234,22 @@
 
             <div class="contenido-acordeon">
 
-              <p><strong>La herramienta solo funciona por CARGO individual.</strong></p>
+              <p><strong>Ahora podés cargar todos tus cargos juntos.</strong> Apretá "Agregar otro cargo" y completá
+                cada uno con su nivel, su tipo de cargo y su zona. La calculadora los suma en un solo resultado.</p>
 
-              <p>Si quieres calcular varios cargos (por ejemplo: cargo de Preceptor y cargo de Maestrx), deberás hacer
+              <p>Los descuentos de ley y los seguros fijos se aplican <strong>una sola vez</strong> sobre el total,
+                igual que en el recibo. En la tabla <strong>Desglose por cargo</strong> podés ver cuánto aporta cada
+                uno.</p>
 
-                el
+              <p>Las <strong>horas en secundaria</strong> se cargan en un cargo por cada zona: si tenés horas en
+                escuelas con zonas distintas, agregá un cargo para cada una.</p>
 
-                cálculo de cada uno por separado y sumar los resultados finales.</p>
-
-              <p>En el caso de <strong>horas en secundaria</strong>: si todas tus horas tienen la misma zona, puedes
-
-                colocarlas todas juntas. Pero si trabajas en escuelas con zonas distintas, tendrás que sumarlas por
-
-                separado.</p>
+              <p>La antigüedad y la afiliación sindical son las mismas para todos los cargos, así que se cargan una
+                sola vez abajo de todo.</p>
 
             </div>
 
           </details>
-
-
 
           <details class="acordeon-info">
 
@@ -282,156 +279,31 @@
 
             <h3> Cálculo de sueldo docente San Luis</h3>
 
-            <div class="formCargo">
+            <p class="ayuda-varios-cargos">Cargá cada cargo o grupo de horas que tenés. Si son varios, sumalos todos
+              acá: el cálculo sale junto y los descuentos se aplican una sola vez, como en el recibo.</p>
 
-              <span>
+            <!-- Acá JavaScript dibuja una tarjeta por cada cargo cargado -->
+            <div id="contenedorPuestos" class="contenedorPuestos"></div>
 
-                <label for="nivel">Nivel educativo <select id="nivel" name="nivel">
+            <button type="button" id="btnAgregarPuesto" class="boton boton-agregar">➕ Agregar otro cargo</button>
 
-                    <option value="0" selected>Selecciona un nivel</option>
+            <fieldset class="grid-form datos-comunes">
 
-                    <option value="1">Inicial</option>
+              <span><label for="antiguedad">Antiguedad docente <select id="antiguedad" name="antiguedad"></select>
+                </label></span>
 
-                    <option value="2">Primario</option>
+              <span><label for="afiliacionSindical">Afiliación Sindical</label><select name="afiliacionSindical"
+                  id="afiliacionSindical"></select></span>
 
-                    <option value="3">Secundario</option>
-
-                    <option value="4">Superior (I.F.D.C)</option>
-
-                  </select></label>
-
-              </span>
-
-              <span><label for="cargo">Tipo de cargo <select id="cargo" name="cargo">
-
-                    <option value="0" selected>Seleccione un nivel</option>
-
-                    <option value="1">Hs. en Secundario</option>
-
-                    <option value="2">Cargo Preceptor (213p)</option>
-
-                    <option value="3">Maestra/o Celador (259p)</option>
-
-                  </select></label></span>
-            </div>
-
-            <!--Inicio formulario Hs secundario-->
-
-            <form id="formSecundario" class="formulario_secundario oculto">
-
-              <fieldset class="formulario_secundario">
-
-                <legend>Sueldo por cargo</legend>
-
-                <p><label for="cantHs">Cantidad de hs<input type="number" id="cantHs" name="cantHs"></label></p>
-
-
-
-              </fieldset>
-
-            </form>
-
-            <!--Inicio formulario fijo-->
-
-            <form id="formFijo" class="formFijo oculto">
-
-              <fieldset class="grid-form">
-
-                <span><label for="zona" id="zona1">Bonificación por zona<select id="zona" name="zona">
-
-                      <option value="1">0%</option>
-
-                      <option value="2">20%</option>
-
-                      <option value="3">30%</option>
-                      
-                      <option value="4">40%</option>
-
-                      <option value="5">60%</option>
-
-                      <option value="6">80%</option>
-
-                      <option value="7">100%</option>
-
-
-
-                    </select></label></span>
-
-                <span><label for="antiguedad">Antiguedad docente <select id="antiguedad" name="antiguedad">
-
-                      <option value="0">0 años (0%)</option>
-
-                      <option value="1">1 año (10%)</option>
-
-                      <option value="2">2 a 4 años (15%)</option>
-
-                      <option value="3">5 a 6 años (30%)</option>
-
-                      <option value="4">7 a 9 años (40%)</option>
-
-                      <option value="5">10 a 11 años (50%)</option>
-
-                      <option value="6">12 a 14 años (60%)</option>
-
-                      <option value="7">15 a 16 años (70%)</option>
-
-                      <option value="8">17 a 18 años (80%)</option>
-
-                      <option value="9">20 a 21 años (100%)</option>
-
-                      <option value="10">22 a 23 años (110%)</option>
-
-                      <option value="11">Más de 24 años (120%)</option>
-
-                    </select>
-
-                  </label></span>
-
-                <span><label for="cantHijxs">Cantidad de Hijxs <input type="number" id="cantHijxs" name="cantHijxs"
-                      disabled></label></span>
-
-                <span><label for="afiliacionSindical">Afiliación Sindical</label><select name="afiliacionSindical"
-                    id="afiliacionSindical">
-
-                    <option value="0">No afiliado</option>
-
-                    <option value="1">Amet</option>
-
-                    <option value="2">Uda</option>
-
-                  </select></span>
-
-                <span id="presencialidadCont">
-
-                  <label for="presencialidad">Ítem Presencialidad
-
-                    <select name="presencialidad" id="presencialidad">
-
-                      <option value="1">Sí</option>
-
-                      <option value="0">No</option>
-
-                    </select>
-
-                  </label>
-
-                </span>
-
-              </fieldset>
-
-            </form>
-
-            <!--Fin formulario fijo-->
+            </fieldset>
 
             <!--Botón de selección de mes para cálculo-->
 
-            <div style="margin: 2rem auto; text-align: center; max-width: 35rem;">
+            <div class="selector-mes">
 
-              <label for="mesCalculo" style="font-weight: bold; color: var(--primario); font-size: 1.6rem;">Seleccioná
-                el mes a calcular:</label>
+              <label for="mesCalculo" class="etiqueta-mes">Seleccioná el mes a calcular:</label>
 
-              <select id="mesCalculo" class="boton"
-                style="background-color: var(--blanco); color: var(--negro); border: 2px solid var(--primario); margin-bottom: 1rem; width: 100%;">
+              <select id="mesCalculo" class="boton select-mes">
 
                 <option value="2026-05">Mayo 2026</option>
 
@@ -446,12 +318,12 @@
                 <option value="2026-08">Agosto 2026</option>
 
                 <option value="2026-09" selected>Septiembre 2026</option>
-                
+
                 <option value="2026-10">Octubre 2026</option>
 
               </select>
 
-              <button type="button" id="btnCalcularSueldo" class="boton oculto">
+              <button type="button" id="btnCalcularSueldo" class="boton">
 
                 Calcular Sueldo
 
@@ -473,6 +345,8 @@
 
               <p class="precio-gigante" id="totalBolsillo">$0.00</p>
 
+              <p class="cantidad-puestos" id="cantidadPuestos"></p>
+
               <div class="resumen-total">
 
                 <span>Bruto: <strong id="totalBruto">$0.00</strong></span>
@@ -485,7 +359,37 @@
 
             </div>
 
+            <details class="desplegable" open>
 
+              <summary>🧾 Desglose por cargo</summary>
+
+              <table class="tabla-detalle tabla-desglose">
+
+                <thead>
+
+                  <tr>
+
+                    <th>Cargo</th>
+
+                    <th>Hs</th>
+
+                    <th>Zona</th>
+
+                    <th>Remunerativo</th>
+
+                    <th>No remun.</th>
+
+                    <th>Bruto</th>
+
+                  </tr>
+
+                </thead>
+
+                <tbody id="cuerpoDesglose"></tbody>
+
+              </table>
+
+            </details>
 
             <details class="desplegable">
 
@@ -533,6 +437,14 @@
 
                 </tr>
 
+                <tr id="filaAdicionalPorDedicacion" class="fila-resultado">
+
+                  <td>Adicional Por Dedicación (nivel superior)</td>
+
+                  <td id="adicionalPorDedicacion">$0.00</td>
+
+                </tr>
+
                 <tr id="filaEnseñanzaEnAula" class="fila-resultado">
 
                   <td>Enseñanza en aula (presentismo)</td>
@@ -552,8 +464,6 @@
               </table>
 
             </details>
-
-
 
             <details class="desplegable">
 
@@ -585,17 +495,9 @@
 
                 </tr>
 
-                <tr id="filaAsignacionXHijxs" class="fila-resultado">
-
-                  <td>Asignación por hijxs</td>
-
-                  <td id="asignacionXHijxs">$0.00</td>
-
-                </tr>
-
                 <tr id="filaBonoExtraordinario" class="fila-resultado">
 
-                  <td class="fila-resultado">Bono Extraordinario por única vez</td>
+                  <td>Bono Extraordinario por única vez</td>
 
                   <td id="bonoExtraordinario">$0.00</td>
 
@@ -613,8 +515,6 @@
 
             </details>
 
-
-
             <details class="desplegable">
 
               <summary>🔴 Descuentos </summary>
@@ -631,7 +531,7 @@
 
                 <tr class="fila-resultado">
 
-                  <td>Jubilación Reg. Esp.</td>
+                  <td>Jubilación Reg. Esp. (2%)</td>
 
                   <td id="aporteJubilatorioEsp">$0.00</td>
 
@@ -639,7 +539,7 @@
 
                 <tr class="fila-resultado">
 
-                  <td>Obra Social</td>
+                  <td>Obra Social (6%)</td>
 
                   <td id="obraSocial">$0.00</td>
 
@@ -658,6 +558,14 @@
                   <td>Seguro Obligatorio</td>
 
                   <td id="seguroObligatorio">$0.00</td>
+
+                </tr>
+
+                <tr class="fila-resultado">
+
+                  <td>Seguro Social</td>
+
+                  <td id="seguroSocial">$0.00</td>
 
                 </tr>
 
@@ -718,8 +626,6 @@
             </details>
 
           </div>
-
-
 
           <div class="contenedorGraficos" id="botonGraficos">
 

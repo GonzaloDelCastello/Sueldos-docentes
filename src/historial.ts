@@ -1,27 +1,8 @@
-// COEFICIENTES DE CARGOS (Relación fija respecto a 1 Hora Cátedra)
-// Calculados en base a Noviembre 2025. Se asume que esta relación es estable.
-export const COEFICIENTES_CARGOS = {
-    horaSecundaria: 1.000,   // Base referencia
-    preceptor: 14.1347,       // ($217,975 / $15,421)
-    maestroGrado: 14.997378,    // ($231,279 / $15,421)
-    maestroJardin: 15.1964,   // ($234,349 / $15,421)
-    maestroCelador: 17.1871,   // ($252,909 / $15,421)
-    ifdcSemiExclusivo: 0.83333,
-    ifdcFullTime: 1.166668931
-};
-
-// Relación matemática basada en los Puntos del Estatuto (Art. 64).
-// Base: 1 Hora Cátedra (15 puntos) = 1.0
-export const COEFICIENTES_CARGOS1 = {
-    horaSecundaria: 1.000,   // Base (15 pts)
-    preceptor: 14.200,       // 213 pts / 15
-    maestroGrado: 15.067,    // 226 pts / 15
-    maestroJardin: 15.267,   // 229 pts / 15
-    maestroCelador: 17.267  // 259 pts / 15
-
-    // directorBase: 18.000,    // 270 pts / 15
-    // viceDirectorBase: 18.000 // 270 pts / 15
-};
+// Este archivo es solo datos: las escalas salariales mes a mes.
+//
+// Los coeficientes de cada cargo y los descuentos fijos se mudaron a cargos.ts,
+// que es donde se usan. Los coeficientes se habían duplicado en los dos lados,
+// y ya habían empezado a divergir en los decimales.
 
 // Definimos la estructura de datos para TypeScript
 export interface ConfiguracionBase {
@@ -91,11 +72,6 @@ export function obtenerConfiguracionActual2(fecha?: string): ConfiguracionBase {
     const configEncontrada = HISTORIAL_IFDC.find(config => config.fecha === fecha);
 
     return configEncontrada || HISTORIAL_IFDC[HISTORIAL_IFDC.length - 1]!;
-}
-
-// FUNCIÓN PARA CALCULAR BÁSICO DE CUALQUIER CARGO
-export function calcularBasicoCargo(tipoCargo: keyof typeof COEFICIENTES_CARGOS, config: ConfiguracionSalarial1): number {
-    return config.basicoCargo_Hora * COEFICIENTES_CARGOS[tipoCargo];
 }
 
 // HISTORIAL DE AUMENTOS SALARIALES - CARGOS (Primaria y Media)

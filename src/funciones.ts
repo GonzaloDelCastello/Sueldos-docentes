@@ -1,1084 +1,501 @@
-import { obtenerConfiguracionActual2, obtenerConfiguracionActual1, calcularBasicoCargo, COEFICIENTES_CARGOS, HISTORIAL_IFDC, COEFICIENTES_CARGOS1 } from "./historial.js";
+import {
+  AFILIACIONES,
+  ESCALA_ANTIGUEDAD,
+  ETIQUETA_NIVEL,
+  ZONAS,
+  calcularPluriempleo,
+  cargosDelNivel,
+  definicionDe,
+  porcentajeAntiguedad,
+} from "./cargos.js";
+import type { Afiliacion, Nivel, ResultadoPluriempleo, TipoCargo } from "./cargos.js";
+import { htmlPuesto, resumenPuesto } from "./formulario.js";
+import type { CatalogoFormulario, PuestoFormulario } from "./formulario.js";
+import { configuracionesDelMes } from "./configuracion.js";
 import { HISTORIAL_BASICO } from "./historial.js";
 import { HISTORIAL_INFLACION } from "./inflacion.js";
 import { calcularInflacionAcumulada, calcularVariacionSalarial } from "./calculos.js";
 
-declare const Chart: any; // Declaración para usar Chart.js sin errores de TypeScript
-let miGraficoSueldo: any = null; // Variable global para almacenar la instancia del gráfico
+/**
+ * Capa de interfaz de la calculadora.
+ *
+ * Acá vive todo lo que toca la página: leer los formularios, dibujar las
+ * tarjetas de cada cargo y mostrar los resultados. Las cuentas las hace
+ * cargos.ts, que es puro y se puede testear.
+ *
+ * El formulario funciona con una lista de puestos en memoria. Cada cambio en
+ * un control actualiza esa lista, y cuando el usuario pide el cálculo se
+ * mandan todos los puestos juntos al motor.
+ */
 
-// Variable que guarda el mes que el usuario quiere calcular (por defecto Febrero 26)
-export let periodoCalculo: string = "2026-08";
+declare const Chart: any; // Chart.js llega por CDN, no tiene tipos acá
+let miGraficoSueldo: any = null;
 
-// Función para cambiar el mes desde los botones
-export function setPeriodoCalculo(periodo: string) {
-  periodoCalculo = periodo;
-}
-// Llave de luz del SAC
-export let incluirSAC: boolean = false;
-export function setIncluirSAC(valor: boolean) { incluirSAC = valor; }
+/** El catálogo real de cargos, para que lo use el armador de tarjetas. */
+const CATALOGO: CatalogoFormulario = {
+  niveles: ["inicial", "primario", "secundario", "superior"],
+  etiquetaNivel: ETIQUETA_NIVEL,
+  zonas: ZONAS,
+  cargosDelNivel,
+  definicionDe,
+};
 
-let cargo: number = 0; // Variable global para el cargo seleccionado
+let puestos: PuestoFormulario[] = [];
+let proximoId = 1;
+let afiliacion: Afiliacion = "no";
+let antiguedadIndice = 0;
 
-// Defino la interfaz para los resultados
-interface Resultados {
-  basico?: number;
-  pagoDeZona?: number;
-  pagoAntiguedad?: number;
-  complementoRemunerativo?: number;
-  adicionalXCargo?: number;
-  complementoNoRemunerativo?: number;
-  pagoSumaNoRemunerativa?: number;
-  pagoIncentivoDocente?: number;
-  totalRemunerativo: number;
-  totalNRemunerativo?: number;
-  adicionalPorDedicacion?: number;
-  totalBruto: number;
-  //asignacionXHijxs?: number;
-  aguinaldoBruto?: number; // La mitad del remunerativo
-  aguinaldoNeto?: number;  // Lo que te queda en mano
-  bonoExtraordinario?: number; // Bonificación extraordinaria
-  enseñanzaEnAula?: number; //Enseñanza en aula (presentismo)
-}
+// ---------------------------------------------------------------------------
+// Arranque
+// ---------------------------------------------------------------------------
 
-// Interfaz para los descuentos
-interface Descuentos {
-  descuentoJubilacion: number;
-  descuentoJubilacionRegEsp: number;
-  descuentoObraSocial: number;
-  descuentoSindical?: number;
-  seguroObligatorio: number;
-  totalDescuentos: number;
-}
+export function inicializarCalculadora(): void {
+  const contenedor = document.getElementById("contenedorPuestos");
+  if (!contenedor) return; // No estamos en la página de la calculadora
 
-//Función cálculo Zona
-export function calculoZona(): number {
-  const zona = document.getElementById("zona") as HTMLSelectElement | null;
-  if (!zona) return 0;
-  switch (zona.value) {
-    case "1":
-      return 0;
-    case "2":
-      return 0.2;
-    case "3":
-      return 0.3;
-    case "4":
-      return 0.4;
-    case "5":
-      return 0.6;
-    case "6":
-      return 0.8;
-    case "7":
-      return 1;
-    default:
-      return 0;
-  }
-}
-// Función asignación x hijxs
-export function calcularAsignacionXHijxs(): number {
-  const cantHijxs = document.getElementById("cantHijxs") as HTMLInputElement | null;
-  if (!cantHijxs) return 0;
-  const cantHijxsValue = parseInt(cantHijxs.value);
-  let asignacionXHijxs = 0;
+  completarSelectores();
+  conectarEventos(contenedor);
 
+  // El gráfico recién aparece cuando hay un resultado para mostrar.
+  document.getElementById("botonGraficos")?.classList.add("oculto");
 
-  if (cantHijxsValue > 0) {
-    
-    asignacionXHijxs = cantHijxsValue * 51280; //Asignación por hijx
-  }
-  //document.getElementById("asignacionXHijxs").textContent = aPesos(asignacionXHijxs1);
-  return asignacionXHijxs;
+  if (puestos.length === 0) agregarPuesto();
 }
 
-//Cálculo Antiguedad
-function calculoAntiguedad(): number {
-  const antiguedad = document.getElementById("antiguedad") as HTMLSelectElement | null;
-  if (!antiguedad) return 0;
-  switch (antiguedad.value) {
-    case "0":
-      return 0;
-    case "1":
-      return 0.1;
-    case "2":
-      return 0.15;
-    case "3":
-      return 0.3;
-    case "4":
-      return 0.4;
-    case "5":
-      return 0.5;
-    case "6":
-      return 0.6;
-    case "7":
-      return 0.7;
-    case "8":
-      return 0.8;
-    case "9":
-      return 1.0;
-    case "10":
-      return 1.1;
-    case "11":
-      return 1.2;
-    default:
-      return 0;
-  }
-}
-//Cálculo descuentos
-function calculoDescuentos(totalRemunerativo: number): Descuentos {
-  const descuentoJubilacion1 = totalRemunerativo * 0.11;
-  const descuentoJubilacionRegEsp1 = totalRemunerativo * 0.02;
-  const descuentoObraSocial1 = totalRemunerativo * 0.06;
-  const seguroObligatorio1 = 4312.73;
-  const seguroSocial = 110;
-
-  let descuentoSindical1 = 0;
-
-  const afiliacion = document.getElementById("afiliacionSindical") as HTMLSelectElement | null;
-
-  if (afiliacion) {
-    switch (afiliacion.value) {
-      case "1": // AMET
-      case "2": // UDA
-        descuentoSindical1 = totalRemunerativo * 0.015;
-        break;
-      default:
-        descuentoSindical1 = 0;
-    }
-  }
-
-  const totalDescuentos1 =
-    descuentoJubilacion1 +
-    descuentoJubilacionRegEsp1 +
-    descuentoObraSocial1 +
-    descuentoSindical1 +
-    seguroObligatorio1 +
-    seguroSocial;
-
-  return {
-    descuentoJubilacion: descuentoJubilacion1,
-    descuentoJubilacionRegEsp: descuentoJubilacionRegEsp1,
-    descuentoObraSocial: descuentoObraSocial1,
-    totalDescuentos: totalDescuentos1,
-    seguroObligatorio: seguroObligatorio1,
-    descuentoSindical: descuentoSindical1,
-  };
-}
-// Función para formatear números como moneda en pesos argentinos
-export function aPesos(valor: number): string {
-  return "$\u00A0" + valor.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
-export function mostrarResultadoActual(): void {
-  const cantHsInput = document.getElementById("cantHs") as HTMLInputElement | null;
-  if (!cantHsInput) return;
-  const cantHs = parseInt(cantHsInput.value);
-
-  //Mostrar sección de resultados
-  const resultadosSection = document.getElementById("resultados") as HTMLElement | null;
-  if (resultadosSection) resultadosSection.style.display = "block";
-
-  // Ocultar todas las filas antes de mostrar resultados nuevos
-  document.querySelectorAll<HTMLTableRowElement>("#tablaResultados tr").forEach(fila => {
-    fila.style.display = "none";
+/** Un puesto nuevo, con valores razonables para que se pueda calcular de una. */
+function agregarPuesto(): void {
+  puestos.push({
+    id: proximoId++,
+    nivel: "secundario",
+    tipo: "horaSecundaria",
+    cantHoras: 15,
+    zonaPct: 0,
+    presencialidad: true,
   });
+  renderizarPuestos();
+  ocultarResultados();
+}
 
-  // Borrar mensaje anterior si existiera
-  const mensajeExistente = document.getElementById("mensajeError");
-  if (mensajeExistente) mensajeExistente.remove();
-
-  // Validación: campo vacío, no numérico o menor o igual a cero (ia)
-  if (cargo === 1 && (!cantHsInput.value.trim() || isNaN(cantHs) || cantHs <= 0)) {
-    const mensaje = document.createElement("p");
-    mensaje.id = "mensajeError";
-    mensaje.style.color = "red";
-    mensaje.style.fontSize = "1.6rem";
-    mensaje.style.marginTop = "1rem";
-    mensaje.textContent = "⚠️ Por favor, ingresá una cantidad válida de horas.";
-    cantHsInput.insertAdjacentElement("afterend", mensaje);
-
-    // Reiniciar todos los resultados a $0.00
-    resetearResultados();
-
+function quitarPuesto(id: number): void {
+  if (puestos.length <= 1) {
+    alert("Necesitás al menos un cargo para calcular.");
     return;
   }
-
-  // Si pasó la validación, ejecutar cálculo según cargo seleccionado
-  const cargoEl = document.getElementById("cargo") as HTMLSelectElement | null;
-  cargo = parseInt(cargoEl?.value ?? "0");
-
-  switch (cargo) {
-    case 0:
-      // Si no se seleccionó un cargo válido, mostrar mensaje de error
-      alert("Por favor, selecciona un cargo válido.");
-      if (resultadosSection) resultadosSection.style.display = "none"; // Ocultar sección de resultados
-      resetearResultados();
-      return;
-    case 1:
-      mostrarCalculoSecundario();
-      break;
-    case 2:
-      mostrarCalculoPreceptor();
-      break;
-    case 3:
-      mostrarCalculoMaestrCelador();
-      break;
-    case 4:
-      mostrarCalculoMaestrGrado();
-      break;
-    case 6:
-      mostrarCalculoMaestrxJardin();
-      break;
-    case 7:
-      mostrarCalculoIfdcExclusivo();
-      break;
-    case 8:
-      mostrarCalculoIfdcSemiExclusivo();
-      break;
-    case 9:
-      mostrarCalculoIfdcFullTime();
-      break;
-    default:
-      //Por si selecciona otro valor no calculado
-      alert("Este tipo de cargo aún no tiene cálculo implementado.");
-  }
+  puestos = puestos.filter((puesto) => puesto.id !== id);
+  renderizarPuestos();
+  ocultarResultados();
 }
 
-function mostrarCalculoSecundario(): void {
-  const resultados: Resultados = calcularSalarioHsSecundario();
-  const descuentos: Descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
-  // let totalBolsillo = resultados.totalBruto - descuentos.totalDescuentos;
-
-  // Mostrar resultados en la tabla
-  mostrarResultados(
-    resultados,
-    descuentos,
-    ["filaTotalNeto", "filaSueldoBasico", "filaZona", "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem", "filaSumaNoRem", "filaAsignacionXHijxs", "filaBonoExtraordinario"], // mostrar
-    ["filaTotalBolsillo1", "filaAdicionalCargo", "filaAdicionalPorDedicacion"]      // ocultar
-  );
-
-}
-
-// Función para el cálculo de hs de secundaria
-function calcularSalarioHsSecundario(): Resultados {
-  let cantHsV = document.getElementById("cantHs") as HTMLInputElement | null;
-  if (!cantHsV) return 0 as unknown as Resultados;
-  const cantHs = parseInt(cantHsV.value);
-
-  // OBTENER CONFIGURACIÓN VIGENTE 
-  const config1 = obtenerConfiguracionActual1(periodoCalculo);
-  console.log("Configuración seleccionada para cálculo:", periodoCalculo); //Prueba error
-  // OBTENER EL VALOR DE LA HORA (Del historial)
-  let valorHora = config1.basicoCargo_Hora;
-  console.log("Valor de la hora según configuración:", valorHora); //Prueba error
-
-  // CALCULAR BÁSICO (Valor Hora * Cantidad)
-  let basicoXHs = cantHs * valorHora;
-
-
-  let bonificacionZona = basicoXHs * calculoZona();
-  let bonificacionAntiguedad = basicoXHs * calculoAntiguedad();
-
-  // USAR PORCENTAJES DEL HISTORIAL
-  let complementoRemunerativo1 = basicoXHs * config1.porcentajes.remunerativo;
-  let complementoNoRemunerativo1 = basicoXHs * config1.porcentajes.noRemunerativo;
-
-  // USAR FIJOS DEL HISTORIAL
-  // Nota: Asumimos que el incentivo y conectividad son por cargo (proporcional a 15hs)
-  let sumaNoRemunerativa = (config1.sumaNoRemunerativa) * cantHs;
-  let incentivoDocente = (config1.fonid) * cantHs;
-  let bonoExtraordinario = (cantHs <= 15) ? (config1.bonoExtraordinario * cantHs) : config1.bonoExtraordinario * 15;
-  //let asignacionXHijxs1 = calcularAsignacionXHijxs();
-
-  // Suma y resultados finales
-  let totalRemunerativo1 = basicoXHs + complementoRemunerativo1 + bonificacionZona + bonificacionAntiguedad;
-  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + bonoExtraordinario;
-  let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
-
-
-  // --- CÁLCULO SAC ---
-  const aguinaldo = calcularSAC(totalRemunerativo1);
-
-  return {
-    basico: basicoXHs,
-    pagoDeZona: bonificacionZona,
-    pagoAntiguedad: bonificacionAntiguedad,
-    complementoRemunerativo: complementoRemunerativo1,
-    complementoNoRemunerativo: complementoNoRemunerativo1,
-    pagoSumaNoRemunerativa: sumaNoRemunerativa,
-    pagoIncentivoDocente: incentivoDocente,
-    totalRemunerativo: totalRemunerativo1,
-    totalNRemunerativo: totalNRemunerativo1,
-    totalBruto: totalBruto1,
-    //asignacionXHijxs: asignacionXHijxs1,
-    aguinaldoBruto: aguinaldo.sacBruto,
-    aguinaldoNeto: aguinaldo.sacNeto,
-    bonoExtraordinario: bonoExtraordinario
-  };
-}
-
-// Mostrar calculo de preceptor
-function mostrarCalculoPreceptor(): void {
-  const resultados = calcularSalarioPreceptor();
-  const descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
-
-  mostrarResultados(
-    resultados,
-    descuentos,
-    ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargo", "filaZona",
-      "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
-      "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs", "filaBonoExtraordinario"], // mostrar
-    ["filaTotalBolsillo1", "filaAdicionalPorDedicacion"]      // ocultar    
-  );
-}
-//Función para el cálculo de preceptor
-function calcularSalarioPreceptor() {
-  const config = obtenerConfiguracionActual1(periodoCalculo);
-
-
-  // CALCULAR BÁSICO AUTOMÁTICO
-  // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
-  let basico1 = calcularBasicoCargo('preceptor', config);
-
-  let bonificacionZona = basico1 * calculoZona();
-  let bonificacionAntiguedad = basico1 * calculoAntiguedad();
-
-  // PORCENTAJES DEL HISTORIAL
-  let complementoRemunerativo1 = basico1 * config.porcentajes.remunerativo;
-  let adicionalXCargo1 = basico1 * config.porcentajes.adicionalCargo;
-  let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
-
-  // COMPLEMENTOS NO REMUNERATIVOS FIJOS
-  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.preceptor; // Valor entero
-  let incentivoDocente = config.fonid * 15;          // Valor entero
-  let bonoExtraordinario = COEFICIENTES_CARGOS.preceptor * config.bonoExtraordinario;
-
-  //let asignacionXHijxs = calcularAsignacionXHijxs();
-
-  // Suma y resultados finales
-  let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalXCargo1 + bonificacionZona + bonificacionAntiguedad;
-  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + bonoExtraordinario;
-  let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
-
-  // --- CÁLCULO SAC ---
-  const aguinaldo = calcularSAC(totalRemunerativo1);
-
-  return {
-    basico: basico1,
-    pagoDeZona: bonificacionZona,
-    pagoAntiguedad: bonificacionAntiguedad,
-    complementoRemunerativo: complementoRemunerativo1,
-    adicionalXCargo: adicionalXCargo1,
-    complementoNoRemunerativo: complementoNoRemunerativo1,
-    pagoSumaNoRemunerativa: sumaNoRemunerativa,
-    pagoIncentivoDocente: incentivoDocente,
-    totalRemunerativo: totalRemunerativo1,
-    totalNRemunerativo: totalNRemunerativo1,
-    totalBruto: totalBruto1,
-    //asignacionXHijxs: asignacionXHijxs,
-    aguinaldoBruto: aguinaldo.sacBruto,
-    aguinaldoNeto: aguinaldo.sacNeto,
-    bonoExtraordinario: bonoExtraordinario
-  };
-}
-
-// Cargo de maestra/o celador
-function mostrarCalculoMaestrCelador() {
-  const resultados = calcularSalarioMaestrCelador();
-  const descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
-  // Mostrar resultados en la tabla
-  mostrarResultados(
-    resultados,
-    descuentos,
-    ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargo", "filaZona",
-      "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
-      "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs",
-      "filaAsignacionXHijxs"], // mostrar
-    ["filaTotalBolsillo1", "filaAdicionalPorDedicacion"]      // ocultar    
-  );
-}
-
-
-//Función para el cálculo de maestrx celador
-function calcularSalarioMaestrCelador() {
-  // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-  const config = obtenerConfiguracionActual1(periodoCalculo);
-
-  // Select de presencialidad y multiplicador según la opción seleccionada (1 si, 0 no)
-  const selectPresencialidad = document.getElementById("presencialidad") as HTMLSelectElement | null;
-  const multiplicadorPresencialidad = selectPresencialidad ? parseInt(selectPresencialidad.value) : 0;
-  console.log("Multiplicador de presencialidad:", multiplicadorPresencialidad); // Prueba de valor
-
-
-  // Conceptos remunerativos
-
-  let basico1 = calcularBasicoCargo('maestroCelador', config);
-  let bonificacionZona = basico1 * calculoZona();
-  let bonificacionAntiguedad = basico1 * calculoAntiguedad();
-
-  let complementoRemunerativo1 = basico1 * config.porcentajes.remunerativo;
-  let adicionalXCargo1 = basico1 * config.porcentajes.adicionalCargo;
-  let enseñanzaEnAula = 125000 * multiplicadorPresencialidad;
-
-  // COMPLEMENTOS NO REMUNERATIVOS FIJOS
-  let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
-  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroCelador;
-  let incentivoDocente = config.fonid * 15;
-  let bonoExtraordinario = config.bonoExtraordinario * 15;
-  //let asignacionXHijxs = calcularAsignacionXHijxs();
-
-  // Suma y resultados finales
-  let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalXCargo1 + bonificacionZona + bonificacionAntiguedad + enseñanzaEnAula;
-  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + bonoExtraordinario;
-  let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
-
-  // --- CÁLCULO SAC ---
-  const aguinaldo = calcularSAC(totalRemunerativo1);
-
-  return {
-    basico: basico1,
-    pagoDeZona: bonificacionZona,
-    pagoAntiguedad: bonificacionAntiguedad,
-    complementoRemunerativo: complementoRemunerativo1,
-    adicionalXCargo: adicionalXCargo1,
-    complementoNoRemunerativo: complementoNoRemunerativo1,
-    pagoSumaNoRemunerativa: sumaNoRemunerativa,
-    pagoIncentivoDocente: incentivoDocente,
-    enseñanzaEnAula: enseñanzaEnAula,
-    totalRemunerativo: totalRemunerativo1,
-    totalNRemunerativo: totalNRemunerativo1,
-    totalBruto: totalBruto1,
-    //asignacionXHijxs: asignacionXHijxs,
-    aguinaldoBruto: aguinaldo.sacBruto,
-    aguinaldoNeto: aguinaldo.sacNeto,
-    bonoExtraordinario: bonoExtraordinario
-  };
-}
-
-
-// Cargo de maestra/o de grado
-function mostrarCalculoMaestrGrado(): void {
-  const resultados = calcularSalarioMaestrGrado();
-  const descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
-
-  // Mostrar resultados en la tabla
-  mostrarResultados(
-    resultados,
-    descuentos,
-    ["filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargo",
-      "filaZona", "filaComplementoNoRem", "filaAntiguedad",
-      "filaComplementoRem", "filaSumaNoRem", "filaDescuentoSindical",
-      "filaAsignacionXHijxs"], // mostrar
-    ["filaTotalBolsillo1", "filaAdicionalPorDedicacion"]      // ocultar    
-  );
-}
-
-//Función para el cálculo de maestrx de grado
-function calcularSalarioMaestrGrado() {
-  // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-  const config = obtenerConfiguracionActual1(periodoCalculo);
-
-  // Select de presencialidad y multiplicador según la opción seleccionada (1 si, 0 no)
-  const selectPresencialidad = document.getElementById("presencialidad") as HTMLSelectElement | null;
-  const multiplicadorPresencialidad = selectPresencialidad ? parseInt(selectPresencialidad.value) : 0;
-  console.log("Multiplicador de presencialidad:", multiplicadorPresencialidad); // Prueba de valor
-
-  // Conceptos remunerativos
-  let basico1 = calcularBasicoCargo('maestroGrado', config);
-  let bonificacionZona = basico1 * calculoZona();
-  let bonificacionAntiguedad = basico1 * calculoAntiguedad();
-  let complementoRemunerativo1 = basico1 * config.porcentajes.remunerativo;
-  let adicionalXCargo1 = basico1 * config.porcentajes.adicionalCargo;
-  let enseñanzaEnAula = 125000 * multiplicadorPresencialidad;
-
-
-  // COMPLEMENTOS NO REMUNERATIVOS FIJOS
-  let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
-  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroGrado;
-  let incentivoDocente = config.fonid * 15;
-  let bonoExtraordinario = config.bonoExtraordinario * 15;
-  //let asignacionXHijxs = calcularAsignacionXHijxs();
-
-
-  // Suma y resultados finales
-  let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalXCargo1 + bonificacionZona + bonificacionAntiguedad + enseñanzaEnAula;
-  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + bonoExtraordinario;
-  let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
-
-  // --- CÁLCULO SAC ---
-  const aguinaldo = calcularSAC(totalRemunerativo1);
-
-  return {
-    basico: basico1,
-    pagoDeZona: bonificacionZona,
-    pagoAntiguedad: bonificacionAntiguedad,
-    complementoRemunerativo: complementoRemunerativo1,
-    adicionalXCargo: adicionalXCargo1,
-    complementoNoRemunerativo: complementoNoRemunerativo1,
-    pagoSumaNoRemunerativa: sumaNoRemunerativa,
-    pagoIncentivoDocente: incentivoDocente,
-    enseñanzaEnAula: enseñanzaEnAula,
-    totalRemunerativo: totalRemunerativo1,
-    totalNRemunerativo: totalNRemunerativo1,
-    totalBruto: totalBruto1,
-    //asignacionXHijxs: asignacionXHijxs,
-    aguinaldoBruto: aguinaldo.sacBruto,
-    aguinaldoNeto: aguinaldo.sacNeto,
-    bonoExtraordinario: bonoExtraordinario
-  };
-}
-// Nivel Inicial
-// Cargo maestrx jardín
-// Función mostrar maestrx jardín
-function mostrarCalculoMaestrxJardin(): void {
-  const resultados: Resultados = calcularSalarioMaestrxJardin();
-  const descuentos: Descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
-  // Mostrar resultados en la tabla
-  mostrarResultados(
-    resultados,
-    descuentos,
-    [
-      "filaTotalNeto", "filaSueldoBasico", "filaAdicionalCargo", "filaZona",
-      "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
-      "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs",
-      "filaAsignacionXHijxs"
-    ], // mostrar
-    ["filaTotalBolsillo1", "filaAdicionalPorDedicacion"]      // ocultar    
-  );
-}
-// Función calcular maestrx jardín
-function calcularSalarioMaestrxJardin() {
-  // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-  const config = obtenerConfiguracionActual1(periodoCalculo);
-
-  // Select de presencialidad y multiplicador según la opción seleccionada (1 si, 0 no)
-  const selectPresencialidad = document.getElementById("presencialidad") as HTMLSelectElement | null;
-  const multiplicadorPresencialidad = selectPresencialidad ? parseInt(selectPresencialidad.value) : 0;
-  console.log("Multiplicador de presencialidad:", multiplicadorPresencialidad); // Prueba de valor
-
-  // CALCULAR BÁSICO AUTOMÁTICO
-  // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
-  let basico1 = calcularBasicoCargo('maestroJardin', config);
-
-  let bonificacionZona = basico1 * calculoZona();
-  let bonificacionAntiguedad = basico1 * calculoAntiguedad();
-
-  // PORCENTAJES DEL HISTORIAL
-  let complementoRemunerativo1 = basico1 * config.porcentajes.remunerativo;
-  let adicionalXCargo1 = basico1 * config.porcentajes.adicionalCargo;
-  let enseñanzaEnAula = 125000;
-
-  // COMPLEMENTOS NO REMUNERATIVOS FIJOS
-  let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
-  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.maestroJardin;
-  let incentivoDocente = config.fonid * 15;
-  let bonoExtraordinario = config.bonoExtraordinario * 15;
-
-  //let asignacionXHijxs = calcularAsignacionXHijxs();
-
-  // Suma y resultados finales
-  let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalXCargo1 + bonificacionZona + bonificacionAntiguedad + enseñanzaEnAula;
-  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + bonoExtraordinario;
-  let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
-
-
-  // --- CÁLCULO SAC ---
-  const aguinaldo = calcularSAC(totalRemunerativo1);
-
-  return {
-    basico: basico1,
-    pagoDeZona: bonificacionZona,
-    pagoAntiguedad: bonificacionAntiguedad,
-    complementoRemunerativo: complementoRemunerativo1,
-    adicionalXCargo: adicionalXCargo1,
-    enseñanzaEnAula: enseñanzaEnAula,
-    complementoNoRemunerativo: complementoNoRemunerativo1,
-    pagoSumaNoRemunerativa: sumaNoRemunerativa,
-    pagoIncentivoDocente: incentivoDocente,
-    totalRemunerativo: totalRemunerativo1,
-    totalNRemunerativo: totalNRemunerativo1,
-    totalBruto: totalBruto1,
-    //asignacionXHijxs: asignacionXHijxs,
-    aguinaldoBruto: aguinaldo.sacBruto,
-    aguinaldoNeto: aguinaldo.sacNeto,
-    bonoExtraordinario: bonoExtraordinario
-  };
-}
-
-// Función mostrar resultados IFDC
-function mostrarCalculoIfdcExclusivo(): void {
-  const resultados: Resultados = calcularSalarioIfdcExclusivo();
-  const descuentos: Descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
-  // Mostrar resultados en la tabla
-  mostrarResultados(
-    resultados,
-    descuentos,
-    [
-      "filaTotalNeto", "filaSueldoBasico",
-      "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
-      "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs",
-      "filaAsignacionXHijxs", "filaAdicionalCargo"
-    ], // mostrar
-    ["filaZona", "filaTotalBolsillo1"]      // ocultar    
-  );
-}
-// Función calcular IFDC
-// Función calcular maestrx jardín
-function calcularSalarioIfdcExclusivo() {
-  // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-  const config = obtenerConfiguracionActual2(periodoCalculo);
-
-  // Calculos remunerativos
-
-  let basico1 = config.basicoCargo_Hora;
-  let complementoRemunerativo1 = basico1 * config.porcentajes.remunerativo;
-  let bonificacionAntiguedad = basico1 * calculoAntiguedad();
-  let adicionalXCargo1 = basico1 * config.porcentajes.adicionalCargo;
-  let adicionalPorDedicacion1 = config.porcentajes.adicionalCargo * basico1;
-
-  // Calculos no remunerativos
-  let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
-
-
-  let sumaNoRemunerativa = config.sumaNoRemunerativa;
-  let incentivoDocente = config.fonid;
-  //let asignacionXHijxs = calcularAsignacionXHijxs();
-  let bonoExtraordinario = config.bonoExtraordinario;
-
-  // Suma y resultados finales
-  let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalPorDedicacion1 + bonificacionAntiguedad;
-  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente +  bonoExtraordinario;
-  let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
-
-
-  // --- CÁLCULO SAC ---
-  const aguinaldo = calcularSAC(totalRemunerativo1);
-
-  return {
-    basico: basico1,
-    //pagoDeZona: bonificacionZona,
-    pagoAntiguedad: bonificacionAntiguedad,
-    complementoRemunerativo: complementoRemunerativo1,
-    adicionalXCargo: adicionalXCargo1,
-    complementoNoRemunerativo: complementoNoRemunerativo1,
-    pagoSumaNoRemunerativa: sumaNoRemunerativa,
-    pagoIncentivoDocente: incentivoDocente,
-    totalRemunerativo: totalRemunerativo1,
-    totalNRemunerativo: totalNRemunerativo1,
-    totalBruto: totalBruto1,
-    //asignacionXHijxs: asignacionXHijxs,
-    adicionalPorDedicacion: adicionalPorDedicacion1,
-    aguinaldoBruto: aguinaldo.sacBruto,
-    aguinaldoNeto: aguinaldo.sacNeto,
-    bonoExtraordinario: bonoExtraordinario
-  };
-}
-
-// Función mostrar resultados IFDC semi exclusivo
-function mostrarCalculoIfdcSemiExclusivo(): void {
-  const resultados: Resultados = calcularSalarioIfdcSemiExclusivo();
-  const descuentos: Descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
-  // Mostrar resultados en la tabla
-  mostrarResultados(
-    resultados,
-    descuentos,
-    [
-      "filaTotalNeto", "filaSueldoBasico",
-      "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
-      "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs",
-      "filaAsignacionXHijxs", "filaAdicionalCargo"
-    ], // mostrar
-    ["filaZona", "filaTotalBolsillo1"]      // ocultar    
-  );
-}
-// Función calcular IFDC semi exclusivo
-function calcularSalarioIfdcSemiExclusivo() {
-  // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-  const config = obtenerConfiguracionActual2(periodoCalculo);
-
-  // CALCULAR BÁSICO AUTOMÁTICO
-  // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
-  let basico1 = config.basicoCargo_Hora * COEFICIENTES_CARGOS.ifdcSemiExclusivo;
-
-  let bonificacionAntiguedad = basico1 * calculoAntiguedad();
-
-  // PORCENTAJES DEL HISTORIAL
-  let complementoRemunerativo1 = basico1 * config.porcentajes.remunerativo;
-  let adicionalXCargo1 = basico1 * config.porcentajes.adicionalCargo;
-  let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
-
-  // COMPLEMENTOS NO REMUNERATIVOS FIJOS
-  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.ifdcSemiExclusivo;
-  let incentivoDocente = config.fonid;
-  let adicionalPorDedicacion1 = config.porcentajes.adicionalCargo * basico1;
-  //let asignacionXHijxs = calcularAsignacionXHijxs();
-  let bonoExtraordinario = config.bonoExtraordinario;
-
-  // Suma y resultados finales
-  let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalPorDedicacion1 + bonificacionAntiguedad;
-  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + bonoExtraordinario;
-  let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
-
-
-  // --- CÁLCULO SAC ---
-  const aguinaldo = calcularSAC(totalRemunerativo1);
-
-  return {
-    basico: basico1,
-    //pagoDeZona: bonificacionZona,
-    pagoAntiguedad: bonificacionAntiguedad,
-    complementoRemunerativo: complementoRemunerativo1,
-    adicionalXCargo: adicionalXCargo1,
-    complementoNoRemunerativo: complementoNoRemunerativo1,
-    pagoSumaNoRemunerativa: sumaNoRemunerativa,
-    pagoIncentivoDocente: incentivoDocente,
-    totalRemunerativo: totalRemunerativo1,
-    totalNRemunerativo: totalNRemunerativo1,
-    totalBruto: totalBruto1,
-    //asignacionXHijxs: asignacionXHijxs,
-    adicionalPorDedicacion: adicionalPorDedicacion1,
-    aguinaldoBruto: aguinaldo.sacBruto,
-    aguinaldoNeto: aguinaldo.sacNeto,
-    bonoExtraordinario: bonoExtraordinario
-  };
-}
-// Función mostrar resultados IFDC Full Time
-function mostrarCalculoIfdcFullTime(): void {
-  const resultados: Resultados = calcularSalarioIfdcFullTime();
-  const descuentos: Descuentos = calculoDescuentos(resultados.totalRemunerativo) as Descuentos;
-  // Mostrar resultados en la tabla
-  mostrarResultados(
-    resultados,
-    descuentos,
-    [
-      "filaTotalNeto", "filaSueldoBasico",
-      "filaComplementoNoRem", "filaAntiguedad", "filaComplementoRem",
-      "filaSumaNoRem", "filaDescuentoSindical", "filaAsignacionXHijxs",
-      "filaAsignacionXHijxs", "filaAdicionalCargo"
-    ], // mostrar
-    ["filaZona", "filaTotalBolsillo1"]      // ocultar    
-  );
-}
-// Función calcular IFDC Full Time (Trabajar aquí)
-function calcularSalarioIfdcFullTime() {
-  // TRAE CONFIGURACIÓN SALARIAL SELECCIONADA
-  const config = obtenerConfiguracionActual2(periodoCalculo);
-
-  // CALCULAR BÁSICO AUTOMÁTICO
-  // El código busca "preceptor" en COEFICIENTES_CARGOS y lo multiplica por el básico de la hora.
-  let basico1 = config.basicoCargo_Hora * COEFICIENTES_CARGOS.ifdcFullTime;
-
-  let bonificacionAntiguedad = basico1 * calculoAntiguedad();
-
-  // PORCENTAJES DEL HISTORIAL
-  let complementoRemunerativo1 = basico1 * config.porcentajes.remunerativo;
-  let adicionalXCargo1 = basico1 * config.porcentajes.adicionalCargo;
-  let complementoNoRemunerativo1 = basico1 * config.porcentajes.noRemunerativo;
-
-  // COMPLEMENTOS NO REMUNERATIVOS FIJOS
-  let sumaNoRemunerativa = config.sumaNoRemunerativa * COEFICIENTES_CARGOS.ifdcFullTime;
-  let incentivoDocente = config.fonid;
-  let adicionalPorDedicacion1 = config.porcentajes.adicionalCargo * basico1;
-  //let asignacionXHijxs = calcularAsignacionXHijxs();
-  let bonoExtraordinario = config.bonoExtraordinario;
-
-  // Suma y resultados finales
-  let totalRemunerativo1 = basico1 + complementoRemunerativo1 + adicionalPorDedicacion1 + bonificacionAntiguedad;
-  let totalNRemunerativo1 = complementoNoRemunerativo1 + sumaNoRemunerativa + incentivoDocente + bonoExtraordinario;
-  let totalBruto1 = totalNRemunerativo1 + totalRemunerativo1;
-
-
-  // --- CÁLCULO SAC ---
-  const aguinaldo = calcularSAC(totalRemunerativo1);
-
-  return {
-    basico: basico1,
-    //pagoDeZona: bonificacionZona,
-    pagoAntiguedad: bonificacionAntiguedad,
-    complementoRemunerativo: complementoRemunerativo1,
-    adicionalXCargo: adicionalXCargo1,
-    complementoNoRemunerativo: complementoNoRemunerativo1,
-    pagoSumaNoRemunerativa: sumaNoRemunerativa,
-    pagoIncentivoDocente: incentivoDocente,
-    totalRemunerativo: totalRemunerativo1,
-    totalNRemunerativo: totalNRemunerativo1,
-    totalBruto: totalBruto1,
-    //asignacionXHijxs: asignacionXHijxs,
-    adicionalPorDedicacion: adicionalPorDedicacion1,
-    aguinaldoBruto: aguinaldo.sacBruto,
-    aguinaldoNeto: aguinaldo.sacNeto,
-    bonoExtraordinario: bonoExtraordinario
-  };
-}
-export function resetearResultados(): void {
-  const ids = [
-    "resultadoSueldo", "pagoZona", "pagoAntiguedad", "complementoRemunerativo",
-    "complementoNoRemunerativo", "sumaNoRemunerativa", "incentivoDocente",
-    "totalSAportes", "totalCAportes", "totalBruto", "aporteJubilatorio",
-    "aporteJubilatorioEsp", "obraSocial", "totalDescuentos", "seguroObligatorio",
-    "totalBolsillo", "adicionalPorCargo", "descuentoSindical", "asignacionXHijxs"
-  ];
-  ids.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = "$0.00";
-  });
-
-  // Borrar el gráfico si existe
-  if (typeof miGraficoSueldo !== 'undefined' && miGraficoSueldo !== null) {
+/**
+ * Esconde el resultado cuando se toca el formulario.
+ *
+ * Es a propósito que sea tan agresivo: si el usuario cambia un cargo, una zona
+ * o el mes, los números que quedaron en pantalla ya no son los de su situación.
+ * Más vale que tenga que apretar "Calcular" de nuevo.
+ */
+function ocultarResultados(): void {
+  const seccion = document.getElementById("resultados");
+  if (seccion) seccion.style.display = "none";
+  document.getElementById("botonGraficos")?.classList.add("oculto");
+
+  if (miGraficoSueldo !== null) {
     miGraficoSueldo.destroy();
     miGraficoSueldo = null;
   }
 }
-function mostrarResultados(
-  resultados: Resultados,
-  descuentos: Descuentos,
-  filasMostrar: string[],
-  filasOcultar: string[]
-): void {
-  const setText = (id: string, value: number | undefined) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = aPesos(value ?? 0);
-  };
 
-  setText("resultadoSueldo", resultados.basico);
-  setText("pagoZona", resultados.pagoDeZona);
-  setText("pagoAntiguedad", resultados.pagoAntiguedad);
-  setText("complementoRemunerativo", resultados.complementoRemunerativo);
-  setText("adicionalPorCargo", resultados.adicionalXCargo);
-  setText("complementoNoRemunerativo", resultados.complementoNoRemunerativo);
-  setText("sumaNoRemunerativa", resultados.pagoSumaNoRemunerativa);
-  setText("incentivoDocente", resultados.pagoIncentivoDocente);
-  setText("totalCAportes", resultados.totalRemunerativo);
-  setText("totalSAportes", resultados.totalNRemunerativo);
-  setText("totalBruto", resultados.totalBruto);
-  setText("aporteJubilatorio", descuentos.descuentoJubilacion);
-  setText("aporteJubilatorioEsp", descuentos.descuentoJubilacionRegEsp);
-  setText("obraSocial", descuentos.descuentoObraSocial);
-  setText("totalDescuentos", descuentos.totalDescuentos);
-  setText("seguroObligatorio", descuentos.seguroObligatorio);
-  //setText("totalBolsillo", (resultados.totalBruto ?? 0) - (descuentos.totalDescuentos ?? 0));
-  setText("descuentoSindical", descuentos.descuentoSindical);
-  //setText("asignacionXHijxs", resultados.asignacionXHijxs);
-  setText("totalDescuentosTexto", descuentos.totalDescuentos);
-  setText("bonoExtraordinario", resultados.bonoExtraordinario);
-  setText("enseñanzaEnAula", resultados.enseñanzaEnAula);
-
-
-
-  // Aguinaldo
-
-  const sacB = resultados.aguinaldoBruto ?? 0;
-  const sacN = resultados.aguinaldoNeto ?? 0;
-  const sacDesc = sacB - sacN;
-
-  setText("sacBruto", sacB);
-  setText("sacDescuentos", sacDesc); // Mostramos cuánto se descontó
-  setText("sacNeto", sacN);
-
-  // 1. Calculamos el sueldo normal
-  let bolsilloFinal = (resultados.totalBruto ?? 0) - (descuentos.totalDescuentos ?? 0);
-
-  // 2. Evaluamos si el usuario pidió incluir el SAC
-  if (incluirSAC) {
-    bolsilloFinal += sacN; // Sumamos el aguinaldo neto en mano
-    // Le decimos a la tabla que haga visibles las filas del aguinaldo
-    filasMostrar.push("filaAguinaldoBruto", "filaAguinaldoDescuento", "filaAguinaldoNeto");
-  } else {
-    // Si la llave está apagada, ocultamos las filas del aguinaldo
-    filasOcultar.push("filaAguinaldoBruto", "filaAguinaldoDescuento", "filaAguinaldoNeto");
+function completarSelectores(): void {
+  const selectAntiguedad = document.getElementById("antiguedad") as HTMLSelectElement | null;
+  if (selectAntiguedad) {
+    selectAntiguedad.innerHTML = ESCALA_ANTIGUEDAD.map(
+      (tramo, indice) => `<option value="${indice}">${tramo.etiqueta}</option>`
+    ).join("");
+    selectAntiguedad.value = String(antiguedadIndice);
   }
 
-  // 3. Inyectamos el total corregido y actualizamos las filas
-  setText("totalBolsillo", bolsilloFinal);
-  mostrarFilas(filasMostrar, filasOcultar);
-
-  // Gráfico de torta
-  crearGraficoTorta(resultados, descuentos);
-}
-function calculoTotalNeto() {
-  const resultados = calcularSalarioHsSecundario();
-  const descuentos = calculoDescuentos(resultados.totalRemunerativo);
-  let totalBolsillo1 = calcularSalarioHsSecundario().totalBruto - descuentos.totalDescuentos;
-  return {
-    totalBolsillo: totalBolsillo1
+  const selectAfiliacion = document.getElementById("afiliacionSindical") as HTMLSelectElement | null;
+  if (selectAfiliacion) {
+    selectAfiliacion.innerHTML = AFILIACIONES.map(
+      (opcion) => `<option value="${opcion.valor}">${opcion.etiqueta}</option>`
+    ).join("");
+    selectAfiliacion.value = afiliacion;
   }
 }
 
-//Aguinaldo
-// Función centralizada para calcular el Aguinaldo (SAC) de cualquier cargo
-function calcularSAC(totalRemunerativo: number) {
-  const sacBruto = totalRemunerativo / 2;
-  const descuentosSAC = calcularDescuentosSAC(sacBruto);
-  const sacNeto = sacBruto - descuentosSAC;
+function conectarEventos(contenedor: HTMLElement): void {
+  document.getElementById("btnAgregarPuesto")?.addEventListener("click", agregarPuesto);
+  document.getElementById("btnCalcularSueldo")?.addEventListener("click", calcularYMostrar);
 
-  // Devolvemos ambos resultados empaquetados en un objeto
-  return { sacBruto, sacNeto };
-}
-// Función auxiliar para descuentos de SAC (Solo porcentajes, sin fijos)
-function calcularDescuentosSAC(brutoSAC: number): number {
-  // Jubilación (11%) + Ley Esp. (2%) + Obra Social (6%) = 19%
-  let porcentajeLey = 0.19;
+  document.getElementById("antiguedad")?.addEventListener("change", (evento) => {
+    antiguedadIndice = Number((evento.target as HTMLSelectElement).value) || 0;
+    ocultarResultados();
+  });
 
-  // Descuento Sindicato (Si está afiliado)
-  let porcentajeSindical = 0;
-  const afiliacion = document.getElementById("afiliacionSindical") as HTMLSelectElement | null;
-  if (afiliacion && (afiliacion.value === "1" || afiliacion.value === "2")) {
-    porcentajeSindical = 0.015; // 1.5%
-  }
+  document.getElementById("afiliacionSindical")?.addEventListener("change", (evento) => {
+    afiliacion = (evento.target as HTMLSelectElement).value as Afiliacion;
+    ocultarResultados();
+  });
 
-  // Total de descuento
-  return brutoSAC * (porcentajeLey + porcentajeSindical);
+  document.getElementById("mesCalculo")?.addEventListener("change", ocultarResultados);
+
+  // Delegación: los controles de cada tarjeta se identifican con data-puesto.
+  contenedor.addEventListener("change", manejarCambio);
+  contenedor.addEventListener("input", manejarCambio);
+  contenedor.addEventListener("click", manejarClick);
 }
 
-// Función para el gráfico de torta Chart.js
-export function crearGraficoTorta(resultados: Resultados, descuentos: Descuentos): void {
-  const lienzo = document.getElementById('miGrafico') as HTMLCanvasElement;
-  if (!lienzo) return;
+function manejarCambio(evento: Event): void {
+  const control = evento.target as HTMLSelectElement | HTMLInputElement;
 
-  if (typeof miGraficoSueldo !== 'undefined' && miGraficoSueldo !== null) {
-    miGraficoSueldo.destroy();
+  // En los <select> el navegador dispara input y change: procesamos uno solo.
+  if (evento.type === "input" && control.tagName === "SELECT") return;
+
+  const campo = control.dataset.campo;
+  const puesto = puestos.find((p) => p.id === Number(control.dataset.puesto));
+  if (!puesto || !campo) return;
+
+  switch (campo) {
+    case "nivel": {
+      // Al cambiar el nivel hay que rearmar la lista de cargos y la tarjeta.
+      puesto.nivel = control.value as Nivel;
+      puesto.tipo = cargosDelNivel(puesto.nivel)[0]?.tipo ?? "horaSecundaria";
+      renderizarPuestos();
+      break;
+    }
+    case "tipo":
+      puesto.tipo = control.value as TipoCargo;
+      renderizarPuestos();
+      break;
+    case "cantHoras":
+      puesto.cantHoras = Number(control.value) || 0;
+      actualizarResumenPuesto(puesto);
+      break;
+    case "zona":
+      puesto.zonaPct = Number(control.value) || 0;
+      actualizarResumenPuesto(puesto);
+      break;
+    case "presencialidad":
+      puesto.presencialidad = control.value === "1";
+      break;
   }
-  if (!incluirSAC) { resultados.aguinaldoBruto = 0 }
 
-  // 1. DICCIONARIO DE DATOS: Preparamos todas las posibles porciones de la torta
-  // Agrupamos en tonos de VERDE (Remunerativo) y AZUL/VIOLETA (No Remunerativo)
-  const conceptos = [
-    // --- REMUNERATIVOS ---
-    { etiqueta: 'Básico', valor: resultados.basico ?? 0, color: '#046205' },
-    { etiqueta: 'Zona', valor: resultados.pagoDeZona ?? 0, color: '#05ff04' },
-    { etiqueta: 'Antigüedad', valor: resultados.pagoAntiguedad ?? 0, color: '#28a745' },
-    { etiqueta: 'Adicional Cargo', valor: resultados.adicionalXCargo ?? 0, color: '#a3d139' },
-    { etiqueta: 'Comp. Remunerativo', valor: resultados.complementoRemunerativo ?? 0, color: '#1fde4c' },
-    { etiqueta: 'Enseñanza en Aula', valor: resultados.enseñanzaEnAula ?? 0, color: '#198754' },
-    { etiqueta: 'Aguinaldo Bruto', valor: resultados.aguinaldoBruto ?? 0, color: '#198754' },
+  ocultarResultados();
+}
 
-    // --- NO REMUNERATIVOS ---
-    { etiqueta: 'Comp. No Remunerativo', valor: resultados.complementoNoRemunerativo ?? 0, color: '#0dcaf0' },
-    { etiqueta: 'Suma No Remunerativa', valor: resultados.pagoSumaNoRemunerativa ?? 0, color: '#0d6efd' },
-    { etiqueta: 'Incentivo Docente', valor: resultados.pagoIncentivoDocente ?? 0, color: '#a27ae3' },
-    // { etiqueta: 'Asig. por Hijxs', valor: resultados.asignacionXHijxs ?? 0, color: '#e83e8c' },
-    { etiqueta: 'Bono Extraordinario', valor: resultados.bonoExtraordinario ?? 0, color: '#6f42c1' }
+function manejarClick(evento: Event): void {
+  const boton = (evento.target as HTMLElement).closest("button[data-accion='quitar']");
+  if (!boton) return;
+  quitarPuesto(Number((boton as HTMLElement).dataset.puesto));
+}
+
+// ---------------------------------------------------------------------------
+// Dibujo de las tarjetas de cargo
+// ---------------------------------------------------------------------------
+
+function renderizarPuestos(): void {
+  const contenedor = document.getElementById("contenedorPuestos");
+  if (!contenedor) return;
+  const puedeQuitar = puestos.length > 1;
+  contenedor.innerHTML = puestos
+    .map((puesto, indice) => htmlPuesto(puesto, indice, puedeQuitar, CATALOGO))
+    .join("");
+}
+
+function actualizarResumenPuesto(puesto: PuestoFormulario): void {
+  const resumen = document.querySelector(`[data-resumen="${puesto.id}"]`);
+  if (resumen) resumen.textContent = resumenPuesto(puesto, CATALOGO);
+}
+
+// ---------------------------------------------------------------------------
+// Cálculo
+// ---------------------------------------------------------------------------
+
+/**
+ * Lee el mes elegido, calcula todos los puestos y muestra el recibo consolidado.
+ * La cantidad de horas se valida acá y no en el medio del cálculo.
+ */
+export function calcularYMostrar(): void {
+  const selectMes = document.getElementById("mesCalculo") as HTMLSelectElement | null;
+  if (!selectMes) return;
+
+  const elegido = selectMes.value;
+  const incluirSAC = elegido.includes("-SAC");
+  const periodo = elegido.replace("-SAC", "");
+
+  const problema = validarPuestos();
+  if (problema) {
+    alert(problema);
+    return;
+  }
+
+  const resultado = calcularPluriempleo(
+    puestos.map(({ tipo, cantHoras, zonaPct, presencialidad }) => ({
+      tipo,
+      cantHoras,
+      zonaPct,
+      presencialidad,
+    })),
+    configuracionesDelMes(periodo),
+    { antiguedadPct: porcentajeAntiguedad(antiguedadIndice), afiliacion, incluirSAC }
+  );
+
+  mostrarResultados(resultado, incluirSAC);
+
+  const seccion = document.getElementById("resultados");
+  if (seccion) seccion.style.display = "block";
+  document.getElementById("botonGraficos")?.classList.remove("oculto");
+
+  setTimeout(() => {
+    seccion?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 250);
+}
+
+/** Devuelve el mensaje de error, o null si está todo bien. */
+function validarPuestos(): string | null {
+  if (puestos.length === 0) return "Cargá al menos un cargo antes de calcular.";
+
+  for (const [indice, puesto] of puestos.entries()) {
+    if (definicionDe(puesto.tipo).usaHoras) {
+      if (!Number.isFinite(puesto.cantHoras) || puesto.cantHoras <= 0) {
+        return `En el cargo ${indice + 1} ingresá una cantidad válida de horas.`;
+      }
+    }
+  }
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// Resultados
+// ---------------------------------------------------------------------------
+
+export function aPesos(valor: number): string {
+  return "$ " + valor.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function setTexto(id: string, valor: number): void {
+  const elemento = document.getElementById(id);
+  if (elemento) elemento.textContent = aPesos(valor);
+}
+
+/** Muestra la fila solo si el concepto tiene importe (si no, no ensucia la tabla). */
+function mostrarFilaSi(id: string, valor: number): void {
+  const fila = document.getElementById(id);
+  if (fila) fila.style.display = valor > 0 ? "table-row" : "none";
+}
+
+function mostrarResultados(resultado: ResultadoPluriempleo, incluirSAC: boolean): void {
+  const conceptos = resultado.conceptos;
+  const descuentos = resultado.descuentos;
+  const aguinaldo = resultado.aguinaldo;
+
+  setTexto("resultadoSueldo", conceptos.basico);
+  setTexto("pagoZona", conceptos.pagoDeZona);
+  setTexto("pagoAntiguedad", conceptos.pagoAntiguedad);
+  setTexto("complementoRemunerativo", conceptos.complementoRemunerativo);
+  setTexto("adicionalPorCargo", conceptos.adicionalPorCargo);
+  setTexto("adicionalPorDedicacion", conceptos.adicionalPorDedicacion);
+  setTexto("enseñanzaEnAula", conceptos.enseñanzaEnAula);
+  setTexto("complementoNoRemunerativo", conceptos.complementoNoRemunerativo);
+  setTexto("sumaNoRemunerativa", conceptos.sumaNoRemunerativa);
+  setTexto("incentivoDocente", conceptos.incentivoDocente);
+  setTexto("bonoExtraordinario", conceptos.bonoExtraordinario);
+  setTexto("totalCAportes", conceptos.totalRemunerativo);
+  setTexto("totalSAportes", conceptos.totalNoRemunerativo);
+  setTexto("totalBruto", conceptos.totalBruto);
+
+  setTexto("aporteJubilatorio", descuentos.jubilacion);
+  setTexto("aporteJubilatorioEsp", descuentos.jubilacionRegEsp);
+  setTexto("obraSocial", descuentos.obraSocial);
+  setTexto("descuentoSindical", descuentos.sindical);
+  setTexto("seguroObligatorio", descuentos.seguroObligatorio);
+  setTexto("seguroSocial", descuentos.seguroSocial);
+  setTexto("totalDescuentosTexto", descuentos.total);
+  setTexto("totalDescuentos", descuentos.total);
+
+  setTexto("sacBruto", aguinaldo.bruto);
+  setTexto("sacDescuentos", aguinaldo.descuentos);
+  setTexto("sacNeto", aguinaldo.neto);
+
+  setTexto("totalBolsillo", resultado.totalBolsillo);
+
+  mostrarFilaSi("filaSueldoBasico", conceptos.basico);
+  mostrarFilaSi("filaZona", conceptos.pagoDeZona);
+  mostrarFilaSi("filaAntiguedad", conceptos.pagoAntiguedad);
+  mostrarFilaSi("filaComplementoRem", conceptos.complementoRemunerativo);
+  mostrarFilaSi("filaAdicionalCargo", conceptos.adicionalPorCargo);
+  mostrarFilaSi("filaAdicionalPorDedicacion", conceptos.adicionalPorDedicacion);
+  mostrarFilaSi("filaEnseñanzaEnAula", conceptos.enseñanzaEnAula);
+  mostrarFilaSi("filaComplementoNoRem", conceptos.complementoNoRemunerativo);
+  mostrarFilaSi("filaSumaNoRem", conceptos.sumaNoRemunerativa);
+  mostrarFilaSi("filaIncentivoDocente", conceptos.incentivoDocente);
+  mostrarFilaSi("filaBonoExtraordinario", conceptos.bonoExtraordinario);
+  mostrarFilaSi("filaDescuentoSindical", descuentos.sindical);
+
+  const cantidad = document.getElementById("cantidadPuestos");
+  if (cantidad) {
+    cantidad.textContent =
+      resultado.puestos.length === 1
+        ? "1 cargo cargado"
+        : `${resultado.puestos.length} cargos cargados y sumados`;
+  }
+
+  renderizarDesglose(resultado);
+  dibujarGrafico(resultado, incluirSAC);
+}
+
+/** Tabla con lo que aporta cada cargo al total. */
+function renderizarDesglose(resultado: ResultadoPluriempleo): void {
+  const cuerpo = document.getElementById("cuerpoDesglose");
+  if (!cuerpo) return;
+
+  const filas = resultado.puestos.map((calculado, indice) => {
+    const definicion = definicionDe(calculado.puesto.tipo);
+    const horas = definicion.usaHoras ? String(calculado.puesto.cantHoras) : "—";
+    const zona = definicion.usaZona ? `${calculado.puesto.zonaPct}%` : "—";
+    return `
+      <tr>
+        <td>Cargo ${indice + 1}: ${definicion.etiqueta}</td>
+        <td>${horas}</td>
+        <td>${zona}</td>
+        <td>${aPesos(calculado.conceptos.totalRemunerativo)}</td>
+        <td>${aPesos(calculado.conceptos.totalNoRemunerativo)}</td>
+        <td>${aPesos(calculado.conceptos.totalBruto)}</td>
+      </tr>
+    `;
+  });
+
+  filas.push(`
+    <tr class="fila-subtotal">
+      <th>Total</th>
+      <th></th>
+      <th></th>
+      <th>${aPesos(resultado.conceptos.totalRemunerativo)}</th>
+      <th>${aPesos(resultado.conceptos.totalNoRemunerativo)}</th>
+      <th>${aPesos(resultado.conceptos.totalBruto)}</th>
+    </tr>
+  `);
+
+  cuerpo.innerHTML = filas.join("");
+}
+
+// ---------------------------------------------------------------------------
+// Gráfico
+// ---------------------------------------------------------------------------
+
+function dibujarGrafico(resultado: ResultadoPluriempleo, incluirSAC: boolean): void {
+  const lienzo = document.getElementById("miGrafico") as HTMLCanvasElement | null;
+  if (!lienzo || typeof Chart === "undefined") return;
+
+  if (miGraficoSueldo !== null) miGraficoSueldo.destroy();
+
+  const conceptos = resultado.conceptos;
+  const conceptosPosibles: { etiqueta: string; valor: number; color: string }[] = [
+    // Remunerativos (verdes)
+    { etiqueta: "Básico", valor: conceptos.basico, color: "#046205" },
+    { etiqueta: "Zona", valor: conceptos.pagoDeZona, color: "#05ff04" },
+    { etiqueta: "Antigüedad", valor: conceptos.pagoAntiguedad, color: "#28a745" },
+    {
+      etiqueta: "Adicional por cargo",
+      valor: conceptos.adicionalPorCargo + conceptos.adicionalPorDedicacion,
+      color: "#a3d139",
+    },
+    { etiqueta: "Comp. Remunerativo", valor: conceptos.complementoRemunerativo, color: "#1fde4c" },
+    { etiqueta: "Enseñanza en Aula", valor: conceptos.enseñanzaEnAula, color: "#198754" },
+    {
+      etiqueta: "Aguinaldo",
+      valor: incluirSAC ? resultado.aguinaldo.bruto : 0,
+      color: "#0f5132",
+    },
+    // No remunerativos (azules y violetas)
+    { etiqueta: "Comp. No Remunerativo", valor: conceptos.complementoNoRemunerativo, color: "#0dcaf0" },
+    { etiqueta: "Suma No Remunerativa", valor: conceptos.sumaNoRemunerativa, color: "#0d6efd" },
+    { etiqueta: "Incentivo Docente", valor: conceptos.incentivoDocente, color: "#a27ae3" },
+    { etiqueta: "Bono Extraordinario", valor: conceptos.bonoExtraordinario, color: "#6f42c1" },
   ];
 
-  // 2. EL FILTRO MÁGICO: Nos quedamos SOLO con los conceptos que sean mayores a $0
-  const conceptosActivos = conceptos.filter(item => item.valor > 0);
+  const activos = conceptosPosibles.filter((concepto) => concepto.valor > 0);
 
-  // 3. SEPARAMOS LOS DATOS: Chart.js necesita listas separadas para textos, números y colores
-  const etiquetasGrafico = conceptosActivos.map(item => item.etiqueta);
-  const valoresGrafico = conceptosActivos.map(item => item.valor);
-  const coloresGrafico = conceptosActivos.map(item => item.color);
-
-  // 4. ¡DIBUJAMOS EL GRÁFICO!
   miGraficoSueldo = new Chart(lienzo, {
-    type: 'doughnut',
+    type: "doughnut",
     data: {
-      labels: etiquetasGrafico, // Usamos la lista filtrada
-      datasets: [{
-        data: valoresGrafico,   // Usamos la lista filtrada
-        backgroundColor: coloresGrafico, // Usamos la lista filtrada
-        borderColor: '#ffffff',
-        borderWidth: 2
-      }]
+      labels: activos.map((concepto) => concepto.etiqueta),
+      datasets: [
+        {
+          data: activos.map((concepto) => concepto.valor),
+          backgroundColor: activos.map((concepto) => concepto.color),
+          borderColor: "#ffffff",
+          borderWidth: 2,
+        },
+      ],
     },
     options: {
       responsive: true,
       plugins: {
-        legend: {
-          position: 'bottom',
-          labels: {
-            color: '#333',
-            font: { size: 11 } // Achicamos un poco la letra para que entren todas las etiquetas
-          }
-        },
+        legend: { position: "bottom", labels: { color: "#333", font: { size: 11 } } },
         tooltip: {
           callbacks: {
-            label: function (context: any) {
-              const etiqueta = context.label || '';
-              const valorEnPesos = context.raw;
-              // Calculamos el porcentaje sobre el total bruto
+            label: (context: any) => {
+              const etiqueta = context.label || "";
+              const valor = context.raw as number;
               const total = context.chart._metasets[context.datasetIndex].total;
-              const porcentaje = ((valorEnPesos / total) * 100).toFixed(1);
-
-              const valorFormateado = valorEnPesos.toLocaleString('es-AR', { minimumFractionDigits: 2 });
-              return `${etiqueta}: $${valorFormateado} (${porcentaje}%)`;
-            }
-          }
-        }
-      }
-    }
+              const porcentaje = ((valor / total) * 100).toFixed(1);
+              return `${etiqueta}: ${aPesos(valor)} (${porcentaje}%)`;
+            },
+          },
+        },
+      },
+    },
   });
 }
 
-// Mostrar u ocultar filas de la tabla de resultados
-function mostrarFilas(filasMostrar: string[] = [], filasOcultar: string[] = []): void {
-  // Mostrar las filas indicadas
-  filasMostrar.forEach(id => {
-    const fila = document.getElementById(id);
-    if (fila) fila.style.display = "table-row";
-  });
-  // Ocultar las filas indicadas
-  filasOcultar.forEach(id => {
-    const fila = document.getElementById(id);
-    if (fila) fila.style.display = "none";
-  });
+// ---------------------------------------------------------------------------
+// Comparador de inflación
+// ---------------------------------------------------------------------------
+
+export function compararPeriodo(mesInicio: string, mesFin: string) {
+  // Validación de fechas
+  if (mesInicio === mesFin) {
+    alert("Para calcular una variación, el mes de inicio y el mes final deben ser diferentes.");
+    return;
+  }
+  if (mesInicio > mesFin) {
+    alert("El mes de inicio debe ser anterior al mes final");
+    return;
+  }
+  if (mesInicio < "2023-06") {
+    alert("Existen datos a partir de Junio de 2023. Seleccione una fecha posterior a este periodo.");
+    return;
+  }
+  if (mesFin > "2026-08") {
+    alert("Existen datos hasta de Agosto de 2026. Seleccione una fecha anterior a este periodo.");
+    return;
+  }
+
+  const inflacionPorcentual = calcularInflacionAcumulada(HISTORIAL_INFLACION, mesInicio, mesFin);
+  const datosSalariales = calcularVariacionSalarial(HISTORIAL_BASICO, mesInicio, mesFin);
+
+  return {
+    inflacionPorcentual,
+    variacionSalarial: datosSalariales.diferenciaPorcentual,
+    diferenciaAbsoluta: datosSalariales.diferenciaAbsoluta,
+    basicoInicio: datosSalariales.basicoInicio,
+    basicoFin: datosSalariales.basicoFin,
+  };
 }
 
+// ---------------------------------------------------------------------------
 // Mail de contacto
+// ---------------------------------------------------------------------------
+
 const btnEnviarRecibo = document.getElementById("btnEnviarRecibo") as HTMLButtonElement | null;
 
 if (btnEnviarRecibo) {
   btnEnviarRecibo.addEventListener("click", () => {
-    // 1. Rompemos tu correo en dos partes para engañar a los bots de spam
-    // Ejemplo: si tu correo es "calculadora.docente@gmail.com"
+    // El correo se arma en dos partes para engañar a los bots de spam.
     const usuario = "gonzafokito";
     const dominio = "gmail.com";
-
-    // 2. Pre-armamos el asunto del correo para facilitarle la vida al docente
     const asunto = "Consulta o aporte para la calculadora de sueldos docentes";
     const cuerpo = " ";
-
-    // 3. Juntamos las piezas
-    const correoArmado = `${usuario}@${dominio}`;
-
-    // 4. Activamos la apertura del correo en el dispositivo del usuario
-    window.location.href = `mailto:${correoArmado}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+    window.location.href = `mailto:${usuario}@${dominio}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
   });
 }
-
-// Funciones comparador de inflacion
-
-export function compararPeriodo(mesInicio: string, mesFin: string) {
-    console.log("Entró en la función compararPeriodo");
-
-    // Validación de fechas
-    if (mesInicio === mesFin) {
-        alert("Para calcular una variación, el mes de inicio y el mes final deben ser diferentes.");
-        return;
-    }
-    if (mesInicio > mesFin) {
-        alert("El mes de inicio debe ser anterior al mes final");
-        return;
-    }
-    if (mesInicio < "2023-06") {
-        alert("Existen datos a partir de Junio de 2023. Seleccione una fecha posterior a este periodo.");
-        return;
-    }
-    if (mesFin > "2026-08") {
-        alert("Existen datos hasta de Agosto de 2026. Seleccione una fecha anterior a este periodo.");
-        return;
-    }
-
-    // Llamamos a la función para calcular la inflación acumulada 
-    const inflacionPorcentual = calcularInflacionAcumulada(HISTORIAL_INFLACION, mesInicio, mesFin);
-
-    // Llamamos a la función para calcular la variación salarial
-    const datosSalariales = calcularVariacionSalarial(HISTORIAL_BASICO, mesInicio, mesFin);
-
-    // Empaquetamos todo y lo devolvemos
-    return {
-        inflacionPorcentual,
-        variacionSalarial: datosSalariales.diferenciaPorcentual, // 
-        diferenciaAbsoluta: datosSalariales.diferenciaAbsoluta,  // 
-        basicoInicio: datosSalariales.basicoInicio,
-        basicoFin: datosSalariales.basicoFin
-    };
-}
-
