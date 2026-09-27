@@ -309,6 +309,7 @@ function mostrarResultados(resultado: ResultadoPluriempleo, incluirSAC: boolean)
   setTexto("descuentoSindical", descuentos.sindical);
   setTexto("seguroObligatorio", descuentos.seguroObligatorio);
   setTexto("seguroSocial", descuentos.seguroSocial);
+  setTexto("seguroMutual", descuentos.seguroMutual);
   setTexto("totalDescuentosTexto", descuentos.total);
   setTexto("totalDescuentos", descuentos.total);
 

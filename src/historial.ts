@@ -85,8 +85,10 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
             noRemunerativo: 1.33,    // 133% 
             adicionalCargo: 0.33
         },
-        fonid: 28700, // Por hs cátedra
-        sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+        // El recibo de enero 2025 muestra 5.740 por 3 horas cátedra, o sea que
+        // este valor ya venía expresado por hora (28.700 / 15).
+        fonid: 1913.3333, // Por hs cátedra
+        sumaNoRemunerativa: 4667.48333, //Por hs cátedra
         bonoExtraordinario: 0 // No aplica
     },
     {
@@ -99,7 +101,7 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
             adicionalCargo: 0.33
         },
         fonid: 1913.3333, // Por hs cátedra
-        sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+        sumaNoRemunerativa: 4667.48333, //Por hs cátedra
         bonoExtraordinario: 0 // No aplica
     },
     {
@@ -112,7 +114,7 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
             adicionalCargo: 0.33
         },
         fonid: 1913.3333, // Por hs cátedra
-        sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+        sumaNoRemunerativa: 4667.48333, //Por hs cátedra
         bonoExtraordinario: 0 // No aplica
     },
     {
@@ -125,7 +127,7 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
             adicionalCargo: 0.33
         },
         fonid: 1913.3333, // Por hs cátedra
-        sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+        sumaNoRemunerativa: 4667.48333, //Por hs cátedra
         bonoExtraordinario: 0 // No aplica
     },
     {
@@ -138,7 +140,7 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
             adicionalCargo: 0.33
         },
         fonid: 1913.3333, // Por hs cátedra
-        sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+        sumaNoRemunerativa: 4667.48333, //Por hs cátedra
         bonoExtraordinario: 0 // No aplica
     },
     {
@@ -151,7 +153,7 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
             adicionalCargo: 0.33
         },
         fonid: 1913.3333, // Por hs cátedra
-        sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+        sumaNoRemunerativa: 4667.48333, //Por hs cátedra
         bonoExtraordinario: 0 // No aplica
     },
     {
@@ -164,7 +166,7 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
             adicionalCargo: 0.33
         },
         fonid: 1913.3333, // Por hs cátedra
-        sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+        sumaNoRemunerativa: 4667.48333, //Por hs cátedra
         bonoExtraordinario: 0 //Por hs cátedra - suma extraordinaria por única vez
     },
     {
@@ -177,7 +179,7 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
             adicionalCargo: 0.33
         },
         fonid: 1913.3333, // Por hs cátedra
-        sumaNoRemunerativa: 4667.33333, //Por hs cátedra
+        sumaNoRemunerativa: 4667.48333, //Por hs cátedra
         bonoExtraordinario: 20000 //Por hs cátedra - suma extraordinaria por única vez
     },
     
@@ -191,7 +193,7 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
         adicionalCargo: 0.33
     },
     fonid: 1913.3333,
-    sumaNoRemunerativa: 4667.33333,
+    sumaNoRemunerativa: 4667.48333,
     bonoExtraordinario: 0 
 },
 {
@@ -204,7 +206,7 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
         adicionalCargo: 0.33
     },
     fonid: 1913.3333,
-    sumaNoRemunerativa: 4667.33333,
+    sumaNoRemunerativa: 4667.48333,
     bonoExtraordinario: 0 
 },
 {
@@ -217,12 +219,16 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
         adicionalCargo: 0.33
     },
     fonid: 1913.3333,
-    sumaNoRemunerativa: 4667.33333,
+    sumaNoRemunerativa: 4667.48333,
     bonoExtraordinario: 0 
 },
 {
     fecha: "2026-09",
-    descripcion: "Actualización Septiembre 2026",
+    // Quinto tramo del 5% sobre los haberes de enero 2026: 15.421,30 x 1,25.
+    // El Decreto N° 8583-MHIP-2026 (25/07/2026) ponía este tramo en octubre,
+    // pero un decreto posterior movió los tramos de octubre y noviembre a
+    // septiembre y octubre, que es como está cargado acá.
+    descripcion: "Actualización Septiembre 2026 (5% de los haberes de enero)",
     basicoCargo_Hora: 19276.625, 
     porcentajes: {
         remunerativo: 1.40, 
@@ -230,12 +236,13 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
         adicionalCargo: 0.33
     },
     fonid: 1913.3333,
-    sumaNoRemunerativa: 4667.33333,
+    sumaNoRemunerativa: 4667.48333,
     bonoExtraordinario: 0 
 },
 {
     fecha: "2026-10",
-    descripcion: "Actualización Octubre 2026",
+    // Sexto tramo del 5% sobre los haberes de enero 2026: 15.421,30 x 1,30.
+    descripcion: "Actualización Octubre 2026 (5% de los haberes de enero)",
     basicoCargo_Hora: 20047.69, 
     porcentajes: {
         remunerativo: 1.40, 
@@ -243,7 +250,7 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
         adicionalCargo: 0.33
     },
     fonid: 1913.3333,
-    sumaNoRemunerativa: 4667.33333,
+    sumaNoRemunerativa: 4667.48333,
     bonoExtraordinario: 0 
 }
 ];
@@ -373,7 +380,8 @@ export const HISTORIAL_IFDC: ConfiguracionSalarial2[] = [
 },
 {
      fecha: "2026-09", 
-    descripcion: "Actualización Septiembre 2026",
+    // Igual que agosto: el Decreto N° 8583-MHIP-2026 no puso tramo en septiembre.
+    descripcion: "Actualización Septiembre 2026 (5% de los haberes de enero)",
     basicoCargo_Hora: 700048.41, 
     porcentajes: {
         remunerativo: 0.70, 
@@ -387,7 +395,7 @@ export const HISTORIAL_IFDC: ConfiguracionSalarial2[] = [
 },
 {
      fecha: "2026-10", 
-   descripcion: "Actualización Octubre 2026",
+   descripcion: "Actualización Octubre 2026 (5% de los haberes de enero)",
     basicoCargo_Hora: 728050.34, 
     porcentajes: {
         remunerativo: 0.70, 
