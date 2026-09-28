@@ -62,10 +62,24 @@ describe("tarjeta de un cargo", () => {
     assert.ok(!html.includes('data-campo="presencialidad"'));
   });
 
-  test("primaria e inicial muestran el ítem de presentismo", () => {
-    for (const tipo of ["maestroGrado", "maestroCelador", "maestroJardin"] as const) {
+  test("primaria e inicial muestran el ítem de presentismo donde corresponde", () => {
+    // El maestro celador no cobra el ítem (no figura en el Decreto 3864-MHIP-2026),
+    // así que su tarjeta no tiene el selector.
+    for (const tipo of ["maestroGrado", "maestroJardin"] as const) {
       const html = tarjeta({ tipo, nivel: tipo === "maestroJardin" ? "inicial" : "primario" });
       assert.ok(html.includes('data-campo="presencialidad"'), `${tipo} no muestra el presentismo`);
+    }
+    const celador = tarjeta({ tipo: "maestroCelador", nivel: "primario" });
+    assert.ok(!celador.includes('data-campo="presencialidad"'), "el celador no debería tener presentismo");
+  });
+
+  test("el asesor pedagógico se ofrece en primaria y en secundaria, sin horas ni presentismo", () => {
+    for (const nivel of ["primario", "secundario"] as const) {
+      const html = tarjeta({ nivel, tipo: "asesorPedagogico" });
+      assert.ok(html.includes('value="asesorPedagogico"'), `falta el asesor en ${nivel}`);
+      assert.ok(!html.includes('data-campo="cantHoras"'));
+      assert.ok(!html.includes('data-campo="presencialidad"'));
+      assert.ok(html.includes('data-campo="zona"'));
     }
   });
 

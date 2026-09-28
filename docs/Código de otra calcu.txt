@@ -1,0 +1,3275 @@
+/**
+ * Calculadora Salarial Docente & Auditoría Previsional / Salarial
+ * Provincia de San Luis • Ley XV-0387-2004 y Ley 24.016
+ * Estudio Jurídico Sebastián Careaga Quiroga & Asociados
+ */
+
+// 1. BASE DE ESTABLECIMIENTOS EDUCATIVOS Y ZONAS DE SAN LUIS
+const ESTABLECIMIENTOS_SL = [
+    // --- VILLA MERCEDES: NIVEL SUPERIOR, TERCIARIO Y UNIVERSITARIO (10% ZONA) ---
+    { 
+        id: "ifdc-vm",
+        numero: "",
+        nombre: "IFDC Villa Mercedes (Instituto de Formación Docente Continua)", 
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 10, 
+        tipo: "Urbana Superior (10%)", 
+        nivel: "superior", 
+        regimen: "Ley XV-0555-2007 Art. 6" 
+    },
+    { 
+        id: "arte-vm",
+        numero: "",
+        nombre: "Escuela de Arte Nicolás Antonio de San Luis (Nivel Terciario)", 
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 10, 
+        tipo: "Urbana Superior (10%)", 
+        nivel: "superior", 
+        regimen: "Horas Terciarias" 
+    },
+    { 
+        id: "carmen-sup-vm",
+        numero: "",
+        nombre: "Instituto Superior de Formación Docente Nuestra Señora del Carmen", 
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 10, 
+        tipo: "Urbana Superior (10%)", 
+        nivel: "superior", 
+        regimen: "Estatuto Docente SL" 
+    },
+    { 
+        id: "buenaventura-sup-vm",
+        numero: "",
+        nombre: "Instituto Superior San Buenaventura", 
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 10, 
+        tipo: "Urbana Superior (10%)", 
+        nivel: "superior", 
+        regimen: "Estatuto Docente SL" 
+    },
+    { 
+        id: "upro-vm",
+        numero: "",
+        nombre: "UPrO - Universidad Provincial de Oficios Eva Perón", 
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 10, 
+        tipo: "Urbana Técnica Superior (10%)", 
+        nivel: "superior", 
+        regimen: "Docente / Instructores Técnicos" 
+    },
+    { 
+        id: "ica-sup-vm",
+        numero: "",
+        nombre: "Instituto Superior Cultural Argentino (ICA Terciario)", 
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 10, 
+        tipo: "Urbana Superior (10%)", 
+        nivel: "superior", 
+        regimen: "Estatuto Docente SL" 
+    },
+    { 
+        id: "sagrado-sup-vm",
+        numero: "",
+        nombre: "Instituto Superior Sagrado Corazón", 
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 10, 
+        tipo: "Urbana Superior (10%)", 
+        nivel: "superior", 
+        regimen: "Estatuto Docente SL" 
+    },
+
+    // --- VILLA MERCEDES: ESCUELAS TÉCNICAS Y ARTÍSTICAS ---
+    {
+        id: "epet3-vm",
+        numero: "3",
+        nombre: "Escuela Técnica N° 3 Eva Duarte de Perón",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana Técnica (0%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "epet14-vm",
+        numero: "14",
+        nombre: "Escuela Técnica N° 14 Dr. Luis Ángel Luco (Agrotécnica)",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 20,
+        tipo: "Agrotécnica Suburbana (20%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "epet15-vm",
+        numero: "15",
+        nombre: "Escuela Técnica N° 15 Ing. Agustín Mercau",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana Técnica (0%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "epet17-vm",
+        numero: "17",
+        nombre: "Escuela Técnica N° 17 Vg. de las Mercedes",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana Técnica (0%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "epet18-vm",
+        numero: "18",
+        nombre: "Escuela Técnica N° 18 Nicolás Antonio de San Luis (Secundario)",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana Artística (0%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "epet19-vm",
+        numero: "19",
+        nombre: "Escuela Técnica N° 19 Bernardino Rivadavia",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana Técnica (0%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "epet20-vm",
+        numero: "20",
+        nombre: "Escuela Técnica N° 20 Antonio Berni (Informática)",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana Técnica (0%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+
+    // --- VILLA MERCEDES: CENTROS EDUCATIVOS Y COLEGIOS ---
+    {
+        id: "col2-vm",
+        numero: "2",
+        nombre: "Colegio N° 2 Juan Esteban Pedernera",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "col11-vm",
+        numero: "11",
+        nombre: "Colegio N° 11 Benito Juárez",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 20,
+        tipo: "Suburbana (20%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "ce9-vm",
+        numero: "9",
+        nombre: "Centro Educativo N° 9 Dr. Juan Llerena",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "ce10-vm",
+        numero: "10",
+        nombre: "Centro Educativo N° 10 Ramiro Podetti",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "ce20-vm",
+        numero: "20",
+        nombre: "Centro Educativo N° 20 Juan W. Gez",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 20,
+        tipo: "Suburbana (20%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "eped2-vm",
+        numero: "2",
+        nombre: "EPED N° 2 Vicente Lucero (La Ribera)",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+
+    // --- VILLA MERCEDES: ESCUELAS PRIMARIAS Y SECUNDARIAS ESTATALES ---
+    {
+        id: "esc30-vm",
+        numero: "30",
+        nombre: "Escuela N° 30 General Pedernera",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc31-vm",
+        numero: "31",
+        nombre: "Escuela N° 31 Mariano Moreno",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc33-vm",
+        numero: "33",
+        nombre: "Escuela N° 33 Vicente Dupuy",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc40-vm",
+        numero: "40",
+        nombre: "Escuela N° 40 Dr. Ricardo Rojas",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 20,
+        tipo: "Suburbana (20%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc43-vm",
+        numero: "43",
+        nombre: "Escuela N° 43 Dr. Tomás Jofré",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc46-vm",
+        numero: "46",
+        nombre: "Escuela N° 46 Gob. León Guillet",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc69-vm",
+        numero: "69",
+        nombre: "Escuela N° 69 Maestra Olga Esther Sarden",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc106-vm",
+        numero: "106",
+        nombre: "Escuela N° 106 Prof. Tomás Ferrari",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc147-vm",
+        numero: "147",
+        nombre: "Escuela N° 147 Provincia de Mendoza",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc148-vm",
+        numero: "148",
+        nombre: "Escuela N° 148 Provincia de Río Negro",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc150-vm",
+        numero: "150",
+        nombre: "Escuela N° 150 Provincia de Santa Fe",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc152-vm",
+        numero: "152",
+        nombre: "Escuela N° 152 Alas Argentinas",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc240-vm",
+        numero: "240",
+        nombre: "Escuela N° 240 Provincia de Corrientes",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc371-vm",
+        numero: "371",
+        nombre: "Escuela N° 371 Juan Bautista Alberdi",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc374-vm",
+        numero: "374",
+        nombre: "Escuela N° 374 Gobierno de San Luis",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc388-vm",
+        numero: "388",
+        nombre: "Escuela N° 388 Juan W. Gez",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 20,
+        tipo: "Suburbana (20%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc431-vm",
+        numero: "431",
+        nombre: "Escuela N° 431 Prof. Ángela Nelly Chenau de Vecino",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc444-vm",
+        numero: "444",
+        nombre: "Escuela N° 444 María Eva Duarte de Perón",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc445-vm",
+        numero: "445",
+        nombre: "Escuela N° 445 Río Quinto",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc446-vm",
+        numero: "446",
+        nombre: "Escuela N° 446 Mercedes P. de Martín",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc-gandhi-vm",
+        numero: "",
+        nombre: "Escuela Pública Digital Mahatma Gandhi",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Urbana Digital (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+
+    // --- VILLA MERCEDES: ESCUELAS GENERATIVAS ---
+    {
+        id: "gen-felix-vm",
+        numero: "",
+        nombre: "Escuela Generativa Félix Máximo María",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Generativa Urbana (0%)",
+        nivel: "secundario",
+        regimen: "Docente / Innovación"
+    },
+    {
+        id: "gen-recrear-vm",
+        numero: "",
+        nombre: "Escuela Generativa Estación Recrear",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Generativa Urbana (0%)",
+        nivel: "primario",
+        regimen: "Docente / Innovación"
+    },
+    {
+        id: "gen-genz-vm",
+        numero: "",
+        nombre: "Escuela Generativa Gen Z",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Generativa Urbana (0%)",
+        nivel: "secundario",
+        regimen: "Docente / Innovación"
+    },
+    {
+        id: "gen-gea-vm",
+        numero: "",
+        nombre: "Escuela Generativa GEA",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Generativa Urbana (0%)",
+        nivel: "primario",
+        regimen: "Docente / Innovación"
+    },
+    {
+        id: "gen-alberdi-vm",
+        numero: "",
+        nombre: "Escuela Generativa Alberdi Rock",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Generativa Urbana (0%)",
+        nivel: "secundario",
+        regimen: "Docente / Innovación"
+    },
+    {
+        id: "gen-newbery-vm",
+        numero: "",
+        nombre: "Escuela Generativa Club Jorge Newbery",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Generativa Urbana (0%)",
+        nivel: "primario",
+        regimen: "Docente / Innovación"
+    },
+    {
+        id: "gen-pringles-vm",
+        numero: "",
+        nombre: "Escuela Generativa Club Pringles",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Generativa Urbana (0%)",
+        nivel: "primario",
+        regimen: "Docente / Innovación"
+    },
+    {
+        id: "gen-pedrera-vm",
+        numero: "",
+        nombre: "Escuela Generativa La Pedrera",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Generativa Urbana (0%)",
+        nivel: "secundario",
+        regimen: "Docente / Innovación"
+    },
+
+    // --- VILLA MERCEDES: COLEGIOS E INSTITUTOS PRIVADOS SUBVENCIONADOS ---
+    {
+        id: "sagrado-vm",
+        numero: "",
+        nombre: "Instituto Sagrado Corazón (Inicial, Primaria, Secundaria)",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Privada Subvencionada (0%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente SL"
+    },
+    {
+        id: "cabrini-vm",
+        numero: "",
+        nombre: "Colegio Madre Cabrini",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Privada Subvencionada (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente SL"
+    },
+    {
+        id: "carmen-col-vm",
+        numero: "",
+        nombre: "Instituto Nuestra Señora del Carmen (Primaria y Secundaria)",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Privada Subvencionada (0%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente SL"
+    },
+    {
+        id: "buenaventura-col-vm",
+        numero: "",
+        nombre: "Instituto San Buenaventura (Primaria y Secundaria)",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Privada Subvencionada (0%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente SL"
+    },
+    {
+        id: "ica-col-vm",
+        numero: "",
+        nombre: "Instituto Cultural Argentino - ICA (Primaria y Secundaria)",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Privada Subvencionada (0%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente SL"
+    },
+    {
+        id: "sanmarcos-vm",
+        numero: "",
+        nombre: "Instituto Modelo Bilingüe San Marcos",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Privada Subvencionada (0%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente SL"
+    },
+    {
+        id: "sanvalentin-vm",
+        numero: "",
+        nombre: "Instituto San Valentín",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Privada Subvencionada (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente SL"
+    },
+    {
+        id: "santamaria-vm",
+        numero: "",
+        nombre: "Colegio Santa María",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Privada Subvencionada (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente SL"
+    },
+    {
+        id: "donbosco-vm",
+        numero: "",
+        nombre: "Instituto San Juan Bosco / Don Bosco",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Privada Subvencionada (0%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente SL"
+    },
+    {
+        id: "porres-vm",
+        numero: "",
+        nombre: "Instituto San Martín de Porres",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Privada Subvencionada (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente SL"
+    },
+
+    // --- VILLA MERCEDES: ESPECIAL, ADULTOS, CENS Y NIVEL INICIAL ---
+    {
+        id: "esp6-vm",
+        numero: "6",
+        nombre: "Escuela Especial N° 6 Dra. María Montessori",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Especial Urbana (0%)",
+        nivel: "especial",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esp7-vm",
+        numero: "7",
+        nombre: "Escuela Especial N° 7 APADIS / Decroly",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Especial Urbana (0%)",
+        nivel: "especial",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "cens1-vm",
+        numero: "1",
+        nombre: "CENS N° 1 Villa Mercedes (Nivel Adultos)",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Adultos Urbana (0%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "cens2-vm",
+        numero: "2",
+        nombre: "CENS N° 2 Villa Mercedes (Nivel Adultos)",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Adultos Urbana (0%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "eni1-vm",
+        numero: "1",
+        nombre: "Escuela de Nivel Inicial N° 1 Burbujas",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Inicial Urbana (0%)",
+        nivel: "inicial",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "eni7-vm",
+        numero: "7",
+        nombre: "Escuela de Nivel Inicial N° 7 Tutú Marambá",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Inicial Urbana (0%)",
+        nivel: "inicial",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "eni12-vm",
+        numero: "12",
+        nombre: "Escuela de Nivel Inicial N° 12 Semillitas",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Inicial Urbana (0%)",
+        nivel: "inicial",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "eni20-vm",
+        numero: "20",
+        nombre: "Escuela de Nivel Inicial N° 20",
+        localidad: "Villa Mercedes",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 0,
+        tipo: "Inicial Urbana (0%)",
+        nivel: "inicial",
+        regimen: "Estatuto Docente"
+    },
+
+    // --- DPTO. GENERAL PEDERNERA / ALREDEDORES DE VILLA MERCEDES ---
+    {
+        id: "esc272-jd",
+        numero: "272",
+        nombre: "Escuela N° 272 Domingo Faustino Sarmiento (Justo Daract)",
+        localidad: "Justo Daract",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 20,
+        tipo: "Suburbana (20%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "epet21-jd",
+        numero: "21",
+        nombre: "Escuela Técnica N° 21 María Auxiliadora (Justo Daract)",
+        localidad: "Justo Daract",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 20,
+        tipo: "Técnica Suburbana (20%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc242-jj",
+        numero: "242",
+        nombre: "Escuela N° 242 Pablo Pizzurno (Juan Jorba)",
+        localidad: "Juan Jorba",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 40,
+        tipo: "Rural Desfavorable (40%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc149-lav",
+        numero: "149",
+        nombre: "Escuela N° 149 Manuel Láinez (Lavaisse)",
+        localidad: "Lavaisse",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 40,
+        tipo: "Rural Desfavorable (40%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc151-morro",
+        numero: "151",
+        nombre: "Escuela N° 151 Asamblea del Año XIII (San José del Morro)",
+        localidad: "San José del Morro",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 40,
+        tipo: "Rural Desfavorable (40%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc153-sal",
+        numero: "153",
+        nombre: "Escuela N° 153 Provincia de Santa Cruz (Saladillo)",
+        localidad: "Saladillo",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 40,
+        tipo: "Rural Desfavorable (40%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc258-chaj",
+        numero: "258",
+        nombre: "Escuela N° 258 Juan W. Gez (Las Isletas / Chajadas)",
+        localidad: "Las Isletas",
+        departamento: "General Pedernera",
+        region: "vm",
+        zona: 60,
+        tipo: "Rural Muy Desfavorable (60%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+
+    // --- SAN LUIS CAPITAL Y ALREDEDORES (0% - 20% ZONA) ---
+    {
+        id: "ifdc-sl",
+        numero: "",
+        nombre: "IFDC San Luis (Instituto de Formación Docente Continua)",
+        localidad: "San Luis Capital",
+        departamento: "Juan Martín de Pueyrredón",
+        region: "capital",
+        zona: 0,
+        tipo: "Urbana Superior",
+        nivel: "superior",
+        regimen: "Ley XV-0555-2007"
+    },
+    {
+        id: "isef-sl",
+        numero: "",
+        nombre: "ISEF - Instituto Superior de Educación Física",
+        localidad: "San Luis Capital",
+        departamento: "Juan Martín de Pueyrredón",
+        region: "capital",
+        zona: 0,
+        tipo: "Urbana Superior",
+        nivel: "superior",
+        regimen: "Terciario Provincial"
+    },
+    {
+        id: "col1-sl",
+        numero: "1",
+        nombre: "Colegio N° 1 Juan Crisóstomo Lafinur",
+        localidad: "San Luis Capital",
+        departamento: "Juan Martín de Pueyrredón",
+        region: "capital",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "centro1-sl",
+        numero: "1",
+        nombre: "Centro Educativo N° 1 Juan Pascual Pringles",
+        localidad: "San Luis Capital",
+        departamento: "Juan Martín de Pueyrredón",
+        region: "capital",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "epet4-sl",
+        numero: "4",
+        nombre: "Escuela Técnica N° 4 Fray Luis Beltrán",
+        localidad: "San Luis Capital",
+        departamento: "Juan Martín de Pueyrredón",
+        region: "capital",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "normal-sl",
+        numero: "",
+        nombre: "Escuela Normal Juan Pascual Pringles",
+        localidad: "San Luis Capital",
+        departamento: "Juan Martín de Pueyrredón",
+        region: "capital",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc2-sl",
+        numero: "2",
+        nombre: "Escuela N° 2 Bernardino Rivadavia",
+        localidad: "San Luis Capital",
+        departamento: "Juan Martín de Pueyrredón",
+        region: "capital",
+        zona: 0,
+        tipo: "Urbana (0%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc172-sl",
+        numero: "172",
+        nombre: "Escuela N° 172 Provincia de Misiones",
+        localidad: "San Luis Capital",
+        departamento: "Juan Martín de Pueyrredón",
+        region: "capital",
+        zona: 20,
+        tipo: "Suburbana (20%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc312-sl",
+        numero: "312",
+        nombre: "Escuela N° 312 República de Chile",
+        localidad: "San Luis Capital",
+        departamento: "Juan Martín de Pueyrredón",
+        region: "capital",
+        zona: 20,
+        tipo: "Suburbana (20%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc139-jk",
+        numero: "139",
+        nombre: "Escuela N° 139 Tocornal - Juana Koslay",
+        localidad: "Juana Koslay",
+        departamento: "Juan Martín de Pueyrredón",
+        region: "capital",
+        zona: 20,
+        tipo: "Suburbana (20%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc438-lapunta",
+        numero: "438",
+        nombre: "Escuela N° 438 Bernardino Rivadavia - La Punta",
+        localidad: "La Punta",
+        departamento: "Juan Martín de Pueyrredón",
+        region: "capital",
+        zona: 20,
+        tipo: "Suburbana (20%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+
+    // --- MERLO, VALLE DEL CONLARA Y COSTA DE COMECHINGONES (20% - 40% ZONA) ---
+    {
+        id: "ifdc-merlo",
+        numero: "",
+        nombre: "IFDC Villa de Merlo",
+        localidad: "Villa de Merlo",
+        departamento: "Junín",
+        region: "conlara",
+        zona: 20,
+        tipo: "Suburbana Superior",
+        nivel: "superior",
+        regimen: "Terciario Provincial"
+    },
+    {
+        id: "centro26-merlo",
+        numero: "26",
+        nombre: "Centro Educativo N° 26 María Palmira Cabral - Merlo",
+        localidad: "Villa de Merlo",
+        departamento: "Junín",
+        region: "conlara",
+        zona: 40,
+        tipo: "De Riesgo / Turística (40%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc288-merlo",
+        numero: "288",
+        nombre: "Escuela N° 288 Antonio Esteban Agüero - Merlo",
+        localidad: "Villa de Merlo",
+        departamento: "Junín",
+        region: "conlara",
+        zona: 40,
+        tipo: "De Riesgo (40%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "epet34-merlo",
+        numero: "34",
+        nombre: "Escuela Técnica N° 34 Arístides Bratti - Merlo",
+        localidad: "Villa de Merlo",
+        departamento: "Junín",
+        region: "conlara",
+        zona: 40,
+        tipo: "De Riesgo (40%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc237-molles",
+        numero: "237",
+        nombre: "Escuela N° 237 Maestra Trinidad Chirino - Los Molles",
+        localidad: "Los Molles",
+        departamento: "Junín",
+        region: "conlara",
+        zona: 40,
+        tipo: "De Riesgo (40%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc223-carpinteria",
+        numero: "223",
+        nombre: "Escuela N° 223 Granadero Pringles - Carpintería",
+        localidad: "Carpintería",
+        departamento: "Junín",
+        region: "conlara",
+        zona: 40,
+        tipo: "De Riesgo (40%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc398-santarosa",
+        numero: "398",
+        nombre: "Escuela N° 398 Justo Daract - Santa Rosa del Conlara",
+        localidad: "Santa Rosa del Conlara",
+        departamento: "Junín",
+        region: "conlara",
+        zona: 40,
+        tipo: "Desfavorable (40%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc74-concaran",
+        numero: "74",
+        nombre: "Escuela N° 74 Gobernador Benigno Rodríguez - Concarán",
+        localidad: "Concarán",
+        departamento: "Chacabuco",
+        region: "conlara",
+        zona: 40,
+        tipo: "Desfavorable (40%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "epet26-concaran",
+        numero: "26",
+        nombre: "Escuela Técnica N° 26 Gdor. Elías Adre - Concarán",
+        localidad: "Concarán",
+        departamento: "Chacabuco",
+        region: "conlara",
+        zona: 40,
+        tipo: "Desfavorable (40%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc272-tilisarao",
+        numero: "272",
+        nombre: "Escuela N° 272 Domingo F. Sarmiento - Tilisarao",
+        localidad: "Tilisarao",
+        departamento: "Chacabuco",
+        region: "conlara",
+        zona: 40,
+        tipo: "Desfavorable (40%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc250-naschel",
+        numero: "250",
+        nombre: "Escuela N° 250 Tomás Espora - Naschel",
+        localidad: "Naschel",
+        departamento: "Chacabuco",
+        region: "conlara",
+        zona: 40,
+        tipo: "Desfavorable (40%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+
+    // --- NORTE PROVINCIAL (QUINES, CANDELARIA, SAN FRANCISCO, LUJÁN) ---
+    {
+        id: "esc50-quines",
+        numero: "50",
+        nombre: "Escuela N° 50 Bartolomé Mitre - Quines",
+        localidad: "Quines",
+        departamento: "Ayacucho",
+        region: "norte",
+        zona: 40,
+        tipo: "Desfavorable (40%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "epet31-quines",
+        numero: "31",
+        nombre: "Escuela Técnica N° 31 Prof. Víctor Saá - Quines",
+        localidad: "Quines",
+        departamento: "Ayacucho",
+        region: "norte",
+        zona: 40,
+        tipo: "Desfavorable (40%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc199-candelaria",
+        numero: "199",
+        nombre: "Escuela N° 199 Provincia de Buenos Aires - Candelaria",
+        localidad: "Candelaria",
+        departamento: "Ayacucho",
+        region: "norte",
+        zona: 40,
+        tipo: "Desfavorable (40%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc274-sanfrancisco",
+        numero: "274",
+        nombre: "Escuela N° 274 Madre Teresa de Calcuta - San Francisco",
+        localidad: "San Francisco del Monte de Oro",
+        departamento: "Ayacucho",
+        region: "norte",
+        zona: 40,
+        tipo: "Desfavorable (40%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "epet29-sanfrancisco",
+        numero: "29",
+        nombre: "Escuela Técnica N° 29 Comandante Luis Piedrabuena - San Francisco",
+        localidad: "San Francisco del Monte de Oro",
+        departamento: "Ayacucho",
+        region: "norte",
+        zona: 40,
+        tipo: "Desfavorable (40%)",
+        nivel: "secundario",
+        regimen: "Estatuto Docente"
+    },
+
+    // --- SUR PROVINCIAL (GDOR. DUPUY: BUENA ESPERANZA, UNIÓN, FORTUNA, BATAVIA, NAVIA) ---
+    {
+        id: "esc191-buenaesperanza",
+        numero: "191",
+        nombre: "Escuela N° 191 Provincia de La Pampa - Buena Esperanza",
+        localidad: "Buena Esperanza",
+        departamento: "Gobernador Dupuy",
+        region: "sur",
+        zona: 60,
+        tipo: "Desfavorable (60%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc243-union",
+        numero: "243",
+        nombre: "Escuela N° 243 Río Negro - Unión",
+        localidad: "Unión",
+        departamento: "Gobernador Dupuy",
+        region: "sur",
+        zona: 60,
+        tipo: "Desfavorable (60%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc149-fortuna",
+        numero: "149",
+        nombre: "Escuela N° 149 Manuel Lainez - Fortuna",
+        localidad: "Fortuna",
+        departamento: "Gobernador Dupuy",
+        region: "sur",
+        zona: 80,
+        tipo: "Muy Desfavorable (80%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc156-batavia",
+        numero: "156",
+        nombre: "Escuela N° 156 Provincia de Neuquén - Batavia",
+        localidad: "Batavia",
+        departamento: "Gobernador Dupuy",
+        region: "sur",
+        zona: 80,
+        tipo: "Muy Desfavorable (80%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc188-bagual",
+        numero: "188",
+        nombre: "Escuela N° 188 Provincia de Santa Cruz - Bagual",
+        localidad: "Bagual",
+        departamento: "Gobernador Dupuy",
+        region: "sur",
+        zona: 80,
+        tipo: "Muy Desfavorable (80%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc440-fortinelpatria",
+        numero: "440",
+        nombre: "Escuela N° 440 Sarmiento - Fortín El Patria",
+        localidad: "Fortín El Patria",
+        departamento: "Gobernador Dupuy",
+        region: "sur",
+        zona: 100,
+        tipo: "Inhóspita (100%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc218-navia",
+        numero: "218",
+        nombre: "Escuela N° 218 Gobernador Juan Saá - Navia",
+        localidad: "Navia",
+        departamento: "Gobernador Dupuy",
+        region: "sur",
+        zona: 100,
+        tipo: "Inhóspita (100%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+
+    // --- ZONAS RURALES Y DESFAVORABLES (60% - 100% ZONA) ---
+    {
+        id: "esc306-quebrada",
+        numero: "306",
+        nombre: "Escuela N° 306 Gdor. Zoilo Concha - Villa de la Quebrada",
+        localidad: "Villa de la Quebrada",
+        departamento: "Belgrano",
+        region: "rural",
+        zona: 60,
+        tipo: "Desfavorable (60%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc251-beazley",
+        numero: "251",
+        nombre: "Escuela N° 251 Santiago del Estero - Beazley",
+        localidad: "Beazley",
+        departamento: "Juan Martín de Pueyrredón",
+        region: "rural",
+        zona: 60,
+        tipo: "Desfavorable (60%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc163-altopelado",
+        numero: "163",
+        nombre: "Escuela N° 163 Provincia de Chaco - Alto Pelado",
+        localidad: "Alto Pelado",
+        departamento: "Juan Martín de Pueyrredón",
+        region: "rural",
+        zona: 60,
+        tipo: "Desfavorable (60%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "esc311-chosmes",
+        numero: "311",
+        nombre: "Escuela N° 311 Luis Jofré - Chosmes",
+        localidad: "Chosmes",
+        departamento: "Juan Martín de Pueyrredón",
+        region: "rural",
+        zona: 100,
+        tipo: "Inhóspita (100%)",
+        nivel: "primario",
+        regimen: "Estatuto Docente"
+    },
+    {
+        id: "manual",
+        numero: "",
+        nombre: "📍 Ingreso Manual / Escuela Personalizada (Elegir % Zona)",
+        localidad: "Personalizado",
+        departamento: "Personalizado",
+        region: "manual",
+        zona: 0,
+        tipo: "Manual",
+        nivel: "todos",
+        regimen: "Personalizado"
+    }
+];
+
+// 2. COEFICIENTES DE CARGOS SEGÚN LEY XV-0387-2004 (Estatuto Docente)
+const COEFICIENTES_CARGOS = {
+    horaSecundaria: 1.000,          // 15 pts (Base)
+    preceptor: 14.1347,             // 213 pts
+    maestroGrado: 14.997378,        // 226 pts
+    maestroJardin: 15.1964,         // 229 pts
+    maestroCelador: 17.1871,        // 259 pts
+    secretarioEscuela: 15.0667,     // 226 pts
+    bibliotecario: 14.6667,         // 220 pts
+    maestroJornadaCompleta: 21.8000,// 327 pts
+    maestroEspecial: 17.2000,       // 258 pts
+    ayudanteClasesPracticas: 13.0000,// 195 pts
+    asesorPedagogico: 27.8000,      // 417 pts
+    directorBase: 18.0000,          // 270 pts
+    viceDirectorBase: 18.0000,      // 270 pts
+    inspectorEnsenanza: 35.8000,    // 537 pts
+
+    // --- IFDC / NIVEL SUPERIOR (Art. 6º Ley XV-0555-2007) ---
+    ifdcFullTime: 35.0 / 30.0,              // Profesor Full Time (35 hs reloj) = 1.166667
+    ifdcTiempoCompleto: 30.0 / 30.0,        // Profesor Tiempo Completo / Exclusivo (30 hs reloj) = 1.000000
+    ifdcExclusivo: 30.0 / 30.0,             // Alias Tiempo Completo (30 hs reloj)
+    ifdcSemiExclusivo25: 25.0 / 30.0,       // Profesor Semiexclusiva (25 hs reloj) = 0.833333
+    ifdcSemiExclusivo: 25.0 / 30.0,         // Alias Semiexclusivo (25 hs reloj)
+    ifdcSemiExclusivo20: 20.0 / 30.0,       // Profesor Semiexclusiva (20 hs reloj) = 0.666667
+    ifdcSimple12: 12.0 / 30.0,              // Profesor Dedicación Simple (12 hs reloj) = 0.400000
+    ifdcSimple6: 6.0 / 30.0,                // Profesor Dedicación Simple (6 hs reloj) = 0.200000
+    ifdcHorasReloj: 1.0 / 30.0,             // Profesor por Hora Reloj Frente a Alumno = (cantHoras / 30)
+    ifdcDocenteAuxiliar25: 25.0 / 30.0,     // Docente Auxiliar (25 hs reloj) = 0.833333
+    ifdcDocenteAuxiliar15: 15.0 / 30.0,     // Docente Auxiliar (15 hs reloj) = 0.500000
+    ifdcBibliotecarioAuxiliar: 40.0 / 30.0  // Bibliotecario Auxiliar (40 hs reloj) = 1.333333
+};
+
+// 3. HISTORIAL DE PARITARIAS (Primaria, Inicial y Media)
+const HISTORIAL_BASICA = [
+    { fecha: "2025-01", basicoCargo_Hora: 11339.19, porcentajes: { remunerativo: 1.04, noRemunerativo: 1.33, adicionalCargo: 0.33 }, fonid: 28700.0, sumaNoRemunerativa: 4667.33333, bonoExtraordinario: 0.0 },
+    { fecha: "2025-11", basicoCargo_Hora: 15421.30, porcentajes: { remunerativo: 1.30, noRemunerativo: 1.07, adicionalCargo: 0.33 }, fonid: 1913.3333, sumaNoRemunerativa: 4667.33333, bonoExtraordinario: 0.0 },
+    { fecha: "2026-01", basicoCargo_Hora: 15421.30, porcentajes: { remunerativo: 1.30, noRemunerativo: 1.07, adicionalCargo: 0.33 }, fonid: 1913.3333, sumaNoRemunerativa: 4667.33333, bonoExtraordinario: 0.0 },
+    { fecha: "2026-02", basicoCargo_Hora: 16192.37, porcentajes: { remunerativo: 1.30, noRemunerativo: 1.07, adicionalCargo: 0.33 }, fonid: 1913.3333, sumaNoRemunerativa: 4667.33333, bonoExtraordinario: 0.0 },
+    { fecha: "2026-03", basicoCargo_Hora: 16192.37, porcentajes: { remunerativo: 1.30, noRemunerativo: 1.07, adicionalCargo: 0.33 }, fonid: 1913.3333, sumaNoRemunerativa: 4667.33333, bonoExtraordinario: 0.0 },
+    { fecha: "2026-04", basicoCargo_Hora: 16963.44, porcentajes: { remunerativo: 1.30, noRemunerativo: 1.07, adicionalCargo: 0.33 }, fonid: 1913.3333, sumaNoRemunerativa: 4667.33333, bonoExtraordinario: 0.0 },
+    { fecha: "2026-05", basicoCargo_Hora: 16963.44, porcentajes: { remunerativo: 1.30, noRemunerativo: 1.07, adicionalCargo: 0.33 }, fonid: 1913.3333, sumaNoRemunerativa: 4667.33333, bonoExtraordinario: 0.0 },
+    { fecha: "2026-05-B", basicoCargo_Hora: 16963.44, porcentajes: { remunerativo: 1.30, noRemunerativo: 1.07, adicionalCargo: 0.33 }, fonid: 1913.3333, sumaNoRemunerativa: 4667.33333, bonoExtraordinario: 20000.0 },
+    { fecha: "2026-06", basicoCargo_Hora: 16963.44, porcentajes: { remunerativo: 1.30, noRemunerativo: 1.07, adicionalCargo: 0.33 }, fonid: 1913.3333, sumaNoRemunerativa: 4667.33333, bonoExtraordinario: 0.0 },
+    { fecha: "2026-07", basicoCargo_Hora: 17734.50, porcentajes: { remunerativo: 1.40, noRemunerativo: 0.97, adicionalCargo: 0.33 }, fonid: 1913.3333, sumaNoRemunerativa: 4667.33333, bonoExtraordinario: 0.0 },
+    { fecha: "2026-08", basicoCargo_Hora: 18505.56, porcentajes: { remunerativo: 1.40, noRemunerativo: 0.97, adicionalCargo: 0.33 }, fonid: 1913.3333, sumaNoRemunerativa: 4667.33333, bonoExtraordinario: 0.0 },
+    { fecha: "2026-09", basicoCargo_Hora: 19276.62, porcentajes: { remunerativo: 1.40, noRemunerativo: 0.97, adicionalCargo: 0.33 }, fonid: 1913.3333, sumaNoRemunerativa: 4667.33333, bonoExtraordinario: 0.0 },
+    { fecha: "2026-10", basicoCargo_Hora: 20047.69, porcentajes: { remunerativo: 1.40, noRemunerativo: 0.97, adicionalCargo: 0.33 }, fonid: 1913.3333, sumaNoRemunerativa: 4667.33333, bonoExtraordinario: 0.0 }
+];
+
+// 4. HISTORIAL IFDC Y TERCIARIO
+const HISTORIAL_IFDC = [
+    { fecha: "2025-01", basicoCargo_Hora: 411628.46, porcentajes: { remunerativo: 0.52, noRemunerativo: 0.43, adicionalCargo: 0.34999 }, fonid: 57400.0, sumaNoRemunerativa: 157894.07, bonoExtraordinario: 0.0 },
+    { fecha: "2025-11", basicoCargo_Hora: 559998.72, porcentajes: { remunerativo: 0.65, noRemunerativo: 0.30, adicionalCargo: 0.34999 }, fonid: 57400.0, sumaNoRemunerativa: 157894.07, bonoExtraordinario: 0.0 },
+    { fecha: "2026-01", basicoCargo_Hora: 560038.72, porcentajes: { remunerativo: 0.65, noRemunerativo: 0.30, adicionalCargo: 0.34999 }, fonid: 57400.0, sumaNoRemunerativa: 157894.07, bonoExtraordinario: 0.0 },
+    { fecha: "2026-02", basicoCargo_Hora: 588040.66, porcentajes: { remunerativo: 0.65, noRemunerativo: 0.30, adicionalCargo: 0.34999 }, fonid: 57400.0, sumaNoRemunerativa: 157894.07, bonoExtraordinario: 0.0 },
+    { fecha: "2026-04", basicoCargo_Hora: 616042.59, porcentajes: { remunerativo: 0.65, noRemunerativo: 0.30, adicionalCargo: 0.34999 }, fonid: 57400.0, sumaNoRemunerativa: 157894.07, bonoExtraordinario: 0.0 },
+    { fecha: "2026-05", basicoCargo_Hora: 616042.59, porcentajes: { remunerativo: 0.65, noRemunerativo: 0.30, adicionalCargo: 0.34999 }, fonid: 57400.0, sumaNoRemunerativa: 157894.07, bonoExtraordinario: 0.0 },
+    { fecha: "2026-05-B", basicoCargo_Hora: 616042.59, porcentajes: { remunerativo: 0.65, noRemunerativo: 0.30, adicionalCargo: 0.34999 }, fonid: 57400.0, sumaNoRemunerativa: 157894.07, bonoExtraordinario: 300000.0 },
+    { fecha: "2026-06", basicoCargo_Hora: 616042.59, porcentajes: { remunerativo: 0.65, noRemunerativo: 0.30, adicionalCargo: 0.34999 }, fonid: 57400.0, sumaNoRemunerativa: 157894.07, bonoExtraordinario: 0.0 },
+    { fecha: "2026-07", basicoCargo_Hora: 644044.53, porcentajes: { remunerativo: 0.70, noRemunerativo: 0.25, adicionalCargo: 0.34999 }, fonid: 57400.0, sumaNoRemunerativa: 157894.07, bonoExtraordinario: 0.0 },
+    { fecha: "2026-08", basicoCargo_Hora: 672046.47, porcentajes: { remunerativo: 0.70, noRemunerativo: 0.25, adicionalCargo: 0.34999 }, fonid: 57400.0, sumaNoRemunerativa: 157894.07, bonoExtraordinario: 0.0 },
+    { fecha: "2026-09", basicoCargo_Hora: 700048.41, porcentajes: { remunerativo: 0.70, noRemunerativo: 0.25, adicionalCargo: 0.34999 }, fonid: 57400.0, sumaNoRemunerativa: 157894.07, bonoExtraordinario: 0.0 },
+    { fecha: "2026-10", basicoCargo_Hora: 728050.34, porcentajes: { remunerativo: 0.70, noRemunerativo: 0.25, adicionalCargo: 0.34999 }, fonid: 57400.0, sumaNoRemunerativa: 157894.07, bonoExtraordinario: 0.0 }
+];
+
+// 5. ESCALA DE ANTIGÜEDAD (Art. 62 Ley XV-0387-2004)
+const ESCALA_ANTIGUEDAD = {
+    0: 0.0, 1: 0.10, 2: 0.15, 3: 0.30, 4: 0.40, 5: 0.50,
+    6: 0.60, 7: 0.70, 8: 0.80, 9: 1.00, 10: 1.10, 11: 1.20
+};
+
+
+// 6. HISTORIAL DE INFLACIÓN (IPC)
+const HISTORIAL_HORA = {
+    "2023-06": 4899.23, "2023-12": 7584.74, "2024-06": 8722.45,
+    "2024-12": 11339.19, "2025-06": 14173.99, "2025-11": 15421.30,
+    "2026-01": 15421.30, "2026-05": 16963.44, "2026-06": 16963.44, "2026-09": 19276.62
+};
+
+const INFLACION_ACUMULADA_APROX = {
+    "2023-06_2026-06": 420.5, "2023-12_2026-06": 280.2, "2024-06_2026-06": 145.8,
+    "2024-12_2026-06": 92.4, "2025-06_2026-06": 48.6, "2025-11_2026-06": 28.5,
+    "2026-01_2026-06": 22.1, "2023-06_2026-09": 445.0, "2024-06_2026-09": 162.0, "2025-11_2026-09": 36.4
+};
+
+function aPesos(num) {
+    return "$ " + (num || 0).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// ESTADO GLOBAL MULTI-CARGO (PLURIEMPLEO)
+let listaCargosDocente = [];
+let nextCargoId = 1;
+let ultimoCalculoGlobal = null;
+let chartInstance = null;
+
+// ==========================================
+// INICIALIZACIÓN
+// ==========================================
+document.addEventListener("DOMContentLoaded", function () {
+    inicializarTabs();
+    agregarNuevoCargoDefault(); // Iniciar con 1 puesto
+    inicializarEventosGlobales();
+});
+
+function inicializarTabs() {
+    const tabBtns = document.querySelectorAll(".tab-btn");
+    const tabContents = document.querySelectorAll(".tab-content");
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener("click", function () {
+            tabBtns.forEach(b => b.classList.remove("activo"));
+            tabContents.forEach(c => c.classList.remove("activo"));
+
+            this.classList.add("activo");
+            const target = this.getAttribute("data-tab");
+            const targetEl = document.getElementById(target);
+            if (targetEl) targetEl.classList.add("activo");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    });
+
+    // Activar pestaña según hash en la URL (ej: #tab-auditoria)
+    if (window.location.hash) {
+        const hashTab = window.location.hash.replace("#", "");
+        const btnTab = document.querySelector(`.tab-btn[data-tab="${hashTab}"]`);
+        if (btnTab) {
+            btnTab.click();
+        }
+    }
+
+    const linkAudit = document.getElementById("link-ir-auditoria");
+    if (linkAudit) {
+        linkAudit.addEventListener("click", function (e) {
+            e.preventDefault();
+            const btnAud = document.querySelector('[data-tab="tab-auditoria"]');
+            if (btnAud) btnAud.click();
+        });
+    }
+}
+
+function inicializarEventosGlobales() {
+    const btnAddCargo = document.getElementById("btn-add-cargo");
+    if (btnAddCargo) {
+        btnAddCargo.addEventListener("click", function () {
+            agregarNuevoCargoDefault();
+        });
+    }
+
+    const btnCalcular = document.getElementById("btn-calcular");
+    if (btnCalcular) {
+        btnCalcular.addEventListener("click", function () {
+            calcularSueldoPluriempleo();
+        });
+    }
+
+    const btnAuditAnses = document.getElementById("btn-calcular-auditoria");
+    if (btnAuditAnses) {
+        btnAuditAnses.addEventListener("click", ejecutarAuditoriaANSES);
+    }
+
+    const btnInf = document.getElementById("btn-comparar-inflacion");
+    if (btnInf) {
+        btnInf.addEventListener("click", ejecutarComparativaInflacion);
+    }
+
+    const btnPrint = document.getElementById("btn-imprimir-dictamen");
+    if (btnPrint) {
+        btnPrint.addEventListener("click", () => window.print());
+    }
+}
+
+// ==========================================
+// GESTIÓN DE CARGOS DINÁMICOS (MULTI-CARGO)
+// ==========================================
+function agregarNuevoCargoDefault() {
+    const cargoId = nextCargoId++;
+
+    const nuevoCargo = {
+        id: cargoId,
+        establecimientoId: "", // Sin escuela precargada fija
+        establecimientoNombre: "",
+        filtroRegion: "todas",
+        busquedaTexto: "",
+        mostrarBuscador: true, // Inicia con el buscador abierto para que el docente elija o escriba su escuela
+        nivel: "secundario",
+        cargoTipo: "horaSecundaria",
+        cantHoras: 15,
+        zonaManual: "auto",
+        antiguedadIdx: 5,
+        presencialidad: true
+    };
+
+    listaCargosDocente.push(nuevoCargo);
+    renderizarContenedorCargos();
+}
+
+function eliminarCargo(cargoId) {
+    if (listaCargosDocente.length <= 1) {
+        alert("Debes tener al menos un cargo o desempeño para calcular.");
+        return;
+    }
+    listaCargosDocente = listaCargosDocente.filter(c => c.id !== cargoId);
+    renderizarContenedorCargos();
+}
+
+function renderizarContenedorCargos() {
+    const container = document.getElementById("contenedor-cargos");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    listaCargosDocente.forEach((cargo, index) => {
+        const est = cargo.establecimientoId && cargo.establecimientoId !== 'manual' && cargo.establecimientoId !== 'custom'
+            ? ESTABLECIMIENTOS_SL.find(e => e.id === cargo.establecimientoId)
+            : null;
+        const nombreDisplay = est ? est.nombre : (cargo.establecimientoNombre || (cargo.establecimientoId === 'manual' ? 'Establecimiento Ingresado Manualmente' : 'Establecimiento Educativo a Seleccionar'));
+        const numPuesto = index + 1;
+        const pctZona = obtenerPorcentajeZonaCargo(cargo);
+
+        const card = document.createElement("div");
+        card.className = "card-cargo-item";
+        card.id = `cargo-box-${cargo.id}`;
+
+        let html = `
+            <div class="cargo-item-header">
+                <div class="cargo-item-title">
+                    <span class="badge-cargo-num">Puesto ${numPuesto}</span>
+                    <h4>${nombreDisplay}</h4>
+                </div>
+                ${listaCargosDocente.length > 1 ? `
+                    <button type="button" class="btn-eliminar-cargo" onclick="eliminarCargo(${cargo.id})" title="Eliminar este puesto">
+                        ✕ Quitar Puesto
+                    </button>
+                ` : ""}
+            </div>
+
+            <!-- COMPONENTE INTELIGENTE DE SELECCIÓN DE ESCUELA -->
+            <div class="box-seleccion-escuela-inteligente">
+                
+                ${!cargo.mostrarBuscador && cargo.establecimientoId ? `
+                    <!-- VISTA 1: Escuela Confirmada -->
+                    <div class="escuela-confirmada-card">
+                        <div class="escuela-info-col">
+                            <span class="escuela-tipo-label">🏫 Establecimiento Seleccionado:</span>
+                            <h5 class="escuela-nombre-display">${nombreDisplay}</h5>
+                            <div class="escuela-meta-tags">
+                                <span class="tag-meta">📍 ${est ? `${est.localidad} (${est.departamento || "San Luis"})` : 'Personalizada'}</span>
+                                <span class="tag-meta">🎓 ${est ? est.tipo : 'Docente'}</span>
+                            </div>
+                        </div>
+                        <div class="escuela-action-col">
+                            <div class="badge-zona-display" style="border-color:${obtenerColorPorZona(pctZona)};">
+                                <span class="zona-txt">BONIFICACIÓN ZONA</span>
+                                <strong class="zona-num">${pctZona}%</strong>
+                            </div>
+                            <button type="button" class="btn-cambiar-escuela" onclick="activarBuscadorEscuela(${cargo.id})">
+                                🔍 Cambiar Escuela / Buscar otra
+                            </button>
+                        </div>
+                    </div>
+                ` : `
+                    <!-- VISTA 2: Buscador Inteligente y Filtros por Región -->
+                    <div class="escuela-buscador-panel">
+                        <div class="buscador-header-flex">
+                            <label class="label-buscar-escuela">
+                                🔍 Escriba o seleccione su Establecimiento Educativo:
+                            </label>
+                            ${cargo.establecimientoId ? `
+                                <button type="button" class="btn-cerrar-buscador" onclick="cerrarBuscadorEscuela(${cargo.id})">
+                                    ✕ Mantener actual
+                                </button>
+                            ` : ""}
+                        </div>
+
+                        <!-- Filtros Rápidos por Región / Departamento -->
+                        <div class="region-pills-container">
+                            <button type="button" class="region-pill ${cargo.filtroRegion === 'todas' ? 'activo' : ''}" onclick="filtrarRegionCargo(${cargo.id}, 'todas')">
+                                📌 Todas
+                            </button>
+                            <button type="button" class="region-pill ${cargo.filtroRegion === 'vm' ? 'activo' : ''}" onclick="filtrarRegionCargo(${cargo.id}, 'vm')">
+                                🏙️ Villa Mercedes
+                            </button>
+                            <button type="button" class="region-pill ${cargo.filtroRegion === 'capital' ? 'activo' : ''}" onclick="filtrarRegionCargo(${cargo.id}, 'capital')">
+                                🏛️ San Luis Capital / Alrededores
+                            </button>
+                            <button type="button" class="region-pill ${cargo.filtroRegion === 'conlara' ? 'activo' : ''}" onclick="filtrarRegionCargo(${cargo.id}, 'conlara')">
+                                🌄 Merlo & Valle del Conlara
+                            </button>
+                            <button type="button" class="region-pill ${cargo.filtroRegion === 'norte' ? 'activo' : ''}" onclick="filtrarRegionCargo(${cargo.id}, 'norte')">
+                                🌿 Norte (Quines/Candelaria)
+                            </button>
+                            <button type="button" class="region-pill ${cargo.filtroRegion === 'sur' ? 'activo' : ''}" onclick="filtrarRegionCargo(${cargo.id}, 'sur')">
+                                🌾 Sur (Gdor. Dupuy / Unión)
+                            </button>
+                            <button type="button" class="region-pill ${cargo.filtroRegion === 'rural' ? 'activo' : ''}" onclick="filtrarRegionCargo(${cargo.id}, 'rural')">
+                                🏞️ Zonas Rurales
+                            </button>
+                            <button type="button" class="region-pill ${cargo.filtroRegion === 'manual' ? 'activo' : ''}" onclick="seleccionarEscuelaManual(${cargo.id})">
+                                📍 Ingreso Libre
+                            </button>
+                        </div>
+
+                        <!-- Input de Búsqueda Predictiva -->
+                        <div class="input-search-wrapper">
+                            <input type="text" 
+                                   id="input-search-${cargo.id}"
+                                   class="form-control input-search-escuela" 
+                                   placeholder="Escribe número o nombre de escuela (ej: 150, 2, IFDC, Pedernera, Carmen, Merlo, Quines...)" 
+                                   value="${cargo.busquedaTexto || ''}"
+                                   oninput="actualizarBusquedaTexto(${cargo.id}, this.value)">
+                            ${cargo.busquedaTexto ? `
+                                <button type="button" class="btn-clear-search" onclick="limpiarBusquedaTexto(${cargo.id})">✕</button>
+                            ` : ""}
+                        </div>
+
+                        <!-- Lista de Resultados Filtrados -->
+                        <div class="lista-escuelas-resultados">
+                            ${obtenerEscuelasFiltradasHTML(cargo)}
+                        </div>
+                    </div>
+                `}
+
+            </div>
+
+            <!-- Parámetros del Puesto (Nivel, Cargo, Horas, Aula) -->
+            <div class="grid-form-cargo">
+                
+                <!-- Nivel Educativo -->
+                <div class="form-group">
+                    <label>Nivel Educativo</label>
+                    <select class="form-control select-nivel" onchange="actualizarNivelCargo(${cargo.id}, this.value)">
+                        <option value="secundario" ${cargo.nivel === "secundario" ? "selected" : ""}>Nivel Secundario</option>
+                        <option value="primario" ${cargo.nivel === "primario" ? "selected" : ""}>Nivel Primario</option>
+                        <option value="inicial" ${cargo.nivel === "inicial" ? "selected" : ""}>Nivel Inicial</option>
+                        <option value="superior" ${cargo.nivel === "superior" ? "selected" : ""}>Nivel Superior / Terciario (I.F.D.C)</option>
+                    </select>
+                </div>
+
+                <!-- Cargo Estatutario -->
+                <div class="form-group">
+                    <label>Cargo Docente</label>
+                    <select class="form-control select-cargo" onchange="actualizarTipoCargo(${cargo.id}, this.value)">
+                        ${obtenerOpcionesCargosPorNivel(cargo.nivel, cargo.cargoTipo)}
+                    </select>
+                </div>
+
+                <!-- Horas Cátedra o Reloj (Si aplica) -->
+                <div class="form-group campo-horas" style="${(cargo.cargoTipo === 'horaSecundaria' || cargo.cargoTipo === 'ifdcHorasReloj') ? '' : 'display:none;'}">
+                    <label>${cargo.cargoTipo === 'ifdcHorasReloj' ? 'Cantidad de Horas Reloj Frente a Alumno' : 'Cantidad de Horas Cátedra'}</label>
+                    <input type="number" class="form-control input-horas" value="${cargo.cantHoras}" min="1" max="60" onchange="actualizarHorasCargo(${cargo.id}, this.value)">
+                </div>
+
+                <!-- Ajuste Manual de Zona (%) -->
+                <div class="form-group">
+                    <label>Porcentaje de Zona Aplicado</label>
+                    <div class="box-zona-badge">
+                        <span class="badge-zona-val" style="background:${obtenerColorPorZona(pctZona)};">${pctZona}%</span>
+                        <select class="form-control select-zona-override" onchange="actualizarZonaManualCargo(${cargo.id}, this.value)">
+                            <option value="auto" ${cargo.zonaManual === "auto" ? "selected" : ""}>Automática por Escuela (${est ? est.zona : 0}%)</option>
+                            <option value="0" ${cargo.zonaManual === 0 ? "selected" : ""}>0% (Urbana Común)</option>
+                            <option value="10" ${cargo.zonaManual === 10 ? "selected" : ""}>10% (Terciario Villa Mercedes)</option>
+                            <option value="20" ${cargo.zonaManual === 20 ? "selected" : ""}>20% (Suburbana / Merlo)</option>
+                            <option value="40" ${cargo.zonaManual === 40 ? "selected" : ""}>40% (De Riesgo / Interior)</option>
+                            <option value="60" ${cargo.zonaManual === 60 ? "selected" : ""}>60% (Desfavorable)</option>
+                            <option value="80" ${cargo.zonaManual === 80 ? "selected" : ""}>80% (Muy Desfavorable)</option>
+                            <option value="100" ${cargo.zonaManual === 100 ? "selected" : ""}>100% (Inhóspita)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Ítem Aula (Solo Inicial / Primaria) -->
+                <div class="form-group campo-aula" style="${['maestroGrado', 'maestroJardin', 'maestroCelador', 'maestroJornadaCompleta', 'maestroEspecial'].includes(cargo.cargoTipo) ? '' : 'display:none;'}">
+                    <label>Ítem Enseñanza en Aula ($125.000)</label>
+                    <select class="form-control" onchange="actualizarAulaCargo(${cargo.id}, this.value === '1')">
+                        <option value="1" ${cargo.presencialidad ? "selected" : ""}>Sí ($125.000 cobro total)</option>
+                        <option value="0" ${!cargo.presencialidad ? "selected" : ""}>No</option>
+                    </select>
+                </div>
+
+            </div>
+        `;
+
+        card.innerHTML = html;
+        container.appendChild(card);
+    });
+}
+
+function obtenerColorPorZona(zona) {
+    if (zona >= 100) return "#a855f7"; // Púrpura
+    if (zona >= 80) return "#ec4899";  // Rosa intenso
+    if (zona >= 60) return "#f97316";  // Naranja
+    if (zona >= 40) return "#eab308";  // Ámbar
+    if (zona === 10) return "#06b6d4"; // Cyan
+    if (zona === 20) return "#3b82f6"; // Azul
+    return "#64748b"; // Gris / Slate
+}
+
+function obtenerEscuelasFiltradasHTML(cargo) {
+    const txt = (cargo.busquedaTexto || "").toLowerCase().trim();
+    const rawTxt = (cargo.busquedaTexto || "").trim();
+    const reg = cargo.filtroRegion || "todas";
+
+    let filtradas = ESTABLECIMIENTOS_SL.filter(e => {
+        if (e.id === "manual") return false;
+        
+        // Filtro por región
+        if (reg !== "todas" && e.region !== reg) return false;
+
+        // Filtro por texto
+        if (txt) {
+            const matchNombre = e.nombre.toLowerCase().includes(txt);
+            const matchNumero = e.numero && e.numero.includes(txt);
+            const matchLoc = e.localidad.toLowerCase().includes(txt);
+            const matchDepto = (e.departamento || "").toLowerCase().includes(txt);
+            return matchNombre || matchNumero || matchLoc || matchDepto;
+        }
+        return true;
+    });
+
+    let customOptionHtml = "";
+    if (rawTxt.length >= 2) {
+        const safeTxt = rawTxt.replace(/'/g, "\\'");
+        customOptionHtml = `
+            <div class="escuela-item-result escuela-custom-option" style="border-left: 4px solid #3b82f6; background: rgba(59, 130, 246, 0.1);" onclick="seleccionarEscuelaPersonalizada(${cargo.id}, '${safeTxt}')">
+                <div class="escuela-item-main">
+                    <span class="escuela-item-name">✍️ Usar "<strong>${rawTxt}</strong>" como nombre de mi escuela</span>
+                    <span class="escuela-item-loc">📍 Establecimiento personalizado (Zona configurable)</span>
+                </div>
+                <div class="escuela-item-badge">
+                    <span class="badge-zona-pill" style="background:#3b82f6;">Elegir Esta</span>
+                </div>
+            </div>
+        `;
+    }
+
+    if (filtradas.length === 0) {
+        return `
+            ${customOptionHtml}
+            <div class="escuela-no-results">
+                <p>No se encontraron escuelas del catálogo oficial con "<strong>${cargo.busquedaTexto}</strong>".</p>
+                <button type="button" class="btn-select-manual-fallback" onclick="seleccionarEscuelaPersonalizada(${cargo.id}, '${rawTxt.replace(/'/g, "\\'") || "Mi Escuela"}')">
+                    📍 Establecer como "${rawTxt || "Escuela Personalizada"}"
+                </button>
+            </div>
+        `;
+    }
+
+    return customOptionHtml + filtradas.map(e => `
+        <div class="escuela-item-result ${e.id === cargo.establecimientoId ? 'seleccionada' : ''}" onclick="seleccionarEscuelaPorId(${cargo.id}, '${e.id}')">
+            <div class="escuela-item-main">
+                <span class="escuela-item-name">${e.nombre}</span>
+                <span class="escuela-item-loc">📍 ${e.localidad} • ${e.departamento || "San Luis"} (${e.tipo})</span>
+            </div>
+            <div class="escuela-item-badge">
+                <span class="badge-zona-pill" style="background:${obtenerColorPorZona(e.zona)};">
+                    ${e.zona}% ZONA
+                </span>
+            </div>
+        </div>
+    `).join("");
+}
+
+function obtenerOpcionesCargosPorNivel(nivel, cargoSeleccionado) {
+    let opciones = [];
+
+    if (nivel === "primario") {
+        opciones = [
+            { val: "maestroGrado", label: "Maestra/o de Grado (226 pts)" },
+            { val: "maestroJornadaCompleta", label: "Maestra/o Jornada Completa (327 pts)" },
+            { val: "maestroCelador", label: "Maestra/o Celador (259 pts)" },
+            { val: "maestroEspecial", label: "Maestra/o Especial (Música/Ed. Física 258 pts)" },
+            { val: "secretarioEscuela", label: "Secretario/a de Escuela (226 pts)" },
+            { val: "directorBase", label: "Director/a de Escuela (270 pts)" },
+            { val: "viceDirectorBase", label: "Vicedirector/a (270 pts)" }
+        ];
+    } else if (nivel === "inicial") {
+        opciones = [
+            { val: "maestroJardin", label: "Maestra/o de Jardín de Infantes (229 pts)" },
+            { val: "maestroCelador", label: "Maestra/o Celador Inicial (259 pts)" },
+            { val: "secretarioEscuela", label: "Secretaria/o Inicial (226 pts)" },
+            { val: "directorBase", label: "Directora/a Nivel Inicial (270 pts)" }
+        ];
+    } else if (nivel === "superior") {
+        opciones = [
+            { val: "ifdcFullTime", label: "Profesor Full Time (35 hs reloj - Art. 6 Ley XV-0555)" },
+            { val: "ifdcTiempoCompleto", label: "Profesor Tiempo Completo / Exclusivo (30 hs reloj)" },
+            { val: "ifdcSemiExclusivo25", label: "Profesor Semiexclusiva (25 hs reloj)" },
+            { val: "ifdcSemiExclusivo20", label: "Profesor Semiexclusiva (20 hs reloj)" },
+            { val: "ifdcSimple12", label: "Profesor Dedicación Simple (12 hs reloj)" },
+            { val: "ifdcSimple6", label: "Profesor Dedicación Simple (6 hs reloj)" },
+            { val: "ifdcHorasReloj", label: "Profesor por Horas Reloj Frente a Alumno (Módulo)" },
+            { val: "ifdcDocenteAuxiliar25", label: "Docente Auxiliar (25 hs reloj)" },
+            { val: "ifdcDocenteAuxiliar15", label: "Docente Auxiliar (15 hs reloj)" },
+            { val: "ifdcBibliotecarioAuxiliar", label: "Bibliotecario Auxiliar (40 hs reloj)" }
+        ];
+    } else {
+        opciones = [
+            { val: "horaSecundaria", label: "Horas Cátedra Nivel Secundario (40 min / 15 pts c/u)" },
+            { val: "regente", label: "Regente Est. Edu. Niv. Secundario (Cargo 544 pts)" },
+            { val: "directorSec", label: "Director/a Nivel Secundario" },
+            { val: "viceDirectorSec", label: "Vicedirector/a Nivel Secundario" },
+            { val: "preceptor", label: "Preceptor/a Nivel Secundario (213 pts)" },
+            { val: "secretarioEscuela", label: "Secretario/a Nivel Secundario (226 pts)" },
+            { val: "bibliotecario", label: "Bibliotecario/a (220 pts)" },
+            { val: "ayudanteClasesPracticas", label: "Ayudante de Clases Prácticas (195 pts)" },
+            { val: "asesorPedagogico", label: "Asesor/a Pedagógico (417 pts)" },
+            { val: "inspectorEnsenanza", label: "Inspector/a de Enseñanza (537 pts)" }
+        ];
+    }
+
+    return opciones.map(o => `
+        <option value="${o.val}" ${o.val === cargoSeleccionado ? "selected" : ""}>${o.label}</option>
+    `).join("");
+}
+
+function obtenerPorcentajeZonaCargo(cargo) {
+    if (cargo.zonaManual !== null && cargo.zonaManual !== undefined && cargo.zonaManual !== "auto") {
+        return parseInt(cargo.zonaManual);
+    }
+    if (cargo.establecimientoId && cargo.establecimientoId !== "manual" && cargo.establecimientoId !== "custom") {
+        const est = ESTABLECIMIENTOS_SL.find(e => e.id === cargo.establecimientoId);
+        return est ? est.zona : 0;
+    }
+    return 0;
+}
+
+// CONTROLADORES DE EVENTOS DE ESCUELAS
+window.activarBuscadorEscuela = function(cargoId) {
+    const cargo = listaCargosDocente.find(c => c.id === cargoId);
+    if (!cargo) return;
+    cargo.mostrarBuscador = true;
+    renderizarContenedorCargos();
+    setTimeout(() => {
+        const inp = document.getElementById(`input-search-${cargoId}`);
+        if (inp) inp.focus();
+    }, 50);
+};
+
+window.cerrarBuscadorEscuela = function(cargoId) {
+    const cargo = listaCargosDocente.find(c => c.id === cargoId);
+    if (!cargo) return;
+    cargo.mostrarBuscador = false;
+    renderizarContenedorCargos();
+};
+
+window.filtrarRegionCargo = function(cargoId, region) {
+    const cargo = listaCargosDocente.find(c => c.id === cargoId);
+    if (!cargo) return;
+    cargo.filtroRegion = region;
+    renderizarContenedorCargos();
+};
+
+window.actualizarBusquedaTexto = function(cargoId, txt) {
+    const cargo = listaCargosDocente.find(c => c.id === cargoId);
+    if (!cargo) return;
+    cargo.busquedaTexto = txt;
+
+    // Actualizar únicamente el contenedor de resultados de este puesto sin tocar el input para preservar foco y escritura continua
+    const card = document.getElementById(`cargo-box-${cargoId}`);
+    if (card) {
+        const resDiv = card.querySelector(".lista-escuelas-resultados");
+        if (resDiv) {
+            resDiv.innerHTML = obtenerEscuelasFiltradasHTML(cargo);
+        }
+        const wrapper = card.querySelector(".input-search-wrapper");
+        if (wrapper) {
+            let clearBtn = wrapper.querySelector(".btn-clear-search");
+            if (txt && !clearBtn) {
+                clearBtn = document.createElement("button");
+                clearBtn.type = "button";
+                clearBtn.className = "btn-clear-search";
+                clearBtn.innerHTML = "✕";
+                clearBtn.onclick = () => window.limpiarBusquedaTexto(cargoId);
+                wrapper.appendChild(clearBtn);
+            } else if (!txt && clearBtn) {
+                clearBtn.remove();
+            }
+        }
+    }
+};
+
+window.limpiarBusquedaTexto = function(cargoId) {
+    const cargo = listaCargosDocente.find(c => c.id === cargoId);
+    if (!cargo) return;
+    cargo.busquedaTexto = "";
+    const card = document.getElementById(`cargo-box-${cargoId}`);
+    if (card) {
+        const input = card.querySelector(".input-search-escuela");
+        if (input) {
+            input.value = "";
+            input.focus();
+        }
+        const resDiv = card.querySelector(".lista-escuelas-resultados");
+        if (resDiv) {
+            resDiv.innerHTML = obtenerEscuelasFiltradasHTML(cargo);
+        }
+        const clearBtn = card.querySelector(".btn-clear-search");
+        if (clearBtn) clearBtn.remove();
+    }
+};
+
+window.seleccionarEscuelaPorId = function(cargoId, estId) {
+    const cargo = listaCargosDocente.find(c => c.id === cargoId);
+    if (!cargo) return;
+    cargo.establecimientoId = estId;
+    const est = ESTABLECIMIENTOS_SL.find(e => e.id === estId);
+    cargo.establecimientoNombre = est ? est.nombre : "";
+    cargo.mostrarBuscador = false;
+    cargo.zonaManual = "auto";
+
+    if (est && est.nivel !== "todos") {
+        cargo.nivel = est.nivel;
+        if (est.nivel === "superior") cargo.cargoTipo = "horaSecundaria";
+        else if (est.nivel === "primario") cargo.cargoTipo = "maestroGrado";
+        else if (est.nivel === "inicial") cargo.cargoTipo = "maestroJardin";
+        else cargo.cargoTipo = "horaSecundaria";
+    }
+
+    renderizarContenedorCargos();
+};
+
+window.seleccionarEscuelaPersonalizada = function(cargoId, nombre) {
+    const cargo = listaCargosDocente.find(c => c.id === cargoId);
+    if (!cargo) return;
+    cargo.establecimientoId = "custom";
+    cargo.establecimientoNombre = nombre || "Establecimiento Educativo";
+    cargo.mostrarBuscador = false;
+    cargo.zonaManual = "auto";
+    renderizarContenedorCargos();
+};
+
+window.seleccionarEscuelaManual = function(cargoId) {
+    const cargo = listaCargosDocente.find(c => c.id === cargoId);
+    if (!cargo) return;
+    cargo.establecimientoId = "manual";
+    cargo.establecimientoNombre = "Establecimiento Educativo";
+    cargo.mostrarBuscador = false;
+    cargo.zonaManual = 0;
+    renderizarContenedorCargos();
+};
+
+window.actualizarNivelCargo = function(cargoId, nivel) {
+    const cargo = listaCargosDocente.find(c => c.id === cargoId);
+    if (!cargo) return;
+    cargo.nivel = nivel;
+    if (nivel === "primario") cargo.cargoTipo = "maestroGrado";
+    else if (nivel === "inicial") cargo.cargoTipo = "maestroJardin";
+    else if (nivel === "superior") cargo.cargoTipo = "horaSecundaria";
+    else cargo.cargoTipo = "horaSecundaria";
+    renderizarContenedorCargos();
+};
+
+window.actualizarTipoCargo = function(cargoId, cargoTipo) {
+    const cargo = listaCargosDocente.find(c => c.id === cargoId);
+    if (!cargo) return;
+    cargo.cargoTipo = cargoTipo;
+    renderizarContenedorCargos();
+};
+
+window.actualizarHorasCargo = function(cargoId, cant) {
+    const cargo = listaCargosDocente.find(c => c.id === cargoId);
+    if (cargo) cargo.cantHoras = parseInt(cant) || 15;
+};
+
+window.actualizarZonaManualCargo = function(cargoId, val) {
+    const cargo = listaCargosDocente.find(c => c.id === cargoId);
+    if (!cargo) return;
+    cargo.zonaManual = val === "auto" ? "auto" : parseInt(val);
+    renderizarContenedorCargos();
+};
+
+window.actualizarAulaCargo = function(cargoId, presencial) {
+    const cargo = listaCargosDocente.find(c => c.id === cargoId);
+    if (cargo) cargo.presencialidad = presencial;
+};
+
+// ==========================================
+// CÁLCULO SALARIAL CONSOLIDADO (PLURIEMPLEO)
+// ==========================================
+function calcularSueldoPluriempleo() {
+    const periodoEl = document.getElementById("mesCalculo");
+    const periodo = periodoEl ? periodoEl.value : "2026-08";
+    
+    const antEl = document.getElementById("antiguedad");
+    const antIdx = antEl ? (parseInt(antEl.value) || 0) : 5;
+    
+    const sindEl = document.getElementById("sindicato");
+    const sindicatoVal = sindEl ? (parseInt(sindEl.value) || 0) : 0;
+    
+    const hijosEl = document.getElementById("cantHijxs");
+    const cantHijos = hijosEl ? (parseInt(hijosEl.value) || 0) : 0;
+    const pctAnt = ESCALA_ANTIGUEDAD[antIdx] !== undefined ? ESCALA_ANTIGUEDAD[antIdx] : 0.50;
+
+    let subtotalRemunGlobal = 0.0;
+    let subtotalNoRemunGlobal = 0.0;
+    let basicoGlobal = 0.0;
+    let zonaGlobal = 0.0;
+    let antGlobal = 0.0;
+    let compRemGlobal = 0.0;
+    let adicCargoGlobal = 0.0;
+    let presencialidadGlobal = 0.0;
+    let compNoRemGlobal = 0.0;
+    let sumaNoRemGlobal = 0.0;
+    let fonidGlobal = 0.0;
+    let bonoExtGlobal = 0.0;
+
+    const desglosePorPuesto = [];
+    const desglosesCargos = [];
+
+    listaCargosDocente.forEach((cargo, idx) => {
+        const isIfdc = cargo.nivel === "superior" || (cargo.cargoTipo && cargo.cargoTipo.startsWith("ifdc"));
+        const periodoClean = periodo.replace("-SAC", "");
+        const listaConfigs = isIfdc ? HISTORIAL_IFDC : HISTORIAL_BASICA;
+        let config = listaConfigs.find(c => c.fecha === periodoClean) || listaConfigs[listaConfigs.length - 1];
+
+        const pctZona = obtenerPorcentajeZonaCargo(cargo);
+        const coefZona = pctZona / 100.0;
+
+        let basico = 0.0;
+        let pagoZona = 0.0;
+        let pagoAntiguedad = 0.0;
+        let compRem = 0.0;
+        let adicionalTurno = 0.0;
+        let adicionalSeccion = 0.0;
+        let adicionalCargo = 0.0;
+        let adicionalDedicacion = 0.0;
+        let enseñanzaEnAula = 0.0;
+        let compNoRem = 0.0;
+        let sumaNoRemun = 0.0;
+        let fonid = 0.0;
+        let compCompensador = 0.0;
+        let bonoExt = 0.0;
+
+        const cantHoras = Number(cargo.cantHoras) || 15;
+
+        if (cargo.cargoTipo === "horaSecundaria") {
+            const valorHora = config.basicoCargo_Hora || 18505.56;
+            basico = valorHora * cantHoras;
+            pagoZona = basico * coefZona;
+            pagoAntiguedad = basico * pctAnt;
+            compRem = basico * 1.40;
+            compNoRem = basico * 0.97;
+            sumaNoRemun = 4667.48 * cantHoras;
+            fonid = 773.12 * cantHoras;
+            if (cantHoras === 1) {
+                compCompensador = 4018.89; // Código 100-26 Complemento Compensador para 1 hora
+            }
+        } else if (cargo.cargoTipo === "regente") {
+            // Regente Est. Edu. Niv. Secundario 544 pts (Recibo Oficial)
+            basico = 1170377.64;
+            pagoAntiguedad = basico * pctAnt;
+            pagoZona = basico * coefZona;
+            adicionalTurno = basico * 0.13235294; // Código 211-10 Adicional por Turnos ($154,903.08)
+            adicionalSeccion = basico * 0.29411765; // Código 212-10 Adicional por Secciones ($344,228.63)
+            sumaNoRemun = 254493.10; // Código 099-41
+            fonid = 48895.68; // Código 090-11
+        } else if (cargo.cargoTipo === "directorSec") {
+            basico = 1450000.00;
+            pagoAntiguedad = basico * pctAnt;
+            pagoZona = basico * coefZona;
+            adicionalTurno = basico * 0.13235294;
+            adicionalSeccion = basico * 0.29411765;
+            sumaNoRemun = 300000.00;
+            fonid = 48895.68;
+        } else if (cargo.cargoTipo === "viceDirectorSec") {
+            basico = 1350000.00;
+            pagoAntiguedad = basico * pctAnt;
+            pagoZona = basico * coefZona;
+            adicionalTurno = basico * 0.13235294;
+            adicionalSeccion = basico * 0.29411765;
+            sumaNoRemun = 280000.00;
+            fonid = 48895.68;
+        } else if (cargo.cargoTipo && cargo.cargoTipo.startsWith("ifdc")) {
+            // Nivel Superior / IFDC Art. 6º Ley XV-0555-2007
+            if (cargo.cargoTipo === "ifdcFullTime") {
+                basico = 647694.60;
+                sumaNoRemun = 163361.92;
+                fonid = 27059.20;
+            } else if (cargo.cargoTipo === "ifdcTiempoCompleto" || cargo.cargoTipo === "ifdcExclusivo") {
+                basico = 555166.80;
+                sumaNoRemun = 140024.50;
+                fonid = 23193.60;
+            } else if (cargo.cargoTipo === "ifdcSemiExclusivo25" || cargo.cargoTipo === "ifdcSemiExclusivo") {
+                basico = 462639.00;
+                sumaNoRemun = 116687.08;
+                fonid = 19328.00;
+            } else if (cargo.cargoTipo === "ifdcSemiExclusivo20") {
+                basico = 370111.20;
+                sumaNoRemun = 93349.67;
+                fonid = 15462.40;
+            } else if (cargo.cargoTipo === "ifdcSimple12") {
+                basico = 222066.72;
+                sumaNoRemun = 56009.80;
+                fonid = 9277.44;
+            } else if (cargo.cargoTipo === "ifdcSimple6") {
+                basico = 111033.36;
+                sumaNoRemun = 28004.90;
+                fonid = 4638.72;
+            } else if (cargo.cargoTipo === "ifdcDocenteAuxiliar25") {
+                basico = 388616.76;
+                sumaNoRemun = 98017.15;
+                fonid = 16235.52;
+            } else if (cargo.cargoTipo === "ifdcDocenteAuxiliar15") {
+                basico = 233170.06;
+                sumaNoRemun = 58810.29;
+                fonid = 9741.31;
+            } else if (cargo.cargoTipo === "ifdcBibliotecarioAuxiliar") {
+                basico = 740222.40;
+                sumaNoRemun = 186699.33;
+                fonid = 30924.80;
+            } else if (cargo.cargoTipo === "ifdcHorasReloj") {
+                basico = 18505.56 * cantHoras;
+                sumaNoRemun = 4667.48 * cantHoras;
+                fonid = 773.12 * cantHoras;
+            } else {
+                basico = config.basicoCargo_Hora * (COEFICIENTES_CARGOS[cargo.cargoTipo] || 1.0);
+                sumaNoRemun = config.sumaNoRemunerativa;
+                fonid = config.fonid;
+            }
+
+            pagoZona = basico * coefZona;
+            pagoAntiguedad = basico * pctAnt;
+            compRem = basico * 1.40;
+            compNoRem = basico * 0.97;
+        } else {
+            // Cargos Estatutarios Primaria / Inicial / Preceptor
+            if (cargo.cargoTipo === "maestroGrado") {
+                basico = 277583.40;
+                sumaNoRemun = 70012.25;
+                fonid = 11596.80;
+                enseñanzaEnAula = cargo.presencialidad ? 125000.0 : 0.0;
+            } else if (cargo.cargoTipo === "maestroJornadaCompleta") {
+                basico = 401500.00;
+                sumaNoRemun = 101000.00;
+                fonid = 16800.00;
+                enseñanzaEnAula = cargo.presencialidad ? 125000.0 : 0.0;
+            } else if (cargo.cargoTipo === "maestroCelador") {
+                basico = 318000.00;
+                sumaNoRemun = 80000.00;
+                fonid = 13300.00;
+                enseñanzaEnAula = cargo.presencialidad ? 125000.0 : 0.0;
+            } else if (cargo.cargoTipo === "maestroEspecial") {
+                basico = 316500.00;
+                sumaNoRemun = 79800.00;
+                fonid = 13200.00;
+                enseñanzaEnAula = cargo.presencialidad ? 125000.0 : 0.0;
+            } else if (cargo.cargoTipo === "maestroJardin") {
+                basico = 281000.00;
+                sumaNoRemun = 71000.00;
+                fonid = 11750.00;
+                enseñanzaEnAula = cargo.presencialidad ? 125000.0 : 0.0;
+            } else if (cargo.cargoTipo === "preceptor") {
+                basico = 262000.00;
+                sumaNoRemun = 65000.00;
+                fonid = 11596.80;
+            } else if (cargo.cargoTipo === "asesorPedagogico") {
+                basico = 512000.00;
+                sumaNoRemun = 130000.00;
+                fonid = 23193.60;
+            } else {
+                const coef = COEFICIENTES_CARGOS[cargo.cargoTipo] || 15.0;
+                basico = (config.basicoCargo_Hora || 18505.56) * coef;
+                sumaNoRemun = 4667.48 * 15;
+                fonid = 773.12 * 15;
+            }
+
+            pagoZona = basico * coefZona;
+            pagoAntiguedad = basico * pctAnt;
+            compRem = basico * 1.40;
+            compNoRem = basico * 0.97;
+        }
+
+        const totalRemPuesto = basico + compRem + adicionalTurno + adicionalSeccion + adicionalCargo + adicionalDedicacion + pagoZona + pagoAntiguedad + enseñanzaEnAula;
+        const totalNoRemPuesto = compNoRem + sumaNoRemun + fonid + compCompensador + bonoExt;
+
+        subtotalRemunGlobal += totalRemPuesto;
+        subtotalNoRemunGlobal += totalNoRemPuesto;
+        basicoGlobal += basico;
+        zonaGlobal += pagoZona;
+        antGlobal += pagoAntiguedad;
+        compRemGlobal += compRem;
+        adicCargoGlobal += (adicionalTurno + adicionalSeccion + adicionalCargo + adicionalDedicacion);
+        presencialidadGlobal += enseñanzaEnAula;
+        compNoRemGlobal += compNoRem;
+        sumaNoRemGlobal += sumaNoRemun;
+        fonidGlobal += fonid;
+        bonoExtGlobal += bonoExt;
+
+        const est = cargo.establecimientoId && cargo.establecimientoId !== 'manual' && cargo.establecimientoId !== 'custom'
+            ? (ESTABLECIMIENTOS_SL.find(e => e.id === cargo.establecimientoId) || { nombre: cargo.establecimientoNombre || "Establecimiento Educativo" })
+            : { nombre: cargo.establecimientoNombre || "Establecimiento Educativo" };
+
+        desglosePorPuesto.push({
+            puestoNum: idx + 1,
+            escuelaNombre: est.nombre,
+            cargoTipo: cargo.cargoTipo,
+            zonaPct: pctZona,
+            remun: totalRemPuesto,
+            noRemun: totalNoRemPuesto,
+            bruto: (totalRemPuesto + totalNoRemPuesto)
+        });
+
+        desglosesCargos.push({
+            cargo,
+            est,
+            basico,
+            pagoZona,
+            pagoAntiguedad,
+            compRem,
+            adicionalTurno,
+            adicionalSeccion,
+            adicionalCargo,
+            adicionalDedicacion,
+            enseñanzaEnAula,
+            compNoRem,
+            sumaNoRemun,
+            fonid,
+            compCompensador,
+            bonoExt,
+            subtotalRemun: totalRemPuesto,
+            subtotalNoRemun: totalNoRemPuesto
+        });
+    });
+
+    const asignacionHijosGlobal = cantHijos > 0 ? (cantHijos * 51280.0) : 0.0;
+    subtotalNoRemunGlobal += asignacionHijosGlobal;
+
+    const totalBrutoGlobal = subtotalRemunGlobal + subtotalNoRemunGlobal;
+
+    // Descuentos de Ley Docente (13% Jubilación Docente + 6% DOSEP)
+    const descJubOrd = subtotalRemunGlobal * 0.11;
+    const descJubEsp = subtotalRemunGlobal * 0.02;
+    const descJubTotal = descJubOrd + descJubEsp; // 13%
+    const descOS = subtotalRemunGlobal * 0.06;      // DOSEP / Obra Social
+    const descSind = (sindicatoVal === 1 || sindicatoVal === 2) ? (subtotalRemunGlobal * 0.015) : 0.0;
+    const segurosFijos = 5372.81 + 100.0 + 10.0; // Retenciones oficiales obligatorias de recibo
+    const ganEl = document.getElementById("impuestoGanancias");
+    const descGanancias = ganEl ? (parseFloat(ganEl.value) || 0.0) : 0.0;
+    const totalDescuentos = descJubTotal + descOS + descSind + segurosFijos + descGanancias;
+
+    // Aguinaldo SAC
+    const sacBruto = subtotalRemunGlobal / 2.0;
+    const descSacLey = sacBruto * (0.19 + (sindicatoVal > 0 ? 0.015 : 0.0));
+    const sacNeto = sacBruto - descSacLey;
+
+    let bolsilloGlobal = totalBrutoGlobal - totalDescuentos;
+    if (periodo.endsWith("-SAC")) {
+        bolsilloGlobal += sacNeto;
+    }
+
+    ultimoCalculoGlobal = {
+        periodo,
+        cantidadPuestos: listaCargosDocente.length,
+        desglosePorPuesto,
+        desglosesCargos,
+        totalBruto: totalBrutoGlobal,
+        totalRemunerativo: subtotalRemunGlobal,
+        totalNoRemunerativo: subtotalNoRemunGlobal,
+        totalDescuentos,
+        bolsillo: bolsilloGlobal,
+        conceptos: {
+            basico: basicoGlobal,
+            pagoZona: zonaGlobal,
+            pagoAntiguedad: antGlobal,
+            compRem: compRemGlobal,
+            adicionalCargo: adicCargoGlobal,
+            enseñanzaEnAula: presencialidadGlobal,
+            compNoRem: compNoRemGlobal,
+            sumaNoRemun: sumaNoRemunGlobal,
+            fonid: fonidGlobal,
+            asignacionHijos: asignacionHijosGlobal,
+            bonoExt: bonoExtGlobal,
+            descJubOrd, descJubEsp, descOS, descSind, descGanancias, segurosFijos,
+            sacBruto, descSacLey, sacNeto
+        }
+    };
+
+    renderizarResultadosPluriempleo(ultimoCalculoGlobal);
+    return ultimoCalculoGlobal;
+}
+
+function renderizarResultadosPluriempleo(res) {
+    if (!res) return;
+    const c = res.conceptos;
+
+    // Mostrar sección de resultados
+    const seccionRes = document.getElementById("seccion-resultados");
+    if (seccionRes) {
+        seccionRes.style.display = "block";
+    }
+
+    // Totales de cabecera
+    const elBolsillo = document.getElementById("res-total-bolsillo");
+    if (elBolsillo) elBolsillo.textContent = aPesos(res.bolsillo);
+
+    const elBruto = document.getElementById("res-total-bruto");
+    if (elBruto) elBruto.textContent = aPesos(res.totalBruto);
+
+    const elDesc = document.getElementById("res-total-descuentos");
+    if (elDesc) elDesc.textContent = "-" + aPesos(res.totalDescuentos);
+
+    // Subtotales de acordeones
+    const elSubRem = document.getElementById("res-subtotal-remun");
+    if (elSubRem) elSubRem.textContent = aPesos(res.totalRemunerativo);
+
+    const elSubNoRem = document.getElementById("res-subtotal-noremun");
+    if (elSubNoRem) elSubNoRem.textContent = aPesos(res.totalNoRemunerativo);
+
+    const elSubDesc = document.getElementById("res-subtotal-desc");
+    if (elSubDesc) elSubDesc.textContent = "-" + aPesos(res.totalDescuentos);
+
+    // Detalle Remunerativo
+    const elBasico = document.getElementById("res-basico");
+    if (elBasico) elBasico.textContent = aPesos(c.basico);
+
+    const elZona = document.getElementById("res-zona");
+    if (elZona) elZona.textContent = aPesos(c.pagoZona);
+
+    const elAnt = document.getElementById("res-antiguedad");
+    if (elAnt) elAnt.textContent = aPesos(c.pagoAntiguedad);
+
+    const elCompRem = document.getElementById("res-comp-rem");
+    if (elCompRem) elCompRem.textContent = aPesos(c.compRem);
+
+    const elAdicCargo = document.getElementById("res-adic-cargo");
+    if (elAdicCargo) elAdicCargo.textContent = aPesos(c.adicionalCargo);
+
+    const elPres = document.getElementById("res-presencialidad");
+    if (elPres) elPres.textContent = aPesos(c.enseñanzaEnAula);
+
+    const elTotalRem = document.getElementById("res-total-remun-tabla");
+    if (elTotalRem) elTotalRem.textContent = aPesos(res.totalRemunerativo);
+
+    // Detalle No Remunerativo
+    const elCompNoRem = document.getElementById("res-comp-norem");
+    if (elCompNoRem) elCompNoRem.textContent = aPesos(c.compNoRem);
+
+    const elSumaNoRem = document.getElementById("res-suma-norem");
+    if (elSumaNoRem) elSumaNoRem.textContent = aPesos(c.sumaNoRemun);
+
+    const elFonid = document.getElementById("res-fonid");
+    if (elFonid) elFonid.textContent = aPesos(c.fonid);
+
+    const elAsigHijos = document.getElementById("res-asig-hijos");
+    if (elAsigHijos) elAsigHijos.textContent = aPesos(c.asignacionHijos);
+
+    const elBonoExt = document.getElementById("res-bono-ext");
+    if (elBonoExt) elBonoExt.textContent = aPesos(c.bonoExt);
+
+    const elTotalNoRem = document.getElementById("res-total-noremun-tabla");
+    if (elTotalNoRem) elTotalNoRem.textContent = aPesos(res.totalNoRemunerativo);
+
+    // Detalle Descuentos
+    const elDescJubOrd = document.getElementById("res-desc-jub-ord");
+    if (elDescJubOrd) elDescJubOrd.textContent = "-" + aPesos(c.descJubOrd);
+
+    const elDescJubEsp = document.getElementById("res-desc-jub-esp");
+    if (elDescJubEsp) elDescJubEsp.textContent = "-" + aPesos(c.descJubEsp);
+
+    const elDescOs = document.getElementById("res-desc-os");
+    if (elDescOs) elDescOs.textContent = "-" + aPesos(c.descOS);
+
+    const elDescSind = document.getElementById("res-desc-sind");
+    if (elDescSind) elDescSind.textContent = "-" + aPesos(c.descSind);
+
+    const elDescGanancias = document.getElementById("res-desc-ganancias");
+    if (elDescGanancias) elDescGanancias.textContent = "-" + aPesos(c.descGanancias || 0);
+
+    const elDescSeguros = document.getElementById("res-desc-seguros");
+    if (elDescSeguros) elDescSeguros.textContent = "-" + aPesos(c.segurosFijos);
+
+    const elTotalDesc = document.getElementById("res-total-desc-tabla");
+    if (elTotalDesc) elTotalDesc.textContent = "-" + aPesos(res.totalDescuentos);
+
+    // SAC
+    const elSacBruto = document.getElementById("res-sac-bruto");
+    if (elSacBruto) elSacBruto.textContent = aPesos(c.sacBruto);
+
+    const elSacDesc = document.getElementById("res-sac-desc");
+    if (elSacDesc) elSacDesc.textContent = "-" + aPesos(c.descSacLey);
+
+    const elSacNeto = document.getElementById("res-sac-neto");
+    if (elSacNeto) elSacNeto.textContent = aPesos(c.sacNeto);
+
+    const elSacNetoTabla = document.getElementById("res-sac-neto-tabla");
+    if (elSacNetoTabla) elSacNetoTabla.textContent = aPesos(c.sacNeto);
+
+    // Pluriempleo resumen si tiene más de 1 cargo
+    const resumenPluriBox = document.getElementById("resumen-pluriempleo-box");
+    if (resumenPluriBox) {
+        if (res.desglosePorPuesto.length > 1) {
+            resumenPluriBox.style.display = "block";
+            resumenPluriBox.innerHTML = `
+                <div class="card-resumen-pluriempleo" style="background:#0f172a; border:1px solid #334155; border-radius:12px; padding:16px; margin-bottom:20px;">
+                    <h4 style="color:#f8fafc; margin-bottom:12px; font-size:14px;">🏢 Detalle Consolidado por Puestos de Trabajo (${res.desglosePorPuesto.length} Desempeños):</h4>
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
+                        ${res.desglosePorPuesto.map(p => `
+                            <div style="background:#1e293b; padding:12px; border-radius:8px; border-left:4px solid #3b82f6;">
+                                <div style="font-weight:bold; color:#e2e8f0; font-size:13px;">Puesto ${p.puestoNum}: ${p.escuelaNombre}</div>
+                                <div style="font-size:11px; color:#94a3b8; margin:4px 0;">Cargo: ${p.cargoTipo} (${p.zonaPct}% zona)</div>
+                                <div style="font-size:12px; color:#38bdf8; font-weight:600;">Bruto: ${aPesos(p.bruto)}</div>
+                            </div>
+                        `).join("")}
+                    </div>
+                </div>
+            `;
+        } else {
+            resumenPluriBox.style.display = "none";
+        }
+    }
+
+    // Auditoría opcional contra recibo de bolsillo cobrado
+    const inpCobrado = document.getElementById("sueldo-cobrado-recibo");
+    const cobradoVal = inpCobrado ? parseFloat(inpCobrado.value) : 0;
+    const cardAuditAct = document.getElementById("card-auditoria-actividad");
+
+    if (cardAuditAct) {
+        if (cobradoVal > 0) {
+            const dif = res.bolsillo - cobradoVal;
+            const difRetro = dif > 0 ? (dif * 24 + dif * 2) : 0; // 24 meses + 2 SAC
+            cardAuditAct.style.display = "block";
+
+            const elTeorico = document.getElementById("aud-act-teorico");
+            if (elTeorico) elTeorico.textContent = aPesos(res.bolsillo);
+
+            const elCobrado = document.getElementById("aud-act-cobrado");
+            if (elCobrado) elCobrado.textContent = aPesos(cobradoVal);
+
+            const elDif = document.getElementById("aud-act-dif");
+            if (elDif) elDif.textContent = (dif >= 0 ? "+ " : "- ") + aPesos(Math.abs(dif));
+
+            const elRetro = document.getElementById("aud-act-retro");
+            if (elRetro) elRetro.textContent = aPesos(difRetro);
+
+            const btnWp = document.getElementById("btn-whatsapp-actividad");
+            if (btnWp) {
+                const msg = encodeURIComponent(`Hola Estudio SCQ, realicé la auditoría salarial docente en su web. Sueldo que debería cobrar: ${aPesos(res.bolsillo)}, Monto depositado por la Provincia: ${aPesos(cobradoVal)}. Diferencia mensual: ${aPesos(dif)}. Deseo iniciar el reclamo administrativo de reajuste.`);
+                btnWp.href = `https://wa.me/5492657302041?text=${msg}`;
+            }
+        } else {
+            cardAuditAct.style.display = "none";
+        }
+    }
+
+    // Renderizar Gráfico
+    renderizarGraficoSueldo(res);
+
+    // Desplazar suavemente a los resultados
+    if (seccionRes) {
+        seccionRes.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+}
+
+function renderizarGraficoSueldo(res) {
+    const canvas = document.getElementById("graficoSueldo");
+    if (!canvas || !window.Chart) return;
+
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    const ctx = canvas.getContext("2d");
+    chartInstance = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: [
+                "Haberes Sujetos a Aporte (Remunerativo)",
+                "Haberes No Remunerativos (Sin Aporte)",
+                "Descuentos de Ley (Jubilación + Obra Social)"
+            ],
+            datasets: [{
+                data: [
+                    res.totalRemunerativo,
+                    res.totalNoRemunerativo,
+                    res.totalDescuentos
+                ],
+                backgroundColor: [
+                    "#10b981", // Verde
+                    "#3b82f6", // Azul
+                    "#ef4444"  // Rojo
+                ],
+                borderWidth: 2,
+                borderColor: "#1e293b"
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: "bottom",
+                    labels: {
+                        color: "#e2e8f0",
+                        font: { size: 12 }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (ctx) {
+                            return ` ${ctx.label}: ${aPesos(ctx.raw)}`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function numeroALetrasJS(num) {
+    if (isNaN(num)) return "";
+    const entero = Math.floor(Math.abs(num));
+    const centavos = Math.round((Math.abs(num) - entero) * 100);
+    const centavosStr = centavos.toString().padStart(2, "0") + "/100";
+
+    function unidades(n) {
+        switch (n) {
+            case 1: return "UN";
+            case 2: return "DOS";
+            case 3: return "TRES";
+            case 4: return "CUATRO";
+            case 5: return "CINCO";
+            case 6: return "SEIS";
+            case 7: return "SIETE";
+            case 8: return "OCHO";
+            case 9: return "NUEVE";
+            default: return "";
+        }
+    }
+    function decenasY(str, n) {
+        if (n > 0) return str + " Y " + unidades(n);
+        return str;
+    }
+    function decenas(n) {
+        const d = Math.floor(n / 10);
+        const u = n - (d * 10);
+        switch (d) {
+            case 1:
+                switch (u) {
+                    case 0: return "DIEZ";
+                    case 1: return "ONCE";
+                    case 2: return "DOCE";
+                    case 3: return "TRECE";
+                    case 4: return "CATORCE";
+                    case 5: return "QUINCE";
+                    default: return "DIECI" + unidades(u);
+                }
+            case 2:
+                if (u === 0) return "VEINTE";
+                return "VEINTI" + unidades(u);
+            case 3: return decenasY("TREINTA", u);
+            case 4: return decenasY("CUARENTA", u);
+            case 5: return decenasY("CINCUENTA", u);
+            case 6: return decenasY("SESENTA", u);
+            case 7: return decenasY("SETENTA", u);
+            case 8: return decenasY("OCHENTA", u);
+            case 9: return decenasY("NOVENTA", u);
+            case 0: return unidades(u);
+            default: return "";
+        }
+    }
+    function centenas(n) {
+        const c = Math.floor(n / 100);
+        const d = n - (c * 100);
+        switch (c) {
+            case 1:
+                if (d > 0) return "CIENTO " + decenas(d);
+                return "CIEN";
+            case 2: return "DOSCIENTOS " + decenas(d);
+            case 3: return "TRESCIENTOS " + decenas(d);
+            case 4: return "CUATROCIENTOS " + decenas(d);
+            case 5: return "QUINIENTOS " + decenas(d);
+            case 6: return "SEISCIENTOS " + decenas(d);
+            case 7: return "SETECIENTOS " + decenas(d);
+            case 8: return "OCHOCIENTOS " + decenas(d);
+            case 9: return "NOVECIENTOS " + decenas(d);
+            default: return decenas(d);
+        }
+    }
+    function seccion(n, divisor, strSingular, strPlural) {
+        const cientos = Math.floor(n / divisor);
+        const resto = n - (cientos * divisor);
+        let letras = "";
+        if (cientos > 0) {
+            if (cientos > 1) letras = centenas(cientos) + " " + strPlural;
+            else letras = strSingular;
+        }
+        return { letras, resto };
+    }
+    function miles(n) {
+        const divisor = 1000;
+        const cientos = Math.floor(n / divisor);
+        const resto = n - (cientos * divisor);
+        let strMiles = seccion(n, divisor, "MIL", "MIL").letras;
+        let strCentenas = centenas(resto);
+        if (strMiles === "") return strCentenas;
+        return (strMiles + " " + strCentenas).trim();
+    }
+    function millones(n) {
+        const divisor = 1000000;
+        const cientos = Math.floor(n / divisor);
+        const resto = n - (cientos * divisor);
+        let strMillones = seccion(n, divisor, "UN MILLON", "MILLONES").letras;
+        let strMiles = miles(resto);
+        if (strMillones === "") return strMiles;
+        return (strMillones + " " + strMiles).trim();
+    }
+
+    let letras = millones(entero);
+    if (!letras || letras === "") letras = "CERO";
+    return `${letras} PESOS CON ${centavosStr}`;
+}
+
+// ==========================================
+// MODAL & DESCARGA DE RECIBO SISTEMA SCQ
+// ==========================================
+window.abrirModalReciboSCQ = function () {
+    const res = calcularSueldoPluriempleo();
+    if (!res) return;
+
+    const periodoEl = document.getElementById("mesCalculo");
+    const periodo = periodoEl ? periodoEl.value : "2026-08";
+
+    const antEl = document.getElementById("antiguedad");
+    const antTxt = antEl ? antEl.options[antEl.selectedIndex].text : "20 a 21 años (100%)";
+    const hoyStr = new Date().toLocaleDateString("es-AR", { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+    let cargosHTML = "";
+    let totalConAportes = 0;
+    let totalSinAportes = 0;
+
+    res.desglosesCargos.forEach((dc) => {
+        const estNombre = dc.est ? dc.est.nombre : "Establecimiento Educativo";
+        const isHs = dc.cargo.cargoTipo === "horaSecundaria" || dc.cargo.cargoTipo === "ifdcHorasReloj";
+        const isIfdc = dc.cargo.cargoTipo && dc.cargo.cargoTipo.startsWith("ifdc");
+        const isRegente = dc.cargo.cargoTipo === "regente" || dc.cargo.cargoTipo === "directorSec" || dc.cargo.cargoTipo === "viceDirectorSec";
+        
+        let basicoNombre = "006-20 BASICO CARGO";
+        if (isIfdc) {
+            basicoNombre = isHs ? "007-20 BASICO HORAS RELOJ IFDC (Ley XV-0555)" : "006-20 BASICO DEDICACION IFDC (Ley XV-0555)";
+        } else if (isHs) {
+            basicoNombre = "007-20 BASICO HORAS SECUNDARIO";
+        }
+        
+        const umBasico = isHs ? (isIfdc ? "HR" : "H") : "$";
+        const ucBasico = isHs ? (dc.cargo.cantHoras || 15) : 1;
+
+        let subCon = dc.basico + dc.compRem + dc.pagoAntiguedad + dc.pagoZona + (dc.adicionalTurno || 0) + (dc.adicionalSeccion || 0) + dc.adicionalCargo + dc.adicionalDedicacion + dc.enseñanzaEnAula;
+        let subSin = dc.compNoRem + dc.sumaNoRemun + dc.fonid + (dc.compCompensador || 0) + dc.bonoExt;
+
+        totalConAportes += subCon;
+        totalSinAportes += subSin;
+
+        cargosHTML += `
+            <tr class="cargo-header-row" style="background:#e2e8f0; font-weight:bold;">
+                <td colspan="8">
+                    Dependencia: ${estNombre} | Función: ${dc.cargo.cargoTipo || "Docente"} | Sueldo Básico: ${aPesos(dc.basico)} | Designación: Titular
+                </td>
+            </tr>
+            ${dc.compRem > 0 ? `
+            <tr>
+                <td>100-22 COMPLEMENTO REMUNERATIVO</td>
+                <td class="text-center">${periodo}</td>
+                <td class="text-center">%</td>
+                <td class="text-center">140</td>
+                <td class="text-right">${aPesos(dc.compRem)}</td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+            </tr>` : ''}
+            <tr>
+                <td>102-11 ANTIGUEDAD - DOCENTES</td>
+                <td class="text-center">${periodo}</td>
+                <td class="text-center">A</td>
+                <td class="text-center">${antTxt.split(" ")[0]}</td>
+                <td class="text-right">${aPesos(dc.pagoAntiguedad)}</td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+            </tr>
+            <tr>
+                <td>${basicoNombre}</td>
+                <td class="text-center">${periodo}</td>
+                <td class="text-center">${umBasico}</td>
+                <td class="text-center">${ucBasico}</td>
+                <td class="text-right">${aPesos(dc.basico)}</td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+            </tr>
+            ${dc.pagoZona > 0 ? `
+            <tr>
+                <td>184-00 BONIFICACION ZONA - DOCENTES</td>
+                <td class="text-center">${periodo}</td>
+                <td class="text-center">%</td>
+                <td class="text-center">${obtenerPorcentajeZonaCargo(dc.cargo)}</td>
+                <td class="text-right">${aPesos(dc.pagoZona)}</td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+            </tr>` : ''}
+            ${dc.adicionalSeccion > 0 ? `
+            <tr>
+                <td>212-10 ADICIONAL POR SECCIONES</td>
+                <td class="text-center">${periodo}</td>
+                <td class="text-center">$</td>
+                <td class="text-center">1</td>
+                <td class="text-right">${aPesos(dc.adicionalSeccion)}</td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+            </tr>` : ''}
+            ${dc.adicionalTurno > 0 ? `
+            <tr>
+                <td>211-10 ADICIONAL POR TURNOS</td>
+                <td class="text-center">${periodo}</td>
+                <td class="text-center">$</td>
+                <td class="text-center">1</td>
+                <td class="text-right">${aPesos(dc.adicionalTurno)}</td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+            </tr>` : ''}
+            ${(dc.adicionalCargo + dc.adicionalDedicacion) > 0 ? `
+            <tr>
+                <td>100-26 ADICIONAL DEDICACION / CARGO</td>
+                <td class="text-center">${periodo}</td>
+                <td class="text-center">$</td>
+                <td class="text-center">1</td>
+                <td class="text-right">${aPesos(dc.adicionalCargo + dc.adicionalDedicacion)}</td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+            </tr>` : ''}
+            ${dc.enseñanzaEnAula > 0 ? `
+            <tr>
+                <td>211-10 ADICIONAL ENSEÑANZA EN AULA</td>
+                <td class="text-center">${periodo}</td>
+                <td class="text-center">$</td>
+                <td class="text-center">1</td>
+                <td class="text-right">${aPesos(dc.enseñanzaEnAula)}</td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+            </tr>` : ''}
+            ${dc.compNoRem > 0 ? `
+            <tr>
+                <td>100-23 COMPLEMENTO NO REMUNERATIVO</td>
+                <td class="text-center">${periodo}</td>
+                <td class="text-center">%</td>
+                <td class="text-center">97</td>
+                <td class="text-right"></td>
+                <td class="text-right">${aPesos(dc.compNoRem)}</td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+            </tr>` : ''}
+            <tr>
+                <td>099-41 SUMA NO REMUNERATIVA</td>
+                <td class="text-center">${periodo}</td>
+                <td class="text-center">$</td>
+                <td class="text-center">1</td>
+                <td class="text-right"></td>
+                <td class="text-right">${aPesos(dc.sumaNoRemun)}</td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+            </tr>
+            ${dc.compCompensador > 0 ? `
+            <tr>
+                <td>100-26 COMPLEMENTO COMPENSADOR</td>
+                <td class="text-center">${periodo}</td>
+                <td class="text-center">$</td>
+                <td class="text-center">1</td>
+                <td class="text-right"></td>
+                <td class="text-right">${aPesos(dc.compCompensador)}</td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+            </tr>` : ''}
+            <tr>
+                <td>090-11 FONDO DE INCENTIVO DOCENTE PROVINCIAL</td>
+                <td class="text-center">${periodo}</td>
+                <td class="text-center">$</td>
+                <td class="text-center">1</td>
+                <td class="text-right"></td>
+                <td class="text-right">${aPesos(dc.fonid)}</td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+            </tr>
+            ${dc.bonoExt > 0 ? `
+            <tr>
+                <td>109-00 BONO EXTRAORDINARIO PROVINCIAL</td>
+                <td class="text-center">${periodo}</td>
+                <td class="text-center">$</td>
+                <td class="text-center">1</td>
+                <td class="text-right"></td>
+                <td class="text-right">${aPesos(dc.bonoExt)}</td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+            </tr>` : ''}
+            <tr class="subtotal-row" style="background:#f1f5f9; font-weight:bold;">
+                <td colspan="4" class="text-right">Subtotal Puesto:</td>
+                <td class="text-right">${aPesos(subCon)}</td>
+                <td class="text-right">${aPesos(subSin)}</td>
+                <td></td>
+                <td></td>
+            </tr>
+        `;
+    });
+
+    const retJub11 = totalConAportes * 0.11;
+    const retJub2 = totalConAportes * 0.02;
+    const retDosep6 = totalConAportes * 0.06;
+    const retSegOblig = 5372.81;
+    const retSegSoc = 100.00;
+    const retSegMut = 10.00;
+    const retGanancias = (res.conceptos && res.conceptos.descGanancias) ? res.conceptos.descGanancias : 0.0;
+    const totalRetenciones = retJub11 + retJub2 + retDosep6 + retSegOblig + retSegSoc + retSegMut + retGanancias;
+    const netoFinal = totalConAportes + totalSinAportes - totalRetenciones;
+
+    const primerEstNombre = res.desglosesCargos[0] && res.desglosesCargos[0].est ? res.desglosesCargos[0].est.nombre : "Establecimiento Educativo";
+
+    const reciboHTML = `
+        <div id="recibo-scq-print-area">
+            <div class="recibo-hdr-box" style="background:#1F497D; color:#ffffff; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #C59B27;">
+                <div>
+                    <strong style="font-size:14px; letter-spacing:0.5px;">RECIBO DE HABERES • SISTEMA SCQ PREVISIONAL</strong><br>
+                    <span style="font-size:11px; color:#C59B27;"><strong>ESTUDIO JURÍDICO SEBASTIÁN CAREAGA QUIROGA & ASOCIADOS</strong></span> 
+                    <span style="font-size:10px; color:#e2e8f0;">| División Derecho Docente & Previsional</span><br>
+                    <span style="font-size:9.5px; color:#cbd5e1;">Web: www.scq.com.ar • WhatsApp: +54 9 2657 302041 • San Luis & Villa Mercedes</span>
+                </div>
+                <div style="text-align:right;">
+                    <strong style="font-size:14px; color:#ffffff;">SCQ & ASOCIADOS</strong><br>
+                    <span style="font-size:10px; color:#C59B27;"><strong>AUDITORÍA SALARIAL Y PREVISIONAL</strong></span><br>
+                    <span style="font-size:9.5px; color:#e2e8f0;">Provincia de San Luis • Ley XV-0387-2004 / Ley XV-0555-2007</span>
+                </div>
+            </div>
+
+            <table class="recibo-table" style="width:100%; border-collapse:collapse; margin-top:6px; font-size:10.5px;">
+                <tr>
+                    <th style="background:#f1f5f9; border:1px solid #777; padding:4px;">Cuil</th>
+                    <th style="background:#f1f5f9; border:1px solid #777; padding:4px;">Apellido y Nombre</th>
+                    <th style="background:#f1f5f9; border:1px solid #777; padding:4px;">Fecha Alta</th>
+                    <th style="background:#f1f5f9; border:1px solid #777; padding:4px;">Fecha de Emisión</th>
+                    <th style="background:#f1f5f9; border:1px solid #777; padding:4px;">Liquidación N°</th>
+                </tr>
+                <tr>
+                    <td class="text-center" style="border:1px solid #777; padding:4px;">20-XXXXXXXX-X</td>
+                    <td style="border:1px solid #777; padding:4px;"><strong>DOCENTE AUDITADO SCQ</strong></td>
+                    <td class="text-center" style="border:1px solid #777; padding:4px;">08-2006</td>
+                    <td class="text-center" style="border:1px solid #777; padding:4px;">${hoyStr}</td>
+                    <td class="text-center" style="border:1px solid #777; padding:4px;">SCQ-${periodo.replace('-', '')}</td>
+                </tr>
+                <tr>
+                    <th colspan="2" style="background:#f1f5f9; border:1px solid #777; padding:4px;">Dependencia Principal / Establecimiento</th>
+                    <th style="background:#f1f5f9; border:1px solid #777; padding:4px;">Función / Cargo</th>
+                    <th style="background:#f1f5f9; border:1px solid #777; padding:4px;">Antigüedad</th>
+                    <th style="background:#f1f5f9; border:1px solid #777; padding:4px;">Período Liquidado</th>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border:1px solid #777; padding:4px;">${primerEstNombre}</td>
+                    <td style="border:1px solid #777; padding:4px;">${listaCargosDocente[0] ? listaCargosDocente[0].cargoTipo : "Docente"}</td>
+                    <td class="text-center" style="border:1px solid #777; padding:4px;">${antTxt}</td>
+                    <td class="text-center" style="border:1px solid #777; padding:4px;"><strong>${periodo}</strong></td>
+                </tr>
+            </table>
+
+            <div style="background:#d9d9d9; font-weight:bold; font-size:10.5px; text-align:center; padding:4px; margin-top:6px; border:1px solid #777;">
+                Detalle de Liquidación Salarial Docente (Escala Oficial San Luis & Estatuto Docente)
+            </div>
+
+            <table class="recibo-table" style="width:100%; border-collapse:collapse; margin-top:2px; font-size:10px;">
+                <thead>
+                    <tr style="background:#f1f5f9;">
+                        <th style="width:34%; border:1px solid #777; padding:4px;">Concepto</th>
+                        <th style="width:8%; border:1px solid #777; padding:4px;">Período</th>
+                        <th style="width:4%; border:1px solid #777; padding:4px;">Um</th>
+                        <th style="width:5%; border:1px solid #777; padding:4px;">Uc</th>
+                        <th style="width:13%; border:1px solid #777; padding:4px;">Haberes C/Aportes</th>
+                        <th style="width:13%; border:1px solid #777; padding:4px;">Haberes S/Aportes</th>
+                        <th style="width:8%; border:1px solid #777; padding:4px;">Asignaciones</th>
+                        <th style="width:15%; border:1px solid #777; padding:4px;">Retenciones Ley</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${cargosHTML}
+                    <tr>
+                        <td style="border:1px solid #777; padding:3px 5px;">500-00 APORTE JUBILATORIO (SIPA 11%)</td>
+                        <td class="text-center" style="border:1px solid #777; padding:3px 5px;">${periodo}</td>
+                        <td class="text-center" style="border:1px solid #777; padding:3px 5px;">%</td>
+                        <td class="text-center" style="border:1px solid #777; padding:3px 5px;">11</td>
+                        <td style="border:1px solid #777;"></td><td style="border:1px solid #777;"></td><td style="border:1px solid #777;"></td>
+                        <td class="text-right" style="border:1px solid #777; padding:3px 5px; color:#b91c1c;">-${aPesos(retJub11)}</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #777; padding:3px 5px;">500-10 APOR.JUB. ART.1 DEC.NAC.137/05 (DOCENTE 2%)</td>
+                        <td class="text-center" style="border:1px solid #777; padding:3px 5px;">${periodo}</td>
+                        <td class="text-center" style="border:1px solid #777; padding:3px 5px;">%</td>
+                        <td class="text-center" style="border:1px solid #777; padding:3px 5px;">2</td>
+                        <td style="border:1px solid #777;"></td><td style="border:1px solid #777;"></td><td style="border:1px solid #777;"></td>
+                        <td class="text-right" style="border:1px solid #777; padding:3px 5px; color:#b91c1c;">-${aPesos(retJub2)}</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #777; padding:3px 5px;">502-03 OBRA SOCIAL DOSEP - DOCENTE (6%)</td>
+                        <td class="text-center" style="border:1px solid #777; padding:3px 5px;">${periodo}</td>
+                        <td class="text-center" style="border:1px solid #777; padding:3px 5px;">%</td>
+                        <td class="text-center" style="border:1px solid #777; padding:3px 5px;">6</td>
+                        <td style="border:1px solid #777;"></td><td style="border:1px solid #777;"></td><td style="border:1px solid #777;"></td>
+                        <td class="text-right" style="border:1px solid #777; padding:3px 5px; color:#b91c1c;">-${aPesos(retDosep6)}</td>
+                    </tr>
+                    ${retGanancias > 0 ? `
+                    <tr>
+                        <td style="border:1px solid #777; padding:3px 5px;">508-00 IMPUESTO A LAS GANANCIAS</td>
+                        <td class="text-center" style="border:1px solid #777; padding:3px 5px;">${periodo}</td>
+                        <td class="text-center" style="border:1px solid #777; padding:3px 5px;">$</td>
+                        <td class="text-center" style="border:1px solid #777; padding:3px 5px;">1</td>
+                        <td style="border:1px solid #777;"></td><td style="border:1px solid #777;"></td><td style="border:1px solid #777;"></td>
+                        <td class="text-right" style="border:1px solid #777; padding:3px 5px; color:#b91c1c;">-${aPesos(retGanancias)}</td>
+                    </tr>` : ''}
+                    <tr>
+                        <td style="border:1px solid #777; padding:3px 5px;">534-00 SEGURO OBLIGATORIO TITULAR</td>
+                        <td class="text-center" style="border:1px solid #777; padding:3px 5px;">${periodo}</td>
+                        <td class="text-center" style="border:1px solid #777; padding:3px 5px;">$</td>
+                        <td class="text-center" style="border:1px solid #777; padding:3px 5px;">1</td>
+                        <td style="border:1px solid #777;"></td><td style="border:1px solid #777;"></td><td style="border:1px solid #777;"></td>
+                        <td class="text-right" style="border:1px solid #777; padding:3px 5px; color:#b91c1c;">-${aPesos(retSegOblig)}</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #777; padding:3px 5px;">540-00 SEGURO SOCIAL Y MUTUAL</td>
+                        <td class="text-center" style="border:1px solid #777; padding:3px 5px;">${periodo}</td>
+                        <td class="text-center" style="border:1px solid #777; padding:3px 5px;">$</td>
+                        <td class="text-center" style="border:1px solid #777; padding:3px 5px;">1</td>
+                        <td style="border:1px solid #777;"></td><td style="border:1px solid #777;"></td><td style="border:1px solid #777;"></td>
+                        <td class="text-right" style="border:1px solid #777; padding:3px 5px; color:#b91c1c;">-${aPesos(retSegSoc + retSegMut)}</td>
+                    </tr>
+                    <tr class="totales-row" style="background:#e2e8f0; font-weight:bold;">
+                        <td colspan="4" class="text-right" style="border:1px solid #777; padding:5px;">Totales:</td>
+                        <td class="text-right" style="border:1px solid #777; padding:5px;">${aPesos(totalConAportes)}</td>
+                        <td class="text-right" style="border:1px solid #777; padding:5px;">${aPesos(totalSinAportes)}</td>
+                        <td class="text-right" style="border:1px solid #777; padding:5px;">$ 0,00</td>
+                        <td class="text-right" style="border:1px solid #777; padding:5px; color:#b91c1c;">-${aPesos(totalRetenciones)}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="recibo-footer-grid" style="display:grid; grid-template-columns:1.5fr 1fr 1fr; gap:10px; margin-top:8px; border:1px solid #777; padding:8px; font-size:10px;">
+                <div class="recibo-footer-col">
+                    <strong style="font-size:13px; color:#0A1128;">Neto a Percibir: <span>${aPesos(netoFinal)}</span></strong><br>
+                    <span style="font-size:9.5px; color:#333;">Son: <em>${numeroALetrasJS(netoFinal)}</em></span><br>
+                    <span style="font-size:9px; color:#555;"><strong>Dictamen Técnico:</strong> Liquidación auditada conforme escala salarial vigente, Estatuto Docente Ley XV-0387-2004 / Ley XV-0555-2007 y régimen previsional Ley 24.016.</span>
+                </div>
+                <div class="recibo-footer-col">
+                    <strong>Datos Bancarios / Cuenta Referencia:</strong><br>
+                    <span style="font-size:9.5px; color:#333;">
+                        Banco: BNA - Banco de la Nación Argentina<br>
+                        Cuenta N°: 3621996262<br>
+                        C.B.U. N°: 0110362330036219962629
+                    </span>
+                </div>
+                <div class="recibo-footer-col" style="text-align:center;">
+                    <strong>ESTUDIO JURÍDICO SCQ & ASOCIADOS</strong><br>
+                    <span style="font-size:9px; color:#555;">Firma / Sello de Auditoría Previsional</span><br><br>
+                    <strong style="font-size:10px; color:#003366;">Sebastián Careaga Quiroga & Asoc.</strong><br>
+                    <span style="font-size:8px; color:#777;">Abogados Especialistas en Derecho Previsional & Docente</span>
+                </div>
+            </div>
+        </div>
+    `;
+
+    const papelEl = document.getElementById("recibo-scq-papel");
+    if (papelEl) papelEl.innerHTML = reciboHTML;
+
+    const modalEl = document.getElementById("modal-recibo-scq");
+    if (modalEl) modalEl.style.display = "flex";
+};
+
+window.cerrarModalReciboSCQ = function () {
+    const modalEl = document.getElementById("modal-recibo-scq");
+    if (modalEl) modalEl.style.display = "none";
+};
+
+window.imprimirReciboSCQ = function () {
+    window.print();
+};
+
+window.descargarReciboPDF = function () {
+    const element = document.getElementById("recibo-scq-print-area");
+    if (!element) {
+        window.print();
+        return;
+    }
+
+    const btn = document.getElementById("btn-download-pdf-scq");
+    const oldTxt = btn ? btn.innerHTML : "📥 Descargar Recibo (PDF)";
+    if (btn) btn.innerHTML = "⏳ Generando PDF...";
+
+    const periodoEl = document.getElementById("mesCalculo");
+    const perStr = periodoEl ? periodoEl.value : "Haberes";
+
+    const opt = {
+        margin: [4, 4, 4, 4],
+        filename: `Recibo_SCQ_${perStr}_Docente.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+    };
+
+    if (window.html2pdf) {
+        window.html2pdf().set(opt).from(element).save().then(() => {
+            if (btn) btn.innerHTML = oldTxt;
+        }).catch(err => {
+            console.error(err);
+            window.print();
+            if (btn) btn.innerHTML = oldTxt;
+        });
+    } else {
+        window.print();
+        if (btn) btn.innerHTML = oldTxt;
+    }
+};
+
+// ==========================================
+// AUDITORÍA PREVISIONAL 82% MÓVIL (ANSES)
+// ==========================================
+function ejecutarAuditoriaANSES() {
+    let resActivo = ultimoCalculoGlobal;
+    if (!resActivo) {
+        resActivo = calcularSueldoPluriempleo();
+    }
+    if (!resActivo) return;
+
+    const inpAnses = document.getElementById("haber-anses-input");
+    const haberAnses = inpAnses ? (parseFloat(inpAnses.value) || 0) : 0;
+    if (haberAnses <= 0) {
+        alert("Por favor ingrese el haber bruto mensual que actualmente percibe de ANSES.");
+        if (inpAnses) inpAnses.focus();
+        return;
+    }
+
+    const criterioEl = document.getElementById("criterio-base");
+    const criterio = criterioEl ? criterioEl.value : "integral";
+
+    const baseIntegral = resActivo.totalBruto;
+    const baseRemun = resActivo.totalRemunerativo;
+
+    const haber82Integral = baseIntegral * 0.82;
+    const haber82Remun = baseRemun * 0.82;
+
+    const haber82Aplicable = (criterio === "integral") ? haber82Integral : haber82Remun;
+    const diferencia = haber82Aplicable - haberAnses;
+    const brechaPct = haber82Aplicable > 0 ? ((diferencia / haber82Aplicable) * 100) : 0;
+    const retroactivo24m = diferencia > 0 ? (diferencia * 24 + (diferencia / 2) * 4) : 0;
+
+    // Mostrar sección
+    const seccionAudit = document.getElementById("seccion-resultados-auditoria");
+    if (seccionAudit) seccionAudit.style.display = "block";
+
+    // Valores
+    const elActivo = document.getElementById("audit-val-activo");
+    if (elActivo) elActivo.textContent = aPesos(baseIntegral);
+
+    const el82 = document.getElementById("audit-val-82");
+    if (el82) el82.textContent = aPesos(haber82Aplicable);
+
+    const elAnses = document.getElementById("audit-val-anses");
+    if (elAnses) elAnses.textContent = aPesos(haberAnses);
+
+    const elDif = document.getElementById("audit-val-dif");
+    if (elDif) elDif.textContent = aPesos(diferencia);
+
+    const elBrecha = document.getElementById("audit-val-brecha");
+    if (elBrecha) elBrecha.textContent = brechaPct.toFixed(2) + "%";
+
+    const elRetro = document.getElementById("audit-val-retroactivo");
+    if (elRetro) elRetro.textContent = aPesos(retroactivo24m);
+
+    // Comparativa 3 columnas
+    const compAnses = document.getElementById("comp-anses-val");
+    if (compAnses) compAnses.textContent = aPesos(haberAnses);
+
+    const compRemun = document.getElementById("comp-remun-val");
+    if (compRemun) compRemun.textContent = aPesos(haber82Remun);
+
+    const compIntegral = document.getElementById("comp-integral-val");
+    if (compIntegral) compIntegral.textContent = aPesos(haber82Integral);
+
+    // Veredicto
+    const cardVeredicto = document.getElementById("card-veredicto");
+    const badgeVeredicto = document.getElementById("audit-badge-veredicto");
+    const tituloVeredicto = document.getElementById("audit-titulo-veredicto");
+    const descVeredicto = document.getElementById("audit-desc-veredicto");
+
+    if (brechaPct >= 15.0) {
+        if (cardVeredicto) cardVeredicto.className = "card-veredicto veredicto-confiscatorio";
+        if (badgeVeredicto) badgeVeredicto.textContent = "CONFISCATORIEDAD GRAVE DETECTADA (> 15%)";
+        if (tituloVeredicto) tituloVeredicto.textContent = `Pérdida Confiscatoria del ${brechaPct.toFixed(1)}% (Doctrina CSJN "Gemelli" / "Badaro")`;
+        if (descVeredicto) descVeredicto.textContent = `ANSES le está liquidando un importe significativamente inferior al 82% móvil garantizado por la Ley 24.016. La merma supera el umbral del 15% de confiscatoriedad fijado por la Corte Suprema de Justicia de la Nación. Su caso es plenamente viable para reclamo administrativo y demanda judicial de reajuste.`;
+    } else if (brechaPct > 0) {
+        if (cardVeredicto) cardVeredicto.className = "card-veredicto veredicto-moderado";
+        if (badgeVeredicto) badgeVeredicto.textContent = "DIFERENCIA SALARIAL DETECTADA";
+        if (tituloVeredicto) tituloVeredicto.textContent = `Brecha del ${brechaPct.toFixed(1)}% a favor del Docente`;
+        if (descVeredicto) descVeredicto.textContent = `Existe una diferencia mensual no liquidada entre lo abonado por ANSES y el 82% móvil del cargo en actividad. Corresponde intimar el reajuste y el pago retroactivo acumulado de los últimos 24 meses.`;
+    } else {
+        if (cardVeredicto) cardVeredicto.className = "card-veredicto veredicto-correcto";
+        if (badgeVeredicto) badgeVeredicto.textContent = "HABER AJUSTADO A DERECHO";
+        if (tituloVeredicto) tituloVeredicto.textContent = "Su haber actual coincide o supera el 82% móvil legal";
+        if (descVeredicto) descVeredicto.textContent = "No se detectaron diferencias salariales perjudiciales en el período auditado respecto al valor activo declarado.";
+    }
+
+    // Texto de Dictamen Jurídico
+    const textoLegalEl = document.getElementById("audit-texto-legal");
+    if (textoLegalEl) {
+        const fechaHoy = new Date().toLocaleDateString("es-AR", { day: '2-digit', month: '2-digit', year: 'numeric' });
+        textoLegalEl.innerHTML = `
+            <p><strong>INFORME DE AUDITORÍA PREVISIONAL DOCENTE (Régimen Especial Ley 24.016)</strong></p>
+            <p><strong>Fecha:</strong> ${fechaHoy} | <strong>Dictaminante:</strong> Estudio Jurídico Sebastián Careaga Quiroga & Asociados</p>
+            <p><strong>1. Marco Normativo Aplicable:</strong> Conforme el Art. 14 bis de la Constitución Nacional, el Estatuto Docente de San Luis (Ley XV-0387-2004 / Ley XV-0555-2007) y la Ley Nacional N° 24.016, los docentes jubilados tienen derecho al 82% móvil de la remuneración total correspondiente al cargo u horas en actividad.</p>
+            <p><strong>2. Cuantificación del Perjuicio:</strong> El cargo auditado devenga en actividad un haber mensual de <strong>${aPesos(baseIntegral)}</strong>. En consecuencia, el 82% móvil legal asciende a <strong>${aPesos(haber82Aplicable)}</strong>, contrastado con los <strong>${aPesos(haberAnses)}</strong> efectivamente liquidados por ANSES, arrojando una merma mensual de <strong>${aPesos(diferencia)} (${brechaPct.toFixed(2)}%)</strong>.</p>
+            <p><strong>3. Retroactivo Exigible:</strong> Aplicando el plazo de prescripción bienal (Art. 82 Ley 18.037 / Ley 24.241), se estima una acreencia retroactiva acumulada de <strong>${aPesos(retroactivo24m)}</strong> más intereses moratorios a tasa pasiva/activa según jurisprudencia del fuero federal.</p>
+            <p><strong>4. Conclusión Pericial:</strong> Se recomienda formular formal reclamo de reajuste de haber y cobro de retroactividades ante la UDAI ANSES y su posterior reclamo en la Justicia Federal con patrocinio letrado especializado.</p>
+        `;
+    }
+
+    // WhatsApp CTA
+    const btnWpAud = document.getElementById("btn-whatsapp-auditoria");
+    if (btnWpAud) {
+        const msg = encodeURIComponent(`Hola Estudio Jurídico SCQ, realicé la auditoría previsional 82% móvil en su web. Mi haber ANSES es ${aPesos(haberAnses)}, el 82% móvil calculado es ${aPesos(haber82Aplicable)} y la diferencia mensual es de ${aPesos(diferencia)} (Retroactivo estimado: ${aPesos(retroactivo24m)}). Quisiera coordinar una consulta para iniciar el reclamo de reajuste.`);
+        btnWpAud.href = `https://wa.me/5492657302041?text=${msg}`;
+    }
+
+    if (seccionAudit) {
+        seccionAudit.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+}
+
+// ==========================================
+// COMPARATIVA PODER ADQUISITIVO VS INFLACIÓN
+// ==========================================
+function ejecutarComparativaInflacion() {
+    const selInicio = document.getElementById("inf-inicio");
+    const selFin = document.getElementById("inf-fin");
+    const fIni = selInicio ? selInicio.value : "2023-06";
+    const fFin = selFin ? selFin.value : "2026-06";
+
+    const vIni = HISTORIAL_HORA[fIni] || 4899.23;
+    const vFin = HISTORIAL_HORA[fFin] || 16963.44;
+
+    const aumentoDocentePct = ((vFin - vIni) / vIni) * 100.0;
+    const keyInf = `${fIni}_${fFin}`;
+    const inflacionPct = INFLACION_ACUMULADA_APROX[keyInf] || (INFLACION_ACUMULADA_APROX["2023-06_2026-06"] || 420.5);
+
+    const perdidaPoderPct = inflacionPct - aumentoDocentePct;
+
+    const seccionInf = document.getElementById("seccion-res-inflacion");
+    if (seccionInf) seccionInf.style.display = "block";
+
+    const elTitulo = document.getElementById("inf-res-titulo");
+    if (elTitulo) {
+        elTitulo.textContent = perdidaPoderPct > 0 
+            ? `Pérdida del Poder Adquisitivo: -${perdidaPoderPct.toFixed(1)}%`
+            : `Aumento Real de Poder Adquisitivo: +${Math.abs(perdidaPoderPct).toFixed(1)}%`;
+    }
+
+    const elDetalle = document.getElementById("inf-res-detalle");
+    if (elDetalle) {
+        elDetalle.innerHTML = `
+            <div style="font-size:14px; line-height:1.6; margin-top:10px;">
+                <p><strong>Valor Hora ${fIni}:</strong> ${aPesos(vIni)} ➔ <strong>Valor Hora ${fFin}:</strong> ${aPesos(vFin)}</p>
+                <p><strong>Variación Salarial Docente:</strong> +${aumentoDocentePct.toFixed(1)}%</p>
+                <p><strong>Inflación Acumulada (IPC):</strong> +${inflacionPct.toFixed(1)}%</p>
+                <hr style="border-color:#334155; margin:10px 0;">
+                <p style="color:${perdidaPoderPct > 0 ? '#ef4444' : '#10b981'}; font-weight:bold; font-size:15px;">
+                    ${perdidaPoderPct > 0 
+                        ? `📉 El valor de la hora cátedra docente perdió un ${perdidaPoderPct.toFixed(1)}% frente a la inflación en este período.`
+                        : `📈 El valor de la hora cátedra docente superó a la inflación en un ${Math.abs(perdidaPoderPct).toFixed(1)}%.`}
+                </p>
+            </div>
+        `;
+    }
+
+    if (seccionInf) {
+        seccionInf.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+}
+
+
+

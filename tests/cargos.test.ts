@@ -11,6 +11,7 @@ import {
   calcularConceptosDePuesto,
   calcularDescuentos,
   calcularPluriempleo,
+  cargosDelNivel,
   cerrarTotales,
   definicionDe,
   porcentajeAntiguedad,
@@ -38,6 +39,15 @@ const MES = "2026-09";
 const BASICA = obtenerConfiguracionActual1(MES);
 const IFDC = obtenerConfiguracionActual2(MES);
 const CONFIGS: ConfiguracionesDelMes = { basica: BASICA, ifdc: IFDC };
+
+/** Los tres seguros fijos, que se descuentan una sola vez por recibo. */
+function segurosFijos(): number {
+  return (
+    DESCUENTOS_FIJOS.seguroObligatorio +
+    DESCUENTOS_FIJOS.seguroSocial +
+    DESCUENTOS_FIJOS.seguroMutual
+  );
+}
 
 function opciones(extra: Partial<OpcionesCalculo> = {}): OpcionesCalculo {
   return { antiguedadPct: 0, afiliacion: "no", incluirSAC: false, ...extra };
@@ -72,6 +82,7 @@ describe("valores del mes que usan los tests", () => {
     // dejan de tener sentido, y conviene enterarse por un test y no por un recibo.
     assert.equal(BASICA.fecha, MES);
     assert.equal(IFDC.fecha, MES);
+    // Septiembre 2026 es el quinto tramo del 5% sobre los haberes de enero.
     assert.equal(BASICA.basicoCargo_Hora, 19276.625);
     assert.equal(IFDC.basicoCargo_Hora, 700048.41);
   });
@@ -134,7 +145,7 @@ describe("cargos que no se cobran por hora", () => {
     }
   });
 
-  test("enseñanza en el aula: depende del presentismo en grado y celador", () => {
+  test("enseñanza en el aula: depende del presentismo en grado", () => {
     const con = calcular("maestroGrado", { presencialidad: true });
     const sin = calcular("maestroGrado", { presencialidad: false });
     casiIgual(con.enseñanzaEnAula, 125000);
@@ -142,11 +153,37 @@ describe("cargos que no se cobran por hora", () => {
     casiIgual(con.totalRemunerativo - sin.totalRemunerativo, 125000);
   });
 
-  test("enseñanza en el aula: jardín cobra el ítem completo (comportamiento heredado)", () => {
-    // El formulario viejo mostraba el selector de presentismo, pero el cálculo
-    // del jardín lo ignoraba. Se mantiene igual para no cambiar importes ya
-    // publicados: está anotado como bug en docs/backlog.md.
-    casiIgual(calcular("maestroJardin", { presencialidad: false }).enseñanzaEnAula, 125000);
+  test("enseñanza en el aula: en jardín es más chico y también depende del presentismo", () => {
+    // Decreto N° 3864-MHIP-2026: 93.750 para jardín (15 horas reloj) contra
+    // 125.000 del maestro de grado. Antes la calculadora le pagaba 125.000
+    // siempre, sin mirar el presentismo.
+    const con = calcular("maestroJardin", { presencialidad: true });
+    const sin = calcular("maestroJardin", { presencialidad: false });
+    casiIgual(con.enseñanzaEnAula, 93750);
+    casiIgual(sin.enseñanzaEnAula, 0);
+  });
+
+  test("enseñanza en el aula: el maestro celador no cobra el ítem", () => {
+    // El 259p no figura entre las funciones del Decreto N° 3864-MHIP-2026.
+    casiIgual(calcular("maestroCelador", { presencialidad: true }).enseñanzaEnAula, 0);
+  });
+
+  test("el asesor pedagógico es un cargo, no horas: ni horas ni presentismo", () => {
+    const r = calcular("asesorPedagogico");
+    const definicion = definicionDe("asesorPedagogico");
+    assert.equal(definicion.usaHoras, false);
+    assert.equal(definicion.usaPresencialidad, false);
+    assert.equal(definicion.usaZona, true);
+    casiIgual(r.enseñanzaEnAula, 0);
+    // Sí cobra el adicional por cargo del 33%, como el resto de los cargos.
+    casiIgual(r.adicionalPorCargo, r.basico * BASICA.porcentajes.adicionalCargo);
+  });
+
+  test("el asesor pedagógico se puede elegir en primaria y en secundaria", () => {
+    const definicion = definicionDe("asesorPedagogico");
+    assert.deepEqual([...definicion.niveles], ["primario", "secundario"]);
+    assert.ok(cargosDelNivel("primario").some((cargo) => cargo.tipo === "asesorPedagogico"));
+    assert.ok(cargosDelNivel("secundario").some((cargo) => cargo.tipo === "asesorPedagogico"));
   });
 });
 
@@ -275,9 +312,8 @@ describe("varios cargos juntos", () => {
     const otro = reparto([preceptor], comunes);
     const juntos = reparto([secundaria, preceptor], comunes);
 
-    const fijos = DESCUENTOS_FIJOS.seguroObligatorio + DESCUENTOS_FIJOS.seguroSocial;
     assert.equal(juntos.descuentos.seguroObligatorio, DESCUENTOS_FIJOS.seguroObligatorio);
-    casiIgual(juntos.descuentos.total, uno.descuentos.total + otro.descuentos.total - fijos);
+    casiIgual(juntos.descuentos.total, uno.descuentos.total + otro.descuentos.total - segurosFijos());
     assert.ok(juntos.descuentos.total < uno.descuentos.total + otro.descuentos.total);
   });
 
@@ -307,10 +343,7 @@ describe("varios cargos juntos", () => {
     const vacio = reparto([]);
     assert.equal(vacio.puestos.length, 0);
     assert.equal(vacio.conceptos.totalBruto, 0);
-    assert.equal(
-      vacio.descuentos.total,
-      DESCUENTOS_FIJOS.seguroObligatorio + DESCUENTOS_FIJOS.seguroSocial
-    );
+    assert.equal(vacio.descuentos.total, segurosFijos());
     assert.ok(Number.isFinite(vacio.totalBolsillo));
   });
 
@@ -334,10 +367,7 @@ describe("descuentos y aguinaldo", () => {
     casiIgual(d.jubilacionRegEsp, 2000);
     casiIgual(d.obraSocial, 6000);
     casiIgual(d.sindical, 0);
-    casiIgual(
-      d.total,
-      19000 + DESCUENTOS_FIJOS.seguroObligatorio + DESCUENTOS_FIJOS.seguroSocial
-    );
+    casiIgual(d.total, 19000 + segurosFijos());
   });
 
   test("el descuento sindical aparece solo si está afiliado", () => {
@@ -363,18 +393,34 @@ describe("descuentos y aguinaldo", () => {
 });
 
 describe("catálogo y escalas", () => {
-  test("cada cargo aparece una sola vez y tiene un nivel válido", () => {
+  test("cada cargo aparece una sola vez y tiene al menos un nivel", () => {
     const tipos = CARGOS.map((cargo) => cargo.tipo);
     assert.equal(new Set(tipos).size, tipos.length, "hay un cargo repetido en el catálogo");
     for (const cargo of CARGOS) {
-      assert.equal(definicionDe(cargo.tipo).nivel, cargo.nivel);
+      assert.deepEqual(
+        [...definicionDe(cargo.tipo).niveles],
+        [...cargo.niveles],
+        `${cargo.tipo} no coincide con su definición`
+      );
+      assert.ok(cargo.niveles.length > 0, `${cargo.tipo} no tiene ningún nivel`);
       assert.ok(cargo.etiqueta.length > 0);
+      assert.ok(cargo.escala === "basica" || cargo.escala === "ifdc");
+    }
+  });
+
+  test("solo los cargos del superior usan la escala del I.F.D.C.", () => {
+    for (const cargo of CARGOS) {
+      assert.equal(
+        cargo.escala === "ifdc",
+        cargo.niveles.includes("superior"),
+        `${cargo.tipo} tiene la escala cruzada`
+      );
     }
   });
 
   test("todos los niveles tienen al menos un cargo", () => {
     for (const nivel of ["inicial", "primario", "secundario", "superior"] as const) {
-      assert.ok(CARGOS.some((cargo) => cargo.nivel === nivel), `el nivel ${nivel} quedó vacío`);
+      assert.ok(cargosDelNivel(nivel).length > 0, `el nivel ${nivel} quedó vacío`);
     }
   });
 

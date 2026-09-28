@@ -20,22 +20,33 @@ import type { ConfiguracionBase } from "./historial.js";
 // ---------------------------------------------------------------------------
 
 // Relación entre cada cargo y una hora cátedra (1 hora = 15 puntos).
-// Calculados en base a Noviembre 2025. Se asume que esta relación es estable.
+// Calculados en base a Noviembre 2025. Se asume que esta relación es estable,
+// y se verifica todos los meses contra el instructivo de pre-liquidación
+// (ver tests/instructivos.test.ts).
 export const COEFICIENTES_CARGOS = {
   horaSecundaria: 1.0, // Base referencia
   preceptor: 14.1347, // ($217,975 / $15,421)
   maestroGrado: 14.997378, // ($231,279 / $15,421)
   maestroJardin: 15.1964, // ($234,349 / $15,421)
   maestroCelador: 17.1871, // ($252,909 / $15,421)
+  asesorPedagogico: 27.671789, // 417 pts ($490.745,35 / $17.734,50 jul-26)
   ifdcSemiExclusivo: 0.83333,
   ifdcFullTime: 1.166668931,
 };
 
 // Descuentos fijos del recibo: no dependen del mes ni del cargo.
 // Se descuentan UNA sola vez por recibo, no una vez por cargo.
+//
+// El seguro obligatorio cambia con el tiempo. Este es el último valor
+// verificado contra recibo (junio 2026, Instituto de Formación Docente):
+//   07-2025 y 08-2025: 4.312,73
+//   02-2026:           4.701,21
+//   06-2026:           4.925,07
+// El seguro social (100) y el mutual (10) vienen iguales en todos los recibos.
 export const DESCUENTOS_FIJOS = {
-  seguroObligatorio: 4312.73,
-  seguroSocial: 110,
+  seguroObligatorio: 4925.07,
+  seguroSocial: 100,
+  seguroMutual: 10,
 };
 
 // ---------------------------------------------------------------------------
@@ -44,32 +55,40 @@ export const DESCUENTOS_FIJOS = {
 
 export type Nivel = "inicial" | "primario" | "secundario" | "superior";
 
+/** De qué escala salarial sale el cargo: la de primaria/media o la del superior. */
+export type EscalaSalarial = "basica" | "ifdc";
+
 export type TipoCargo =
   | "maestroJardin"
   | "maestroCelador"
   | "maestroGrado"
   | "horaSecundaria"
   | "preceptor"
+  | "asesorPedagogico"
   | "ifdcTiempoCompleto"
   | "ifdcSemiExclusivo"
   | "ifdcFullTime";
 
 export interface DefinicionCargo {
   tipo: TipoCargo;
-  nivel: Nivel;
+  /** En qué niveles se puede elegir. Un mismo cargo puede estar en dos. */
+  niveles: readonly Nivel[];
+  /** Qué historial de valores le corresponde. */
+  escala: EscalaSalarial;
   etiqueta: string;
   /** Si se carga una cantidad de horas (hoy solo las horas cátedra). */
   usaHoras: boolean;
   /** Si corresponde la bonificación por zona (el nivel superior no la cobra). */
   usaZona: boolean;
-  /** Si corresponde el ítem de enseñanza en el aula (inicial y primaria). */
+  /** Si corresponde el ítem de enseñanza en el aula (ver ENSEÑANZA_EN_AULA). */
   usaPresencialidad: boolean;
 }
 
 export const CARGOS: readonly DefinicionCargo[] = [
   {
     tipo: "maestroJardin",
-    nivel: "inicial",
+    niveles: ["inicial"],
+    escala: "basica",
     etiqueta: "Maestrx Jardín / Maestrx aux. de Jardín",
     usaHoras: false,
     usaZona: true,
@@ -77,15 +96,17 @@ export const CARGOS: readonly DefinicionCargo[] = [
   },
   {
     tipo: "maestroCelador",
-    nivel: "primario",
+    niveles: ["primario"],
+    escala: "basica",
     etiqueta: "Cargo Maestrx Celador (259p)",
     usaHoras: false,
     usaZona: true,
-    usaPresencialidad: true,
+    usaPresencialidad: false,
   },
   {
     tipo: "maestroGrado",
-    nivel: "primario",
+    niveles: ["primario"],
+    escala: "basica",
     etiqueta: "Maestrx de grado",
     usaHoras: false,
     usaZona: true,
@@ -93,7 +114,8 @@ export const CARGOS: readonly DefinicionCargo[] = [
   },
   {
     tipo: "horaSecundaria",
-    nivel: "secundario",
+    niveles: ["secundario"],
+    escala: "basica",
     etiqueta: "Hs. en Secundario",
     usaHoras: true,
     usaZona: true,
@@ -101,15 +123,29 @@ export const CARGOS: readonly DefinicionCargo[] = [
   },
   {
     tipo: "preceptor",
-    nivel: "secundario",
+    niveles: ["secundario"],
+    escala: "basica",
     etiqueta: "Cargo Preceptor (213p)",
     usaHoras: false,
     usaZona: true,
     usaPresencialidad: false,
   },
   {
+    // Va último entre los cargos de obligatoria para que al elegir un nivel
+    // siga quedando seleccionado el cargo más usado (grado en primaria, horas
+    // en secundaria).
+    tipo: "asesorPedagogico",
+    niveles: ["primario", "secundario"],
+    escala: "basica",
+    etiqueta: "Asesor/a Pedagógico (417p)",
+    usaHoras: false,
+    usaZona: true,
+    usaPresencialidad: false,
+  },
+  {
     tipo: "ifdcTiempoCompleto",
-    nivel: "superior",
+    niveles: ["superior"],
+    escala: "ifdc",
     etiqueta: "Prof. tiempo completo, 30 hs.",
     usaHoras: false,
     usaZona: false,
@@ -117,7 +153,8 @@ export const CARGOS: readonly DefinicionCargo[] = [
   },
   {
     tipo: "ifdcSemiExclusivo",
-    nivel: "superior",
+    niveles: ["superior"],
+    escala: "ifdc",
     etiqueta: "Prof. semiexclusivo, 25 hs.",
     usaHoras: false,
     usaZona: false,
@@ -125,7 +162,8 @@ export const CARGOS: readonly DefinicionCargo[] = [
   },
   {
     tipo: "ifdcFullTime",
-    nivel: "superior",
+    niveles: ["superior"],
+    escala: "ifdc",
     etiqueta: "Prof. full time, 40 hs.",
     usaHoras: false,
     usaZona: false,
@@ -142,7 +180,7 @@ export const ETIQUETA_NIVEL: Readonly<Record<Nivel, string>> = {
 
 /** Los cargos que se pueden elegir en un nivel, en el orden del catálogo. */
 export function cargosDelNivel(nivel: Nivel): readonly DefinicionCargo[] {
-  return CARGOS.filter((cargo) => cargo.nivel === nivel);
+  return CARGOS.filter((cargo) => cargo.niveles.includes(nivel));
 }
 
 /**
@@ -268,8 +306,18 @@ export interface ConceptosCargo extends ComponentesCargo {
   totalBruto: number;
 }
 
-/** Valor del ítem "enseñanza en el aula" (presentismo), por cargo. */
-export const ENSEÑANZA_EN_AULA = 125000;
+/**
+ * Valor del ítem "enseñanza en el aula" (100-27), por cargo.
+ *
+ * No es el mismo monto para todos: lo fija el Decreto N° 3864-MHIP-2026 según la
+ * carga horaria de cada función, y el instructivo de julio 2026 aclara que este
+ * concepto no se modifica. Los cargos que no figuran en ese decreto no lo cobran
+ * (por eso el maestro celador quedó afuera).
+ */
+export const ENSEÑANZA_EN_AULA: Readonly<Partial<Record<TipoCargo, number>>> = {
+  maestroGrado: 125000, // 226p, 20/25 horas reloj
+  maestroJardin: 93750, // 229p, 15 horas reloj
+};
 
 export function componentesEnCero(): ComponentesCargo {
   return {
@@ -340,7 +388,7 @@ export function calcularConceptosDePuesto(
 ): ConceptosCargo {
   const definicion = definicionDe(puesto.tipo);
   const config: ConfiguracionBase =
-    definicion.nivel === "superior" ? configuraciones.ifdc : configuraciones.basica;
+    definicion.escala === "ifdc" ? configuraciones.ifdc : configuraciones.basica;
 
   const componentes = componentesEnCero();
   const coefZona = definicion.usaZona ? puesto.zonaPct / 100 : 0;
@@ -374,13 +422,16 @@ export function calcularConceptosDePuesto(
 
     case "maestroCelador":
     case "maestroGrado":
-    case "maestroJardin": {
+    case "maestroJardin":
+    case "asesorPedagogico": {
       const coeficiente =
         puesto.tipo === "maestroCelador"
           ? COEFICIENTES_CARGOS.maestroCelador
           : puesto.tipo === "maestroGrado"
             ? COEFICIENTES_CARGOS.maestroGrado
-            : COEFICIENTES_CARGOS.maestroJardin;
+            : puesto.tipo === "maestroJardin"
+              ? COEFICIENTES_CARGOS.maestroJardin
+              : COEFICIENTES_CARGOS.asesorPedagogico;
 
       componentes.basico = config.basicoCargo_Hora * coeficiente;
       componentes.complementoRemunerativo = componentes.basico * config.porcentajes.remunerativo;
@@ -390,14 +441,10 @@ export function calcularConceptosDePuesto(
       componentes.incentivoDocente = config.fonid * 15;
       componentes.bonoExtraordinario = config.bonoExtraordinario * 15;
 
-      // OJO: el jardín venía cobrando el ítem completo sin mirar el selector de
-      // presentismo. Se mantiene igual para no cambiar los importes publicados.
-      componentes.enseñanzaEnAula =
-        puesto.tipo === "maestroJardin"
-          ? ENSEÑANZA_EN_AULA
-          : puesto.presencialidad
-            ? ENSEÑANZA_EN_AULA
-            : 0;
+      // El monto lo fija el decreto según el cargo, y se cobra si el docente
+      // está frente al aula ese mes (el selector de presentismo).
+      const montoEnAula = ENSEÑANZA_EN_AULA[puesto.tipo] ?? 0;
+      componentes.enseñanzaEnAula = puesto.presencialidad ? montoEnAula : 0;
       break;
     }
 
@@ -441,13 +488,14 @@ export interface Descuentos {
   sindical: number;
   seguroObligatorio: number;
   seguroSocial: number;
+  seguroMutual: number;
   total: number;
 }
 
 /**
  * Descuentos de ley sobre el total remunerativo.
- * Los dos seguros son fijos y se descuentan UNA sola vez, por eso se calculan
- * sobre el total y no por puesto.
+ * Los seguros fijos se descuentan UNA sola vez, por eso se calculan sobre el
+ * total y no por puesto.
  */
 export function calcularDescuentos(
   totalRemunerativo: number,
@@ -459,6 +507,7 @@ export function calcularDescuentos(
   const sindical = afiliacion === "no" ? 0 : totalRemunerativo * 0.015;
   const seguroObligatorio = DESCUENTOS_FIJOS.seguroObligatorio;
   const seguroSocial = DESCUENTOS_FIJOS.seguroSocial;
+  const seguroMutual = DESCUENTOS_FIJOS.seguroMutual;
 
   return {
     jubilacion,
@@ -467,8 +516,15 @@ export function calcularDescuentos(
     sindical,
     seguroObligatorio,
     seguroSocial,
+    seguroMutual,
     total:
-      jubilacion + jubilacionRegEsp + obraSocial + sindical + seguroObligatorio + seguroSocial,
+      jubilacion +
+      jubilacionRegEsp +
+      obraSocial +
+      sindical +
+      seguroObligatorio +
+      seguroSocial +
+      seguroMutual,
   };
 }
 

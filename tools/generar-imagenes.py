@@ -27,6 +27,16 @@ CREMA = (249, 247, 242)  # --primarioClaro
 ROJO = (163, 59, 50)     # --primario
 GRIS = (52, 58, 64)      # --secundarioOscuro
 
+# El logo original tiene, abajo de todo, "AMET" y "LISTA ROJA N°4", y arriba el
+# arco con "A.T.E.B.A" y el nombre completo de la agrupación. A tamaño de favicon
+# (16 px) ninguno de esos textos se lee: lo único que se reconoce es la mano con
+# la cinta. Estos dos recortes dejan exactamente eso. Los números salen de medir
+# el original: el dibujo llega hasta la fila 893 y los textos del pie arrancan en
+# la 904, así que el corte va en el medio (897); el arco termina cerca de la fila
+# 530 y la mano empieza alrededor de la 448.
+RECORTE_PIE = 897
+RECORTE_MANO = (290, 448, 715, 897)
+
 
 def kb(ruta: Path) -> float:
     return ruta.stat().st_size / 1024
@@ -61,34 +71,69 @@ def logo() -> None:
     print(f"  {destino.name:24} {im.width}x{im.height}  {kb(destino):5.0f} KB  (era {kb(original):.0f} KB)")
 
 
+def cuadrar(im: Image.Image, margen: float = 0.08) -> Image.Image:
+    """
+    Recorta el aire transparente y centra el dibujo en un cuadrado.
+
+    Hace falta porque el logo no es cuadrado: sin esto, el ícono queda chico y
+    descentrado dentro del cuadrado, con la mitad del archivo vacío.
+    """
+    caja = im.getbbox()
+    if caja:
+        im = im.crop(caja)
+    lado = round(max(im.size) * (1 + 2 * margen))
+    cuadro = Image.new("RGBA", (lado, lado), (0, 0, 0, 0))
+    cuadro.paste(im, ((lado - im.width) // 2, (lado - im.height) // 2), im)
+    return cuadro
+
+
+def marca_favicon() -> Image.Image:
+    """
+    La marca del favicon: la mano con la cinta, sobre fondo crema.
+
+    Son dos recortes sobre el original, de afuera hacia adentro:
+      1. el pie, donde están "AMET" y "LISTA ROJA N°4";
+      2. el arco de arriba con "A.T.E.B.A" y el nombre completo, que a 16 px se
+         empasta y deja el dibujo chico.
+    Lo que sobrevive a tamaño de ícono es la mano con la cinta, y por eso el
+    favicon es eso. Va sobre fondo crema porque la tinta del logo es negra: sin
+    fondo, en una pestaña oscura el ícono desaparece.
+    """
+    original = Image.open(ORIGINALES / "1000158611-Photoroom.png").convert("RGBA")
+    sin_pie = original.crop((0, 0, original.width, RECORTE_PIE))
+    mano = cuadrar(sin_pie.crop(RECORTE_MANO))
+    marca = Image.new("RGB", mano.size, CREMA)
+    marca.paste(mano, (0, 0), mano)
+    return marca
+
+
 def favicons() -> None:
     """
-    Favicons a partir del logo, recortado a un cuadrado centrado.
+    Favicons a partir de la marca recortada.
 
     Se generan tres formatos a propósito:
       - favicon.ico  : el clásico, que los navegadores buscan por convención.
       - PNG 32 y 192 : algunos navegadores prefieren PNG, y el de 192 lo usa
                        Android cuando el sitio se agrega a la pantalla de inicio.
     """
-    im = Image.open(ORIGINALES / "1000158611-Photoroom.png").convert("RGBA")
-    lado = max(im.size)
-    cuadro = Image.new("RGBA", (lado, lado), (0, 0, 0, 0))
-    cuadro.paste(im, ((lado - im.width) // 2, (lado - im.height) // 2), im)
+    marca = marca_favicon()
 
     icono = RAIZ / "favicon.ico"
-    cuadro.resize((48, 48), Image.LANCZOS).save(
+    marca.resize((48, 48), Image.LANCZOS).save(
         icono, "ICO", sizes=[(16, 16), (32, 32), (48, 48)]
     )
     print(f"  {icono.name:24} 16/32/48  {kb(icono):5.0f} KB")
 
     for tam in (32, 192):
         destino = IMG / f"favicon-{tam}.png"
-        cuadro.resize((tam, tam), Image.LANCZOS).save(destino, "PNG", optimize=True)
+        marca.resize((tam, tam), Image.LANCZOS).save(destino, "PNG", optimize=True)
         print(f"  {destino.name:24} {tam}x{tam}    {kb(destino):5.0f} KB")
 
-    apple = IMG / "apple-touch-icon.png"
-    cuadro.resize((180, 180), Image.LANCZOS).save(apple, "PNG", optimize=True)
-    print(f"  {apple.name:24} 180x180   {kb(apple):5.0f} KB")
+    apple = marca.resize((150, 150), Image.LANCZOS)
+    lienzo = Image.new("RGB", (180, 180), CREMA)
+    lienzo.paste(apple, (15, 15))
+    lienzo.save(IMG / "apple-touch-icon.png", "PNG", optimize=True)
+    print(f"  {'apple-touch-icon.png':24} 180x180   {kb(IMG / 'apple-touch-icon.png'):5.0f} KB")
 
 
 def imagen_social() -> None:

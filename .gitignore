@@ -13,3 +13,11 @@ padron*.js
 .pip-tmp/
 .pip-cache/
 .pydeps/
+.tmp-pip/
+
+# Assets que se bajan solos para generar las placas de Instagram (tipografías
+# y la librería qrcode). No se versionan: los recupera
+# tools/preparar-assets-placas.py y pesan 2 MB.
+tools/placas/fuentes/
+tools/placas/deps/
+__pycache__/
