@@ -6,6 +6,7 @@ import {
   calcularPluriempleo,
   cargosDelNivel,
   definicionDe,
+  montoEnseñanzaEnAula,
   porcentajeAntiguedad,
 } from "./cargos.js";
 import type { Afiliacion, Nivel, ResultadoPluriempleo, TipoCargo } from "./cargos.js";
@@ -38,6 +39,7 @@ const CATALOGO: CatalogoFormulario = {
   zonas: ZONAS,
   cargosDelNivel,
   definicionDe,
+  montoEnAula: montoEnseñanzaEnAula,
 };
 
 let puestos: PuestoFormulario[] = [];

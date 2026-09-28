@@ -2,11 +2,16 @@ import { describe, test } from "node:test";
 import assert from "node:assert/strict";
 
 import {
+  CARGOS,
   COEFICIENTES_CARGOS,
   DESCUENTOS_FIJOS,
+  ENSEÑANZA_EN_AULA_POR_HORA_RELOJ,
+  HORAS_RELOJ_FRENTE_A_ALUMNOS,
   calcularConceptosDePuesto,
   calcularDescuentos,
+  cargosDelNivel,
   definicionDe,
+  montoEnseñanzaEnAula,
 } from "../src/cargos.ts";
 import type { ConfiguracionesDelMes, OpcionesCalculo, Puesto, TipoCargo } from "../src/cargos.ts";
 import { obtenerConfiguracionActual1, obtenerConfiguracionActual2 } from "../src/historial.ts";
@@ -233,6 +238,54 @@ describe("decreto de abril 2026: enseñanza en el aula", () => {
     assert.equal(montoDe("maestroJardin"), 93750); // 229p, 15 horas reloj
     assert.equal(montoDe("maestroCelador"), 0); // el 259p no está en el decreto
     assert.equal(montoDe("asesorPedagogico"), 0); // tampoco el asesor
+  });
+
+  test("el monto por hora del decreto es 6.250 y la tabla sale de multiplicarlo", () => {
+    // La tabla del decreto tiene, para cada función, la carga horaria y el
+    // monto del ítem. El monto es siempre horas reloj frente a alumnos x 6.250.
+    assert.equal(ENSEÑANZA_EN_AULA_POR_HORA_RELOJ, 6250);
+    const tabla: [number, number][] = [
+      [35, 218750], // maestrx de grado jornada completa (327p)
+      [25, 156250], // grado escuela asistencial (266p)
+      [20, 125000], // maestrx de grado (226p), especiales de 20 horas
+      [15, 93750], // jardín y auxiliar de jardín (229p)
+      [10, 62500], // especiales con 15 horas cátedra
+      [7, 43750], // especiales con 10 horas cátedra
+    ];
+    for (const [horasReloj, monto] of tabla) {
+      assert.equal(horasReloj * ENSEÑANZA_EN_AULA_POR_HORA_RELOJ, monto, `${horasReloj} horas:`);
+    }
+  });
+
+  test("las horas del ítem son las que el decreto le asigna a cada función", () => {
+    assert.equal(HORAS_RELOJ_FRENTE_A_ALUMNOS.maestroGrado, 20);
+    assert.equal(HORAS_RELOJ_FRENTE_A_ALUMNOS.maestroJardin, 15);
+    assert.equal(montoEnseñanzaEnAula("maestroGrado"), 20 * 6250);
+    assert.equal(montoEnseñanzaEnAula("maestroJardin"), 15 * 6250);
+  });
+
+  test("ningún cargo cobra el ítem sin horas asignadas en el decreto", () => {
+    // Vale para todos los niveles, no solo inicial: el ítem o sale de la tabla
+    // del decreto, o no se cobra.
+    for (const cargo of CARGOS) {
+      const horas = HORAS_RELOJ_FRENTE_A_ALUMNOS[cargo.tipo];
+      if (horas === undefined) {
+        assert.equal(montoEnseñanzaEnAula(cargo.tipo), 0, `${cargo.tipo} no debería cobrar el ítem`);
+        assert.equal(cargo.usaPresencialidad, false, `${cargo.tipo} no debería tener el selector`);
+      } else {
+        assert.ok(cargo.usaPresencialidad, `${cargo.tipo} debería tener el selector`);
+        assert.equal(montoEnseñanzaEnAula(cargo.tipo), horas * ENSEÑANZA_EN_AULA_POR_HORA_RELOJ);
+      }
+    }
+  });
+
+  test("en inicial, el jardín cobra por sus 15 horas reloj y no un monto fijo", () => {
+    // Es el caso que estaba mal: la calculadora le pagaba 125.000 (el monto del
+    // maestro de grado) y el decreto le asigna 15 horas reloj, o sea 93.750.
+    const iniciales = cargosDelNivel("inicial");
+    assert.ok(iniciales.some((cargo) => cargo.tipo === "maestroJardin"));
+    assert.equal(montoEnseñanzaEnAula("maestroJardin"), 93750);
+    assert.notEqual(montoEnseñanzaEnAula("maestroJardin"), montoEnseñanzaEnAula("maestroGrado"));
   });
 
   test("el ítem no se cobra si el docente no estuvo frente al aula", () => {

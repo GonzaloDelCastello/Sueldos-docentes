@@ -68,7 +68,7 @@ describe(
   "humo de la interfaz con el código compilado",
   { skip: hayBuild ? false : "falta dist/: corré el build antes de los tests" },
   () => {
-    test("se cargan tres cargos (horas, preceptor y asesor), se calcula y el resultado sale en pantalla", async () => {
+    test("se cargan cuatro cargos (horas, preceptor, asesor y jardín), se calcula y el resultado sale en pantalla", async () => {
       const elementos = new Map<string, any>();
       const avisos: string[] = [];
       const tomarElemento = (id: string) => {
@@ -123,22 +123,35 @@ describe(
         target: { tagName: "SELECT", dataset: { campo: "tipo", puesto: "3" }, value: "asesorPedagogico" },
       });
 
-      // 6. Antigüedad de 10 a 11 años, afiliación a Amet y mes de septiembre
+      // 6. Un cuarto cargo: maestrx de jardín (inicial), que cobra el ítem de
+      // enseñanza en el aula por sus 15 horas reloj
+      tomarElemento("btnAgregarPuesto").disparar("click", { type: "click", target: null });
+      contenedor.disparar("change", {
+        type: "change",
+        target: { tagName: "SELECT", dataset: { campo: "nivel", puesto: "4" }, value: "inicial" },
+      });
+      const tarjetaJardin = contenedor.innerHTML.split('class="card-puesto"')[4] ?? "";
+      assert.ok(
+        tarjetaJardin.includes("Sí ($ 93.750)"),
+        "la tarjeta de jardín no muestra el monto de 15 horas reloj"
+      );
+
+      // 7. Antigüedad de 10 a 11 años, afiliación a Amet y mes de septiembre
       tomarElemento("antiguedad").value = "5";
       tomarElemento("antiguedad").disparar("change", { type: "change", target: { value: "5" } });
       tomarElemento("afiliacionSindical").value = "amet";
       tomarElemento("afiliacionSindical").disparar("change", { type: "change", target: { value: "amet" } });
       tomarElemento("mesCalculo").value = "2026-09";
 
-      // 7. Calcular
+      // 8. Calcular
       calcularYMostrar();
 
       assert.deepEqual(avisos, [], `la calculadora avisó algo inesperado: ${avisos.join(" / ")}`);
       assert.equal(tomarElemento("resultados").style.display, "block");
       assert.ok(!tomarElemento("botonGraficos").classList.contains("oculto"), "el gráfico quedó oculto");
-      assert.equal(tomarElemento("cantidadPuestos").textContent, "3 cargos cargados y sumados");
+      assert.equal(tomarElemento("cantidadPuestos").textContent, "4 cargos cargados y sumados");
 
-      // 8. El total de pantalla tiene que ser el que devuelve el motor con esos datos
+      // 9. El total de pantalla tiene que ser el que devuelve el motor con esos datos
       const { calcularPluriempleo } = await import(new URL("../dist/cargos.js", import.meta.url).href);
       const { configuracionesDelMes } = await import(new URL("../dist/configuracion.js", import.meta.url).href);
       const esperado = calcularPluriempleo(
@@ -146,6 +159,7 @@ describe(
           { tipo: "horaSecundaria", cantHoras: 15, zonaPct: 20, presencialidad: true },
           { tipo: "preceptor", cantHoras: 15, zonaPct: 0, presencialidad: true },
           { tipo: "asesorPedagogico", cantHoras: 15, zonaPct: 0, presencialidad: true },
+          { tipo: "maestroJardin", cantHoras: 15, zonaPct: 0, presencialidad: true },
         ],
         configuracionesDelMes("2026-09"),
         { antiguedadPct: 0.5, afiliacion: "amet", incluirSAC: false }
@@ -157,10 +171,12 @@ describe(
       assert.equal(tomarElemento("totalBruto").textContent, aPesos(esperado.conceptos.totalBruto));
       assert.equal(tomarElemento("totalCAportes").textContent, aPesos(esperado.conceptos.totalRemunerativo));
       assert.equal(tomarElemento("pagoZona").textContent, aPesos(esperado.conceptos.pagoDeZona));
+      // El ítem de jardín: 93.750, no los 125.000 del maestro de grado.
+      assert.equal(tomarElemento("enseñanzaEnAula").textContent, aPesos(93750));
 
-      // 9. El desglose tiene una fila por cargo y una de total
+      // 10. El desglose tiene una fila por cargo y una de total
       const filas = tomarElemento("cuerpoDesglose").innerHTML.split("<tr").length - 1;
-      assert.equal(filas, 4, "el desglose debería tener tres cargos y el total");
+      assert.equal(filas, 5, "el desglose debería tener cuatro cargos y el total");
       const desglose = tomarElemento("cuerpoDesglose").innerHTML;
       assert.ok(desglose.includes("Preceptor"));
       assert.ok(desglose.includes("Asesor/a Pedagógico"));

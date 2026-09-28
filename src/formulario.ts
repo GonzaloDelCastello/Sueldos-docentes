@@ -24,6 +24,13 @@ export interface CatalogoFormulario {
   zonas: readonly number[];
   cargosDelNivel: (nivel: Nivel) => readonly DefinicionCargo[];
   definicionDe: (tipo: TipoCargo) => DefinicionCargo;
+  /** Cuánto paga el ítem de enseñanza en el aula para ese cargo. */
+  montoEnAula: (tipo: TipoCargo) => number;
+}
+
+/** Formatea un monto para mostrarlo dentro del formulario (ej: $ 93.750). */
+function pesos(valor: number): string {
+  return "$ " + valor.toLocaleString("es-AR", { maximumFractionDigits: 0 });
 }
 
 /** El texto corto que resume el cargo en el encabezado de la tarjeta. */
@@ -86,11 +93,14 @@ export function htmlPuesto(
        </span>`
     : "";
 
+  // El monto depende del cargo (el decreto le asigna horas frente a alumnos a
+  // cada función), así que se muestra en la opción para que no haya sorpresas.
+  const montoEnAula = catalogo.montoEnAula(puesto.tipo);
   const campoPresencialidad = definicion.usaPresencialidad
     ? `<span class="campo-presencialidad">
          <label for="presencialidad-${puesto.id}">Ítem presencialidad (enseñanza en el aula)
            <select id="presencialidad-${puesto.id}" data-campo="presencialidad" data-puesto="${puesto.id}">
-             <option value="1" ${puesto.presencialidad ? "selected" : ""}>Sí</option>
+             <option value="1" ${puesto.presencialidad ? "selected" : ""}>Sí (${pesos(montoEnAula)})</option>
              <option value="0" ${puesto.presencialidad ? "" : "selected"}>No</option>
            </select>
          </label>

@@ -8,6 +8,7 @@ import {
   ZONAS,
   cargosDelNivel,
   definicionDe,
+  montoEnseñanzaEnAula,
 } from "../src/cargos.ts";
 
 /**
@@ -23,6 +24,7 @@ const CATALOGO: CatalogoFormulario = {
   zonas: ZONAS,
   cargosDelNivel,
   definicionDe,
+  montoEnAula: montoEnseñanzaEnAula,
 };
 
 function puesto(extra: Partial<PuestoFormulario> = {}): PuestoFormulario {
@@ -81,6 +83,16 @@ describe("tarjeta de un cargo", () => {
       assert.ok(!html.includes('data-campo="presencialidad"'));
       assert.ok(html.includes('data-campo="zona"'));
     }
+  });
+
+  test("el selector de presentismo muestra el monto que paga ese cargo", () => {
+    // Jardín cobra por 15 horas reloj y grado por 20, así que no es el mismo
+    // número: conviene que se vea antes de calcular.
+    const jardin = tarjeta({ tipo: "maestroJardin", nivel: "inicial" });
+    assert.ok(jardin.includes("Sí ($ 93.750)"), "jardín no muestra su monto");
+
+    const grado = tarjeta({ tipo: "maestroGrado", nivel: "primario" });
+    assert.ok(grado.includes("Sí ($ 125.000)"), "grado no muestra su monto");
   });
 
   test("el nivel superior no muestra zona (no la cobra)", () => {

@@ -48,10 +48,12 @@ Si alguien toca una fórmula, el test falla y obliga a volver al papel.
    da 65.973,47 y el maestrx de grado 70.000,01, que son los dos valores que
    muestran los recibos.
 
-2. **Enseñanza en el aula.** El Decreto 3864 fija un monto distinto según el
-   cargo, y el instructivo de julio aclara que no se modifica. Estaba mal:
-   - Maestrx de grado: 125.000. Estaba bien.
-   - Maestrx de jardín: **93.750** (15 horas reloj). La calculadora le pagaba
+2. **Enseñanza en el aula.** El Decreto 3864 no le pone un monto a cada cargo:
+   publica cuántas horas reloj frente a alumnos tiene cada función y cuánto se
+   paga por hora. El ítem es proporcional a esas horas (ver la sección de abajo).
+   Estaba mal:
+   - Maestrx de grado: 20 horas reloj, 125.000. Estaba bien.
+   - Maestrx de jardín: **15 horas reloj, 93.750**. La calculadora le pagaba
      125.000 siempre, sin mirar el selector de presentismo.
    - Maestrx celador: **no cobra el ítem** (el cargo 259p no figura en el
      decreto). La calculadora se lo pagaba.
@@ -78,6 +80,45 @@ así.
 
 Moraleja para la próxima: el decreto que fija un calendario de aumentos no
 alcanza como fuente. Conviene guardar también el decreto que lo modifica.
+
+## Enseñanza en el aula: es proporcional a las horas
+
+El Decreto N° 3864-MHIP-2026 publica, para cada función, la carga horaria y el
+monto del ítem 100-27. El monto es siempre **horas reloj frente a alumnos por
+6.250**, y el instructivo de julio 2026 aclara que el concepto no se modifica.
+
+| Horas reloj | Monto | Función de ejemplo |
+| --- | --- | --- |
+| 35 | 218.750 | Maestrx de grado jornada completa (327p) |
+| 25 | 156.250 | Grado de escuela asistencial (266p) |
+| 20 | 125.000 | Maestrx de grado (226p) |
+| 15 | 93.750 | Jardín y auxiliar de jardín (229p) |
+| 10 | 62.500 | Especiales con 15 horas cátedra |
+| 7 | 43.750 | Especiales con 10 horas cátedra |
+
+Las horas cátedra de 40 minutos se convierten a horas reloj: 15 horas cátedra son
+10 horas reloj, y 10 horas cátedra son 7.
+
+En el código, el monto no está escrito a mano por cargo: sale de
+`montoEnseñanzaEnAula(tipo)`, que multiplica las horas de la tabla por el valor
+de la hora. Así, si un cargo cambia de horas, el ítem acompaña.
+
+### Revisión de los cargos de nivel inicial
+
+Funciones de nivel inicial que aparecen en el decreto:
+
+| Función | Puntos | Horas reloj | Ítem | ¿Está en la calculadora? |
+| --- | --- | --- | --- | --- |
+| Maestra Educ. Especial Nivel Inicial | 258 | 20 | 125.000 | No |
+| Maestro/a de Jardín | 229 | 15 | 93.750 | Sí |
+| Maestro/a Auxiliar de Jardín | 229 | 15 | 93.750 | Sí, en el mismo cargo: el decreto les da la misma función y el mismo monto |
+| Auxiliar docente (inicial/primario) | 217 | 15 | 93.750 | No |
+| Maestro/a Especial de Jardín | 183 | 7 | 43.750 | No |
+
+Hoy la calculadora cubre solo el cargo de jardín (y su auxiliar, que comparte
+valor). Las otras tres funciones quedan pendientes de agregar: los básicos están
+en la tabla de puntos del instructivo de julio, así que se pueden sumar cuando
+se quiera.
 
 ## Lo que queda por confirmar
 

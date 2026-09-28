@@ -80,7 +80,7 @@ export interface DefinicionCargo {
   usaHoras: boolean;
   /** Si corresponde la bonificación por zona (el nivel superior no la cobra). */
   usaZona: boolean;
-  /** Si corresponde el ítem de enseñanza en el aula (ver ENSEÑANZA_EN_AULA). */
+  /** Si corresponde el ítem de enseñanza en el aula (ver montoEnseñanzaEnAula). */
   usaPresencialidad: boolean;
 }
 
@@ -307,17 +307,33 @@ export interface ConceptosCargo extends ComponentesCargo {
 }
 
 /**
- * Valor del ítem "enseñanza en el aula" (100-27), por cargo.
+ * Ítem "enseñanza en el aula" (100-27), del Decreto N° 3864-MHIP-2026.
  *
- * No es el mismo monto para todos: lo fija el Decreto N° 3864-MHIP-2026 según la
- * carga horaria de cada función, y el instructivo de julio 2026 aclara que este
- * concepto no se modifica. Los cargos que no figuran en ese decreto no lo cobran
- * (por eso el maestro celador quedó afuera).
+ * El decreto NO publica un monto por cargo: publica cuántas horas reloj frente a
+ * alumnos tiene cada función y cuánto se paga por hora. El ítem es proporcional
+ * a esas horas, y el instructivo de julio 2026 aclara que el concepto no se
+ * modifica. La tabla del decreto sale de multiplicar:
+ *
+ *   20 horas reloj -> 125.000  (maestrx de grado, 226p)
+ *   15 horas reloj ->  93.750  (maestrx de jardín y auxiliar de jardín, 229p)
+ *   10 horas reloj ->  62.500  (especiales con 15 horas cátedra)
+ *    7 horas reloj ->  43.750  (especiales con 10 horas cátedra)
+ *
+ * Los cargos que no figuran en el decreto no lo cobran (el maestro celador, por
+ * ejemplo, y el asesor pedagógico).
  */
-export const ENSEÑANZA_EN_AULA: Readonly<Partial<Record<TipoCargo, number>>> = {
-  maestroGrado: 125000, // 226p, 20/25 horas reloj
-  maestroJardin: 93750, // 229p, 15 horas reloj
+export const ENSEÑANZA_EN_AULA_POR_HORA_RELOJ = 6250;
+
+/** Horas reloj frente a alumnos de cada función, según la tabla del decreto. */
+export const HORAS_RELOJ_FRENTE_A_ALUMNOS: Readonly<Partial<Record<TipoCargo, number>>> = {
+  maestroGrado: 20, // 226p, "20/25 horas reloj"
+  maestroJardin: 15, // 229p, "15 horas reloj" (igual para auxiliar de jardín)
 };
+
+/** Monto del ítem para un cargo: proporcional a sus horas frente a alumnos. */
+export function montoEnseñanzaEnAula(tipo: TipoCargo): number {
+  return (HORAS_RELOJ_FRENTE_A_ALUMNOS[tipo] ?? 0) * ENSEÑANZA_EN_AULA_POR_HORA_RELOJ;
+}
 
 export function componentesEnCero(): ComponentesCargo {
   return {
@@ -441,9 +457,10 @@ export function calcularConceptosDePuesto(
       componentes.incentivoDocente = config.fonid * 15;
       componentes.bonoExtraordinario = config.bonoExtraordinario * 15;
 
-      // El monto lo fija el decreto según el cargo, y se cobra si el docente
-      // está frente al aula ese mes (el selector de presentismo).
-      const montoEnAula = ENSEÑANZA_EN_AULA[puesto.tipo] ?? 0;
+      // El monto sale de las horas reloj frente a alumnos que el decreto le
+      // asigna al cargo, y se cobra si el docente estuvo frente al aula ese mes
+      // (el selector de presentismo).
+      const montoEnAula = montoEnseñanzaEnAula(puesto.tipo);
       componentes.enseñanzaEnAula = puesto.presencialidad ? montoEnAula : 0;
       break;
     }
