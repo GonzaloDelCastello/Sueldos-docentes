@@ -105,20 +105,29 @@ de la hora. Así, si un cargo cambia de horas, el ítem acompaña.
 
 ### Revisión de los cargos de nivel inicial
 
-Funciones de nivel inicial que aparecen en el decreto:
+Funciones de nivel inicial que aparecen en el decreto, todas ya cargadas en la
+calculadora:
 
-| Función | Puntos | Horas reloj | Ítem | ¿Está en la calculadora? |
+| Función | Puntos | Horas reloj | Ítem | Cargo en la calculadora |
 | --- | --- | --- | --- | --- |
-| Maestra Educ. Especial Nivel Inicial | 258 | 20 | 125.000 | No |
-| Maestro/a de Jardín | 229 | 15 | 93.750 | Sí |
-| Maestro/a Auxiliar de Jardín | 229 | 15 | 93.750 | Sí, en el mismo cargo: el decreto les da la misma función y el mismo monto |
-| Auxiliar docente (inicial/primario) | 217 | 15 | 93.750 | No |
-| Maestro/a Especial de Jardín | 183 | 7 | 43.750 | No |
+| Maestro/a de Jardín | 229 | 15 | 93.750 | Maestrx Jardín / Maestrx aux. de Jardín |
+| Maestro/a Auxiliar de Jardín | 229 | 15 | 93.750 | Igual al anterior: el decreto les da la misma función y el mismo monto |
+| Maestra Educ. Especial Nivel Inicial | 258 | 20 | 125.000 | Maestrx de Educación Especial Inicial (258p) |
+| Auxiliar docente (inicial y primario) | 217 | 15 | 93.750 | Auxiliar docente (217p) |
+| Maestro/a Especial de Jardín | 183 | 7 | 43.750 | Maestrx Especial de Jardín (183p) |
 
-Hoy la calculadora cubre solo el cargo de jardín (y su auxiliar, que comparte
-valor). Las otras tres funciones quedan pendientes de agregar: los básicos están
-en la tabla de puntos del instructivo de julio, así que se pueden sumar cuando
-se quiera.
+Los coeficientes de los tres cargos nuevos salen de la tabla de puntos del
+instructivo de julio (básico del cargo dividido el valor de la hora cátedra) y se
+verifican contra la tabla de abril del decreto 3864 y contra la de julio:
+
+| Cargo | Coeficiente | Básico jul-26 | Básico abr-26 |
+| --- | --- | --- | --- |
+| Maestrx de Educación Especial Inicial (258p) | 17,12062 | 303.625,63 | 290.424,52 |
+| Auxiliar docente (217p) | 14,399997 | 255.376,75 | 244.273,41 |
+| Maestrx Especial de Jardín (183p) | 12,143864 | 215.365,36 | 206.001,65 |
+
+El auxiliar docente se ofrece en inicial **y** en primario, porque el decreto lo
+lista en los dos niveles.
 
 ## Lo que queda por confirmar
 
@@ -137,6 +146,10 @@ se quiera.
   estimación de la calculadora da 898.396 (1,1% arriba). Sigue pendiente.
 - **El "complemento compensador" (100-26)** que aparece en algunos recibos de
   horas cátedra no está modelado.
+- **El bono extraordinario de mayo 2026 en los cargos.** En la calculadora, el
+  preceptor lo multiplica por su coeficiente (14,1347) y el resto de los cargos
+  por 15. Es una diferencia heredada y no hay recibo de mayo 2026 para saber cuál
+  de las dos reglas vale. Conviene unificarlo cuando aparezca uno.
 
 ## Herramientas que se agregaron
 

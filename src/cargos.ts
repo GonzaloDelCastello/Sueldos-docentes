@@ -23,13 +23,20 @@ import type { ConfiguracionBase } from "./historial.js";
 // Calculados en base a Noviembre 2025. Se asume que esta relación es estable,
 // y se verifica todos los meses contra el instructivo de pre-liquidación
 // (ver tests/instructivos.test.ts).
+//
+// Los coeficientes de los cargos nuevos salen de la tabla de puntos del
+// instructivo de julio 2026 (básico del cargo dividido el valor de la hora).
 export const COEFICIENTES_CARGOS = {
   horaSecundaria: 1.0, // Base referencia
   preceptor: 14.1347, // ($217,975 / $15,421)
   maestroGrado: 14.997378, // ($231,279 / $15,421)
   maestroJardin: 15.1964, // ($234,349 / $15,421)
   maestroCelador: 17.1871, // ($252,909 / $15,421)
-  asesorPedagogico: 27.671789, // 417 pts ($490.745,35 / $17.734,50 jul-26)
+  educacionEspecialInicial: 17.12062, // 258 pts ($303.625,63 jul-26)
+  auxiliarDocente: 14.399997, // 217 pts ($255.376,75 jul-26)
+  maestroEspecialInicial: 12.143864, // 183 pts ($215.365,36 jul-26)
+  asesorPedagogico: 27.671789, // 417 pts ($490.745,35 jul-26)
+  ifdcTiempoCompleto: 1, // el cargo de 30 horas es la base del historial del superior
   ifdcSemiExclusivo: 0.83333,
   ifdcFullTime: 1.166668931,
 };
@@ -60,6 +67,9 @@ export type EscalaSalarial = "basica" | "ifdc";
 
 export type TipoCargo =
   | "maestroJardin"
+  | "educacionEspecialInicial"
+  | "maestroEspecialInicial"
+  | "auxiliarDocente"
   | "maestroCelador"
   | "maestroGrado"
   | "horaSecundaria"
@@ -84,6 +94,10 @@ export interface DefinicionCargo {
   usaPresencialidad: boolean;
 }
 
+// El orden importa: al elegir un nivel queda seleccionado el primer cargo de la
+// lista, así que el cargo más usado de cada nivel va primero (jardín en inicial,
+// celador en primaria, horas en secundaria). Los que se comparten entre niveles
+// van después de esos, para no cambiar cuál queda elegido por defecto.
 export const CARGOS: readonly DefinicionCargo[] = [
   {
     tipo: "maestroJardin",
@@ -131,9 +145,6 @@ export const CARGOS: readonly DefinicionCargo[] = [
     usaPresencialidad: false,
   },
   {
-    // Va último entre los cargos de obligatoria para que al elegir un nivel
-    // siga quedando seleccionado el cargo más usado (grado en primaria, horas
-    // en secundaria).
     tipo: "asesorPedagogico",
     niveles: ["primario", "secundario"],
     escala: "basica",
@@ -141,6 +152,37 @@ export const CARGOS: readonly DefinicionCargo[] = [
     usaHoras: false,
     usaZona: true,
     usaPresencialidad: false,
+  },
+  {
+    // 258p, "Maestra Educ. Especial Nivel Inicial": 20 horas reloj, así que
+    // cobra el ítem de aula completo (125.000).
+    tipo: "educacionEspecialInicial",
+    niveles: ["inicial"],
+    escala: "basica",
+    etiqueta: "Maestrx de Educación Especial Inicial (258p)",
+    usaHoras: false,
+    usaZona: true,
+    usaPresencialidad: true,
+  },
+  {
+    // 183p, "Maestro/a Esp. Jdin": 10 horas cátedra = 7 horas reloj (43.750).
+    tipo: "maestroEspecialInicial",
+    niveles: ["inicial"],
+    escala: "basica",
+    etiqueta: "Maestrx Especial de Jardín (183p)",
+    usaHoras: false,
+    usaZona: true,
+    usaPresencialidad: true,
+  },
+  {
+    // 217p, "Auxiliar docente": el decreto lo pone en inicial y en primario.
+    tipo: "auxiliarDocente",
+    niveles: ["inicial", "primario"],
+    escala: "basica",
+    etiqueta: "Auxiliar docente (217p)",
+    usaHoras: false,
+    usaZona: true,
+    usaPresencialidad: true,
   },
   {
     tipo: "ifdcTiempoCompleto",
@@ -328,6 +370,9 @@ export const ENSEÑANZA_EN_AULA_POR_HORA_RELOJ = 6250;
 export const HORAS_RELOJ_FRENTE_A_ALUMNOS: Readonly<Partial<Record<TipoCargo, number>>> = {
   maestroGrado: 20, // 226p, "20/25 horas reloj"
   maestroJardin: 15, // 229p, "15 horas reloj" (igual para auxiliar de jardín)
+  educacionEspecialInicial: 20, // 258p, "20 horas reloj"
+  auxiliarDocente: 15, // 217p, "15 horas reloj"
+  maestroEspecialInicial: 7, // 183p, "10 horas cátedra" = 7 horas reloj
 };
 
 /** Monto del ítem para un cargo: proporcional a sus horas frente a alumnos. */
@@ -424,8 +469,11 @@ export function calcularConceptosDePuesto(
       break;
     }
 
+    // El preceptor va aparte porque su bono extraordinario se multiplica por el
+    // coeficiente del cargo y no por 15 (comportamiento heredado: no hay recibo
+    // que confirme cuál de las dos reglas vale para los cargos).
     case "preceptor": {
-      const coeficiente = COEFICIENTES_CARGOS.preceptor;
+      const coeficiente = COEFICIENTES_CARGOS[puesto.tipo];
       componentes.basico = config.basicoCargo_Hora * coeficiente;
       componentes.complementoRemunerativo = componentes.basico * config.porcentajes.remunerativo;
       componentes.complementoNoRemunerativo = componentes.basico * config.porcentajes.noRemunerativo;
@@ -439,15 +487,11 @@ export function calcularConceptosDePuesto(
     case "maestroCelador":
     case "maestroGrado":
     case "maestroJardin":
+    case "educacionEspecialInicial":
+    case "maestroEspecialInicial":
+    case "auxiliarDocente":
     case "asesorPedagogico": {
-      const coeficiente =
-        puesto.tipo === "maestroCelador"
-          ? COEFICIENTES_CARGOS.maestroCelador
-          : puesto.tipo === "maestroGrado"
-            ? COEFICIENTES_CARGOS.maestroGrado
-            : puesto.tipo === "maestroJardin"
-              ? COEFICIENTES_CARGOS.maestroJardin
-              : COEFICIENTES_CARGOS.asesorPedagogico;
+      const coeficiente = COEFICIENTES_CARGOS[puesto.tipo];
 
       componentes.basico = config.basicoCargo_Hora * coeficiente;
       componentes.complementoRemunerativo = componentes.basico * config.porcentajes.remunerativo;
@@ -468,12 +512,7 @@ export function calcularConceptosDePuesto(
     case "ifdcTiempoCompleto":
     case "ifdcSemiExclusivo":
     case "ifdcFullTime": {
-      const coeficiente =
-        puesto.tipo === "ifdcTiempoCompleto"
-          ? 1
-          : puesto.tipo === "ifdcSemiExclusivo"
-            ? COEFICIENTES_CARGOS.ifdcSemiExclusivo
-            : COEFICIENTES_CARGOS.ifdcFullTime;
+      const coeficiente = COEFICIENTES_CARGOS[puesto.tipo];
 
       componentes.basico = config.basicoCargo_Hora * coeficiente;
       componentes.complementoRemunerativo = componentes.basico * config.porcentajes.remunerativo;

@@ -67,10 +67,31 @@ describe("instructivo julio 2026: valor de la hora y de cada cargo", () => {
       ["maestroJardin", 269501.61], // 229
       ["maestroCelador", 304806.1], // 259
       ["asesorPedagogico", 490745.35], // 417
+      ["educacionEspecialInicial", 303625.63], // 258
+      ["auxiliarDocente", 255376.75], // 217
+      ["maestroEspecialInicial", 215365.36], // 183
     ];
     for (const [tipo, esperado] of tabla) {
       casiIgual(basicoDe(tipo, "2026-07"), esperado, 2, `${tipo} en julio:`);
     }
+  });
+
+  test("los cargos de inicial se pueden elegir en inicial (y el auxiliar también en primaria)", () => {
+    const iniciales = cargosDelNivel("inicial").map((cargo) => cargo.tipo);
+    for (const tipo of ["maestroJardin", "educacionEspecialInicial", "maestroEspecialInicial", "auxiliarDocente"] as const) {
+      assert.ok(iniciales.includes(tipo), `${tipo} no aparece en inicial`);
+      assert.equal(definicionDe(tipo).escala, "basica");
+      assert.equal(definicionDe(tipo).usaHoras, false);
+      assert.equal(definicionDe(tipo).usaZona, true);
+    }
+    // El decreto pone al auxiliar docente en inicial y en primario.
+    assert.ok(cargosDelNivel("primario").some((cargo) => cargo.tipo === "auxiliarDocente"));
+  });
+
+  test("el jardín sigue siendo el primero de inicial, para no cambiar el que viene elegido", () => {
+    assert.equal(cargosDelNivel("inicial")[0]?.tipo, "maestroJardin");
+    assert.equal(cargosDelNivel("primario")[0]?.tipo, "maestroCelador");
+    assert.equal(cargosDelNivel("secundario")[0]?.tipo, "horaSecundaria");
   });
 
   test("el asesor pedagógico tiene el coeficiente que sale del instructivo", () => {
@@ -221,9 +242,17 @@ describe("decreto de julio 2026: calendario de aumentos", () => {
 
 describe("decreto de abril 2026: enseñanza en el aula", () => {
   test("los básicos de abril coinciden con los de la tabla del decreto", () => {
-    // "Maestro/a de Grado (226p) 254.406,98" y "Maestro/a de Jardin (229p) 257.784,15".
-    casiIgual(basicoDe("maestroGrado", "2026-04"), 254406.98, 3.5);
-    casiIgual(basicoDe("maestroJardin", "2026-04"), 257784.15, 2);
+    // Tabla de "Nuevos adicionales docentes - 04/2026".
+    const tabla: [TipoCargo, number][] = [
+      ["maestroGrado", 254406.98], // "Maestro/a de Grado (226p)"
+      ["maestroJardin", 257784.15], // "Maestro/a de Jardin (229p)"
+      ["educacionEspecialInicial", 290424.52], // "Maestra Educ Especial Nivel Inicial (258p)"
+      ["auxiliarDocente", 244273.41], // "Auxiliar docente (217p)"
+      ["maestroEspecialInicial", 206001.65], // "Maestro/a Esp Jdin (183p)"
+    ];
+    for (const [tipo, esperado] of tabla) {
+      casiIgual(basicoDe(tipo, "2026-04"), esperado, 3.5, `${tipo} en abril:`);
+    }
   });
 
   test("cada cargo cobra el monto que le corresponde, y el celador ninguno", () => {
@@ -236,6 +265,9 @@ describe("decreto de abril 2026: enseñanza en el aula", () => {
 
     assert.equal(montoDe("maestroGrado"), 125000); // 226p, 20/25 horas reloj
     assert.equal(montoDe("maestroJardin"), 93750); // 229p, 15 horas reloj
+    assert.equal(montoDe("educacionEspecialInicial"), 125000); // 258p, 20 horas reloj
+    assert.equal(montoDe("auxiliarDocente"), 93750); // 217p, 15 horas reloj
+    assert.equal(montoDe("maestroEspecialInicial"), 43750); // 183p, 10 horas cátedra
     assert.equal(montoDe("maestroCelador"), 0); // el 259p no está en el decreto
     assert.equal(montoDe("asesorPedagogico"), 0); // tampoco el asesor
   });
@@ -260,8 +292,12 @@ describe("decreto de abril 2026: enseñanza en el aula", () => {
   test("las horas del ítem son las que el decreto le asigna a cada función", () => {
     assert.equal(HORAS_RELOJ_FRENTE_A_ALUMNOS.maestroGrado, 20);
     assert.equal(HORAS_RELOJ_FRENTE_A_ALUMNOS.maestroJardin, 15);
+    assert.equal(HORAS_RELOJ_FRENTE_A_ALUMNOS.educacionEspecialInicial, 20);
+    assert.equal(HORAS_RELOJ_FRENTE_A_ALUMNOS.auxiliarDocente, 15);
+    assert.equal(HORAS_RELOJ_FRENTE_A_ALUMNOS.maestroEspecialInicial, 7); // 10 horas cátedra
     assert.equal(montoEnseñanzaEnAula("maestroGrado"), 20 * 6250);
     assert.equal(montoEnseñanzaEnAula("maestroJardin"), 15 * 6250);
+    assert.equal(montoEnseñanzaEnAula("maestroEspecialInicial"), 7 * 6250);
   });
 
   test("ningún cargo cobra el ítem sin horas asignadas en el decreto", () => {
@@ -279,12 +315,24 @@ describe("decreto de abril 2026: enseñanza en el aula", () => {
     }
   });
 
-  test("en inicial, el jardín cobra por sus 15 horas reloj y no un monto fijo", () => {
-    // Es el caso que estaba mal: la calculadora le pagaba 125.000 (el monto del
-    // maestro de grado) y el decreto le asigna 15 horas reloj, o sea 93.750.
-    const iniciales = cargosDelNivel("inicial");
-    assert.ok(iniciales.some((cargo) => cargo.tipo === "maestroJardin"));
-    assert.equal(montoEnseñanzaEnAula("maestroJardin"), 93750);
+  test("en inicial cada cargo cobra por sus horas, no un monto fijo", () => {
+    // Es el caso que estaba mal: la calculadora le pagaba al jardín 125.000 (el
+    // monto del maestro de grado) y el decreto le asigna 15 horas reloj, o sea
+    // 93.750. Ahora sale de la tabla, así que cada función de inicial cobra lo
+    // suyo y ninguno repite el monto de otro.
+    const esperado: [TipoCargo, number][] = [
+      ["maestroJardin", 93750],
+      ["auxiliarDocente", 93750],
+      ["educacionEspecialInicial", 125000],
+      ["maestroEspecialInicial", 43750],
+    ];
+    for (const [tipo, monto] of esperado) {
+      assert.equal(montoEnseñanzaEnAula(tipo), monto, `${tipo}:`);
+      assert.ok(
+        cargosDelNivel("inicial").some((cargo) => cargo.tipo === tipo),
+        `${tipo} no está en inicial`
+      );
+    }
     assert.notEqual(montoEnseñanzaEnAula("maestroJardin"), montoEnseñanzaEnAula("maestroGrado"));
   });
 

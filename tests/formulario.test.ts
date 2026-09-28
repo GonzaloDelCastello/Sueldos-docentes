@@ -67,12 +67,30 @@ describe("tarjeta de un cargo", () => {
   test("primaria e inicial muestran el ítem de presentismo donde corresponde", () => {
     // El maestro celador no cobra el ítem (no figura en el Decreto 3864-MHIP-2026),
     // así que su tarjeta no tiene el selector.
-    for (const tipo of ["maestroGrado", "maestroJardin"] as const) {
-      const html = tarjeta({ tipo, nivel: tipo === "maestroJardin" ? "inicial" : "primario" });
+    const conPresentismo: [PuestoFormulario["tipo"], PuestoFormulario["nivel"]][] = [
+      ["maestroGrado", "primario"],
+      ["maestroJardin", "inicial"],
+      ["educacionEspecialInicial", "inicial"],
+      ["maestroEspecialInicial", "inicial"],
+      ["auxiliarDocente", "inicial"],
+    ];
+    for (const [tipo, nivel] of conPresentismo) {
+      const html = tarjeta({ tipo, nivel });
       assert.ok(html.includes('data-campo="presencialidad"'), `${tipo} no muestra el presentismo`);
     }
     const celador = tarjeta({ tipo: "maestroCelador", nivel: "primario" });
     assert.ok(!celador.includes('data-campo="presencialidad"'), "el celador no debería tener presentismo");
+    assert.ok(celador.includes('value="maestroCelador"'));
+  });
+
+  test("los cargos nuevos de inicial se ofrecen en ese nivel", () => {
+    for (const tipo of ["educacionEspecialInicial", "maestroEspecialInicial", "auxiliarDocente"] as const) {
+      const html = tarjeta({ nivel: "inicial", tipo });
+      assert.ok(html.includes(`value="${tipo}"`), `falta ${tipo} en inicial`);
+    }
+    // El auxiliar docente también está en primaria (lo pone ahí el decreto).
+    const auxiliarEnPrimaria = tarjeta({ nivel: "primario", tipo: "auxiliarDocente" });
+    assert.ok(auxiliarEnPrimaria.includes('value="auxiliarDocente"'));
   });
 
   test("el asesor pedagógico se ofrece en primaria y en secundaria, sin horas ni presentismo", () => {
@@ -86,13 +104,19 @@ describe("tarjeta de un cargo", () => {
   });
 
   test("el selector de presentismo muestra el monto que paga ese cargo", () => {
-    // Jardín cobra por 15 horas reloj y grado por 20, así que no es el mismo
-    // número: conviene que se vea antes de calcular.
-    const jardin = tarjeta({ tipo: "maestroJardin", nivel: "inicial" });
-    assert.ok(jardin.includes("Sí ($ 93.750)"), "jardín no muestra su monto");
-
-    const grado = tarjeta({ tipo: "maestroGrado", nivel: "primario" });
-    assert.ok(grado.includes("Sí ($ 125.000)"), "grado no muestra su monto");
+    // Los montos salen de las horas reloj de cada función, así que no son el
+    // mismo número: conviene que se vea antes de calcular.
+    const montos: [PuestoFormulario["tipo"], PuestoFormulario["nivel"], string][] = [
+      ["maestroJardin", "inicial", "Sí ($ 93.750)"],
+      ["auxiliarDocente", "inicial", "Sí ($ 93.750)"],
+      ["educacionEspecialInicial", "inicial", "Sí ($ 125.000)"],
+      ["maestroEspecialInicial", "inicial", "Sí ($ 43.750)"],
+      ["maestroGrado", "primario", "Sí ($ 125.000)"],
+    ];
+    for (const [tipo, nivel, texto] of montos) {
+      const html = tarjeta({ tipo, nivel });
+      assert.ok(html.includes(texto), `${tipo} no muestra "${texto}"`);
+    }
   });
 
   test("el nivel superior no muestra zona (no la cobra)", () => {

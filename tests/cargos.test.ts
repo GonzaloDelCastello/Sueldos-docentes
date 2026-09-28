@@ -138,10 +138,36 @@ describe("cargos que no se cobran por hora", () => {
   });
 
   test("los cargos de primaria e inicial suman el adicional por cargo", () => {
-    for (const tipo of ["maestroGrado", "maestroCelador", "maestroJardin"] as const) {
+    const tipos = [
+      "maestroGrado",
+      "maestroCelador",
+      "maestroJardin",
+      "educacionEspecialInicial",
+      "maestroEspecialInicial",
+      "auxiliarDocente",
+      "asesorPedagogico",
+    ] as const;
+    for (const tipo of tipos) {
       const r = calcular(tipo);
       casiIgual(r.adicionalPorCargo, r.basico * BASICA.porcentajes.adicionalCargo);
-      assert.ok(r.adicionalPorCargo > 0);
+      assert.ok(r.adicionalPorCargo > 0, `${tipo} no sumó el adicional por cargo`);
+    }
+  });
+
+  test("el monto de aula de cada cargo sale de sus horas, no de un valor fijo", () => {
+    // Decreto N° 3864-MHIP-2026: 6.250 por hora reloj frente a alumnos.
+    const esperado: [TipoCargo, number][] = [
+      ["maestroGrado", 125000], // 20 horas
+      ["educacionEspecialInicial", 125000], // 20 horas
+      ["maestroJardin", 93750], // 15 horas
+      ["auxiliarDocente", 93750], // 15 horas
+      ["maestroEspecialInicial", 43750], // 7 horas (10 horas cátedra)
+    ];
+    for (const [tipo, monto] of esperado) {
+      const con = calcular(tipo, { presencialidad: true });
+      const sin = calcular(tipo, { presencialidad: false });
+      casiIgual(con.enseñanzaEnAula, monto, 1e-6, `${tipo}:`);
+      casiIgual(sin.enseñanzaEnAula, 0, 1e-6, `${tipo} sin presentismo:`);
     }
   });
 
@@ -155,8 +181,8 @@ describe("cargos que no se cobran por hora", () => {
 
   test("enseñanza en el aula: en jardín es más chico y también depende del presentismo", () => {
     // Decreto N° 3864-MHIP-2026: 93.750 para jardín (15 horas reloj) contra
-    // 125.000 del maestro de grado. Antes la calculadora le pagaba 125.000
-    // siempre, sin mirar el presentismo.
+    // 125.000 del maestro de grado (20 horas reloj). Antes la calculadora le
+    // pagaba 125.000 siempre, sin mirar el presentismo.
     const con = calcular("maestroJardin", { presencialidad: true });
     const sin = calcular("maestroJardin", { presencialidad: false });
     casiIgual(con.enseñanzaEnAula, 93750);
