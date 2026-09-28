@@ -8,6 +8,11 @@ build
 padron.js
 padron*.js
 
+# Recibos de sueldo (propios y de colegas): son datos personales, no van al
+# repositorio ni al deploy. Se sacaron del control de versiones con
+# `git rm -r --cached docs/Recibos`; los archivos siguen en disco.
+docs/Recibos/
+
 # Restos de un intento de instalar dependencias de Python (el sandbox los
 # dejo con permisos raros). Se pueden borrar a mano sin problema.
 .pip-tmp/
