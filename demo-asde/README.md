@@ -1,6 +1,6 @@
 # Muestra de sitio web para ASDE San Luis
 
-Propuesta de diseño y desarrollo para **ASDE, Asociación Sindical de Docentes de San Luis**
+Propuesta de diseño y desarrollo para **ASDE, Asociación Sanluiseña de Docentes Estatales**
 (afiliada a CTERA y a la CTA). Es una **muestra de trabajo**: sirve para mostrar cómo se vería
 el sitio del sindicato y qué herramientas ya están resueltas.
 
@@ -63,9 +63,10 @@ Si se publica en Vercel, la rama genera una URL de preview y la muestra queda en
 Todo lo que hay que cambiar está marcado en el código con `<!-- Reemplazar -->` o con un
 comentario que lo explica. La lista completa:
 
-1. **Identidad.** El escudo es un cuadrado con las letras «ASDE» (`css/asde-layout.css`, clase
-   `.marca__escudo`). Si ASDE tiene isotipo propio, se reemplaza por la imagen. Los colores están
-   todos en `css/asde-base.css`: `--azul`, `--azul-oscuro`, `--dorado`.
+1. **Identidad y logo.** El escudo de letras ya está reemplazado por el **logo real de ASDE**, que
+   se extrajo de dos placas de difusión que aportó el sindicato (ver el punto 6). Los colores están
+   todos en `css/asde-base.css`: `--azul`, `--azul-oscuro`, `--dorado`. Si ASDE tiene su logo en
+   vectorial, conviene reemplazar los PNG por esa versión.
 2. **Noticias y comunicados.** Están en `tools/contenido-noticias.html` y en la portada
    (`index.html`, sección «Últimas noticias»).
 3. **Autoridades.** En `tools/contenido-afiliacion.html`, los cuatro bloques con «Nombre y
@@ -130,7 +131,31 @@ proyecto y se vuelve a copiar la carpeta `dist/` a `demo-asde/js/app/`.
 
 ---
 
-## 6. Qué faltaría para un sitio definitivo
+## 6. El logo
+
+El logo no se dibujó: se **extrajo de dos placas de difusión de ASDE** que están guardadas como
+originales en `img/`.
+
+| Archivo | Para qué sirve |
+| --- | --- |
+| `img/logo-asde.png` | Azul sobre blanco. Es el que usa el encabezado. |
+| `img/logo-asde-transparente.png` | El mismo, sin fondo. Para el día que el encabezado no sea blanco. |
+| `img/logo-asde-oscuro.png` | Blanco sobre el azul de marca. Es el que usa el pie. |
+| `img/placa-1-original.jpeg` | Placa original de la que se cortó la versión clara. |
+| `img/placa-2-original.jpeg` | Placa original de la que se cortó la versión oscura. |
+
+Los tres PNG salen de recortar la zona del logo, con coordenadas medidas sobre la imagen
+ampliada. **Si ASDE consigue el logo en vectorial (SVG, AI o PDF), conviene reemplazarlos**: el
+logo de las placas viene de un JPEG y en tamaños grandes puede mostrar ruido de compresión. A la
+altura que se usa en el sitio (44 px en el encabezado) se ve bien.
+
+El logo incluye los logos de **CTERA** y de **CTA**, que en la muestra también aparecen escritos
+en la barra superior del encabezado. Si a ASDE le parece redundante, se puede quitar la mención
+en texto de la barra superior y dejar sólo la del logo.
+
+---
+
+## 7. Qué faltaría para un sitio definitivo
 
 Lo que esta muestra **no** incluye, y conviene tener presente antes de cotizar el trabajo:
 

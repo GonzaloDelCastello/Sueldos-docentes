@@ -168,44 +168,40 @@ ul { list-style: none; }
 .marca {
   display: flex;
   align-items: center;
-  gap: var(--esp-3);
+  /* Separación corta: el logo es ancho y ya trae el nombre del sindicato, así
+     que el rótulo de al lado no necesita aire extra. */
+  gap: 1.4rem;
   min-width: 0;
 }
 
-.marca__escudo {
-  width: 4.4rem;
-  height: 4.4rem;
+/* El logo real de ASDE. La altura manda y el ancho se acomoda: la imagen ya
+   trae el nombre completo y los logos de CTERA y CTA. */
+.marca__logo {
+  height: 3.4rem;
+  width: auto;
   flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  border-radius: var(--radio);
-  background-color: var(--azul);
-  color: var(--blanco);
-  font-family: var(--serif);
-  font-size: 1.7rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  display: block;
 }
 
-.marca__texto { display: flex; flex-direction: column; min-width: 0; }
-
+/* Rótulo corto al lado del logo. En celular se esconde: la identidad ya está
+   en el propio logo y el ancho es escaso. */
 .marca__nombre {
-  font-family: var(--serif);
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1.1;
-  color: var(--azul);
-}
-
-.marca__bajada {
+  display: none;
   font-size: var(--micro);
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--tinta-3);
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+@media (min-width: 30em) {
+  .marca__logo { height: 3.8rem; }
+  .marca__nombre { display: block; }
+}
+
+@media (min-width: 60em) {
+  .marca__logo { height: 4.4rem; }
 }
 
 /* --- Navegación ----------------------------------------------------------- */
@@ -771,6 +767,17 @@ ul { list-style: none; }
 
 .pie a:hover { color: var(--blanco); text-decoration: underline; }
 .pie li { margin-bottom: var(--esp-1); }
+
+/* Versión del logo para fondo oscuro: es el mismo logo dentro de su recuadro
+   azul de marca, y ese azul coincide con el del pie, así que se integra sin
+   bordes ni esquinas redondeadas. */
+.pie__logo {
+  display: block;
+  width: 20rem;
+  max-width: 100%;
+  height: auto;
+  margin-bottom: var(--esp-3);
+}
 
 .pie__legal {
   margin-top: var(--esp-5);
