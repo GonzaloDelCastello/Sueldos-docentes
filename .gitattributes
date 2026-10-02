@@ -1,2 +1,8 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Los PDF son binarios aunque su encabezado sea texto: si git los trata como
+# texto, al hacer checkout les convierte los saltos de línea de adentro de los
+# streams y el archivo queda distinto del original (o directamente roto).
+# Le pasaba a todos los PDF del repositorio.
+*.pdf binary
