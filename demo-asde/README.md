@@ -153,6 +153,34 @@ El logo incluye los logos de **CTERA** y de **CTA**, que en la muestra también 
 en la barra superior del encabezado. Si a ASDE le parece redundante, se puede quitar la mención
 en texto de la barra superior y dejar sólo la del logo.
 
+### El favicon
+
+El ícono de la pestaña son **dos versiones del logo**, elegidas después de compararlas al tamaño
+real en que las dibuja el navegador:
+
+| Archivo | Contenido | Dónde se ve |
+| --- | --- | --- |
+| `favicon.ico` | Sólo el abanico | Pestaña del navegador (16, 32 y 48 px adentro) |
+| `img/favicon-16.png` | Sólo el abanico | Pestaña en pantallas de baja densidad |
+| `img/favicon-32.png` | Sólo el abanico | Pestaña |
+| `img/favicon-48.png` | Sólo el abanico | Pestaña en pantallas de alta densidad |
+| `img/favicon-192.png` | Logo completo | Acceso directo en Android y otros |
+| `img/apple-touch-icon.png` | Logo completo | Guardar en la pantalla de inicio del iPhone |
+| `img/favicon-512.png` | Logo completo | Usos de mayor tamaño |
+
+El motivo de la diferencia: **probado a 16 px, el logo completo con la palabra ASDE es una mancha
+ilegible**, y el abanico solo se distingue con claridad. De 32 px para arriba, en cambio, el logo
+completo se lee bien y conviene usarlo porque incluye el nombre del sindicato.
+
+Las rutas se declaran **relativas** (`href="favicon.ico"`, sin barra inicial) a propósito: con
+barra inicial, el navegador busca el ícono en la raíz del dominio y termina mostrando el favicon
+del proyecto de ATEBA. Tenerlo presente si alguna vez se mueve la muestra a otro dominio o
+subcarpeta distinta.
+
+Si ASDE consigue el logo en vectorial, se regeneran todos estos archivos a partir de esa versión
+con cualquier editor de imágenes, respetando la misma idea: abanico para los chicos, logo
+completo para los grandes.
+
 ---
 
 ## 7. Qué faltaría para un sitio definitivo
