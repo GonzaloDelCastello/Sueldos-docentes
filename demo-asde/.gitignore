@@ -1,0 +1,6 @@
+# La muestra es autocontenida: no debería generar residuos.
+# Si en algún momento se agrega un paso de compilación propio de la demo,
+# su salida va acá.
+node_modules/
+.cache/
+*.log

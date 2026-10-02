@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sueldo vs inflación · ASDE San Luis</title>
+  <meta name="description" content="Compará cuánto perdió o ganó tu salario frente a la inflación. Cruza el valor histórico de la hora cátedra con el IPC del INDEC.">
+  <meta name="theme-color" content="#16365c">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Sueldo vs inflación · ASDE San Luis">
+  <meta property="og:description" content="Compará cuánto perdió o ganó tu salario frente a la inflación. Cruza el valor histórico de la hora cátedra con el IPC del INDEC.">
+  <meta property="og:locale" content="es_AR">
+
+  <link rel="stylesheet" href="css/asde-base.css">
+  <link rel="stylesheet" href="css/asde-layout.css">
+  <link rel="stylesheet" href="css/asde-calculadora.css">
+</head>
+
+<body>
+
+  <!-- Aviso de muestra: quien reciba el enlace entiende en dos segundos que
+       esto es una propuesta de diseño y no el sitio real del sindicato. -->
+  <div class="aviso-muestra">
+    <strong>Muestra de diseño, sin carácter oficial.</strong> Los textos, nombres y noticias son de ejemplo.
+    Propuesta de <strong>Gonzalo J. Del Castello</strong> para ASDE San Luis.
+  </div>
+
+  <div class="barra-superior">
+    <div class="contenedor barra-superior__interior">
+      <span>Afiliada a <strong>CTERA</strong> y a la <strong>CTA</strong> · San Luis, Argentina</span>
+      <span class="barra-superior__redes">
+        <a href="#redes">Facebook</a>
+        <a href="#redes">Instagram</a>
+        <a href="#redes">YouTube</a>
+      </span>
+    </div>
+  </div>
+
+  <header class="cabecera">
+    <div class="contenedor cabecera__interior">
+      <a href="index.html" class="marca">
+        <span class="marca__escudo" aria-hidden="true">ASDE</span>
+        <span class="marca__texto">
+          <span class="marca__nombre">ASDE San Luis</span>
+          <span class="marca__bajada">Asociación Sindical de Docentes</span>
+        </span>
+      </a>
+
+      <button class="boton-menu" id="botonMenu" aria-label="Abrir menú" aria-expanded="false" aria-controls="navPrincipal">☰</button>
+
+      <nav class="nav" id="navPrincipal" aria-label="Navegación principal">
+        <a href="index.html">Inicio</a>
+        <a href="noticias.html">Noticias</a>
+        <a href="afiliacion.html">Afiliación</a>
+        <span class="nav__herramientas">
+          <a href="calculadora.html">Calculadora</a>
+        </span>
+        <a href="inflacion.html" aria-current="page">Inflación</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+<section class="portada portada--corta">
+      <div class="contenedor">
+        <span class="portada__etiqueta">Herramienta</span>
+        <h1>Salario e inflación</h1>
+        <p class="portada__bajada">Mirá en qué meses tu salario le ganó a la inflación y en cuáles perdió poder de
+          compra. La comparación usa el valor de la hora cátedra y el IPC oficial.</p>
+      </div>
+    </section>
+
+    <section class="seccion">
+      <div class="contenedor">
+        <div class="dos-columnas dos-columnas--ancha">
+          <div>
+            <div class="metodologia">
+              <p><strong>Metodología de comparación salarial</strong></p>
+              <p>Esta herramienta permite calcular la evolución real del poder adquisitivo docente en un período
+                determinado. Para garantizar un cálculo objetivo, utiliza los siguientes parámetros:</p>
+              <ul>
+                <li><strong>Salario básico:</strong> toma como referencia el valor histórico de la hora cátedra, que
+                  es la base a partir de la cual se calculan los demás ítems del recibo.</li>
+                <li><strong>Inflación oficial:</strong> aplica el Índice de Precios al Consumidor (IPC) nacional,
+                  publicado mensualmente por el INDEC.</li>
+                <li><strong>Resultado del período:</strong> cruza el aumento salarial acumulado frente a la inflación
+                  acumulada en ese lapso y muestra la pérdida o ganancia de poder de compra.</li>
+              </ul>
+            </div>
+
+            <div class="contenedor-form-inflacion">
+              <label for="mesInicio">Período de análisis</label>
+              <input type="month" id="mesInicio" value="2023-06">
+              <span>a</span>
+              <input type="month" id="mesFin" value="2026-06">
+              <button id="btnComparar">Comparar</button>
+            </div>
+
+            <div id="resultadoInflacion" class="oculto">
+              <p id="textoResultado"></p>
+              <canvas id="graficoInflacion"></canvas>
+            </div>
+
+            <div class="estado-vacio mt-4" id="estadoVacioInflacion">
+              <strong>El resultado va a aparecer acá</strong>
+              Elegí el mes de inicio y el mes de fin, y apretá "Comparar". Vas a ver la pérdida o ganancia de poder de
+              compra del período, con un gráfico.
+            </div>
+          </div>
+
+          <div class="columna-info">
+            <div class="panel">
+              <h2 class="panel__titulo">Cómo leer el resultado</h2>
+              <ul class="lista-datos">
+                <li><strong>Porcentaje positivo:</strong> el salario le ganó a la inflación en ese período.</li>
+                <li><strong>Porcentaje negativo:</strong> perdiste poder de compra, aunque el número del recibo haya
+                  subido.</li>
+                <li><strong>Multiplicador:</strong> sirve para estimar cuánto deberías haber cobrado para empatar la
+                  inflación.</li>
+              </ul>
+            </div>
+
+            <div class="panel">
+              <h2 class="panel__titulo">¿Por qué comparamos la hora cátedra?</h2>
+              <p class="texto-chico">Porque es el valor base del recibo: los demás ítems —zona, antigüedad,
+                presentismo— se calculan como porcentaje de ese básico. Si la hora cátedra pierde contra la inflación,
+                el resto de la pirámide salarial la acompaña.</p>
+            </div>
+
+            <div class="aviso aviso--muestra">
+              <p><strong>Nota de la muestra:</strong> el comparador funciona con los datos históricos cargados. En el
+                sitio definitivo de ASDE se puede actualizar mes a mes y cruzar también las sumas fijas no
+                remunerativas.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <div class="pie__grilla">
+        <div>
+          <h3>ASDE San Luis</h3>
+          <p>Asociación Sindical de Docentes de San Luis. Afiliada a la CTERA y a la CTA.</p>
+        </div>
+        <div>
+          <h3>Gremial</h3>
+          <ul>
+            <li><a href="noticias.html">Noticias</a></li>
+            <li><a href="noticias.html">Paritarias</a></li>
+            <li><a href="noticias.html">Comunicados</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Herramientas</h3>
+          <ul>
+            <li><a href="calculadora.html">Calculadora salarial</a></li>
+            <li><a href="inflacion.html">Comparador de inflación</a></li>
+            <li><a href="afiliacion.html">Afiliación</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Contacto</h3>
+          <ul>
+            <li><a href="afiliacion.html">Formulario de contacto</a></li>
+            <li><!-- Reemplazar --> Sede central: Dirección de ejemplo 123, San Luis</li>
+            <li><!-- Reemplazar --> prensa@asdesanluis.org.ar</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pie__legal">
+        <span>© 2026 ASDE San Luis · Sitio de ejemplo sin carácter oficial.</span>
+        <span>Diseño y desarrollo: Gonzalo J. Del Castello</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/asde-ui.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script type="module" src="js/app/main.js"></script>
+</body>
+
+</html>

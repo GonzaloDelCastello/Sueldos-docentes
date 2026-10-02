@@ -1,0 +1,84 @@
+/* ==========================================================================
+   ASDE · Sistema de diseño (muestra de trabajo)
+   --------------------------------------------------------------------------
+   Identidad institucional propia: azul profundo como color de la organización,
+   papel cálido para el fondo y un dorado sobrio como acento. La referencia es
+   el sitio de la CTERA (estructura de portal de noticias gremial), pero con
+   identidad propia y no una copia.
+
+   Todo el color, el espaciado y la tipografía del sitio salen de acá.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* --- Identidad --------------------------------------------------------- */
+  --azul: #16365c;
+  --azul-oscuro: #0e2440;
+  --azul-medio: #24507f;
+  --azul-claro: #e8eef6;
+  --azul-borde: #c3d2e4;
+
+  --dorado: #b98a2e;
+  --dorado-oscuro: #966d1f;
+  --dorado-claro: #f7efdd;
+
+  --rojo: #a32118;
+  --rojo-claro: #fbeceb;
+
+  --verde: #1f6b45;
+  --verde-claro: #e9f4ee;
+
+  /* --- Superficies ------------------------------------------------------- */
+  --papel: #f6f5f2;
+  --blanco: #ffffff;
+  --gris: #f1f2f4;
+  --gris-2: #e6e8ec;
+
+  /* --- Texto ------------------------------------------------------------- */
+  --tinta: #16202c;
+  --tinta-2: #3d4a5a;
+  --tinta-3: #6b7787;
+
+  /* --- Líneas y sombras -------------------------------------------------- */
+  --linea: #dcdfe4;
+  --linea-fuerte: #c2c7cf;
+  --sombra-1: 0 1px 2px rgba(16, 32, 56, 0.06);
+  --sombra-2: 0 10px 30px rgba(16, 32, 56, 0.10);
+
+  /* --- Tipografía -------------------------------------------------------- */
+  --serif: Georgia, "Times New Roman", "Liberation Serif", serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+
+  --h1: 3.4rem;
+  --h2: 2.6rem;
+  --h3: 2rem;
+  --texto: 1.65rem;
+  --chico: 1.45rem;
+  --micro: 1.25rem;
+
+  /* --- Formas y ritmo ---------------------------------------------------- */
+  --radio: 0.4rem;
+  --radio-g: 0.8rem;
+  --ancho: 116rem;
+  --ancho-lectura: 70rem;
+  --toque: 4.6rem;
+
+  --esp-1: 0.4rem;
+  --esp-2: 0.8rem;
+  --esp-3: 1.2rem;
+  --esp-4: 1.6rem;
+  --esp-5: 2.4rem;
+  --esp-6: 3.2rem;
+  --esp-7: 4.8rem;
+  --esp-8: 6.4rem;
+}
+
+@media (min-width: 48em) {
+  :root {
+    --h1: 4.4rem;
+    --h2: 3.2rem;
+    --h3: 2.2rem;
+  }
+}

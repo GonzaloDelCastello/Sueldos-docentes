@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculadora de sueldos docentes · ASDE San Luis</title>
+  <meta name="description" content="Calculá tu sueldo docente en San Luis: horas de secundaria, preceptor, maestrxs de grado y celador, nivel inicial e IFDC. Herramienta de ASDE para las y los trabajadores de la educación.">
+  <meta name="theme-color" content="#16365c">
+
+  <link rel="stylesheet" href="css/asde-base.css">
+  <link rel="stylesheet" href="css/asde-layout.css">
+  <link rel="stylesheet" href="css/asde-calculadora.css">
+</head>
+
+<body>
+
+  <div class="aviso-muestra">
+    <strong>Muestra de diseño, sin carácter oficial.</strong> Los textos, nombres y noticias son de ejemplo.
+    Propuesta de <strong>Gonzalo J. Del Castello</strong> para ASDE San Luis.
+  </div>
+
+  <div class="barra-superior">
+    <div class="contenedor barra-superior__interior">
+      <span>Afiliada a <strong>CTERA</strong> y a la <strong>CTA</strong> · San Luis, Argentina</span>
+      <span class="barra-superior__redes">
+        <a href="#redes">Facebook</a>
+        <a href="#redes">Instagram</a>
+        <a href="#redes">YouTube</a>
+      </span>
+    </div>
+  </div>
+
+  <header class="cabecera">
+    <div class="contenedor cabecera__interior">
+      <a href="index.html" class="marca">
+        <span class="marca__escudo" aria-hidden="true">ASDE</span>
+        <span class="marca__texto">
+          <span class="marca__nombre">ASDE San Luis</span>
+          <span class="marca__bajada">Asociación Sindical de Docentes</span>
+        </span>
+      </a>
+
+      <button class="boton-menu" id="botonMenu" aria-label="Abrir menú" aria-expanded="false" aria-controls="navPrincipal">☰</button>
+
+      <nav class="nav" id="navPrincipal" aria-label="Navegación principal">
+        <a href="index.html">Inicio</a>
+        <a href="noticias.html">Noticias</a>
+        <a href="afiliacion.html">Afiliación</a>
+        <span class="nav__herramientas">
+          <a href="calculadora.html" aria-current="page">Calculadora</a>
+        </span>
+        <a href="inflacion.html">Inflación</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <section class="herramienta-encabezado">
+      <h1>Calculadora de sueldos docentes</h1>
+      <p>Estimá tu sueldo de bolsillo según tus cargos, tu antigüedad y tu afiliación. Los valores corresponden a la
+        provincia de San Luis y se actualizan con cada liquidación.</p>
+    </section>
+
+    <div class="contenedorTabs" role="group" aria-label="Herramientas">
+      <button id="tab-calculadora" class="btn-tab activo">Calculadora de sueldos</button>
+      <button id="tab-inflacion" class="btn-tab">Comparativa con la inflación</button>
+    </div>
+
+    <!-- ================== VISTA CALCULADORA ================== -->
+    <section id="vista-calculadora">
+      <div class="calculoSalarial">
+
+        <div id="formularioCalculo" class="formularioCalculo">
+          <h3>Cálculo de sueldo docente San Luis</h3>
+
+          <p class="ayuda-varios-cargos">Cargá cada cargo o grupo de horas que tenés. Si son varios, sumalos todos
+            acá: el cálculo sale junto y los descuentos se aplican una sola vez, como en el recibo.</p>
+
+          <!-- Acá el motor dibuja una tarjeta por cada cargo cargado -->
+          <div id="contenedorPuestos" class="contenedorPuestos"></div>
+
+          <button type="button" id="btnAgregarPuesto" class="boton boton-agregar">➕ Agregar otro cargo</button>
+
+          <fieldset class="grid-form datos-comunes">
+            <legend>Datos comunes a todos los cargos</legend>
+            <span>
+              <label for="antiguedad">Antigüedad docente
+                <select id="antiguedad" name="antiguedad"></select>
+              </label>
+            </span>
+            <span>
+              <label for="afiliacionSindical">Afiliación sindical
+                <select name="afiliacionSindical" id="afiliacionSindical"></select>
+              </label>
+            </span>
+          </fieldset>
+
+          <div class="selector-mes">
+            <label for="mesCalculo">Mes a calcular</label>
+            <select id="mesCalculo" class="select-mes">
+              <option value="2026-05">Mayo 2026</option>
+              <option value="2026-05-B">Mayo 2026 (+ Bono Excepcional)</option>
+              <option value="2026-06">Junio 2026</option>
+              <option value="2026-06-SAC">Junio 2026 (+ Aguinaldo)</option>
+              <option value="2026-07">Julio 2026</option>
+              <option value="2026-08">Agosto 2026</option>
+              <option value="2026-09" selected>Septiembre 2026</option>
+              <option value="2026-10">Octubre 2026</option>
+            </select>
+
+            <button type="button" id="btnCalcularSueldo" class="boton boton--ancho">Calcular sueldo</button>
+          </div>
+        </div>
+
+        <!-- ================== RESULTADOS ================== -->
+        <div id="resultados" class="tarjeta-resultados" style="display:none;">
+
+          <div class="total">
+            <h3>Total de bolsillo</h3>
+            <p class="precio-gigante" id="totalBolsillo">$0.00</p>
+            <p class="cantidad-puestos" id="cantidadPuestos"></p>
+            <div class="resumen-total">
+              <span>Bruto: <strong id="totalBruto">$0.00</strong></span>
+              <span> | </span>
+              <span>Descuentos: <strong id="totalDescuentos">$0.00</strong></span>
+            </div>
+          </div>
+
+          <details class="desplegable" open>
+            <summary>🧾 Desglose por cargo</summary>
+            <table class="tabla-detalle tabla-desglose">
+              <thead>
+                <tr>
+                  <th>Cargo</th>
+                  <th>Hs</th>
+                  <th>Zona</th>
+                  <th>Remunerativo</th>
+                  <th>No remun.</th>
+                  <th>Bruto</th>
+                </tr>
+              </thead>
+              <tbody id="cuerpoDesglose"></tbody>
+            </table>
+          </details>
+
+          <details class="desplegable">
+            <summary>🟢 Conceptos remunerativos</summary>
+            <table class="tabla-detalle">
+              <tr id="filaSueldoBasico" class="fila-resultado">
+                <td>Sueldo básico</td>
+                <td id="resultadoSueldo">$0.00</td>
+              </tr>
+              <tr id="filaZona" class="fila-resultado">
+                <td>Pago por zona</td>
+                <td id="pagoZona">$0.00</td>
+              </tr>
+              <tr id="filaAntiguedad" class="fila-resultado">
+                <td>Pago por antigüedad</td>
+                <td id="pagoAntiguedad">$0.00</td>
+              </tr>
+              <tr id="filaComplementoRem" class="fila-resultado">
+                <td>Complemento remunerativo</td>
+                <td id="complementoRemunerativo">$0.00</td>
+              </tr>
+              <tr id="filaAdicionalCargo" class="fila-resultado">
+                <td>Adicional por cargo</td>
+                <td id="adicionalPorCargo">$0.00</td>
+              </tr>
+              <tr id="filaAdicionalPorDedicacion" class="fila-resultado">
+                <td>Adicional por dedicación (nivel superior)</td>
+                <td id="adicionalPorDedicacion">$0.00</td>
+              </tr>
+              <tr id="filaEnseñanzaEnAula" class="fila-resultado">
+                <td>Enseñanza en aula (presentismo)</td>
+                <td id="enseñanzaEnAula">$0.00</td>
+              </tr>
+              <tr class="fila-subtotal">
+                <th>Total remunerativo</th>
+                <th id="totalCAportes">$0.00</th>
+              </tr>
+            </table>
+          </details>
+
+          <details class="desplegable">
+            <summary>🔵 Conceptos no remunerativos</summary>
+            <table class="tabla-detalle">
+              <tr id="filaComplementoNoRem" class="fila-resultado">
+                <td>Complemento no remunerativo</td>
+                <td id="complementoNoRemunerativo">$0.00</td>
+              </tr>
+              <tr id="filaSumaNoRem" class="fila-resultado">
+                <td>Suma no remunerativa</td>
+                <td id="sumaNoRemunerativa">$0.00</td>
+              </tr>
+              <tr id="filaIncentivoDocente" class="fila-resultado">
+                <td>Incentivo docente</td>
+                <td id="incentivoDocente">$0.00</td>
+              </tr>
+              <tr id="filaBonoExtraordinario" class="fila-resultado">
+                <td>Bono extraordinario por única vez</td>
+                <td id="bonoExtraordinario">$0.00</td>
+              </tr>
+              <tr class="fila-subtotal">
+                <th>Total no remunerativo</th>
+                <th id="totalSAportes">$0.00</th>
+              </tr>
+            </table>
+          </details>
+
+          <details class="desplegable">
+            <summary>🔴 Descuentos</summary>
+            <table class="tabla-detalle">
+              <tr class="fila-resultado">
+                <td>Jubilación (11%)</td>
+                <td id="aporteJubilatorio">$0.00</td>
+              </tr>
+              <tr class="fila-resultado">
+                <td>Jubilación Reg. Esp. (2%)</td>
+                <td id="aporteJubilatorioEsp">$0.00</td>
+              </tr>
+              <tr class="fila-resultado">
+                <td>Obra social (6%)</td>
+                <td id="obraSocial">$0.00</td>
+              </tr>
+              <tr id="filaDescuentoSindical" class="fila-resultado">
+                <td>Afiliación sindical</td>
+                <td id="descuentoSindical">$0.00</td>
+              </tr>
+              <tr class="fila-resultado">
+                <td>Seguro obligatorio</td>
+                <td id="seguroObligatorio">$0.00</td>
+              </tr>
+              <tr class="fila-resultado">
+                <td>Seguro social</td>
+                <td id="seguroSocial">$0.00</td>
+              </tr>
+              <tr class="fila-resultado">
+                <td>Seguro mutual</td>
+                <td id="seguroMutual">$0.00</td>
+              </tr>
+              <tr class="fila-subtotal">
+                <th>Total descuentos</th>
+                <th id="totalDescuentosTexto">$0.00</th>
+              </tr>
+            </table>
+          </details>
+
+          <details class="desplegable">
+            <summary>🎄 Aguinaldo (SAC) estimado</summary>
+            <table class="tabla-detalle">
+              <tr class="fila-resultado">
+                <td>SAC bruto (50% remunerativo)</td>
+                <td id="sacBruto">$0.00</td>
+              </tr>
+              <tr class="fila-resultado">
+                <td>Descuentos de ley (jubilación + obra social)</td>
+                <td id="sacDescuentos">-$0.00</td>
+              </tr>
+              <tr class="fila-subtotal">
+                <th>SAC de bolsillo (a cobrar)</th>
+                <th id="sacNeto">$0.00</th>
+              </tr>
+              <tr>
+                <td colspan="2" class="texto-chico">* No incluye sumas fijas (FONID/Conectividad) ni descuentos de
+                  seguros fijos.</td>
+              </tr>
+            </table>
+          </details>
+
+          <div class="contenedorGraficos oculto" id="botonGraficos">
+            <details>
+              <summary>📊 Ver gráfico de proporciones sobre el sueldo bruto</summary>
+              <div class="marco-grafico">
+                <canvas id="miGrafico"></canvas>
+              </div>
+            </details>
+          </div>
+        </div>
+        <!-- Estado previo: evita mostrar una tarjeta de resultados en cero -->
+        <div class="estado-vacio" id="estadoVacioCalculo">
+          <strong>Tu resultado va a aparecer acá</strong>
+          Cargá tus cargos, elegí el mes y apretá "Calcular sueldo". El desglose completo se muestra al lado, igual
+          que en el recibo.
+        </div>
+      </div>
+
+      <!-- ================== AYUDA ================== -->
+      <section class="seccion">
+        <div class="seccion__cabecera">
+          <h2>Sobre esta herramienta</h2>
+        </div>
+
+        <p class="texto-chico mb-3">Actualizada a valores de agosto-septiembre 2026. Los cálculos son estimativos y
+          pueden diferir en centavos del recibo oficial.</p>
+
+        <details class="acordeon-info">
+          <summary>¿Para qué cargos y niveles funciona?</summary>
+          <div class="contenido-acordeon">
+            <p>Actualmente funciona para:</p>
+            <ul>
+              <li><strong>Nivel Medio:</strong> cargo de hs. en secundaria, cargo de preceptor y asesor/a pedagógico
+                (417p).</li>
+              <li><strong>Nivel Primario:</strong> maestrx de grado, maestrx celador, asesor/a pedagógico (417p) y
+                auxiliar docente (217p).</li>
+              <li><strong>Nivel Inicial:</strong> maestrx de jardín / maestrx aux. de jardín, maestrx de educación
+                especial inicial (258p), maestrx especial de jardín (183p) y auxiliar docente (217p).</li>
+              <li><strong>Nivel Superior (IFDC):</strong> cargo full time, tiempo completo 30 hs, semiexclusivo de
+                25 hs y dedicación simple de 10 hs.</li>
+            </ul>
+            <p><em>El resto de los cargos y niveles se irá sumando.</em></p>
+          </div>
+        </details>
+
+        <details class="acordeon-info">
+          <summary>¿Cómo calcular si tengo varios cargos o zonas distintas?</summary>
+          <div class="contenido-acordeon">
+            <p><strong>Podés cargar todos tus cargos juntos.</strong> Apretá "Agregar otro cargo" y completá cada uno
+              con su nivel, su tipo de cargo y su zona. La calculadora los suma en un solo resultado.</p>
+            <p>Los descuentos de ley y los seguros fijos se aplican <strong>una sola vez</strong> sobre el total,
+              igual que en el recibo. En la tabla <strong>Desglose por cargo</strong> podés ver cuánto aporta cada
+              uno.</p>
+            <p>Las <strong>horas en secundaria</strong> se cargan en un cargo por cada zona: si tenés horas en
+              escuelas con zonas distintas, agregá un cargo para cada una.</p>
+            <p>La antigüedad y la afiliación sindical son las mismas para todos los cargos, así que se cargan una sola
+              vez en "Datos comunes a todos los cargos".</p>
+          </div>
+        </details>
+
+        <details class="acordeon-info">
+          <summary>Aclaraciones sobre "Enseñanza en el aula" (presentismo) y asignaciones familiares</summary>
+          <div class="contenido-acordeon">
+            <p><strong>Presentismo (Inicial y Primaria):</strong> todavía no está la opción de cargar las faltas
+              justificadas. La calculadora muestra los datos asumiendo el cobro total del ítem.</p>
+            <p><strong>Asignación familiar:</strong> no está habilitada porque se están verificando los parámetros
+              provinciales exactos.</p>
+          </div>
+        </details>
+
+        <div class="aviso aviso--muestra mt-4">
+          <p><strong>Nota de la muestra:</strong> esta calculadora funciona de verdad, con los valores cargados del
+            sistema provincial. En el sitio definitivo de ASDE se puede publicar con la identidad del sindicato y
+            sumar un canal para que las y los afiliados informen diferencias.</p>
+        </div>
+      </section>
+    </section>
+
+    <!-- ================== VISTA INFLACIÓN (dentro de las pestañas) ================== -->
+    <section id="vista-inflacion" class="oculto">
+      <div class="metodologia">
+        <p><strong>Metodología de comparación salarial</strong></p>
+        <p>Esta herramienta permite calcular la evolución real del poder adquisitivo docente en un período
+          determinado. Para garantizar un cálculo objetivo, utiliza los siguientes parámetros:</p>
+        <ul>
+          <li><strong>Salario básico:</strong> toma como referencia el valor histórico de la hora cátedra, que es la
+            base a partir de la cual se calculan los demás ítems del recibo.</li>
+          <li><strong>Inflación oficial:</strong> aplica el Índice de Precios al Consumidor (IPC) nacional, publicado
+            mensualmente por el INDEC.</li>
+          <li><strong>Resultado del período:</strong> cruza el aumento salarial acumulado frente a la inflación
+            acumulada en ese lapso y muestra la pérdida o ganancia de poder de compra.</li>
+        </ul>
+      </div>
+
+      <div class="contenedor-form-inflacion">
+        <label for="mesInicio">Período de análisis</label>
+        <input type="month" id="mesInicio" value="2023-06">
+        <span>a</span>
+        <input type="month" id="mesFin" value="2026-06">
+        <button id="btnComparar">Comparar</button>
+      </div>
+
+      <div id="resultadoInflacion" class="oculto">
+        <p id="textoResultado"></p>
+        <canvas id="graficoInflacion"></canvas>
+      </div>
+
+      <div class="estado-vacio mt-4" id="estadoVacioInflacion">
+        <strong>El resultado va a aparecer acá</strong>
+        Elegí el mes de inicio y el mes de fin, y apretá "Comparar". Vas a ver la pérdida o ganancia de poder de
+        compra del período, con un gráfico.
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <div class="pie__grilla">
+        <div>
+          <h3>ASDE San Luis</h3>
+          <p>Asociación Sindical de Docentes de San Luis. Afiliada a la CTERA y a la CTA.</p>
+        </div>
+        <div>
+          <h3>Gremial</h3>
+          <ul>
+            <li><a href="noticias.html">Noticias</a></li>
+            <li><a href="noticias.html">Paritarias</a></li>
+            <li><a href="noticias.html">Comunicados</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Herramientas</h3>
+          <ul>
+            <li><a href="calculadora.html">Calculadora salarial</a></li>
+            <li><a href="inflacion.html">Comparador de inflación</a></li>
+            <li><a href="afiliacion.html">Afiliación</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Contacto</h3>
+          <ul>
+            <li><a href="afiliacion.html">Formulario de contacto</a></li>
+            <li><!-- Reemplazar --> Sede central: Dirección de ejemplo 123, San Luis</li>
+            <li><!-- Reemplazar --> prensa@asdesanluis.org.ar</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pie__legal">
+        <span>© 2026 ASDE San Luis · Sitio de ejemplo sin carácter oficial.</span>
+        <span>Diseño y desarrollo: Gonzalo J. Del Castello</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="js/asde-ui.js"></script>
+  <script type="module" src="js/app/main.js"></script>
+</body>
+
+</html>

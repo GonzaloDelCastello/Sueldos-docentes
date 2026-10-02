@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ASDE San Luis · Sindicato docente</title>
+  <meta name="description" content="ASDE, Asociación Sindical de Docentes de San Luis. Afiliada a CTERA y a la CTA. Calculadora salarial, comparador de inflación, noticias gremiales y afiliación.">
+  <meta name="theme-color" content="#16365c">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ASDE San Luis · Sindicato docente">
+  <meta property="og:description" content="Herramientas, noticias y afiliación. Una propuesta de sitio web para ASDE San Luis.">
+  <meta property="og:locale" content="es_AR">
+
+  <link rel="stylesheet" href="css/asde-base.css">
+  <link rel="stylesheet" href="css/asde-layout.css">
+  <link rel="stylesheet" href="css/asde-calculadora.css">
+</head>
+
+<body>
+
+  <!-- Aviso de muestra: quien reciba el enlace entiende en dos segundos que
+       esto es una propuesta de diseño y no el sitio real del sindicato. -->
+  <div class="aviso-muestra">
+    <strong>Muestra de diseño, sin carácter oficial.</strong> Los textos, nombres y noticias son de ejemplo.
+    Propuesta de <strong>Gonzalo J. Del Castello</strong> para ASDE San Luis.
+  </div>
+
+  <div class="barra-superior">
+    <div class="contenedor barra-superior__interior">
+      <span>Afiliada a <strong>CTERA</strong> y a la <strong>CTA</strong> · San Luis, Argentina</span>
+      <span class="barra-superior__redes">
+        <a href="#redes">Facebook</a>
+        <a href="#redes">Instagram</a>
+        <a href="#redes">YouTube</a>
+      </span>
+    </div>
+  </div>
+
+  <header class="cabecera">
+    <div class="contenedor cabecera__interior">
+      <a href="index.html" class="marca">
+        <span class="marca__escudo" aria-hidden="true">ASDE</span>
+        <span class="marca__texto">
+          <span class="marca__nombre">ASDE San Luis</span>
+          <span class="marca__bajada">Asociación Sindical de Docentes</span>
+        </span>
+      </a>
+
+      <button class="boton-menu" id="botonMenu" aria-label="Abrir menú" aria-expanded="false" aria-controls="navPrincipal">☰</button>
+
+      <nav class="nav" id="navPrincipal" aria-label="Navegación principal">
+        <a href="index.html" aria-current="page">Inicio</a>
+        <a href="noticias.html">Noticias</a>
+        <a href="afiliacion.html">Afiliación</a>
+        <span class="nav__herramientas">
+          <a href="calculadora.html">Calculadora</a>
+        </span>
+        <a href="inflacion.html">Inflación</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ================== PORTADA ================== -->
+    <section class="portada">
+      <div class="contenedor">
+        <span class="portada__etiqueta">Paritaria provincial en curso</span>
+        <h1>Defendemos el salario, la escuela pública y los derechos de quienes enseñan</h1>
+        <p class="portada__bajada">ASDE representa a las y los trabajadores de la educación de San Luis. Esta es una
+          propuesta de sitio web: herramientas para entender el recibo de sueldo, información gremial y un canal
+          directo para afiliarse.</p>
+        <div class="portada__acciones">
+          <a href="calculadora.html" class="boton boton--sobre-azul">Calcular mi sueldo</a>
+          <a href="afiliacion.html" class="boton boton--claro">Quiero afiliarme</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="contenedor">
+      <div class="tapa">
+        <a href="noticias.html" class="tapa__principal">
+          <span class="tapa__fecha">Comunicado · 28 de septiembre de 2026</span>
+          <h2>ASDE participó de la reunión paritaria y llevó el reclamo por la recomposición del básico</h2>
+          <p>El sindicato presentó ante el Gobierno provincial la necesidad de recomponer el salario básico por encima
+            de la inflación y de revisar el adicional por antigüedad. Texto de ejemplo.</p>
+        </a>
+        <div class="agenda">
+          <article class="agenda__item">
+            <div class="agenda__fecha">
+              <span class="agenda__dia">07</span>
+              <span class="agenda__mes">Oct</span>
+            </div>
+            <div>
+              <h3>Asamblea provincial de delegados</h3>
+              <p>Evaluación de la paritaria y plan de acción. 18:00, sede central.</p>
+            </div>
+          </article>
+          <article class="agenda__item">
+            <div class="agenda__fecha">
+              <span class="agenda__dia">15</span>
+              <span class="agenda__mes">Oct</span>
+            </div>
+            <div>
+              <h3>Jornada de formación sindical</h3>
+              <p>Herramientas para leer el recibo de sueldo. Abierta y gratuita.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================== HERRAMIENTAS ================== -->
+    <section class="seccion">
+      <div class="contenedor">
+        <div class="seccion__cabecera">
+          <h2>Herramientas para docentes</h2>
+          <a href="calculadora.html">Ver todas</a>
+        </div>
+
+        <div class="herramientas">
+          <article class="herramienta">
+            <h3>Calculadora de sueldo</h3>
+            <p>Cargá tus cargos —horas de secundaria, preceptor, maestrx de grado o jardín, celador, IFDC— y mirá tu
+              sueldo de bolsillo estimado con el desglose completo, igual que en el recibo. Podés sumar varios cargos
+              y zonas distintas en un solo cálculo.</p>
+            <div>
+              <a href="calculadora.html" class="boton">Abrir la calculadora</a>
+            </div>
+          </article>
+
+          <article class="herramienta">
+            <h3>Comparador contra la inflación</h3>
+            <p>Mirá cuánto perdió o ganó tu salario frente a la inflación en un período. Cruza el valor histórico de la
+              hora cátedra con el IPC del INDEC y te muestra el resultado con un gráfico.</p>
+            <div>
+              <a href="inflacion.html" class="boton">Comparar salario e inflación</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== NOTICIAS ================== -->
+    <section class="seccion seccion--gris">
+      <div class="contenedor">
+        <div class="seccion__cabecera">
+          <h2>Últimas noticias</h2>
+          <a href="noticias.html">Todas las noticias</a>
+        </div>
+
+        <div class="noticias">
+          <article class="noticia">
+            <div class="noticia__imagen">Foto</div>
+            <div class="noticia__cuerpo">
+              <span class="noticia__categoria noticia__categoria--gremial">Gremial</span>
+              <h3>Paritaria: el Gobierno convocó a ASDE para el martes</h3>
+              <p>La reunión se realizará en la sede del Ministerio de Educación. El sindicato llevará el pedido de
+                recomposición salarial y el pase a planta de las y los auxiliares.</p>
+              <div class="noticia__pie">
+                <span>27 de septiembre de 2026</span>
+                <span class="noticia__leer">Leer más</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="noticia">
+            <div class="noticia__imagen">Foto</div>
+            <div class="noticia__cuerpo">
+              <span class="noticia__categoria noticia__categoria--provincial">Provincial</span>
+              <h3>Marcha docente en San Luis en defensa de la educación pública</h3>
+              <p>Con una convocatoria que superó las expectativas, las y los docentes marcharon desde la Plaza Pringles
+                hasta la Casa de Gobierno.</p>
+              <div class="noticia__pie">
+                <span>24 de septiembre de 2026</span>
+                <span class="noticia__leer">Leer más</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="noticia">
+            <div class="noticia__imagen">Foto</div>
+            <div class="noticia__cuerpo">
+              <span class="noticia__categoria noticia__categoria--comunicado">Comunicado</span>
+              <h3>Sobre el descuento de los días de paro</h3>
+              <p>La conducción del sindicato informa los pasos que se seguirán para desconocer los descuentos
+                aplicados sobre los días de medida de fuerza.</p>
+              <div class="noticia__pie">
+                <span>20 de septiembre de 2026</span>
+                <span class="noticia__leer">Leer más</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== AFILIACIÓN ================== -->
+    <section class="afiliacion">
+      <div class="contenedor">
+        <h2>Afiliate a ASDE</h2>
+        <p>La afiliación sostiene las herramientas, la formación y la representación en paritaria. Descuento directo
+          del recibo de sueldo, sin trámites ni cuotas por fuera del convenio.</p>
+        <div class="afiliacion__acciones">
+          <a href="afiliacion.html" class="boton boton--sobre-azul">Quiero afiliarme</a>
+          <a href="afiliacion.html" class="boton boton--claro">Consultar un descuento</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <div class="pie__grilla">
+        <div>
+          <h3>ASDE San Luis</h3>
+          <p>Asociación Sindical de Docentes de San Luis. Afiliada a la CTERA y a la CTA.</p>
+        </div>
+        <div>
+          <h3>Gremial</h3>
+          <ul>
+            <li><a href="noticias.html">Noticias</a></li>
+            <li><a href="#paritarias">Paritarias</a></li>
+            <li><a href="#comunicados">Comunicados</a></li>
+            <li><a href="#estatuto">Estatuto y normativa</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Herramientas</h3>
+          <ul>
+            <li><a href="calculadora.html">Calculadora salarial</a></li>
+            <li><a href="inflacion.html">Comparador de inflación</a></li>
+            <li><a href="afiliacion.html">Afiliación</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Contacto</h3>
+          <ul>
+            <li><a href="afiliacion.html">Formulario de contacto</a></li>
+            <li><!-- Reemplazar --> Sede central: Dirección de ejemplo 123, San Luis</li>
+            <li><!-- Reemplazar --> prensa@asdesanluis.org.ar</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pie__legal">
+        <span>© 2026 ASDE San Luis · Sitio de ejemplo sin carácter oficial.</span>
+        <span>Diseño y desarrollo: Gonzalo J. Del Castello</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/asde-ui.js"></script>
+</body>
+
+</html>
