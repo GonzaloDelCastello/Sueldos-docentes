@@ -8,7 +8,7 @@ La calculadora es una herramienta gratuita y sin fines de lucro que estima el
 sueldo de bolsillo de un docente de la provincia y lo compara contra la
 inflación. Hoy calcula **varios cargos a la vez** (los suma en un solo recibo,
 con el descuento de ley aplicado una sola vez, como en la liquidación real),
-cubre **quince cargos** de inicial, primaria, secundaria y nivel superior, y
+cubre **trece cargos** de inicial, primaria, secundaria y nivel superior, y
 muestra el **desglose por cargo**.
 
 Todos los valores salen de los decretos, los instructivos de pre-liquidación y
