@@ -19,6 +19,7 @@ docs/Recibos/
 .pip-cache/
 .pydeps/
 .tmp-pip/
+.tmp-pdf-libs/
 
 # Assets que se bajan solos para generar las placas de Instagram (tipografías
 # y la librería qrcode). No se versionan: los recupera
