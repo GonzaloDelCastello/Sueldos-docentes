@@ -371,7 +371,9 @@ export const HISTORIAL_IFDC: ConfiguracionSalarial2[] = [
     porcentajes: {
         remunerativo: 0.70, 
         noRemunerativo: 0.25,  
-        adicionalCargo: 0.34999 
+        // El recibo de dedicación simple de agosto da 100.269,17 sobre un básico
+        // de 286.483,33: es el 35% exacto, no el 34,999% de los meses anteriores.
+        adicionalCargo: 0.35 
     },
     fonid: 57400, 
     sumaNoRemunerativa: 157894.07, 
@@ -380,13 +382,16 @@ export const HISTORIAL_IFDC: ConfiguracionSalarial2[] = [
 },
 {
      fecha: "2026-09", 
-    // Igual que agosto: el Decreto N° 8583-MHIP-2026 no puso tramo en septiembre.
+    // Sep-2026 es el quinto tramo del 5% sobre los haberes de enero.
+    // Los complementos pasan de 70/25 a 75/20: el recibo de dedicación simple de
+    // septiembre 2026 muestra 75% de remunerativo y 20% de no remunerativo.
+    // El total sigue siendo 95%, así que cambia el reparto, no la plata.
     descripcion: "Actualización Septiembre 2026 (5% de los haberes de enero)",
     basicoCargo_Hora: 700048.41, 
     porcentajes: {
-        remunerativo: 0.70, 
-        noRemunerativo: 0.25,  
-        adicionalCargo: 0.34999 
+        remunerativo: 0.75, 
+        noRemunerativo: 0.20,  
+        adicionalCargo: 0.35 
     },
     fonid: 57400, 
     sumaNoRemunerativa: 157894.07, 
@@ -395,6 +400,8 @@ export const HISTORIAL_IFDC: ConfiguracionSalarial2[] = [
 },
 {
      fecha: "2026-10", 
+   // OJO: los porcentajes de octubre son los mismos que tenía septiembre (70/25)
+   // porque todavía no hay recibo de octubre que muestre el reparto de ese mes.
    descripcion: "Actualización Octubre 2026 (5% de los haberes de enero)",
     basicoCargo_Hora: 728050.34, 
     porcentajes: {
@@ -457,4 +464,57 @@ export const HISTORIAL_BASICO: Record<string, MesBasico> = {
     "2026-08": { valorHora: 18505.56 },
     "2026-09": { valorHora: 19276.62 },
     "2026-10": { valorHora: 20047.69 }
+};
+
+// ---------------------------------------------------------------------------
+// Seguros fijos del recibo
+// ---------------------------------------------------------------------------
+
+// El seguro social y el mutual valen lo mismo en todos los recibos cargados
+// (2024 a 2026), así que no hace falta repetirlos mes a mes.
+export const SEGUROS_FIJOS = {
+    social: 100,
+    mutual: 10,
+};
+
+// SEGURO OBLIGATORIO TITULAR, POR MES
+//
+// Es un monto fijo del recibo que sube con los aumentos, pero no todos los
+// meses: cambia en los meses en que hay tramo de aumento (febrero, abril, julio,
+// agosto, septiembre y octubre de 2026). Antes estaba escrito una sola vez en el
+// código y quedaba viejo sin que nadie lo notara.
+//
+// Valores verificados contra recibos de docs/Recibos/:
+//   2025-01   3.292,16   recibo propio de enero 2025
+//   2025-11   4.477,34   recibos de noviembre 2025 (tres distintos)
+//   2026-01   4.477,34   recibo propio de enero 2026
+//   2026-02   4.701,21   recibo propio de febrero 2026
+//   2026-06   4.925,07   recibo del IFDC de junio 2026
+//   2026-08   5.372,81   recibo de dedicación simple de agosto 2026
+//   2026-09   5.596,68   recibo de dedicación simple de septiembre 2026
+//
+// Valores deducidos (falta el recibo del mes para confirmarlos):
+//   2026-03   4.701,21   no hay tramo en marzo: sigue valiendo el de febrero
+//   2026-04   4.925,07   sube en el tramo de abril y sigue igual en junio
+//   2026-05   4.925,07   sin tramo
+//   2026-07   5.148,94   tramo de julio: 223,87 más
+//   2026-10   5.820,55   tramo de octubre: 223,87 más
+//
+// El incremento de 223,87 por tramo es el que muestran los recibos de 2026: de
+// febrero a junio sube una vez (tramo de abril) y de junio a agosto, dos veces
+// (tramos de julio y agosto).
+export const SEGURO_OBLIGATORIO_POR_MES: Readonly<Record<string, number>> = {
+    "2025-01": 3292.16,
+    "2025-11": 4477.34,
+    "2026-01": 4477.34,
+    "2026-02": 4701.21,
+    "2026-03": 4701.21,
+    "2026-04": 4925.07,
+    "2026-05": 4925.07,
+    "2026-05-B": 4925.07,
+    "2026-06": 4925.07,
+    "2026-07": 5148.94,
+    "2026-08": 5372.81,
+    "2026-09": 5596.68,
+    "2026-10": 5820.55,
 };

@@ -129,19 +129,51 @@ verifican contra la tabla de abril del decreto 3864 y contra la de julio:
 El auxiliar docente se ofrece en inicial **y** en primario, porque el decreto lo
 lista en los dos niveles.
 
+## El cargo de dedicación simple de 10 horas (IFDC)
+
+Dos recibos nuevos (agosto y septiembre 2026) del cargo **"Profesor ded. Simple
+(10hs)"**, función 0835 del IFDC San Luis, permitieron agregarlo. Lo que
+enseñaron:
+
+- **El básico no es 10/30 del tiempo completo.** El coeficiente que sale de
+  dividir el básico del recibo por el del cargo de 30 horas es **0,426285**, y da
+  igual en los dos meses hasta el octavo decimal. Con la regla de las horas
+  (0,3333) el básico daría 52.000 pesos menos.
+- **El FONID es el 48% del completo**: 27.552 contra 57.400, igual en los dos
+  meses. Es el primer cargo del superior que no cobra el FONID entero.
+- **El adicional por dedicación es 35% exacto**, no el 34,999% de los meses
+  anteriores (son 2 o 3 pesos de diferencia).
+- **En septiembre cambió el reparto de los complementos del superior**: de 70/25
+  a **75/20**. El total sigue siendo 95%, así que se corre plata de no
+  remunerativo a remunerativo. No está en el decreto de julio: es un decreto
+  posterior que no tenemos.
+- **El seguro obligatorio del mes**: 5.372,81 en agosto y 5.596,68 en septiembre.
+  Con estos dos valores, más los de los recibos viejos, se armó la serie por mes.
+
+Los dos recibos quedaron como test ítem por ítem en `tests/instructivos.test.ts`
+(y son la fuente de `SEGURO_OBLIGATORIO_POR_MES` en `src/historial.ts`).
+
 ## Lo que queda por confirmar
 
 - **Guardar el decreto que movió los tramos a septiembre y octubre.** El archivo
   no está en el repositorio y es la única fuente de esos dos meses.
-- **El seguro obligatorio de julio a octubre 2026.** El último recibo disponible
-  es de junio (4.925,07) y ese valor cambia con el tiempo. La otra calculadora
-  usa 5.372,81, pero no se sabe de qué mes sale. Conviene actualizarlo con un
-  recibo de julio o agosto.
+- **Guardar el decreto que cambió los complementos del superior en septiembre**
+  (70/25 a 75/20). Tampoco está en el repositorio.
+- **Los porcentajes de octubre del superior.** La calculadora usa 70/25 (los de
+  julio y agosto) porque no hay recibo de octubre. Si siguiera la progresión
+  sería 80/15, pero es una suposición: conviene el recibo.
+- **El seguro obligatorio de los meses deducidos.** La serie por mes está en
+  `SEGURO_OBLIGATORIO_POR_MES`: marzo, abril, mayo, julio y octubre de 2026 son
+  deducidos (el valor sube 223,87 en los meses de aumento), no leídos de un
+  recibo. Los verificados son enero, febrero, junio, agosto y septiembre.
 - **El asesor/a pedagógico no tiene recibo de sueldo.** El instructivo de julio
   publica su básico (490.745,35 para 417 puntos) y de ahí sale el coeficiente
   27,671789. El resto de los ítems se calcularon con la misma estructura que el
   resto de los cargos, que es lo que muestran todos los recibos. Falta
   confirmarlo con un recibo real.
+- **La dedicación simple de otras cargas horarias.** Si aparecen recibos de 6, 12
+  o 20 horas, cada uno necesita su propio coeficiente: la relación con el cargo
+  de 30 horas no es la de las horas.
 - **El aguinaldo.** El recibo de junio 2026 muestra 888.413,77 de SAC y la
   estimación de la calculadora da 898.396 (1,1% arriba). Sigue pendiente.
 - **El "complemento compensador" (100-26)** que aparece en algunos recibos de
@@ -150,6 +182,9 @@ lista en los dos niveles.
   preceptor lo multiplica por su coeficiente (14,1347) y el resto de los cargos
   por 15. Es una diferencia heredada y no hay recibo de mayo 2026 para saber cuál
   de las dos reglas vale. Conviene unificarlo cuando aparezca uno.
+- **La etiqueta "Prof. full time, 40 hs."** El coeficiente del cargo es 35/30 y
+  el recibo de junio lo confirma (718.717,75 = 616.042,59 x 35/30), así que el
+  cargo es de 35 horas y la etiqueta dice 40.
 
 ## Herramientas que se agregaron
 
@@ -159,3 +194,5 @@ lista en los dos niveles.
 - `tools/comparar-recibos.py`: arma una tabla con los ítems de cada recibo.
   Ojo: el texto que sale de estos PDF trae los números al revés de como se ven
   (`278,470.20` en lugar de `278.470,20`), y el script contempla los dos formatos.
+- `tools/listar-seguros.py`: lista el seguro obligatorio, el social y el mutual
+  de cada recibo, que es como se armó la serie por mes.

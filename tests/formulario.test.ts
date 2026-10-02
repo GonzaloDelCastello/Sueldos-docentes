@@ -119,10 +119,19 @@ describe("tarjeta de un cargo", () => {
     }
   });
 
-  test("el nivel superior no muestra zona (no la cobra)", () => {
-    for (const tipo of ["ifdcTiempoCompleto", "ifdcSemiExclusivo", "ifdcFullTime"] as const) {
+  test("el nivel superior no muestra zona, horas ni presentismo", () => {
+    const superiores = [
+      "ifdcTiempoCompleto",
+      "ifdcSemiExclusivo",
+      "ifdcFullTime",
+      "ifdcDedicacionSimple10",
+    ] as const;
+    for (const tipo of superiores) {
       const html = tarjeta({ tipo, nivel: "superior" });
       assert.ok(!html.includes('data-campo="zona"'), `${tipo} no debería mostrar zona`);
+      assert.ok(!html.includes('data-campo="presencialidad"'), `${tipo} no debería mostrar presentismo`);
+      assert.ok(!html.includes('data-campo="cantHoras"'), `${tipo} no debería pedir horas`);
+      assert.ok(html.includes(`value="${tipo}"`), `falta ${tipo} en la lista del superior`);
     }
   });
 

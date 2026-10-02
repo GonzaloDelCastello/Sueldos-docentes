@@ -39,22 +39,17 @@ export const COEFICIENTES_CARGOS = {
   ifdcTiempoCompleto: 1, // el cargo de 30 horas es la base del historial del superior
   ifdcSemiExclusivo: 0.83333,
   ifdcFullTime: 1.166668931,
+  // Dedicación simple de 10 horas. No es 10/30: los recibos de agosto y
+  // septiembre 2026 dan 286.483,33 / 672.046,47 = 0,426285 en los dos meses.
+  ifdcDedicacionSimple10: 0.426285,
 };
 
-// Descuentos fijos del recibo: no dependen del mes ni del cargo.
-// Se descuentan UNA sola vez por recibo, no una vez por cargo.
-//
-// El seguro obligatorio cambia con el tiempo. Este es el último valor
-// verificado contra recibo (junio 2026, Instituto de Formación Docente):
-//   07-2025 y 08-2025: 4.312,73
-//   02-2026:           4.701,21
-//   06-2026:           4.925,07
-// El seguro social (100) y el mutual (10) vienen iguales en todos los recibos.
-export const DESCUENTOS_FIJOS = {
-  seguroObligatorio: 4925.07,
-  seguroSocial: 100,
-  seguroMutual: 10,
-};
+/** Los descuentos del recibo que no dependen del sueldo ni del cargo. */
+export interface DescuentosFijos {
+  seguroObligatorio: number;
+  seguroSocial: number;
+  seguroMutual: number;
+}
 
 // ---------------------------------------------------------------------------
 // Catálogo de cargos
@@ -77,7 +72,8 @@ export type TipoCargo =
   | "asesorPedagogico"
   | "ifdcTiempoCompleto"
   | "ifdcSemiExclusivo"
-  | "ifdcFullTime";
+  | "ifdcFullTime"
+  | "ifdcDedicacionSimple10";
 
 export interface DefinicionCargo {
   tipo: TipoCargo;
@@ -92,6 +88,12 @@ export interface DefinicionCargo {
   usaZona: boolean;
   /** Si corresponde el ítem de enseñanza en el aula (ver montoEnseñanzaEnAula). */
   usaPresencialidad: boolean;
+  /**
+   * Parte del FONID provincial que le corresponde al cargo. El tiempo completo
+   * cobra el FONID entero y la dedicación simple de 10 horas, el 48% (27.552
+   * contra 57.400, según los recibos de agosto y septiembre 2026).
+   */
+  factorFonid?: number;
 }
 
 // El orden importa: al elegir un nivel queda seleccionado el primer cargo de la
@@ -211,6 +213,18 @@ export const CARGOS: readonly DefinicionCargo[] = [
     usaZona: false,
     usaPresencialidad: false,
   },
+  {
+    // Función 0835 del IFDC: el recibo dice "Profesor ded. Simple (10hs)".
+    // El FONID no es el completo: cobra el 48% (27.552 contra 57.400).
+    tipo: "ifdcDedicacionSimple10",
+    niveles: ["superior"],
+    escala: "ifdc",
+    etiqueta: "Prof. dedicación simple, 10 hs.",
+    usaHoras: false,
+    usaZona: false,
+    usaPresencialidad: false,
+    factorFonid: 0.48,
+  },
 ];
 
 export const ETIQUETA_NIVEL: Readonly<Record<Nivel, string>> = {
@@ -296,13 +310,15 @@ export interface OpcionesCalculo {
 }
 
 /**
- * Las dos escalas del mes elegido, ya resueltas.
- * Quien llama las busca en historial.ts (ver configuracion.ts); el motor solo
- * decide cuál le corresponde a cada cargo.
+ * Las dos escalas del mes elegido más los seguros fijos de ese mes, ya
+ * resueltos. Quien llama los busca en historial.ts (ver configuracion.ts); el
+ * motor solo decide qué escala le corresponde a cada cargo y usa los seguros
+ * tal como vienen (cambian con el tiempo y viven en el historial).
  */
 export interface ConfiguracionesDelMes {
   basica: ConfiguracionBase;
   ifdc: ConfiguracionBase;
+  seguros: DescuentosFijos;
 }
 
 // ---------------------------------------------------------------------------
@@ -511,7 +527,8 @@ export function calcularConceptosDePuesto(
 
     case "ifdcTiempoCompleto":
     case "ifdcSemiExclusivo":
-    case "ifdcFullTime": {
+    case "ifdcFullTime":
+    case "ifdcDedicacionSimple10": {
       const coeficiente = COEFICIENTES_CARGOS[puesto.tipo];
 
       componentes.basico = config.basicoCargo_Hora * coeficiente;
@@ -521,7 +538,9 @@ export function calcularConceptosDePuesto(
       // se suma al total (el "por cargo" quedaba solo en la tabla, sin sumarse).
       componentes.adicionalPorDedicacion = componentes.basico * config.porcentajes.adicionalCargo;
       componentes.sumaNoRemunerativa = config.sumaNoRemunerativa * coeficiente;
-      componentes.incentivoDocente = config.fonid;
+      // El FONID es el mismo para los cargos completos, pero la dedicación
+      // simple cobra una parte (ver factorFonid en la definición del cargo).
+      componentes.incentivoDocente = config.fonid * (definicion.factorFonid ?? 1);
       componentes.bonoExtraordinario = config.bonoExtraordinario;
       break;
     }
@@ -550,20 +569,20 @@ export interface Descuentos {
 
 /**
  * Descuentos de ley sobre el total remunerativo.
- * Los seguros fijos se descuentan UNA sola vez, por eso se calculan sobre el
- * total y no por puesto.
+ * Los seguros llegan por parámetro porque cambian con el tiempo (ver
+ * SEGURO_OBLIGATORIO_POR_MES en historial.ts), y se descuentan UNA sola vez, por
+ * eso se aplican sobre el total y no por puesto.
  */
 export function calcularDescuentos(
   totalRemunerativo: number,
-  afiliacion: Afiliacion
+  afiliacion: Afiliacion,
+  seguros: DescuentosFijos
 ): Descuentos {
   const jubilacion = totalRemunerativo * 0.11;
   const jubilacionRegEsp = totalRemunerativo * 0.02;
   const obraSocial = totalRemunerativo * 0.06;
   const sindical = afiliacion === "no" ? 0 : totalRemunerativo * 0.015;
-  const seguroObligatorio = DESCUENTOS_FIJOS.seguroObligatorio;
-  const seguroSocial = DESCUENTOS_FIJOS.seguroSocial;
-  const seguroMutual = DESCUENTOS_FIJOS.seguroMutual;
+  const { seguroObligatorio, seguroSocial, seguroMutual } = seguros;
 
   return {
     jubilacion,
@@ -636,7 +655,11 @@ export function calcularPluriempleo(
 
   const componentes = sumarComponentes(calculados.map((c) => c.conceptos));
   const conceptos = cerrarTotales(componentes);
-  const descuentos = calcularDescuentos(conceptos.totalRemunerativo, opciones.afiliacion);
+  const descuentos = calcularDescuentos(
+    conceptos.totalRemunerativo,
+    opciones.afiliacion,
+    configuraciones.seguros
+  );
   const aguinaldo = calcularAguinaldo(conceptos.totalRemunerativo, opciones.afiliacion);
 
   let totalBolsillo = conceptos.totalBruto - descuentos.total;

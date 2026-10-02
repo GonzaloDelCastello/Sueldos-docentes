@@ -5,7 +5,6 @@ import {
   AFILIACIONES,
   CARGOS,
   COEFICIENTES_CARGOS,
-  DESCUENTOS_FIJOS,
   ESCALA_ANTIGUEDAD,
   calcularAguinaldo,
   calcularConceptosDePuesto,
@@ -16,8 +15,16 @@ import {
   definicionDe,
   porcentajeAntiguedad,
 } from "../src/cargos.ts";
-import type { ConfiguracionesDelMes, OpcionesCalculo, Puesto, TipoCargo } from "../src/cargos.ts";
+import type {
+  ConfiguracionesDelMes,
+  DescuentosFijos,
+  OpcionesCalculo,
+  Puesto,
+  TipoCargo,
+} from "../src/cargos.ts";
 import {
+  SEGURO_OBLIGATORIO_POR_MES,
+  SEGUROS_FIJOS,
   obtenerConfiguracionActual1,
   obtenerConfiguracionActual2,
 } from "../src/historial.ts";
@@ -34,19 +41,27 @@ function casiIgual(actual: number, esperado: number, tolerancia = 1e-6): void {
   );
 }
 
-// El mes que usan casi todos los tests. Las dos escalas se buscan una sola vez.
+// El mes que usan casi todos los tests. Las dos escalas y los seguros se buscan
+// una sola vez (en el proyecto los resuelve configuracion.ts; acá se arman a
+// mano para poder importar el motor sin los datos).
 const MES = "2026-09";
 const BASICA = obtenerConfiguracionActual1(MES);
 const IFDC = obtenerConfiguracionActual2(MES);
-const CONFIGS: ConfiguracionesDelMes = { basica: BASICA, ifdc: IFDC };
+
+function segurosDelMes(mes: string): DescuentosFijos {
+  return {
+    seguroObligatorio: SEGURO_OBLIGATORIO_POR_MES[mes] ?? 0,
+    seguroSocial: SEGUROS_FIJOS.social,
+    seguroMutual: SEGUROS_FIJOS.mutual,
+  };
+}
+
+const SEGUROS: DescuentosFijos = segurosDelMes(MES);
+const CONFIGS: ConfiguracionesDelMes = { basica: BASICA, ifdc: IFDC, seguros: SEGUROS };
 
 /** Los tres seguros fijos, que se descuentan una sola vez por recibo. */
 function segurosFijos(): number {
-  return (
-    DESCUENTOS_FIJOS.seguroObligatorio +
-    DESCUENTOS_FIJOS.seguroSocial +
-    DESCUENTOS_FIJOS.seguroMutual
-  );
+  return SEGUROS.seguroObligatorio + SEGUROS.seguroSocial + SEGUROS.seguroMutual;
 }
 
 function opciones(extra: Partial<OpcionesCalculo> = {}): OpcionesCalculo {
@@ -112,6 +127,7 @@ describe("horas de secundaria", () => {
     const mayoB: ConfiguracionesDelMes = {
       basica: obtenerConfiguracionActual1("2026-05-B"),
       ifdc: obtenerConfiguracionActual2("2026-05-B"),
+      seguros: segurosDelMes("2026-05-B"),
     };
     const diez = calcular("horaSecundaria", { cantHoras: 10 }, {}, mayoB);
     const veinte = calcular("horaSecundaria", { cantHoras: 20 }, {}, mayoB);
@@ -338,7 +354,7 @@ describe("varios cargos juntos", () => {
     const otro = reparto([preceptor], comunes);
     const juntos = reparto([secundaria, preceptor], comunes);
 
-    assert.equal(juntos.descuentos.seguroObligatorio, DESCUENTOS_FIJOS.seguroObligatorio);
+    assert.equal(juntos.descuentos.seguroObligatorio, SEGUROS.seguroObligatorio);
     casiIgual(juntos.descuentos.total, uno.descuentos.total + otro.descuentos.total - segurosFijos());
     assert.ok(juntos.descuentos.total < uno.descuentos.total + otro.descuentos.total);
   });
@@ -379,7 +395,7 @@ describe("varios cargos juntos", () => {
     casiIgual(juntos.conceptos.totalBruto, solo.totalBruto);
     casiIgual(
       juntos.totalBolsillo,
-      solo.totalBruto - calcularDescuentos(solo.totalRemunerativo, "amet").total
+      solo.totalBruto - calcularDescuentos(solo.totalRemunerativo, "amet", SEGUROS).total
     );
   });
 });
@@ -388,7 +404,7 @@ describe("descuentos y aguinaldo", () => {
   const remunerativo = 100000;
 
   test("los porcentajes de ley son 11 + 2 + 6", () => {
-    const d = calcularDescuentos(remunerativo, "no");
+    const d = calcularDescuentos(remunerativo, "no", SEGUROS);
     casiIgual(d.jubilacion, 11000);
     casiIgual(d.jubilacionRegEsp, 2000);
     casiIgual(d.obraSocial, 6000);
@@ -396,12 +412,22 @@ describe("descuentos y aguinaldo", () => {
     casiIgual(d.total, 19000 + segurosFijos());
   });
 
+  test("los seguros llegan por parámetro y son los del mes", () => {
+    // El obligatorio cambia con el tiempo; el social y el mutual no.
+    assert.equal(SEGUROS.seguroObligatorio, 5596.68); // septiembre 2026, según recibo
+    assert.equal(SEGUROS.seguroSocial, 100);
+    assert.equal(SEGUROS.seguroMutual, 10);
+    const otroMes = calcularDescuentos(remunerativo, "no", segurosDelMes("2026-02"));
+    assert.equal(otroMes.seguroObligatorio, 4701.21); // febrero 2026, según recibo
+    assert.notEqual(otroMes.total, calcularDescuentos(remunerativo, "no", SEGUROS).total);
+  });
+
   test("el descuento sindical aparece solo si está afiliado", () => {
     for (const afiliacion of ["amet", "uda"] as const) {
-      casiIgual(calcularDescuentos(remunerativo, afiliacion).sindical, 1500);
+      casiIgual(calcularDescuentos(remunerativo, afiliacion, SEGUROS).sindical, 1500);
     }
     for (const afiliacion of AFILIACIONES) {
-      const d = calcularDescuentos(remunerativo, afiliacion.valor);
+      const d = calcularDescuentos(remunerativo, afiliacion.valor, SEGUROS);
       assert.ok(Number.isFinite(d.sindical));
       assert.ok(d.total > 0);
     }

@@ -4,17 +4,28 @@ import assert from "node:assert/strict";
 import {
   CARGOS,
   COEFICIENTES_CARGOS,
-  DESCUENTOS_FIJOS,
   ENSEÑANZA_EN_AULA_POR_HORA_RELOJ,
   HORAS_RELOJ_FRENTE_A_ALUMNOS,
   calcularConceptosDePuesto,
   calcularDescuentos,
+  calcularPluriempleo,
   cargosDelNivel,
   definicionDe,
   montoEnseñanzaEnAula,
 } from "../src/cargos.ts";
-import type { ConfiguracionesDelMes, OpcionesCalculo, Puesto, TipoCargo } from "../src/cargos.ts";
-import { obtenerConfiguracionActual1, obtenerConfiguracionActual2 } from "../src/historial.ts";
+import type {
+  ConfiguracionesDelMes,
+  DescuentosFijos,
+  OpcionesCalculo,
+  Puesto,
+  TipoCargo,
+} from "../src/cargos.ts";
+import {
+  SEGURO_OBLIGATORIO_POR_MES,
+  SEGUROS_FIJOS,
+  obtenerConfiguracionActual1,
+  obtenerConfiguracionActual2,
+} from "../src/historial.ts";
 
 /**
  * Verificación contra los documentos oficiales y los recibos reales.
@@ -37,8 +48,21 @@ function casiIgual(actual: number, esperado: number, tolerancia = 1e-6, mensaje 
   );
 }
 
+/** Los seguros del mes, tal como los arma configuracion.ts en el proyecto. */
+function segurosDe(mes: string): DescuentosFijos {
+  return {
+    seguroObligatorio: SEGURO_OBLIGATORIO_POR_MES[mes] ?? 0,
+    seguroSocial: SEGUROS_FIJOS.social,
+    seguroMutual: SEGUROS_FIJOS.mutual,
+  };
+}
+
 function configs(mes: string): ConfiguracionesDelMes {
-  return { basica: obtenerConfiguracionActual1(mes), ifdc: obtenerConfiguracionActual2(mes) };
+  return {
+    basica: obtenerConfiguracionActual1(mes),
+    ifdc: obtenerConfiguracionActual2(mes),
+    seguros: segurosDe(mes),
+  };
 }
 
 function sinAntiguedad(extra: Partial<OpcionesCalculo> = {}): OpcionesCalculo {
@@ -132,11 +156,12 @@ describe("instructivo julio 2026: valor de la hora y de cada cargo", () => {
     casiIgual(r.incentivoDocente, 28700, 0.01, "FONID:");
 
     // Los descuentos del ejemplo: 13% jubilatorio + 3% obra social + 3% ley 19032.
-    const d = calcularDescuentos(r.totalRemunerativo, "no");
+    const d = calcularDescuentos(r.totalRemunerativo, "no", segurosDe("2026-07"));
     casiIgual(d.jubilacion + d.jubilacionRegEsp, 94393.08, 2, "aportes jubilatorios 13%:");
     casiIgual(d.obraSocial / 2, 21783.02, 1, "obra social 3%:");
+    const segurosJulio = segurosDe("2026-07");
     casiIgual(
-      d.total - (DESCUENTOS_FIJOS.seguroObligatorio + DESCUENTOS_FIJOS.seguroSocial + DESCUENTOS_FIJOS.seguroMutual),
+      d.total - (segurosJulio.seguroObligatorio + segurosJulio.seguroSocial + segurosJulio.seguroMutual),
       137959.12,
       2,
       "total de descuentos:"
@@ -207,14 +232,39 @@ describe("decreto de julio 2026: calendario de aumentos", () => {
     }
   });
 
-  test("en los institutos superiores son 70% y 25%", () => {
-    // Art. 3: aplica a los Institutos de Educación Superior.
-    for (const mes of ["2026-07", "2026-08", "2026-09", "2026-10"]) {
+  test("en los institutos superiores son 70% y 25% desde julio", () => {
+    // Art. 3 del Decreto N° 8583-MHIP-2026: aplica a los Institutos de Educación
+    // Superior. El recibo de dedicación simple de agosto 2026 lo confirma.
+    for (const mes of ["2026-07", "2026-08"]) {
       const config = obtenerConfiguracionActual2(mes);
       assert.equal(config.porcentajes.remunerativo, 0.7, `${mes} remunerativo`);
       assert.equal(config.porcentajes.noRemunerativo, 0.25, `${mes} no remunerativo`);
-      assert.equal(config.porcentajes.adicionalCargo, 0.34999, `${mes} adicional`);
     }
+  });
+
+  test("en septiembre el reparto del superior pasa a 75% y 20%", () => {
+    // Lo muestra el recibo de dedicación simple de septiembre 2026. No sale del
+    // decreto de julio: es un decreto posterior, que no está en el repositorio.
+    const septiembre = obtenerConfiguracionActual2("2026-09");
+    assert.equal(septiembre.porcentajes.remunerativo, 0.75);
+    assert.equal(septiembre.porcentajes.noRemunerativo, 0.2);
+    // El total sigue siendo 95%: cambia el reparto entre ambos, no la plata.
+    casiIgual(
+      septiembre.porcentajes.remunerativo + septiembre.porcentajes.noRemunerativo,
+      0.95
+    );
+    // Octubre queda con el reparto de julio y agosto hasta que aparezca su recibo.
+    const octubre = obtenerConfiguracionActual2("2026-10");
+    assert.equal(octubre.porcentajes.remunerativo, 0.7);
+    assert.equal(octubre.porcentajes.noRemunerativo, 0.25);
+  });
+
+  test("el adicional por dedicación es 35% en agosto y septiembre", () => {
+    // Los dos recibos de dedicación simple dan exactamente el 35% del básico;
+    // los meses anteriores tenían 34,999% (2 o 3 pesos de diferencia).
+    assert.equal(obtenerConfiguracionActual2("2026-08").porcentajes.adicionalCargo, 0.35);
+    assert.equal(obtenerConfiguracionActual2("2026-09").porcentajes.adicionalCargo, 0.35);
+    assert.equal(obtenerConfiguracionActual2("2026-07").porcentajes.adicionalCargo, 0.34999);
   });
 
   test("los dos complementos reparten el mismo total que antes del decreto", () => {
@@ -426,6 +476,74 @@ describe("recibos: nivel superior", () => {
     casiIgual(r.sumaNoRemunerativa, 131577.98, 0.2, "suma no remunerativa:");
     casiIgual(r.incentivoDocente, 57400, 0.01, "FONID:");
   });
+
+  test("el recibo de dedicación simple (10 hs) de agosto 2026, ítem por ítem", () => {
+    // docs/Recibos/IFDC/prof ded simple 10hs-08-26.pdf, función 0835.
+    // El coeficiente del cargo (0,426285) NO es 10/30: sale de estos recibos.
+    const resultado = calcularPluriempleo(
+      [{ tipo: "ifdcDedicacionSimple10", cantHoras: 15, zonaPct: 0, presencialidad: true }],
+      configs("2026-08"),
+      sinAntiguedad()
+    );
+    const r = resultado.conceptos;
+
+    casiIgual(r.basico, 286483.33, 0.02, "básico:");
+    casiIgual(r.complementoRemunerativo, 200538.33, 0.02, "complemento remunerativo 70%:");
+    casiIgual(r.adicionalPorDedicacion, 100269.17, 0.02, "adicional por dedicación 35%:");
+    casiIgual(r.complementoNoRemunerativo, 71620.83, 0.02, "complemento no remunerativo 25%:");
+    casiIgual(r.sumaNoRemunerativa, 67307.88, 0.02, "suma no remunerativa:");
+    casiIgual(r.incentivoDocente, 27552, 0.01, "FONID (48% del cargo completo):");
+    casiIgual(r.totalRemunerativo, 587290.83, 0.05, "total remunerativo:");
+    casiIgual(r.totalNoRemunerativo, 166480.71, 0.05, "total no remunerativo:");
+    // El ítem de aula y la zona no corresponden al nivel superior.
+    casiIgual(r.pagoDeZona, 0, 0.01, "zona:");
+    casiIgual(r.enseñanzaEnAula, 0, 0.01, "enseñanza en el aula:");
+
+    casiIgual(resultado.descuentos.seguroObligatorio, 5372.81, 0.01, "seguro obligatorio:");
+    casiIgual(resultado.descuentos.total, 117068.07, 0.05, "total de descuentos:");
+    casiIgual(resultado.totalBolsillo, 636703.47, 0.05, "neto a percibir:");
+  });
+
+  test("el recibo de dedicación simple (10 hs) de septiembre 2026, ítem por ítem", () => {
+    // docs/Recibos/IFDC/prof ded simple 10hs-09-26.pdf.
+    // Antigüedad "A 13": 60%, como dice la escala.
+    const resultado = calcularPluriempleo(
+      [{ tipo: "ifdcDedicacionSimple10", cantHoras: 15, zonaPct: 0, presencialidad: true }],
+      configs("2026-09"),
+      { antiguedadPct: 0.6, afiliacion: "no", incluirSAC: false }
+    );
+    const r = resultado.conceptos;
+
+    casiIgual(r.basico, 298420.14, 0.05, "básico:");
+    casiIgual(r.complementoRemunerativo, 223815.11, 0.05, "complemento remunerativo 75%:");
+    casiIgual(r.pagoAntiguedad, 179052.08, 0.05, "antigüedad 60%:");
+    casiIgual(r.adicionalPorDedicacion, 104447.05, 0.05, "adicional por dedicación:");
+    casiIgual(r.complementoNoRemunerativo, 59684.03, 0.05, "complemento no remunerativo 20%:");
+    casiIgual(r.sumaNoRemunerativa, 67307.87, 0.05, "suma no remunerativa:");
+    casiIgual(r.incentivoDocente, 27552, 0.01, "FONID:");
+    casiIgual(r.totalRemunerativo, 805734.38, 0.1, "total remunerativo:");
+    casiIgual(r.totalNoRemunerativo, 154543.9, 0.1, "total no remunerativo:");
+
+    casiIgual(resultado.descuentos.seguroObligatorio, 5596.68, 0.01, "seguro obligatorio:");
+    casiIgual(resultado.descuentos.total, 158796.21, 0.1, "total de descuentos:");
+    casiIgual(resultado.totalBolsillo, 801482.07, 0.1, "neto a percibir:");
+  });
+
+  test("la dedicación simple cobra el 48% del FONID y no cobra zona", () => {
+    const simple = calcularConceptosDePuesto(
+      { tipo: "ifdcDedicacionSimple10", cantHoras: 15, zonaPct: 100, presencialidad: true },
+      configs("2026-08"),
+      sinAntiguedad()
+    );
+    const completo = calcularConceptosDePuesto(
+      { tipo: "ifdcTiempoCompleto", cantHoras: 15, zonaPct: 100, presencialidad: true },
+      configs("2026-08"),
+      sinAntiguedad()
+    );
+    casiIgual(completo.incentivoDocente, 57400, 0.01, "FONID del completo:");
+    casiIgual(simple.incentivoDocente, 57400 * 0.48, 0.01, "FONID del simple:");
+    casiIgual(simple.pagoDeZona, 0, 0.01, "zona del simple:");
+  });
 });
 
 describe("recibos: descuentos", () => {
@@ -433,21 +551,39 @@ describe("recibos: descuentos", () => {
     // docs/Recibos/Mios/ReciboSueldo- yo 26_2.pdf: sobre 1.318.058,96 de haberes
     // con aportes.
     const conAportes = 1318058.96;
-    const d = calcularDescuentos(conAportes, "no");
+    const d = calcularDescuentos(conAportes, "no", segurosDe("2026-02"));
     casiIgual(d.jubilacion, 144986.49, 0.01, "jubilación 11%:");
     casiIgual(d.jubilacionRegEsp, 26361.18, 0.01, "ley 137/05 2%:");
     casiIgual(d.obraSocial, 79083.54, 0.01, "obra social DOSEP 6%:");
   });
 
-  test("los seguros fijos son los del recibo de junio 2026", () => {
-    // docs/Recibos/IFDC/ReciboSueldo-full-6-26 .pdf.
-    assert.equal(DESCUENTOS_FIJOS.seguroObligatorio, 4925.07);
-    assert.equal(DESCUENTOS_FIJOS.seguroSocial, 100);
-    assert.equal(DESCUENTOS_FIJOS.seguroMutual, 10);
+  test("el seguro obligatorio es el del mes, y sale de los recibos", () => {
+    // Verificados contra recibo (ver SEGURO_OBLIGATORIO_POR_MES en historial.ts).
+    assert.equal(SEGURO_OBLIGATORIO_POR_MES["2026-02"], 4701.21); // propio de febrero
+    assert.equal(SEGURO_OBLIGATORIO_POR_MES["2026-06"], 4925.07); // IFDC de junio
+    assert.equal(SEGURO_OBLIGATORIO_POR_MES["2026-08"], 5372.81); // dedicación simple
+    assert.equal(SEGURO_OBLIGATORIO_POR_MES["2026-09"], 5596.68); // dedicación simple
+    // El social y el mutual valen lo mismo en todos los recibos.
+    assert.equal(SEGUROS_FIJOS.social, 100);
+    assert.equal(SEGUROS_FIJOS.mutual, 10);
+    // Y el valor viaja al cálculo: el mismo sueldo descuenta distinto según el mes.
+    const agosto = calcularDescuentos(1000000, "no", segurosDe("2026-08"));
+    const septiembre = calcularDescuentos(1000000, "no", segurosDe("2026-09"));
+    casiIgual(septiembre.total - agosto.total, 223.87, 0.01);
   });
 
   test("el descuento sindical del recibo de julio 2025 es del 1,5%", () => {
     // docs/Recibos/ReciboSueldo-Lucre 07-25.pdf: AMET sobre 608.178,91 = 9.122,68.
-    casiIgual(calcularDescuentos(608178.91, "amet").sindical, 9122.68, 0.01);
+    // El seguro obligatorio de ese mes (4.312,73) también sale del recibo.
+    const segurosJulio2025: DescuentosFijos = {
+      seguroObligatorio: 4312.73,
+      seguroSocial: 100,
+      seguroMutual: 10,
+    };
+    casiIgual(
+      calcularDescuentos(608178.91, "amet", segurosJulio2025).sindical,
+      9122.68,
+      0.01
+    );
   });
 });
