@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Afiliación y contacto · UTEP-S.L.</title>
+  <meta name="description" content="Afiliate a UTEP San Luis. Cómo se descuenta el aporte, qué incluye la afiliación y formulario de contacto.">
+  <meta name="theme-color" content="#0090d0">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Afiliación y contacto · UTEP-S.L.">
+  <meta property="og:description" content="Afiliate a UTEP San Luis. Cómo se descuenta el aporte, qué incluye la afiliación y formulario de contacto.">
+  <meta property="og:locale" content="es_AR">
+
+  <!-- Rutas relativas a propósito: con barra inicial se tomaría el favicon del
+       dominio raíz, que es el del proyecto de ATEBA. -->
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" href="img/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="img/favicon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+
+  <link rel="stylesheet" href="css/utep-base.css">
+  <link rel="stylesheet" href="css/utep-layout.css">
+  <link rel="stylesheet" href="css/utep-calculadora.css">
+</head>
+
+<body>
+
+  <!-- Aviso de muestra: quien reciba el enlace entiende en dos segundos que
+       esto es una propuesta de diseño y no el sitio real de la organización. -->
+  <div class="aviso-muestra">
+    <strong>Muestra de diseño, sin carácter oficial.</strong> Los textos, nombres y noticias son de ejemplo.
+    Propuesta de <strong>Gonzalo J. Del Castello</strong> para UTEP San Luis.
+  </div>
+
+  <div class="barra-superior">
+    <div class="contenedor barra-superior__interior">
+      <span>Integrante de la <strong>CGT</strong> · San Luis, Argentina</span>
+      <span class="barra-superior__redes">
+        <a href="#redes">Facebook</a>
+        <a href="#redes">Instagram</a>
+      </span>
+    </div>
+  </div>
+
+  <header class="cabecera">
+    <div class="contenedor cabecera__interior">
+      <a href="index.html" class="marca">
+        <img src="img/logo-utep.png" alt="UTEP-S.L., Unión de Trabajadoras y Trabajadores de la Economía Popular" class="marca__logo">
+      </a>
+
+      <button class="boton-menu" id="botonMenu" aria-label="Abrir menú" aria-expanded="false" aria-controls="navPrincipal">☰</button>
+
+      <nav class="nav" id="navPrincipal" aria-label="Navegación principal">
+        <a href="index.html">Inicio</a>
+        <a href="noticias.html">Noticias</a>
+        <a href="afiliacion.html" aria-current="page">Afiliación</a>
+        <span class="nav__herramientas">
+          <a href="calculadora.html">Calculadora</a>
+        </span>
+        <a href="inflacion.html">Inflación</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+<section class="portada portada--corta">
+      <div class="contenedor">
+        <span class="portada__etiqueta">Sumate a la organización</span>
+        <h1>Afiliación y contacto</h1>
+        <p class="portada__bajada">La afiliación sostiene la representación, la formación y las herramientas. El
+          aporte se descuenta del recibo o se abona en la sede, y no tiene costo de ingreso.</p>
+      </div>
+    </section>
+
+    <section class="seccion">
+      <div class="contenedor">
+        <div class="dos-columnas">
+
+          <!-- ============ Formulario ============ -->
+          <div class="panel">
+            <h2 class="panel__titulo">Solicitud de afiliación</h2>
+            <p class="texto-chico mb-3">Completá tus datos y la secretaría de organización se comunica para cerrar
+              el trámite. En el sitio definitivo, este formulario se conecta al sistema de la organización.</p>
+
+            <!-- En la muestra el envío abre el correo del visitante: no hay servidor.
+                 En el sitio real se reemplaza la acción por el servicio que use UTEP. -->
+            <form class="formulario" action="mailto:afiliaciones@utepsanluis.org.ar" method="post" enctype="text/plain">
+              <div class="campo">
+                <label for="nombre">Nombre y apellido</label>
+                <input type="text" id="nombre" name="nombre" autocomplete="name" required>
+              </div>
+
+              <div class="campo-fila">
+                <div class="campo">
+                  <label for="dni">DNI</label>
+                  <input type="text" id="dni" name="dni" inputmode="numeric" required>
+                </div>
+                <div class="campo">
+                  <label for="actividad">Actividad u oficio</label>
+                  <input type="text" id="actividad" name="actividad" placeholder="Cuidados, reciclado, feria...">
+                </div>
+              </div>
+
+              <div class="campo-fila">
+                <div class="campo">
+                  <label for="email">Correo electrónico</label>
+                  <input type="email" id="email" name="email" autocomplete="email" required>
+                </div>
+                <div class="campo">
+                  <label for="telefono">Teléfono</label>
+                  <input type="text" id="telefono" name="telefono" inputmode="tel">
+                </div>
+              </div>
+
+              <div class="campo-fila">
+                <div class="campo">
+                  <label for="organizacion">¿Perteneces a una organización?</label>
+                  <select id="organizacion" name="organizacion">
+                    <option>Cooperativa</option>
+                    <option>Feria o mercado</option>
+                    <option>Comedor o merendero</option>
+                    <option>Taller o unidad productiva</option>
+                    <option>Trabajo por cuenta propia</option>
+                    <option>Otra</option>
+                  </select>
+                </div>
+                <div class="campo">
+                  <label for="localidad">Localidad</label>
+                  <input type="text" id="localidad" name="localidad">
+                </div>
+              </div>
+
+              <div class="campo">
+                <label for="consulta">Consulta (opcional)</label>
+                <textarea id="consulta" name="consulta" rows="4"></textarea>
+              </div>
+
+              <button type="submit" class="boton boton--ancho">Enviar solicitud</button>
+
+              <p class="texto-chico mt-3">Al enviar aceptás que UTEP use estos datos sólo para gestionar la
+                afiliación.</p>
+            </form>
+          </div>
+
+          <!-- ============ Información ============ -->
+          <div class="columna-info">
+            <div class="panel">
+              <h2 class="panel__titulo">Cómo se abona el aporte</h2>
+              <p class="texto-chico">El aporte se descuenta del recibo de haberes de quienes están en relación de
+                dependencia y se abona en la sede en los demás casos. El monto lo fija el estatuto y se informa en
+                la sede de la organización.</p>
+              <ul class="lista-datos">
+                <li><strong>Descuento:</strong> por planilla, junto con los aportes de ley, o en la sede</li>
+                <li><strong>Ingreso:</strong> sin costo</li>
+                <li><strong>Baja:</strong> por nota a la secretaría, sin trámite especial</li>
+                <li><strong>Comprobante:</strong> se entrega en cada pago</li>
+              </ul>
+            </div>
+
+            <div class="panel">
+              <h2 class="panel__titulo">Qué incluye la afiliación</h2>
+              <ul class="lista-tildes">
+                <li>Representación y asesoramiento ante reclamos laborales.</li>
+                <li>Acceso a la calculadora salarial y al comparador de inflación.</li>
+                <li>Formación, talleres y jornadas provinciales.</li>
+                <li>Acompañamiento en la inscripción al registro de unidades productivas.</li>
+                <li>Información sobre paritarias y programas antes que en cualquier otro canal.</li>
+              </ul>
+            </div>
+
+            <div class="panel">
+              <h2 class="panel__titulo">Contacto directo</h2>
+              <ul class="lista-datos">
+                <li><strong>Sede:</strong> <!-- Reemplazar --> Dirección de ejemplo 123, San Luis</li>
+                <li><strong>Teléfono:</strong> <!-- Reemplazar --> (0266) 000-0000</li>
+                <li><strong>Correo:</strong> <!-- Reemplazar --> info@utepsanluis.org.ar</li>
+                <li><strong>Atención:</strong> lunes a viernes de 9 a 17</li>
+              </ul>
+            </div>
+
+            <div class="aviso aviso--muestra">
+              <p><strong>Datos de ejemplo:</strong> la dirección, el teléfono y el correo están para mostrar cómo
+                se vería el bloque. Los completa UTEP con su información real.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion seccion--gris">
+      <div class="contenedor">
+        <div class="seccion__cabecera">
+          <h2>Conducción</h2>
+          <a href="#autoridades">Autoridades completas</a>
+        </div>
+
+        <p class="texto-chico mb-3">Los nombres están vacíos a propósito: UTEP define cómo publica su conducción.</p>
+
+        <div class="autoridades">
+          <article class="autoridad">
+            <div class="autoridad__foto" aria-hidden="true">Foto</div>
+            <h3>Secretaría General</h3>
+            <p><!-- Reemplazar --> Nombre y apellido</p>
+          </article>
+          <article class="autoridad">
+            <div class="autoridad__foto" aria-hidden="true">Foto</div>
+            <h3>Secretaría Adjunta</h3>
+            <p><!-- Reemplazar --> Nombre y apellido</p>
+          </article>
+          <article class="autoridad">
+            <div class="autoridad__foto" aria-hidden="true">Foto</div>
+            <h3>Secretaría de Organización</h3>
+            <p><!-- Reemplazar --> Nombre y apellido</p>
+          </article>
+          <article class="autoridad">
+            <div class="autoridad__foto" aria-hidden="true">Foto</div>
+            <h3>Secretaría de Prensa</h3>
+            <p><!-- Reemplazar --> Nombre y apellido</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <div class="pie__grilla">
+        <div>
+          <h3>UTEP-S.L.</h3>
+          <img src="img/logo-utep.png" alt="UTEP-S.L." class="pie__logo">
+          <p>Unión de Trabajadoras y Trabajadores de la Economía Popular de San Luis.</p>
+        </div>
+        <div>
+          <h3>Gremial</h3>
+          <ul>
+            <li><a href="noticias.html">Noticias</a></li>
+            <li><a href="noticias.html">Paritarias</a></li>
+            <li><a href="noticias.html">Comunicados</a></li>
+            <li><a href="afiliacion.html">Autoridades</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Herramientas</h3>
+          <ul>
+            <li><a href="calculadora.html">Calculadora salarial</a></li>
+            <li><a href="inflacion.html">Comparador de inflación</a></li>
+            <li><a href="afiliacion.html">Afiliación</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Contacto</h3>
+          <ul>
+            <li><a href="afiliacion.html">Formulario de contacto</a></li>
+            <li><!-- Reemplazar --> Sede: Dirección de ejemplo 123, San Luis</li>
+            <li><!-- Reemplazar --> info@utepsanluis.org.ar</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pie__legal">
+        <span>© 2026 UTEP San Luis · Sitio de ejemplo sin carácter oficial.</span>
+        <span>Diseño y desarrollo: Gonzalo J. Del Castello</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/utep-ui.js"></script>
+
+</body>
+
+</html>

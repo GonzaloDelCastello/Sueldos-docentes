@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{TITULO}}</title>
+  <meta name="description" content="{{DESCRIPCION}}">
+  <meta name="theme-color" content="#0090d0">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{TITULO}}">
+  <meta property="og:description" content="{{DESCRIPCION}}">
+  <meta property="og:locale" content="es_AR">
+
+  <!-- Rutas relativas a propósito: con barra inicial se tomaría el favicon del
+       dominio raíz, que es el del proyecto de ATEBA. -->
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" href="img/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="img/favicon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+
+  <link rel="stylesheet" href="css/utep-base.css">
+  <link rel="stylesheet" href="css/utep-layout.css">
+  <link rel="stylesheet" href="css/utep-calculadora.css">
+</head>
+
+<body>
+
+  <!-- Aviso de muestra: quien reciba el enlace entiende en dos segundos que
+       esto es una propuesta de diseño y no el sitio real de la organización. -->
+  <div class="aviso-muestra">
+    <strong>Muestra de diseño, sin carácter oficial.</strong> Los textos, nombres y noticias son de ejemplo.
+    Propuesta de <strong>Gonzalo J. Del Castello</strong> para UTEP San Luis.
+  </div>
+
+  <div class="barra-superior">
+    <div class="contenedor barra-superior__interior">
+      <span>Integrante de la <strong>CGT</strong> · San Luis, Argentina</span>
+      <span class="barra-superior__redes">
+        <a href="#redes">Facebook</a>
+        <a href="#redes">Instagram</a>
+      </span>
+    </div>
+  </div>
+
+  <header class="cabecera">
+    <div class="contenedor cabecera__interior">
+      <a href="index.html" class="marca">
+        <img src="img/logo-utep.png" alt="UTEP-S.L., Unión de Trabajadoras y Trabajadores de la Economía Popular" class="marca__logo">
+      </a>
+
+      <button class="boton-menu" id="botonMenu" aria-label="Abrir menú" aria-expanded="false" aria-controls="navPrincipal">☰</button>
+
+      <nav class="nav" id="navPrincipal" aria-label="Navegación principal">
+        <a href="index.html"{{ACTIVO_INICIO}}>Inicio</a>
+        <a href="noticias.html"{{ACTIVO_NOTICIAS}}>Noticias</a>
+        <a href="afiliacion.html"{{ACTIVO_AFILIACION}}>Afiliación</a>
+        <span class="nav__herramientas">
+          <a href="calculadora.html"{{ACTIVO_CALCULADORA}}>Calculadora</a>
+        </span>
+        <a href="inflacion.html"{{ACTIVO_INFLACION}}>Inflación</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+{{CONTENIDO}}
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <div class="pie__grilla">
+        <div>
+          <h3>UTEP-S.L.</h3>
+          <img src="img/logo-utep.png" alt="UTEP-S.L." class="pie__logo">
+          <p>Unión de Trabajadoras y Trabajadores de la Economía Popular de San Luis.</p>
+        </div>
+        <div>
+          <h3>Gremial</h3>
+          <ul>
+            <li><a href="noticias.html">Noticias</a></li>
+            <li><a href="noticias.html">Paritarias</a></li>
+            <li><a href="noticias.html">Comunicados</a></li>
+            <li><a href="afiliacion.html">Autoridades</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Herramientas</h3>
+          <ul>
+            <li><a href="calculadora.html">Calculadora salarial</a></li>
+            <li><a href="inflacion.html">Comparador de inflación</a></li>
+            <li><a href="afiliacion.html">Afiliación</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Contacto</h3>
+          <ul>
+            <li><a href="afiliacion.html">Formulario de contacto</a></li>
+            <li><!-- Reemplazar --> Sede: Dirección de ejemplo 123, San Luis</li>
+            <li><!-- Reemplazar --> info@utepsanluis.org.ar</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pie__legal">
+        <span>© 2026 UTEP San Luis · Sitio de ejemplo sin carácter oficial.</span>
+        <span>Diseño y desarrollo: Gonzalo J. Del Castello</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/utep-ui.js"></script>
+{{SCRIPTS}}
+</body>
+
+</html>

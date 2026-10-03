@@ -1,0 +1,81 @@
+<!--
+TITULO: Sueldo vs inflación · UTEP-S.L.
+DESCRIPCION: Compará cuánto perdió o ganó el salario frente a la inflación. Cruza el valor histórico de la hora cátedra con el IPC del INDEC.
+ACTIVO: inflacion
+-->
+
+    <section class="portada portada--corta">
+      <div class="contenedor">
+        <span class="portada__etiqueta">Herramienta</span>
+        <h1>Salario e inflación</h1>
+        <p class="portada__bajada">Mirá en qué meses el salario le ganó a la inflación y en cuáles perdió poder de
+          compra. La comparación usa el valor de la hora cátedra y el IPC oficial.</p>
+      </div>
+    </section>
+
+    <section class="seccion">
+      <div class="contenedor">
+        <div class="dos-columnas dos-columnas--ancha">
+          <div>
+            <div class="metodologia">
+              <p><strong>Metodología de comparación salarial</strong></p>
+              <p>Esta herramienta permite calcular la evolución real del poder adquisitivo en un período
+                determinado. Para garantizar un cálculo objetivo, utiliza los siguientes parámetros:</p>
+              <ul>
+                <li><strong>Salario básico:</strong> toma como referencia el valor histórico de la hora cátedra,
+                  que es la base a partir de la cual se calculan los demás ítems del recibo.</li>
+                <li><strong>Inflación oficial:</strong> aplica el Índice de Precios al Consumidor (IPC) nacional,
+                  publicado mensualmente por el INDEC.</li>
+                <li><strong>Resultado del período:</strong> cruza el aumento salarial acumulado frente a la
+                  inflación acumulada en ese lapso y muestra la pérdida o ganancia de poder de compra.</li>
+              </ul>
+            </div>
+
+            <div class="contenedor-form-inflacion">
+              <label for="mesInicio">Período de análisis</label>
+              <input type="month" id="mesInicio" value="2023-06">
+              <span>a</span>
+              <input type="month" id="mesFin" value="2026-06">
+              <button id="btnComparar">Comparar</button>
+            </div>
+
+            <div id="resultadoInflacion" class="oculto">
+              <p id="textoResultado"></p>
+              <canvas id="graficoInflacion"></canvas>
+            </div>
+
+            <div class="estado-vacio mt-4" id="estadoVacioInflacion">
+              <strong>El resultado va a aparecer acá</strong>
+              Elegí el mes de inicio y el mes de fin, y apretá "Comparar". Vas a ver la pérdida o ganancia de poder
+              de compra del período, con un gráfico.
+            </div>
+          </div>
+
+          <div class="columna-info">
+            <div class="panel">
+              <h2 class="panel__titulo">Cómo leer el resultado</h2>
+              <ul class="lista-datos">
+                <li><strong>Porcentaje positivo:</strong> el salario le ganó a la inflación en ese período.</li>
+                <li><strong>Porcentaje negativo:</strong> se perdió poder de compra, aunque el número del recibo
+                  haya subido.</li>
+                <li><strong>Multiplicador:</strong> sirve para estimar cuánto debería haberse cobrado para empatar
+                  la inflación.</li>
+              </ul>
+            </div>
+
+            <div class="panel">
+              <h2 class="panel__titulo">¿Por qué comparamos la hora cátedra?</h2>
+              <p class="texto-chico">Porque es el valor base del recibo: los demás ítems —zona, antigüedad,
+                presentismo— se calculan como porcentaje de ese básico. Si la hora cátedra pierde contra la
+                inflación, el resto de la pirámide salarial la acompaña.</p>
+            </div>
+
+            <div class="aviso aviso--muestra">
+              <p><strong>Nota de la muestra:</strong> el comparador funciona con los datos históricos cargados. En el
+                sitio definitivo de UTEP se actualiza mes a mes y se puede cruzar también con el salario social
+                complementario.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>

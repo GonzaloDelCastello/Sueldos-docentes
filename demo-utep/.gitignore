@@ -1,0 +1,4 @@
+﻿# La muestra es autocontenida: no debería generar residuos.
+node_modules/
+.cache/
+*.log

@@ -1,0 +1,93 @@
+/* ==========================================================================
+   UTEP-S.L. · Sistema de diseño (muestra de trabajo)
+   --------------------------------------------------------------------------
+   Identidad tomada del logo del sindicato. El celeste es el color dominante
+   (es el fondo de la banda con la sigla) y el naranja queda como acento. Del
+   triángulo se toma además el violeta, que sirve para detalles.
+
+   La tipografía imita la del logo: sans geométrica, muy pesada, en mayúsculas
+   y con espaciado amplio entre letras. Se logra con fuentes del sistema, sin
+   descargar nada, para que no haya pedidos de red ni dependencias.
+
+   Todo el color, el espaciado y la tipografía del sitio salen de acá.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* --- Identidad --------------------------------------------------------- */
+  --celeste: #0090d0;
+  --celeste-oscuro: #006fa2;
+  --celeste-profundo: #00527a;
+  --celeste-claro: #e6f4fb;
+  --celeste-borde: #b6dcf0;
+
+  --naranja: #e8802f;
+  --naranja-oscuro: #c4661c;
+  --naranja-claro: #fdf1e6;
+
+  --violeta: #303090;
+  --violeta-claro: #ecebf6;
+
+  --tinta-marca: #10203a;
+
+  --rojo: #b3261e;
+  --rojo-claro: #fbeceb;
+
+  --verde: #1f6b45;
+  --verde-claro: #e9f4ee;
+
+  /* --- Superficies ------------------------------------------------------- */
+  --papel: #f4f6f8;
+  --blanco: #ffffff;
+  --gris: #eef1f4;
+  --gris-2: #e0e5ea;
+
+  /* --- Texto ------------------------------------------------------------- */
+  --tinta: #16202c;
+  --tinta-2: #3d4a5a;
+  --tinta-3: #6b7787;
+
+  /* --- Líneas y sombras -------------------------------------------------- */
+  --linea: #dde3e9;
+  --linea-fuerte: #c3ccd6;
+  --sombra-1: 0 1px 2px rgba(16, 32, 56, 0.07);
+  --sombra-2: 0 10px 30px rgba(16, 32, 56, 0.12);
+
+  /* --- Tipografía -------------------------------------------------------- */
+  /* La pila del logo: pesada, geométrica y disponible en cualquier sistema. */
+  --display: "Arial Black", "Arial Bold", "Segoe UI Black", "Helvetica Neue", Impact, sans-serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+
+  --h1: 3.4rem;
+  --h2: 2.6rem;
+  --h3: 2rem;
+  --texto: 1.65rem;
+  --chico: 1.45rem;
+  --micro: 1.25rem;
+
+  /* --- Formas y ritmo ---------------------------------------------------- */
+  --radio: 0.5rem;
+  --radio-g: 1rem;
+  --ancho: 114rem;
+  --ancho-lectura: 70rem;
+  --toque: 4.6rem;
+
+  --esp-1: 0.4rem;
+  --esp-2: 0.8rem;
+  --esp-3: 1.2rem;
+  --esp-4: 1.6rem;
+  --esp-5: 2.4rem;
+  --esp-6: 3.2rem;
+  --esp-7: 4.8rem;
+  --esp-8: 6.4rem;
+}
+
+@media (min-width: 48em) {
+  :root {
+    --h1: 4.2rem;
+    --h2: 3.2rem;
+    --h3: 2.2rem;
+  }
+}

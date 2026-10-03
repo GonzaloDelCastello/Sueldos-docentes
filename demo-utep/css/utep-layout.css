@@ -1,0 +1,784 @@
+/* ==========================================================================
+   UTEP-S.L. · Layout: cabecera, navegación, portada, noticias y pie
+   --------------------------------------------------------------------------
+   Misma estructura que la muestra de ASDE, con la identidad de UTEP: el
+   celeste manda, el naranja acentúa y los títulos van en la tipografía pesada
+   del logo, en mayúsculas y con espaciado amplio.
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 62.5%;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--sans);
+  font-size: var(--texto);
+  line-height: 1.6;
+  color: var(--tinta);
+  background-color: var(--papel);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Títulos: la tipografía del logo ------------------------------------- */
+
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+  font-weight: 900;
+  line-height: 1.14;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+h4 {
+  font-family: var(--sans);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+h1 { font-size: var(--h1); }
+h2 { font-size: var(--h2); }
+h3 { font-size: var(--h3); }
+
+p { text-wrap: pretty; }
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+ul { list-style: none; }
+
+.numero { font-variant-numeric: tabular-nums; }
+
+:focus-visible {
+  outline: 3px solid var(--naranja);
+  outline-offset: 2px;
+}
+
+.solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.oculto { display: none !important; }
+
+/* Rótulo corto con el estilo del logo: mayúsculas, pesado y espaciado. */
+.rotulo {
+  font-family: var(--display);
+  font-size: var(--micro);
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.contenedor {
+  width: 100%;
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 0 var(--esp-4);
+}
+
+@media (min-width: 48em) {
+  .contenedor { padding: 0 var(--esp-5); }
+}
+
+/* ==========================================================================
+   Aviso de muestra
+   ========================================================================== */
+
+.aviso-muestra {
+  background-color: var(--tinta-marca);
+  color: #d5e2ee;
+  font-size: var(--micro);
+  line-height: 1.45;
+  text-align: center;
+  padding: var(--esp-2) var(--esp-4);
+}
+
+.aviso-muestra strong {
+  color: var(--blanco);
+  font-weight: 650;
+}
+
+/* ==========================================================================
+   Cabecera
+   ========================================================================== */
+
+.barra-superior {
+  background-color: var(--celeste-profundo);
+  color: #cfe8f6;
+  font-size: var(--micro);
+}
+
+.barra-superior__interior {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-3);
+  min-height: 3.6rem;
+}
+
+.barra-superior a:hover { color: var(--blanco); }
+
+/* Redes sociales de la barra superior. */
+.barra-superior__redes {
+  display: none;
+  align-items: center;
+  gap: var(--esp-3);
+}
+
+@media (min-width: 48em) {
+  .barra-superior__redes { display: flex; }
+}
+
+.cabecera {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background-color: var(--blanco);
+  border-bottom: 3px solid var(--celeste);
+  box-shadow: var(--sombra-1);
+}
+
+.cabecera__interior {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-4);
+  min-height: 7rem;
+}
+
+/* --- Marca ---------------------------------------------------------------- */
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
+  min-width: 0;
+}
+
+/* El logo real de UTEP: el triángulo con la sigla. Ya trae el nombre, así que
+   no lleva texto al lado. */
+.marca__logo {
+  height: 4.6rem;
+  width: auto;
+  flex: 0 0 auto;
+  display: block;
+}
+
+@media (min-width: 48em) {
+  .marca__logo { height: 5.4rem; }
+}
+
+/* --- Navegación ----------------------------------------------------------- */
+
+.nav {
+  display: none;
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(80vw, 32rem);
+  flex-direction: column;
+  gap: var(--esp-1);
+  padding: 8rem var(--esp-4) var(--esp-5);
+  background-color: var(--blanco);
+  border-left: 1px solid var(--linea);
+  box-shadow: var(--sombra-2);
+  z-index: 50;
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+}
+
+.nav.activo { display: flex; transform: translateX(0); }
+
+.nav a {
+  padding: var(--esp-3);
+  border-radius: var(--radio);
+  font-family: var(--display);
+  font-size: var(--chico);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nav a:hover { background-color: var(--celeste-claro); }
+
+.nav a[aria-current="page"] {
+  color: var(--celeste-oscuro);
+  box-shadow: inset 4px 0 0 var(--naranja);
+}
+
+/* La calculadora va separada del resto: es la herramienta, no una sección. */
+.nav__herramientas {
+  margin-top: var(--esp-3);
+  padding-top: var(--esp-3);
+  border-top: 1px solid var(--linea);
+}
+
+.nav__herramientas a { color: var(--celeste-oscuro); }
+
+.boton-menu {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--toque);
+  height: var(--toque);
+  flex: 0 0 auto;
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio);
+  background-color: var(--blanco);
+  color: var(--celeste-oscuro);
+  font-size: 2.2rem;
+  line-height: 1;
+  cursor: pointer;
+  position: relative;
+  z-index: 60;
+}
+
+@media (min-width: 60em) {
+  .boton-menu { display: none; }
+
+  .nav {
+    display: flex;
+    position: static;
+    width: auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    transform: none;
+    transition: none;
+  }
+
+  .nav a {
+    padding: var(--esp-2) var(--esp-3);
+    font-size: 1.25rem;
+    color: var(--tinta-2);
+    border-radius: var(--radio);
+  }
+
+  .nav a:hover { background-color: var(--celeste-claro); color: var(--celeste-oscuro); }
+
+  .nav a[aria-current="page"] {
+    color: var(--celeste-oscuro);
+    box-shadow: inset 0 -3px 0 var(--naranja);
+    border-radius: 0;
+  }
+
+  .nav__herramientas {
+    margin: 0 0 0 var(--esp-3);
+    padding: 0 0 0 var(--esp-3);
+    border-top: none;
+    border-left: 1px solid var(--linea);
+  }
+
+  .nav__herramientas a { color: var(--tinta-2); }
+  .nav__herramientas a:hover { background-color: var(--celeste-claro); }
+}
+
+/* ==========================================================================
+   Portada
+   ========================================================================== */
+
+.portada {
+  background-color: var(--celeste-profundo);
+  background-image: linear-gradient(155deg, var(--celeste) 0%, var(--celeste-profundo) 100%);
+  color: var(--blanco);
+  padding: var(--esp-6) 0;
+}
+
+.portada__etiqueta {
+  display: inline-block;
+  margin-bottom: var(--esp-3);
+  padding: 0.4rem var(--esp-3);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 99rem;
+  font-family: var(--display);
+  font-size: var(--micro);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #eaf6fd;
+}
+
+.portada h1 { max-width: 26ch; }
+
+.portada__bajada {
+  margin-top: var(--esp-3);
+  max-width: 62ch;
+  font-size: 1.8rem;
+  color: #d9edf8;
+}
+
+.portada__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-3);
+  margin-top: var(--esp-5);
+}
+
+.portada--corta { padding: var(--esp-5) 0; }
+.portada--corta h1 { font-size: var(--h2); }
+
+@media (min-width: 48em) {
+  .portada { padding: var(--esp-8) 0; }
+}
+
+/* --- Titulares de tapa ---------------------------------------------------- */
+
+.tapa {
+  display: grid;
+  gap: var(--esp-4);
+  margin-top: var(--esp-5);
+}
+
+.tapa__principal {
+  display: block;
+  background-color: var(--blanco);
+  border: 1px solid var(--linea);
+  border-top: 4px solid var(--naranja);
+  border-radius: var(--radio);
+  padding: var(--esp-4);
+  box-shadow: var(--sombra-1);
+}
+
+.tapa__principal:hover { box-shadow: var(--sombra-2); }
+
+.tapa__fecha {
+  display: block;
+  margin-bottom: var(--esp-2);
+  font-family: var(--display);
+  font-size: var(--micro);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--naranja-oscuro);
+}
+
+.tapa__principal h2 { font-size: var(--h3); }
+.tapa__principal p { margin-top: var(--esp-2); color: var(--tinta-2); font-size: var(--chico); }
+
+@media (min-width: 48em) {
+  .tapa { grid-template-columns: minmax(0, 1.6fr) minmax(24rem, 1fr); }
+}
+
+/* ==========================================================================
+   Secciones
+   ========================================================================== */
+
+.seccion { padding: var(--esp-7) 0; }
+
+.seccion--gris { background-color: var(--gris); }
+
+.seccion__cabecera {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--esp-3);
+  margin-bottom: var(--esp-5);
+  padding-bottom: var(--esp-2);
+  border-bottom: 3px solid var(--celeste);
+}
+
+.seccion__cabecera h2 {
+  font-size: var(--h3);
+  color: var(--celeste-profundo);
+}
+
+.seccion__cabecera a {
+  flex: 0 0 auto;
+  font-size: var(--chico);
+  font-weight: 650;
+  color: var(--celeste-oscuro);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ==========================================================================
+   Noticias
+   ========================================================================== */
+
+.noticias {
+  display: grid;
+  gap: var(--esp-4);
+}
+
+.noticia {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--blanco);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  overflow: hidden;
+  box-shadow: var(--sombra-1);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.noticia:hover { box-shadow: var(--sombra-2); transform: translateY(-2px); }
+
+.noticia__imagen {
+  aspect-ratio: 16 / 9;
+  background-color: var(--celeste-claro);
+  background-image: linear-gradient(135deg, var(--celeste-claro), var(--celeste-borde));
+  display: grid;
+  place-items: center;
+  color: var(--celeste-oscuro);
+  font-family: var(--display);
+  font-size: var(--micro);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.noticia__cuerpo { padding: var(--esp-4); display: flex; flex-direction: column; gap: var(--esp-2); flex: 1; }
+
+.noticia__categoria {
+  align-self: flex-start;
+  padding: 0.25rem var(--esp-2);
+  border-radius: var(--radio);
+  background-color: var(--celeste-claro);
+  color: var(--celeste-profundo);
+  font-family: var(--display);
+  font-size: var(--micro);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.noticia__categoria--gremial { background-color: var(--naranja-claro); color: var(--naranja-oscuro); }
+.noticia__categoria--provincial { background-color: var(--verde-claro); color: var(--verde); }
+.noticia__categoria--comunicado { background-color: var(--rojo-claro); color: var(--rojo); }
+.noticia__categoria--formacion { background-color: var(--violeta-claro); color: var(--violeta); }
+
+.noticia h3 { font-size: 1.75rem; }
+.noticia p { color: var(--tinta-2); font-size: var(--chico); flex: 1; }
+
+.noticia__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-2);
+  padding-top: var(--esp-2);
+  border-top: 1px solid var(--linea);
+  font-size: var(--micro);
+  color: var(--tinta-3);
+}
+
+.noticia__leer { font-weight: 650; color: var(--celeste-oscuro); }
+
+@media (min-width: 40em) { .noticias { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 64em) { .noticias { grid-template-columns: repeat(3, 1fr); } }
+
+/* --- Listado de noticias ------------------------------------------------- */
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+  margin: var(--esp-5) 0;
+}
+
+.filtro {
+  padding: var(--esp-2) var(--esp-4);
+  border: 1px solid var(--linea-fuerte);
+  border-radius: 99rem;
+  background-color: var(--blanco);
+  color: var(--tinta-2);
+  font-family: var(--sans);
+  font-size: var(--chico);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.filtro:hover { border-color: var(--celeste); color: var(--celeste-oscuro); }
+
+.filtro.activo {
+  background-color: var(--celeste);
+  border-color: var(--celeste);
+  color: var(--blanco);
+}
+
+.noticias--listado { padding-bottom: var(--esp-5); }
+
+.paginado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-3);
+  padding: var(--esp-5) 0;
+  border-top: 1px solid var(--linea);
+}
+
+.paginado__actual { font-size: var(--chico); color: var(--tinta-3); }
+
+/* ==========================================================================
+   Herramientas destacadas
+   ========================================================================== */
+
+.herramientas { display: grid; gap: var(--esp-4); }
+
+.herramienta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-3);
+  padding: var(--esp-5);
+  background-color: var(--blanco);
+  border: 1px solid var(--linea);
+  border-left: 6px solid var(--naranja);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-1);
+}
+
+.herramienta h3 { color: var(--celeste-profundo); font-size: 1.9rem; }
+.herramienta p { color: var(--tinta-2); font-size: var(--chico); flex: 1; }
+
+@media (min-width: 48em) { .herramientas { grid-template-columns: 1fr 1fr; } }
+
+/* ==========================================================================
+   Agenda
+   ========================================================================== */
+
+.agenda { display: grid; gap: var(--esp-3); }
+
+.agenda__item {
+  display: flex;
+  gap: var(--esp-4);
+  align-items: flex-start;
+  padding: var(--esp-4);
+  background-color: var(--blanco);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+}
+
+.agenda__fecha {
+  flex: 0 0 auto;
+  width: 6.4rem;
+  text-align: center;
+  padding: var(--esp-2) 0;
+  border-radius: var(--radio);
+  background-color: var(--celeste);
+  color: var(--blanco);
+  line-height: 1.1;
+}
+
+.agenda__dia { display: block; font-family: var(--display); font-size: 2.2rem; }
+.agenda__mes {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.agenda__item h3 { font-size: 1.6rem; margin-bottom: 0.2rem; }
+.agenda__item p { color: var(--tinta-2); font-size: var(--chico); }
+
+/* ==========================================================================
+   Franja de afiliación
+   ========================================================================== */
+
+.afiliacion {
+  background-color: var(--celeste-profundo);
+  color: var(--blanco);
+  padding: var(--esp-6) 0;
+}
+
+.afiliacion h2 { color: var(--blanco); }
+.afiliacion p { margin-top: var(--esp-2); color: #d9edf8; max-width: 62ch; }
+.afiliacion__acciones { display: flex; flex-wrap: wrap; gap: var(--esp-3); margin-top: var(--esp-4); }
+
+/* ==========================================================================
+   Páginas internas: paneles, formularios y listas de datos
+   ========================================================================== */
+
+.dos-columnas { display: grid; gap: var(--esp-5); align-items: start; }
+
+@media (min-width: 60em) {
+  .dos-columnas { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+}
+
+.dos-columnas--ancha { grid-template-columns: 1fr; }
+
+@media (min-width: 60em) {
+  .dos-columnas--ancha { grid-template-columns: minmax(0, 1fr) minmax(30rem, 34rem); }
+}
+
+.columna-info { display: grid; gap: var(--esp-4); }
+
+.panel {
+  padding: var(--esp-5);
+  background-color: var(--blanco);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-g);
+  box-shadow: var(--sombra-1);
+}
+
+.panel__titulo {
+  font-size: 1.9rem;
+  color: var(--celeste-profundo);
+  margin-bottom: var(--esp-3);
+  padding-bottom: var(--esp-2);
+  border-bottom: 1px solid var(--linea);
+}
+
+.formulario { display: grid; gap: var(--esp-4); }
+
+.campo { min-width: 0; }
+
+.campo-fila { display: grid; gap: var(--esp-4); }
+
+@media (min-width: 40em) {
+  .campo-fila { grid-template-columns: 1fr 1fr; }
+}
+
+.lista-datos { display: grid; gap: var(--esp-2); }
+
+.lista-datos li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-1) var(--esp-2);
+  padding-bottom: var(--esp-2);
+  border-bottom: 1px solid var(--linea);
+  font-size: var(--chico);
+  color: var(--tinta-2);
+}
+
+.lista-datos li:last-child { border-bottom: none; padding-bottom: 0; }
+.lista-datos strong { color: var(--tinta); }
+
+.lista-tildes { display: grid; gap: var(--esp-2); }
+
+.lista-tildes li {
+  position: relative;
+  padding-left: var(--esp-5);
+  font-size: var(--chico);
+  color: var(--tinta-2);
+}
+
+.lista-tildes li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--celeste);
+  font-weight: 700;
+}
+
+/* --- Autoridades ---------------------------------------------------------- */
+
+.autoridades { display: grid; gap: var(--esp-4); }
+
+.autoridad {
+  padding: var(--esp-4);
+  background-color: var(--blanco);
+  border: 1px solid var(--linea);
+  border-top: 4px solid var(--celeste);
+  border-radius: var(--radio);
+  text-align: center;
+}
+
+.autoridad__foto {
+  width: 8rem;
+  height: 8rem;
+  margin: 0 auto var(--esp-3);
+  border-radius: 50%;
+  background-color: var(--celeste-claro);
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-size: var(--micro);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--celeste-oscuro);
+}
+
+.autoridad h3 { font-family: var(--sans); font-size: 1.5rem; text-transform: none; color: var(--celeste-profundo); }
+.autoridad p { font-size: var(--chico); color: var(--tinta-3); }
+
+@media (min-width: 40em) { .autoridades { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 64em) { .autoridades { grid-template-columns: repeat(4, 1fr); } }
+
+/* ==========================================================================
+   Pie
+   ========================================================================== */
+
+.pie {
+  background-color: var(--tinta-marca);
+  color: #b8c7d8;
+  font-size: var(--chico);
+  padding: var(--esp-6) 0 var(--esp-4);
+}
+
+.pie__grilla { display: grid; gap: var(--esp-5); }
+
+.pie h3 {
+  font-family: var(--display);
+  font-size: var(--micro);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blanco);
+  margin-bottom: var(--esp-3);
+}
+
+.pie a:hover { color: var(--blanco); text-decoration: underline; }
+.pie li { margin-bottom: var(--esp-1); }
+
+/* El logo para fondo oscuro: los blancos del triángulo van en celeste, así se
+   apoya sobre el pie sin un rectángulo blanco. */
+.pie__logo {
+  display: block;
+  width: 17rem;
+  max-width: 100%;
+  height: auto;
+  margin-bottom: var(--esp-3);
+}
+
+.pie__legal {
+  margin-top: var(--esp-5);
+  padding-top: var(--esp-4);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--esp-2);
+  font-size: var(--micro);
+  color: #93a4bb;
+}
+
+@media (min-width: 48em) {
+  .pie__grilla { grid-template-columns: 1.6fr 1fr 1fr 1fr; }
+}
+
+/* ==========================================================================
+   Utilidades
+   ========================================================================== */
+
+.mt-2 { margin-top: var(--esp-2); }
+.mt-3 { margin-top: var(--esp-3); }
+.mt-4 { margin-top: var(--esp-4); }
+.mb-3 { margin-bottom: var(--esp-3); }
+
+.texto-chico { font-size: var(--chico); color: var(--tinta-2); }
