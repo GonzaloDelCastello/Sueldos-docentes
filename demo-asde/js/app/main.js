@@ -1,3 +1,7 @@
+/**
+ * © 2026 Gonzalo J. Del Castello. Distribuido bajo licencia ISC.
+ * Ver LICENSE en la raíz del repositorio.
+ */
 import { aPesos, compararPeriodo, inicializarCalculadora } from "./funciones.js";
 /**
  * Arranque de la página: menú móvil, pestañas y comparador de inflación.

@@ -1,3 +1,7 @@
+/**
+ * © 2026 Gonzalo J. Del Castello. Distribuido bajo licencia ISC.
+ * Ver LICENSE en la raíz del repositorio.
+ */
 export const HISTORIAL_INFLACION = [
     // --- AÑO 2023 ---
     { fecha: "2023-06", inflacionMensual: 6.0 },

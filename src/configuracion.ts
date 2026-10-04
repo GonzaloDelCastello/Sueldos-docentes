@@ -1,3 +1,7 @@
+/**
+ * © 2026 Gonzalo J. Del Castello. Distribuido bajo licencia ISC.
+ * Ver LICENSE en la raíz del repositorio.
+ */
 import {
   obtenerConfiguracionActual1,
   obtenerConfiguracionActual2,

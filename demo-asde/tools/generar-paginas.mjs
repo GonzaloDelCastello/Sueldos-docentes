@@ -1,4 +1,9 @@
 /**
+ * © 2026 Gonzalo J. Del Castello. Todos los derechos reservados.
+ * Muestra de diseño y material comercial: ver NOTICE.md en la raíz del
+ * repositorio para saber qué se puede hacer con este archivo.
+ */
+/**
  * Generador de las páginas internas de la muestra de ASDE.
  *
  * Las cinco páginas comparten cabecera y pie. En vez de repetir ese marcado en

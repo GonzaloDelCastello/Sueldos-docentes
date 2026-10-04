@@ -1,4 +1,8 @@
 /**
+ * © 2026 Gonzalo J. Del Castello. Distribuido bajo licencia ISC.
+ * Ver LICENSE en la raíz del repositorio.
+ */
+/**
  * Motor de cálculo PURO del sueldo docente, pensado para varios cargos a la vez.
  *
  * "Puro" significa lo mismo que en calculos.ts: el resultado depende solo de los

@@ -1,3 +1,7 @@
+/**
+ * © 2026 Gonzalo J. Del Castello. Distribuido bajo licencia ISC.
+ * Ver LICENSE en la raíz del repositorio.
+ */
 import { obtenerConfiguracionActual1, obtenerConfiguracionActual2, SEGURO_OBLIGATORIO_POR_MES, SEGUROS_FIJOS, } from "./historial.js";
 /**
  * Busca en el historial todo lo que necesita el mes que se quiere calcular: las

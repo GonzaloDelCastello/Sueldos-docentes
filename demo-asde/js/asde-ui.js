@@ -1,4 +1,9 @@
 /**
+ * © 2026 Gonzalo J. Del Castello. Todos los derechos reservados.
+ * Muestra de diseño y material comercial: ver NOTICE.md en la raíz del
+ * repositorio para saber qué se puede hacer con este archivo.
+ */
+/**
  * ASDE · Interfaz de la muestra
  *
  * Se ocupa de lo que no es cálculo:

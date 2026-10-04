@@ -1,3 +1,7 @@
+/**
+ * © 2026 Gonzalo J. Del Castello. Distribuido bajo licencia ISC.
+ * Ver LICENSE en la raíz del repositorio.
+ */
 import { AFILIACIONES, ESCALA_ANTIGUEDAD, ETIQUETA_NIVEL, ZONAS, calcularPluriempleo, cargosDelNivel, definicionDe, montoEnseñanzaEnAula, porcentajeAntiguedad, } from "./cargos.js";
 import { htmlPuesto, resumenPuesto } from "./formulario.js";
 import { configuracionesDelMes } from "./configuracion.js";

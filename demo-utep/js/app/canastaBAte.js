@@ -1,3 +1,7 @@
+/**
+ * © 2026 Gonzalo J. Del Castello. Distribuido bajo licencia ISC.
+ * Ver LICENSE en la raíz del repositorio.
+ */
 export const HISTORIAL_C_BASICA_ATE = [
     // 2023
     { fecha: "2023-06", canastaBasica: 363570 },

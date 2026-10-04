@@ -1,3 +1,7 @@
+/**
+ * © 2026 Gonzalo J. Del Castello. Distribuido bajo licencia ISC.
+ * Ver LICENSE en la raíz del repositorio.
+ */
 // Este archivo es solo datos: las escalas salariales mes a mes.
 //
 // Los coeficientes de cada cargo y los descuentos fijos se mudaron a cargos.ts,

@@ -1,3 +1,7 @@
+/**
+ * © 2026 Gonzalo J. Del Castello. Distribuido bajo licencia ISC.
+ * Ver LICENSE en la raíz del repositorio.
+ */
 /** Formatea un monto para mostrarlo dentro del formulario (ej: $ 93.750). */
 function pesos(valor) {
     return "$ " + valor.toLocaleString("es-AR", { maximumFractionDigits: 0 });

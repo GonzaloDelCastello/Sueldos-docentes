@@ -1,4 +1,8 @@
 /**
+ * © 2026 Gonzalo J. Del Castello. Distribuido bajo licencia ISC.
+ * Ver LICENSE en la raíz del repositorio.
+ */
+/**
  * Inflación acumulada entre dos meses, ambos inclusive, en porcentaje.
  * Los meses se comparan como texto porque el formato "YYYY-MM" ordena
  * alfabéticamente igual que cronológicamente.
