@@ -479,3 +479,89 @@ details.desplegable[open] summary::after {
         align-items: flex-start;
     }
 }
+
+/* ==========================================================================
+   Mes y botón pegados abajo del celular
+   --------------------------------------------------------------------------
+   Mientras se cargan los cargos, el selector de mes y el botón Calcular quedan
+   fijos al pie de la pantalla: no hay que subir y bajar para calcular.
+
+   Es la parte que más importa en el celular, porque cargar varios cargos
+   empuja el botón lejos y obliga a recorrer el formulario de nuevo.
+
+   Se usa position: sticky y no fixed a propósito:
+     - sticky respeta el lugar del elemento en el formulario y se suelta solo
+       al llegar al final de la tarjeta;
+     - fixed lo sacaría del flujo y taparía el contenido de abajo.
+   ========================================================================== */
+
+@media (max-width: 767.98px) {
+    .selector-mes {
+        position: sticky;
+        bottom: 0;
+        z-index: var(--z-barra);
+
+        /* Se estira de borde a borde: se compensa el padding lateral del
+           formulario, que es de 2rem. */
+        margin-top: 2rem;
+        margin-right: -2rem;
+        margin-bottom: -2rem;
+        margin-left: -2rem;
+        padding: 0.8rem 2rem calc(0.8rem + env(safe-area-inset-bottom, 0px));
+        max-width: none;
+
+        /* Necesita fondo propio: al quedar flotando sobre el contenido, si es
+           transparente se lee el texto de atrás. */
+        background-color: var(--terciario);
+        border-top: 2px solid var(--primario);
+        border-radius: 0 0 1rem 1rem;
+    }
+
+    /* El resultado calculado arranca más abajo para que la barra no le tape
+       el título del total al hacer scroll hasta él. */
+    .tarjeta-total {
+        scroll-margin-top: 90vh;
+    }
+}
+
+/* ==========================================================================
+   Mes y botón: tamaño compacto
+   --------------------------------------------------------------------------
+   El botón de tu proyecto tenía 1.5rem de relleno vertical y 1.5rem de margen
+   arriba y abajo, así que quedaba alto y muy separado del selector de mes.
+   Acá se achica y se los junta, como en las muestras.
+
+   El alto mínimo de 4.4rem se mantiene a propósito: por debajo de eso, un
+   botón deja de ser cómodo para el dedo. Es el piso, no un capricho.
+   ========================================================================== */
+
+#btnCalcularSueldo {
+    min-height: 4.4rem;
+    padding: 0.85rem 1.5rem;
+    margin: 0.6rem auto;
+    font-size: 1.5rem;
+}
+
+/* El selector de mes también baja un poco: venía heredando 1.6rem de fuente y
+   el relleno de la regla general de select. */
+.select-mes {
+    padding: 0.7rem 1rem;
+    font-size: 1.5rem;
+}
+
+@media (max-width: 767.98px) {
+    /* La barra pegada manda: sin tope de ancho, sin márgenes que la separen y
+       con los dos controles a 0.4rem uno del otro, como en las muestras. */
+    .selector-mes > label,
+    .selector-mes .etiqueta-mes {
+        margin-bottom: 0.4rem;
+    }
+
+    .selector-mes .select-mes {
+        margin: 0 0 0.4rem;
+    }
+
+    #btnCalcularSueldo {
+        margin: 0;
+    }
+}
