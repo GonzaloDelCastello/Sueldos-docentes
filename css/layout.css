@@ -399,33 +399,66 @@ a {
   /* Detalle estético de la Lista Roja */
 }
 
-/* --- Pre-footer y enlaces --- */
+/* --- Pre-pie: navegación secundaria ---
+   Mismo formato que las muestras de sitio: los enlaces van en sans (no en la
+   tipografía decorativa del encabezado, que a este tamaño cansa), en
+   mayúsculas y con una línea que los separa de los créditos.
+
+   La página actual se muestra como texto, no como enlace: marca dónde está
+   parado quien lee y evita un enlace que no lleva a ningún lado. */
+
 .footer__enlaces {
   display: flex;
+  flex-wrap: wrap; /* Permite que los enlaces bajen si la pantalla es muy chica */
   justify-content: center;
-  flex-wrap: wrap; /* Permite que los enlaces bajen si la pantalla del celular es muy chica */
-  gap: 2.5rem;
-  padding: 3rem 0 2rem 0;
+  align-items: center;
+  gap: 0.4rem 2.4rem;
+  padding: 3.2rem 0 2.4rem 0;
+}
+
+.footer__enlaces a,
+.footer__enlaces span {
+  display: inline-block;
+  /* 4.4rem de alto: el mínimo cómodo para el dedo, igual que los botones. */
+  min-height: 4.4rem;
+  padding: 0.6rem 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.3rem;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  line-height: 2.6rem;
+  text-transform: uppercase;
+  text-decoration: none;
 }
 
 .footer__enlaces a {
   color: var(--blanco);
-  font-family: var(--fuenteTitulo);
-  font-size: 1.6rem;
-  text-decoration: none;
-  transition: color 0.3s ease;
+  transition: color 0.2s ease;
 }
 
 .footer__enlaces a:hover {
   color: var(--secundario); /* Cambia al color arena al pasar el mouse */
+  text-decoration: underline;
+  text-underline-offset: 0.4em;
 }
 
-/* Línea sutil para separar el menú de los créditos */
+/* La página actual: se ve igual de presente pero no invita a hacer clic. */
+.footer__enlaces span[aria-current="page"] {
+  color: var(--secundario);
+  /* Más apagada que los enlaces, para que se entienda de un vistazo que no es
+     clicable: es la página donde ya se está. */
+  opacity: 0.65;
+  cursor: default;
+}
+
+/* Línea sutil para separar el pre-pie de los créditos */
 .footer__divisor {
   border: 0;
   border-top: 1px solid var(--primarioClaro);
   opacity: 0.2;
-  margin: 0 auto;
+  /* Sin aire arriba (lo aporta el relleno del pre-pie) y con aire abajo, para
+     que la línea quede más cerca de los enlaces que de los créditos. */
+  margin: 0 auto 2rem;
   width: 90%;
   max-width: 800px;
 }
