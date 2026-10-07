@@ -469,6 +469,140 @@ details.desplegable[open] summary::after {
     font-size: 1.3rem;
 }
 
+/* ==========================================================================
+   Tablas de resultados en celular
+   --------------------------------------------------------------------------
+   La tabla "Desglose por cargo" tiene seis columnas (cargo, horas, zona,
+   remunerativo, no remunerativo y bruto) y en un celular de 390 px mide unos
+   508 px: se salía 194 px del recuadro y arrastraba toda la página.
+
+   No alcanza con achicar la letra. La solución es que en el celular cada fila
+   se convierta en una tarjeta: el nombre del cargo arriba, los datos sueltos
+   en un renglón y el importe en otro. Así ningún número queda fuera de la
+   pantalla y se lee sin hacer zoom.
+
+   Las dos columnas que se esconden (remunerativo y no remunerativo) siguen
+   estando en el desglose completo de más abajo, así que no se pierde
+   información: se evita repetirla cuatro veces.
+
+   Se aplica por debajo de 768 px, que es el mismo punto de corte que usa el
+   resto del proyecto.
+   ========================================================================== */
+
+/* Red de seguridad: si alguna tabla no entra, se desplaza ella sola en lugar
+   de desbordar la página. */
+.tabla-detalle {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+@media (max-width: 768px) {
+    /* En el celular la tabla se vuelve una lista de tarjetas, así que no
+       necesita desplazamiento propio. */
+    .tabla-detalle {
+        display: table;
+        overflow-x: visible;
+        table-layout: auto;
+    }
+
+    .tabla-detalle thead,
+    .tabla-desglose thead {
+        display: none;
+    }
+
+    /* Se ocultan las dos columnas del medio, sólo en el desglose por cargo. */
+    .tabla-desglose td:nth-child(4),
+    .tabla-desglose th:nth-child(4),
+    .tabla-desglose td:nth-child(5),
+    .tabla-desglose th:nth-child(5) {
+        display: none;
+    }
+
+    .tabla-detalle tr,
+    .tabla-desglose tr {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 0.2rem 1.2rem;
+        padding: 0.8rem 0;
+        border-bottom: 1px solid var(--terciario);
+    }
+
+    .tabla-detalle tr:last-child,
+    .tabla-desglose tr:last-child {
+        border-bottom: none;
+    }
+
+    .tabla-detalle td,
+    .tabla-detalle th,
+    .tabla-desglose td,
+    .tabla-desglose th {
+        display: block;
+        padding: 0.2rem 0;
+        border: none;
+        text-align: left;
+        font-size: 1.4rem;
+        white-space: normal;
+    }
+
+    /* El importe siempre a la derecha. */
+    .tabla-detalle td:last-child,
+    .tabla-detalle th:last-child,
+    .tabla-desglose td:last-child,
+    .tabla-desglose th:last-child {
+        margin-left: auto;
+        text-align: right;
+    }
+
+    .tabla-detalle td:first-child {
+        flex: 1 1 auto;
+        color: var(--secundarioOscuro);
+    }
+
+    /* La fila del cargo: el nombre ocupa todo el ancho y el bruto va debajo,
+       en su propio renglón, para que los números no se amontonen. */
+    .tabla-desglose td:nth-child(1),
+    .tabla-desglose th:nth-child(1) {
+        flex: 1 1 100%;
+        font-weight: bold;
+        color: var(--negro);
+    }
+
+    .tabla-desglose td:last-child {
+        flex: 1 1 100%;
+        margin-left: 0;
+        padding-top: 0.4rem;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .tabla-desglose td:nth-child(2),
+    .tabla-desglose td:nth-child(3),
+    .tabla-desglose th:nth-child(2),
+    .tabla-desglose th:nth-child(3) {
+        font-size: 1.2rem;
+        color: #6b7280;
+    }
+
+    /* Los rótulos de esas dos columnas los pone el CSS: el HTML no los trae. */
+    .tabla-desglose td:nth-child(2)::before { content: "Hs: "; }
+    .tabla-desglose td:nth-child(3)::before { content: "Zona: "; }
+
+    .fila-subtotal {
+        background-color: #fffbe6;
+        border-radius: 0.5rem;
+        padding: 0.8rem 1.2rem;
+        margin: 0.4rem 0;
+    }
+
+    .fila-subtotal th:first-child,
+    .fila-subtotal th:last-child {
+        border-radius: 0;
+    }
+}
+
 @media (max-width: 768px) {
     .grid-form {
         grid-template-columns: 1fr;
