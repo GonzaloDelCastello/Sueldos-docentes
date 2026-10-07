@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<!--
+  © 2026 Gonzalo J. Del Castello. Todos los derechos reservados.
+  Muestra de diseño y material comercial: ver NOTICE.md en la raíz del
+  repositorio para saber qué se puede hacer con este archivo.
+-->
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <title>Propuesta de sitio web · ASDE San Luis</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 14mm 15mm 16mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+      font-size: 9.6pt;
+      line-height: 1.5;
+      color: #1c2530;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.2;
+    }
+
+    /* ---------- Encabezado ---------- */
+    .tapa {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #002070;
+    }
+
+    .tapa__logo {
+      height: 46px;
+      width: auto;
+    }
+
+    .tapa__datos {
+      text-align: right;
+      font-size: 8.4pt;
+      color: #5a6572;
+      line-height: 1.45;
+    }
+
+    .titulo {
+      margin-top: 13px;
+      font-size: 19pt;
+      color: #002070;
+    }
+
+    .bajada {
+      margin-top: 4px;
+      font-size: 10.4pt;
+      color: #3d4a5a;
+      max-width: 62ch;
+    }
+
+    .sello {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 3px 10px;
+      border: 1px solid #cdd6e2;
+      border-radius: 99px;
+      font-size: 7.8pt;
+      font-weight: bold;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: #5a6572;
+    }
+
+    /* ---------- Secciones ---------- */
+    /* Ojo: sin break-inside:avoid en las secciones grandes, porque empuja
+       bloques enteros a la página siguiente y deja huecos. Se aplica sólo a
+       las piezas que no deben partirse (planes, tablas, firma). */
+    section {
+      margin-top: 15px;
+    }
+
+    h2 {
+      font-size: 12.6pt;
+      color: #002070;
+      padding-bottom: 4px;
+      border-bottom: 1.5px solid #d9dee6;
+      margin-bottom: 8px;
+      break-after: avoid;
+    }
+
+    h3 {
+      font-size: 10.4pt;
+      color: #1c2530;
+      margin-bottom: 4px;
+      break-after: avoid;
+    }
+
+    p+p {
+      margin-top: 6px;
+    }
+
+    ul {
+      margin: 4px 0 0 14px;
+    }
+
+    li {
+      margin-bottom: 2.5px;
+    }
+
+    strong {
+      color: #10203a;
+    }
+
+    /* ---------- Caja de valor ya construido ---------- */
+    .destacado {
+      margin-top: 9px;
+      padding: 10px 12px;
+      border-left: 4px solid #b98a2e;
+      background: #faf6ec;
+      font-size: 9.1pt;
+      break-inside: avoid;
+    }
+
+    .destacado strong {
+      color: #7d5a10;
+    }
+
+    /* ---------- Planes ---------- */
+    .planes {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 11px;
+      margin-top: 10px;
+    }
+
+    .plan {
+      border: 1px solid #d3dae4;
+      border-radius: 6px;
+      padding: 12px 12px 13px;
+      break-inside: avoid;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .plan--recomendado {
+      border: 2px solid #002070;
+      background: #f7f9fd;
+    }
+
+    .plan__etiqueta {
+      font-size: 7.4pt;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #8a94a2;
+    }
+
+    .plan--recomendado .plan__etiqueta {
+      color: #b98a2e;
+    }
+
+    .plan__nombre {
+      font-family: Georgia, serif;
+      font-size: 13pt;
+      color: #002070;
+      margin-top: 2px;
+    }
+
+    .plan__precio {
+      font-family: Georgia, serif;
+      font-size: 19pt;
+      font-weight: bold;
+      color: #002070;
+      margin: 5px 0 1px;
+      line-height: 1;
+    }
+
+    .plan__nota {
+      font-size: 8pt;
+      color: #5a6572;
+    }
+
+    .plan ul {
+      margin-top: 9px;
+      margin-left: 13px;
+      font-size: 8.9pt;
+    }
+
+    .plan li {
+      margin-bottom: 4px;
+    }
+
+    .plan__pie {
+      margin-top: auto;
+      padding-top: 9px;
+      font-size: 8.2pt;
+      color: #5a6572;
+      border-top: 1px solid #e3e8ef;
+    }
+
+    /* ---------- Tablas ---------- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 9px;
+      font-size: 9pt;
+    }
+
+    th {
+      text-align: left;
+      font-size: 8pt;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #5a6572;
+      border-bottom: 1.5px solid #d9dee6;
+      padding: 5px 7px;
+    }
+
+    td {
+      padding: 4.5px 7px;
+      border-bottom: 1px solid #e8ecf1;
+      vertical-align: top;
+    }
+
+    table {
+      break-inside: avoid;
+    }
+
+    td.importe {
+      text-align: right;
+      font-family: Georgia, serif;
+      font-weight: bold;
+      color: #002070;
+      white-space: nowrap;
+    }
+
+    /* ---------- Dos columnas de texto ---------- */
+    .columnas {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .nota {
+      margin-top: 9px;
+      padding: 9px 11px;
+      background: #f2f5f9;
+      border-radius: 5px;
+      font-size: 8.8pt;
+      color: #3d4a5a;
+    }
+
+    .pie {
+      margin-top: 22px;
+      padding-top: 10px;
+      border-top: 1px solid #d9dee6;
+      font-size: 8.2pt;
+      color: #6b7787;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .firma {
+      margin-top: 13px;
+      font-size: 9pt;
+    }
+
+    .firma__linea {
+      margin-top: 22px;
+      width: 210px;
+      border-top: 1px solid #8a94a2;
+      padding-top: 4px;
+      font-size: 8.4pt;
+      color: #5a6572;
+    }
+
+    .evitar-corte {
+      break-inside: avoid;
+    }
+
+    /* El cierre arranca en su propia página: es el resumen que se lee al
+       final, y no conviene que quede partido ni pegado al pie. */
+    .cierre {
+      break-before: page;
+      margin-top: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="tapa">
+    <img src="../demo-asde/img/logo-asde.png" alt="ASDE, Asociación Sanluiseña de Docentes Estatales" class="tapa__logo">
+    <div class="tapa__datos">
+      <strong>Propuesta</strong> para ASDE<br>
+      Asociación Sanluiseña de Docentes Estatales<br>
+      2 de octubre de 2026
+    </div>
+  </div>
+
+  <h1 class="titulo">Sitio web institucional<br>con calculadora salarial</h1>
+  <p class="bajada">Una propuesta para que ASDE tenga su sitio propio, con las herramientas que ya
+    están funcionando y un canal de afiliación en línea.</p>
+  <span class="sello">Propuesta de Gonzalo J. Del Castello</span>
+
+  <section>
+    <h2>Lo que ya está construido y funcionando</h2>
+    <p>Antes de hablar de precios conviene ver qué existe hoy, porque cambia por completo el punto de partida.
+      No se parte de cero: hay una <strong>muestra navegable</strong> del sitio, con la identidad visual de ASDE,
+      el logo ya integrado y las herramientas resolviendo cuentas reales.</p>
+
+    <div class="destacado">
+      <strong>La calculadora y el comparador de inflación ya funcionan.</strong> Están verificados contra
+      recibos de sueldo reales de la provincia: calculan sueldo de bolsillo con varios cargos a la vez, zonas,
+      antigüedad, afiliación sindical, aguinaldo y descuentos de ley, y comparan el salario contra la inflación
+      del INDEC. Desarrollar esto desde cero, en el mercado, es una aplicación a medida y no una página web.
+      <br><br>
+      Muestra en línea: <strong>sueldos-docentes-sanluis.vercel.app/demo-asde/</strong>
+    </div>
+
+    <p class="nota">La muestra lleva un aviso visible de que es una propuesta de diseño y que los textos,
+      nombres y noticias son de ejemplo. Lo único con datos reales es el cálculo, que usa los valores
+      vigentes de la liquidación docente de San Luis.</p>
+  </section>
+
+  <section>
+    <h2>Tres formas de contratarlo</h2>
+    <p>Las tres incluyen el sitio completo, el diseño institucional, la adaptación a celular y las dos
+      herramientas funcionando. La diferencia está en cuánto puede administrar ASDE por su cuenta y cuánto
+      acompañamiento lleva.</p>
+
+    <div class="planes">
+
+      <div class="plan">
+        <span class="plan__etiqueta">Opción A</span>
+        <span class="plan__nombre">Esencial</span>
+        <p class="plan__precio">USD 650</p>
+        <p class="plan__nota">Pago único</p>
+        <ul>
+          <li>Sitio de 5 páginas: inicio, noticias, afiliación, calculadora e inflación.</li>
+          <li>Identidad visual institucional con el logo de ASDE.</li>
+          <li><strong>Calculadora salarial</strong> funcionando, con los valores vigentes.</li>
+          <li><strong>Comparador de inflación</strong> con gráfico.</li>
+          <li>Formulario de contacto.</li>
+          <li>Diseño adaptado a celular, que es de donde entra la mayoría.</li>
+          <li>Dominio y publicación incluidos.</li>
+          <li>30 días de soporte por fallas.</li>
+        </ul>
+        <p class="plan__pie">Para arrancar con presencia propia y las herramientas ya disponibles.</p>
+      </div>
+
+      <div class="plan plan--recomendado">
+        <span class="plan__etiqueta">Opción B · Recomendada</span>
+        <span class="plan__nombre">Institucional</span>
+        <p class="plan__precio">USD 1.050</p>
+        <p class="plan__nota">Pago único</p>
+        <ul>
+          <li><strong>Todo lo de la Opción A.</strong></li>
+          <li><strong>Panel de noticias:</strong> ASDE publica comunicados y paritarias por su cuenta, sin depender
+            de mí para cada publicación.</li>
+          <li><strong>Módulo de afiliación</strong> con validación de datos, registro de solicitudes y aviso de
+            privacidad conforme a la Ley 25.326.</li>
+          <li>Agenda de actividades y documentos normativos.</li>
+          <li>Analítica de visitas.</li>
+          <li>Capacitación de dos horas a la secretaría de prensa.</li>
+          <li>60 días de soporte por fallas.</li>
+        </ul>
+        <p class="plan__pie">Es la que conviene: deja al sindicato con autonomía para publicar y recibir
+          afiliaciones.</p>
+      </div>
+
+      <div class="plan">
+        <span class="plan__etiqueta">Opción C</span>
+        <span class="plan__nombre">Completa</span>
+        <p class="plan__precio">USD 1.750</p>
+        <p class="plan__nota">Pago único</p>
+        <ul>
+          <li><strong>Todo lo de la Opción B.</strong></li>
+          <li><strong>Sumas fijas no remunerativas</strong> incorporadas al comparador, para medir el salario real
+            y no sólo el básico.</li>
+          <li><strong>Panel de afiliaciones:</strong> estado de cada solicitud (nueva, en trámite, activa),
+            búsqueda y exportación.</li>
+          <li>Buscador interno de documentos y normativa.</li>
+          <li>Dos rondas de ajustes de diseño después de la publicación.</li>
+          <li>90 días de soporte por fallas.</li>
+        </ul>
+        <p class="plan__pie">Para cuando el sitio pasa a ser la herramienta principal de comunicación y
+          organización.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="evitar-corte">
+    <h2>Mantenimiento mensual</h2>
+    <p>Es el punto más importante para que las herramientas sigan sirviendo. Una calculadora con valores
+      provinciales <strong>queda desactualizada todos los meses</strong>, y si un docente calcula su sueldo con
+      datos viejos, el sindicato pierde credibilidad justo con la herramienta que usa para defender salarios.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Servicio</th>
+          <th>Qué incluye</th>
+          <th style="text-align:right">Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Actualización de valores</strong></td>
+          <td>Carga de la tabla salarial de cada liquidación y verificación contra recibos, más los meses de
+            paritaria y aumentos.</td>
+          <td class="importe">USD 45 / mes</td>
+        </tr>
+        <tr>
+          <td><strong>Mantenimiento y respaldos</strong></td>
+          <td>Corrección de fallas, actualizaciones técnicas, respaldo del sitio y del motor de cálculo, y cambios
+            menores de contenido.</td>
+          <td class="importe">USD 25 / mes</td>
+        </tr>
+        <tr>
+          <td colspan="2"><strong>Los dos juntos, contratados como abono</strong></td>
+          <td class="importe">USD 55 / mes</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="nota">El abono se puede dar de baja en cualquier momento avisando con 30 días. Sin el abono, la
+      actualización de valores se cotiza por mes trabajado y no hay garantía de que los números estén al día.</p>
+  </section>
+
+  <section class="evitar-corte">
+    <h2>Qué no incluye esta propuesta</h2>
+    <p>Prefiero decirlo antes y no después. Queda fuera del alcance y se cotiza aparte si ASDE lo necesita:</p>
+    <div class="columnas">
+      <ul>
+        <li><strong>Los textos y las fotos.</strong> Los aporta ASDE. Si hay que redactar el contenido, se cotiza
+          por separado.</li>
+        <li><strong>Diseño gráfico de piezas</strong> para redes sociales, afiches o placas.</li>
+        <li><strong>Buscador de padrón.</strong> Requiere servidor con autenticación y datos personales de
+          terceros: no se puede hacer en un sitio estático y necesita un desarrollo aparte.</li>
+      </ul>
+      <ul>
+        <li><strong>Trámites legales.</strong> La inscripción de la base de datos de afiliados ante la AAIP la
+          gestiona ASDE con su clave fiscal. Dejo el sitio preparado y el texto de consentimiento redactado.</li>
+        <li><strong>Gestión de redes sociales</strong> y campañas de difusión.</li>
+        <li><strong>Correo institucional</strong> con el dominio propio.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="evitar-corte">
+    <h2>Forma de pago y plazos</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Etapa</th>
+          <th>Cuándo</th>
+          <th style="text-align:right">Proporción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Anticipo</strong></td>
+          <td>Al aprobar la propuesta, para reservar el trabajo y empezar.</td>
+          <td class="importe">50%</td>
+        </tr>
+        <tr>
+          <td><strong>Contra entrega</strong></td>
+          <td>Cuando el sitio está publicado y funcionando.</td>
+          <td class="importe">50%</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="columnas" style="margin-top:11px">
+      <div>
+        <h3>Plazos estimados</h3>
+        <ul>
+          <li><strong>Opción A:</strong> 2 a 3 semanas.</li>
+          <li><strong>Opción B:</strong> 4 a 5 semanas.</li>
+          <li><strong>Opción C:</strong> 6 a 8 semanas.</li>
+        </ul>
+        <p style="margin-top:5px;font-size:8.8pt;color:#5a6572">Los plazos empiezan a contar desde el anticipo
+          y desde que ASDE entrega los textos y las fotos.</p>
+      </div>
+      <div>
+        <h3>Condiciones</h3>
+        <ul>
+          <li>Valores en dólares, para que no se licúen con la inflación.</li>
+          <li>Pago en pesos al tipo de cambio del día de pago.</li>
+          <li>Dos rondas de revisiones incluidas por etapa. Las siguientes se cotizan.</li>
+          <li>El dominio y el hosting quedan <strong>a nombre de ASDE</strong>: son del sindicato, no míos.</li>
+          <li>Propuesta válida por 30 días desde la fecha.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="evitar-corte">
+    <h2>Un punto que conviene resolver bien: los datos de afiliación</h2>
+    <p>Una afiliación sindical revela una posición gremial, así que el formulario no puede ser un formulario de
+      contacto común. La <strong>Ley 25.326</strong> obliga a informar antes de tomar los datos: para qué se
+      usan, quién es el responsable, si responder es obligatorio, qué pasa si no se responde y cómo pedir
+      acceso, rectificación o supresión. Además, la base de afiliados debe inscribirse en el Registro Nacional
+      de Bases de Datos Personales.</p>
+    <p>En las opciones B y C el módulo se entrega con el texto de consentimiento, la casilla de aceptación
+      obligatoria y la separación entre los datos de afiliación y las consultas comunes, que no necesitan el
+      mismo resguardo.</p>
+  </section>
+
+  <section>
+    <h2>Por qué elegir esta propuesta</h2>
+    <div class="columnas">
+      <ul>
+        <li><strong>Las herramientas ya funcionan.</strong> No se paga por promesas: se pueden probar hoy en el
+          enlace de la muestra.</li>
+        <li><strong>Los números están verificados</strong> contra recibos de sueldo reales de la provincia.</li>
+        <li><strong>Está pensado para celular</strong>, que es desde donde entra la enorme mayoría de los
+          docentes.</li>
+      </ul>
+      <ul>
+        <li><strong>Sin dependencia:</strong> el dominio, el hosting y el contenido quedan en manos de ASDE.</li>
+        <li><strong>Precio de organización gremial</strong>, por debajo del mercado para instituciones.</li>
+        <li><strong>Se puede empezar por la Opción A</strong> y ampliar después, pagando sólo la diferencia.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cierre">
+    <h2>Resumen de la propuesta</h2>
+
+    <table>
+      <colgroup>
+        <col style="width:20%">
+        <col style="width:46%">
+        <col style="width:17%">
+        <col style="width:17%">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Opción</th>
+          <th>Qué resuelve</th>
+          <th style="text-align:right">Pago único</th>
+          <th style="text-align:right">Mantenim.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>A · Esencial</strong></td>
+          <td>Sitio institucional con calculadora y comparador funcionando.</td>
+          <td class="importe">USD 650</td>
+          <td class="importe">USD 55 / mes</td>
+        </tr>
+        <tr>
+          <td><strong>B · Institucional</strong><br><span style="font-size:8pt;color:#8a5a10">Recomendada</span></td>
+          <td>Sitio completo, panel de noticias para publicar sin depender del desarrollador y módulo de
+            afiliación.</td>
+          <td class="importe">USD 1.050</td>
+          <td class="importe">USD 55 / mes</td>
+        </tr>
+        <tr>
+          <td><strong>C · Completa</strong></td>
+          <td>Todo lo anterior, más sumas fijas en el comparador y panel de administración de
+            afiliaciones.</td>
+          <td class="importe">USD 1.750</td>
+          <td class="importe">USD 55 / mes</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="columnas" style="margin-top:12px">
+      <div>
+        <h3>En todos los casos</h3>
+        <ul>
+          <li>Calculadora salarial y comparador de inflación funcionando con valores vigentes.</li>
+          <li>Diseño adaptado a celular y verificado en pantallas chicas.</li>
+          <li>Dominio y hosting a nombre de ASDE.</li>
+          <li>Publicación y puesta en marcha incluidos.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Para avanzar</h3>
+        <ul>
+          <li>Elegir la opción y confirmar por correo.</li>
+          <li>Anticipo del 50% para reservar el trabajo.</li>
+          <li>ASDE entrega textos, fotos y datos de contacto reales.</li>
+          <li>Propuesta válida por 30 días desde la fecha.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="firma">
+    <p>Quedo a disposición para conversar la propuesta y ajustar el alcance a lo que ASDE necesite.</p>
+    <div class="firma__linea">
+      Gonzalo J. Del Castello<br>
+      Diseño y desarrollo web
+    </div>
+  </div>
+
+  <div class="pie">
+    <span>Propuesta de sitio web para ASDE · 2 de octubre de 2026</span>
+    <span>Documento de muestra, sin carácter oficial</span>
+  </div>
+
+</body>
+
+</html>
