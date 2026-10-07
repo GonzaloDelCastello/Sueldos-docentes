@@ -152,19 +152,4 @@ if (btnMostrarResultado) {
   btnMostrarResultado.addEventListener("click", mostrarResultado);
 }
 
-// Mostrar fecha actual en formato legible
-// document.addEventListener("DOMContentLoaded", function () {
-//   const fecha = new Date();
-//   const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
-//   document.getElementById("fechaActual").textContent = fecha.toLocaleDateString("es-AR", opciones);
-// });
-
-
-document.addEventListener("DOMContentLoaded", function () {
-  const fechaActualEl = document.getElementById("fechaActual");
-  if (fechaActualEl) {
-    const fecha = new Date();
-    const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
-    fechaActualEl.textContent = fecha.toLocaleDateString("es-AR", opciones);
-  }
-});
+// La fecha del encabezado se sacó: no se muestra en ninguna página.

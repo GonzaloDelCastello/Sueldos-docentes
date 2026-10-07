@@ -106,6 +106,17 @@
           </a>
         </div>
 
+        <!-- Botón hamburguesa para móviles. Lo maneja dist/main.js, que agrega
+             la clase .activo al menú y .oculto a este botón. -->
+        <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú" aria-expanded="false"
+          aria-controls="navegacion">☰</button>
+
+        <!-- Menú de navegación: las mismas páginas que ya enlazan las internas -->
+        <div class="navegacion" id="navegacion">
+          <a href="recursos.html">Recursos</a>
+          <a href="sobreNosotros.html">Sobre nosotros</a>
+        </div>
+
       </div>
 
     </div>
@@ -706,13 +717,14 @@
 
 <footer class="footer">
     <!-- SECCIÓN 1: Pre-footer (Navegación secundaria) -->
-    <!-- <div class="footer__enlaces contenedor">
+    <div class="footer__enlaces contenedor">
+      <a href="index.html">Calculadora</a>
       <a href="recursos.html">Recursos</a>
-      <a href="sobreNosotros.html">¿Quienes somos?</a>
-    </div> -->
+      <a href="sobreNosotros.html">Sobre nosotros</a>
+    </div>
 
     <!-- Línea divisoria sutil -->
-    <!-- <hr class="footer__divisor"> -->
+    <hr class="footer__divisor">
 
     <!-- SECCIÓN 2: Créditos del desarrollador -->
     <div class="contenedor footer__contenido">
