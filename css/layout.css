@@ -38,48 +38,6 @@
     gap: 1rem;
 }
 
-/* Título de las páginas internas (Recursos / Sobre nosotros).
-   No tenía estilos propios: solo se veía blanco porque hereda del <a>. */
-.header__texto {
-    color: var(--blanco);
-    font-family: var(--fuenteTitulo);
-    font-size: 3.2rem;
-    line-height: 1.1;
-    text-align: center;
-    margin: 0;
-}
-
-/* Subtítulo "Bienvenidxs" del header.
-   No tenía estilos: quedaba negro sobre la foto oscura = invisible. */
-.header__texto2 {
-    color: var(--blanco);
-    font-size: 3rem;
-    text-align: center;
-    margin: 1rem 0 0;
-}
-
-/* Logo de las páginas internas (clase .header__imagen, distinta de
-   .header__imagen-centro que usa el index). Sin estilos se mostraba
-   a tamaño completo y desbordaba. */
-.header__imagen {
-    display: block;
-    width: 20rem;
-    max-width: 60%;
-    height: auto;
-    margin: 1rem auto 0;
-    border-radius: 8px;
-}
-
-/* Fecha bajo el título. No tenía estilos: negro sobre fondo oscuro. */
-#fechaActual {
-    color: var(--blanco);
-    font-size: 1.4rem;
-    letter-spacing: 1px;
-    text-align: center;
-    opacity: 0.85;
-    margin: 0.5rem 0 0;
-}
-
 /* =========================================
    ESTILOS DE LA CABECERA (HEADER)
    ========================================= */
@@ -162,17 +120,6 @@
   }
   .header__descripcion {
       font-size: 1.1rem;
-  }
-  /* Los títulos del header nunca bajaban de tamaño */
-  .header__texto {
-      font-size: 2.6rem;
-  }
-  .header__texto2 {
-      font-size: 2.2rem;
-  }
-  .header__imagen {
-      width: 14rem;
-      max-width: 45%;
   }
 }
 
