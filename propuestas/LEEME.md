@@ -44,28 +44,49 @@ Confundir esto fue el error que hubo que corregir dos veces, y conviene tenerlo 
 **Los importes no se tocan: son los del recibo** (valores brutos). Lo que se agrega son porcentajes
 en dos niveles:
 
-- **En el encabezado de cada concepto** (remunerativos, no remunerativos, aguinaldo): el porcentaje
-  **del neto**, aclarado en el texto.
-- **Dentro de cada desplegable**, en cada ítem: el porcentaje **del bruto**, también aclarado.
+- **En el encabezado de cada concepto** (remunerativos, no remunerativos, aguinaldo): qué parte
+  **del neto** aporta ese concepto, aclarado en el texto.
+- **Dentro de cada desplegable**: el porcentaje de ese concepto **sobre el bruto**.
 - **En el bloque de totales**: el **neto en su propia línea, arriba** del bruto y los descuentos.
   Aunque el neto ya esté en el total de bolsillo, verlo ahí le saca la duda a quien no sepa qué es
   neto y qué es bruto.
 
+### Los dos porcentajes del encabezado suman 100%
+
+Lo que se quiere mostrar es **qué parte del neto es remunerativa y qué parte no remunerativa**, y
+las dos juntas tienen que dar 100%, porque entre las dos forman el neto.
+
+No alcanza con dividir el importe bruto de cada concepto por el neto: **remunerativos + no
+remunerativos es el BRUTO**, que es mayor que el neto, así que esa cuenta da 113,5%. Para que sumen
+100 hay que comparar la **parte del neto** que aporta cada concepto, o sea descontarle a cada uno su
+parte proporcional de las retenciones:
+
+```
+tasa              = (bruto − neto) / bruto
+parte del neto    = importe bruto × (1 − tasa)
+porcentaje        = parte del neto / neto del mes
+```
+
+Así los dos porcentajes suman 100% y las dos partes suman el neto del mes exacto.
+
+**El aguinaldo queda afuera de esa cuenta.** Es el sueldo anual complementario y se paga aparte, no
+integra el neto del mes, así que se mide contra el neto sin descontarle nada.
+
 Con los datos de ejemplo (dos cargos, 18 y 12 hs, zona 20%, antigüedad 5 años, con aguinaldo de
 junio):
 
-| | Importe | |
-|---|---|---|
-| Remunerativos | $ 1.170.477,36 | **69,5% del neto** |
-| No remunerativos | $ 741.950,92 | **44,0% del neto** |
-| **Bruto** | **$ 1.912.428,28** | |
-| Descuentos | $ 227.425,77 | |
-| **Neto del mes** | **$ 1.685.002,51** | |
-| Aguinaldo (SAC) de bolsillo | $ 474.043,33 | 28,1% del neto |
-| **Total de bolsillo** | **$ 2.159.045,85** | (neto del mes + aguinaldo) |
+| | Importe | Parte del neto | |
+|---|---|---|---|
+| Remunerativos | $ 1.170.477,36 | $ 1.031.284,32 | **61,2% del neto** |
+| No remunerativos | $ 741.950,92 | $ 653.718,19 | **38,8% del neto** |
+| **Suma** | | **$ 1.685.002,51** | **100,0%** |
+| **Bruto** | **$ 1.912.428,28** | | |
+| Descuentos | $ 227.425,77 | (ya descontados arriba) | |
+| Aguinaldo (SAC) de bolsillo | $ 474.043,33 | | 28,1% del neto |
+| **Total de bolsillo** | **$ 2.159.045,85** | | (neto del mes + aguinaldo) |
 
-Los porcentajes del neto **no suman 100**, y está bien: los conceptos son importes brutos y el neto
-es menor que el bruto. La suma da 141,6% en un mes con aguinaldo.
+Los dos porcentajes suman 100% y las dos partes del neto suman el neto del mes exacto. Sin el
+prorrateo de las retenciones, la suma daría 113,5% (el bruto sobre el neto).
 
 Dentro de los desplegables, cada ítem lleva su porcentaje del bruto, y **esos sí suman 100%**:
 
@@ -124,3 +145,6 @@ Quedan anotados porque son fáciles de repetir al implementarlo en el sitio:
 6. **Se repartieron los descuentos entre los dos conceptos.** Los importes mostrados dejaban de ser
    los del recibo, y eso no era lo pedido. Ahora los importes quedan como están en el recibo y lo
    que se agrega son porcentajes: del neto en el encabezado y del bruto en cada ítem.
+7. **El porcentaje del encabezado se medía sobre el importe bruto.** Daba 113,5% entre los dos
+   conceptos, cuando lo que se quiere mostrar es qué parte del neto aporta cada uno. Ahora se le
+   descuenta a cada concepto su parte proporcional de las retenciones, y los dos suman 100%.

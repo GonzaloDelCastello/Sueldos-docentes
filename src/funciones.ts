@@ -407,11 +407,24 @@ function mostrarPorcentajes(resultado: ResultadoPluriempleo): void {
   const porcentajeSobre = (valor: number, base: number, etiqueta: string): string =>
     valor > 0 && base > 0 ? `${aPorcentaje((valor / base) * 100)} ${etiqueta}` : "";
 
-  // ANTES de desplegar, en el encabezado de cada ficha: el porcentaje del NETO.
+  // ANTES de desplegar, en el encabezado de cada ficha: qué parte del NETO
+  // aporta ese concepto. Remunerativos y no remunerativos suman 100%, porque
+  // entre los dos forman el neto.
+  //
+  // No se puede usar el importe bruto directamente: remunerativos + no
+  // remunerativos es el BRUTO, que es mayor que el neto, así que la suma daría
+  // 113,5%. Se le descuenta a cada uno su parte proporcional de las
+  // retenciones, y esa parte del neto es la que se compara.
+  const tasaDeRetenciones = bruto > 0 ? (bruto - netoDelMes) / bruto : 0;
+  const parteDelNeto = (importeBruto: number): number =>
+    importeBruto * (1 - tasaDeRetenciones);
+
   escribir("pctNetoRemunerativos",
-    porcentajeSobre(conceptos.totalRemunerativo, netoDelMes, "del neto"));
+    porcentajeSobre(parteDelNeto(conceptos.totalRemunerativo), netoDelMes, "del neto"));
   escribir("pctNetoNoRemunerativos",
-    porcentajeSobre(conceptos.totalNoRemunerativo, netoDelMes, "del neto"));
+    porcentajeSobre(parteDelNeto(conceptos.totalNoRemunerativo), netoDelMes, "del neto"));
+  // El aguinaldo no integra el neto del mes (es el sueldo anual complementario,
+  // que se paga aparte), así que se mide contra el neto sin descontarle nada.
   escribir("pctNetoAguinaldo",
     porcentajeSobre(aguinaldo.neto, netoDelMes, "del neto"));
 

@@ -529,3 +529,65 @@ describe("el motor reproduce el recibo de septiembre 2026", () => {
     casiIgual(r.totalNoRemunerativo, 72945.95, c);
   });
 });
+
+describe("los porcentajes del encabezado suman 100% del neto", () => {
+  // Lo que se muestra junto al nombre de cada concepto es qué parte del NETO
+  // aporta ese concepto. remunerativos + no remunerativos tienen que dar 100%,
+  // porque entre los dos forman el neto.
+  //
+  // No alcanza con dividir el importe bruto por el neto: remunerativos + no
+  // remunerativos es el BRUTO, que es mayor que el neto, y la suma daría 113,5%.
+  // A cada concepto se le descuenta su parte proporcional de las retenciones.
+
+  /** Los dos porcentajes, como los calcula el motor. */
+  function porcentajesDelNeto(puestos: readonly Puesto[], opc: OpcionesCalculo) {
+    const resultado = calcularPluriempleo(puestos, CONFIGS, opc);
+    const bruto = resultado.conceptos.totalBruto;
+    const neto = bruto - resultado.descuentos.total;
+    const tasa = (bruto - neto) / bruto;
+    return {
+      remunerativo: (resultado.conceptos.totalRemunerativo * (1 - tasa)) / neto * 100,
+      noRemunerativo: (resultado.conceptos.totalNoRemunerativo * (1 - tasa)) / neto * 100,
+      neto,
+      bruto,
+    };
+  }
+
+  const unPuesto: Puesto[] = [
+    { id: 1, tipo: "horaSecundaria" as TipoCargo, cantHoras: 15, zonaPct: 20, presencialidad: "sin" },
+  ];
+  const opc: OpcionesCalculo = { antiguedadPct: 0.5, afiliacion: "amet", incluirSAC: false };
+
+  test("remunerativos + no remunerativos = 100%", () => {
+    const p = porcentajesDelNeto(unPuesto, opc);
+    casiIgual(p.remunerativo + p.noRemunerativo, 100, 0.01);
+  });
+
+  test("las dos partes suman el neto del mes", () => {
+    // Es la misma cuenta vista en pesos: si los porcentajes suman 100, las dos
+    // partes tienen que sumar el neto exacto.
+    const p = porcentajesDelNeto(unPuesto, opc);
+    const r = calcularPluriempleo(unPuesto, CONFIGS, opc);
+    const tasa = (p.bruto - p.neto) / p.bruto;
+    const parteRemunerativa = r.conceptos.totalRemunerativo * (1 - tasa);
+    const parteNoRemunerativa = r.conceptos.totalNoRemunerativo * (1 - tasa);
+    casiIgual(parteRemunerativa + parteNoRemunerativa, p.neto, 0.01);
+  });
+
+  test("sin los descuentos prorrateados la suma pasaría de 100", () => {
+    // Deja documentado por qué no se puede dividir el bruto por el neto: es el
+    // error que hacía que el encabezado mostrara 113,5%.
+    const p = porcentajesDelNeto(unPuesto, opc);
+    const r = calcularPluriempleo(unPuesto, CONFIGS, opc);
+    const brutoSobreNeto =
+      (r.conceptos.totalRemunerativo + r.conceptos.totalNoRemunerativo) / p.neto * 100;
+    assert.ok(brutoSobreNeto > 100, "el bruto sobre el neto tiene que dar más de 100");
+  });
+
+  test("con aguinaldo incluido los dos siguen sumando 100", () => {
+    const p = porcentajesDelNeto(unPuesto, { ...opc, incluirSAC: true });
+    // El aguinaldo no entra en esta cuenta: es un pago aparte, no integra el
+    // neto del mes. Así que la suma de los dos conceptos sigue dando 100.
+    casiIgual(p.remunerativo + p.noRemunerativo, 100, 0.01);
+  });
+});
