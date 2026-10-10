@@ -404,43 +404,25 @@ function mostrarPorcentajes(resultado: ResultadoPluriempleo): void {
   // El neto del mes va en su propia línea, arriba del bruto y los descuentos.
   setTexto("netoDelMes", netoDelMes);
 
-  const porcentajeDelNeto = (valor: number): string =>
-    valor > 0 ? `${aPorcentaje((valor / netoDelMes) * 100)} del neto` : "";
+  const porcentajeSobre = (valor: number, base: number, etiqueta: string): string =>
+    valor > 0 && base > 0 ? `${aPorcentaje((valor / base) * 100)} ${etiqueta}` : "";
 
-  // En el encabezado va el porcentaje del NETO, junto al importe del recibo.
-  escribir("pctRemunerativos", porcentajeDelNeto(conceptos.totalRemunerativo));
-  escribir("pctNoRemunerativos", porcentajeDelNeto(conceptos.totalNoRemunerativo));
-  escribir("pctAguinaldo", porcentajeDelNeto(aguinaldo.neto));
-  // Los descuentos no llevan porcentaje: no son un concepto que componga nada.
-  escribir("pctDescuentos", "");
+  // ANTES de desplegar, en el encabezado de cada ficha: el porcentaje del NETO.
+  escribir("pctNetoRemunerativos",
+    porcentajeSobre(conceptos.totalRemunerativo, netoDelMes, "del neto"));
+  escribir("pctNetoNoRemunerativos",
+    porcentajeSobre(conceptos.totalNoRemunerativo, netoDelMes, "del neto"));
+  escribir("pctNetoAguinaldo",
+    porcentajeSobre(aguinaldo.neto, netoDelMes, "del neto"));
 
-  // Dentro de cada desplegable, cada ítem lleva su porcentaje del BRUTO.
-  mostrarPorcentajeDeCadaItem(conceptos, bruto);
-}
-
-/** El porcentaje del bruto de cada ítem de concepto, dentro de los desplegables. */
-function mostrarPorcentajeDeCadaItem(
-  conceptos: ResultadoPluriempleo["conceptos"],
-  bruto: number
-): void {
-  document.querySelectorAll<HTMLElement>("[data-pct-fila]").forEach((celda) => {
-    const idValor = celda.getAttribute("data-pct-fila");
-    if (!idValor) return;
-
-    const valor = document.getElementById(idValor);
-    if (!valor) return;
-
-    // El importe está escrito como "$ 508.903,20": se lee de vuelta a número.
-    const numero = Number(
-      valor.textContent.replace(/[^\d,-]/g, "").replace(/\./g, "").replace(",", ".")
-    );
-
-    if (bruto <= 0 || !Number.isFinite(numero) || numero <= 0) {
-      celda.textContent = "";
-      return;
-    }
-    celda.textContent = `${aPorcentaje((numero / bruto) * 100)} del bruto`;
-  });
+  // Ya desplegada la ficha, debajo del importe: el porcentaje del BRUTO.
+  escribir("pctBrutoRemunerativos",
+    porcentajeSobre(conceptos.totalRemunerativo, bruto, "del bruto"));
+  escribir("pctBrutoNoRemunerativos",
+    porcentajeSobre(conceptos.totalNoRemunerativo, bruto, "del bruto"));
+  // El aguinaldo no integra el bruto del mes, así que no lleva porcentaje
+  // sobre él. Se deja vacío a propósito.
+  escribir("pctBrutoAguinaldo", "");
 }
 
 /** Tabla con lo que aporta cada cargo al total. */

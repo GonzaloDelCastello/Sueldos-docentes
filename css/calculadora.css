@@ -817,36 +817,20 @@ details.desplegable[open] summary::after {
 }
 
 
-/* ==========================================================================
-   Los ítems de concepto con su porcentaje del bruto
-   --------------------------------------------------------------------------
-   Cada ítem muestra el rótulo, el importe y su porcentaje del bruto. El
-   porcentaje se separa del importe para que no se lean pegados, y va más chico
-   porque es secundario.
+/* El encabezado de la ficha: el nombre del concepto a la izquierda y su
+   porcentaje del neto a la derecha, visibles ANTES de desplegar. */
+.ficha-concepto__encabezado {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.2rem 1rem;
+}
 
-   Estas reglas van dentro del media query de celular a propósito: la regla
-   general de las tablas (.tabla-detalle td { padding: 0.2rem 0 }) tiene más
-   especificidad, y afuera perdería.
-   ========================================================================== */
-@media (max-width: 768px) {
-    .ficha-concepto .tabla-detalle td:nth-child(2) {
-        margin-left: auto;
-        text-align: right;
-    }
-
-    .ficha-concepto .tabla-detalle td.celda-pct {
-        flex: 0 0 100%;
-        margin-left: 0;
-        padding-left: 0;
-        padding-right: 0.2rem;
-        font-size: 1.1rem;
-        line-height: 1.4;
-        text-align: right;
-        color: #6b7280;
-    }
-
-    /* El importe y su porcentaje, en renglones separados pero pegados. */
-    .ficha-concepto .tabla-detalle tr {
-        padding-bottom: 0.6rem;
-    }
+.ficha-concepto__pct-neto {
+    margin-left: auto;
+    font-size: 1.2rem;
+    font-weight: normal;
+    color: var(--secundarioOscuro);
+    white-space: nowrap;
 }
