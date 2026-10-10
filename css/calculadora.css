@@ -795,9 +795,3 @@ details.desplegable[open] summary::after {
     font-size: 1.1rem;
     color: #6b7280;
 }
-
-/* El porcentaje sobre el bruto va en su propio renglón, más claro, porque es
-   información secundaria. Se escribe desde el motor con un salto de línea. */
-.ficha-concepto__pct--bruto {
-    color: #9aa0a6;
-}

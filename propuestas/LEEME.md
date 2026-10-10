@@ -39,29 +39,32 @@ Confundir esto fue el error que hubo que corregir dos veces, y conviene tenerlo 
   los porcentajes hacía que los tres conceptos del mes sumaran 78% en vez de 100%.
 - El neto del mes es **bruto menos descuentos**, no el total de bolsillo.
 
-### Las dos composiciones
+### La composición del neto
 
-Cada ficha muestra dos porcentajes, uno por cada base:
+Cada ficha muestra qué porción del **neto del mes** representa, y las dos primeras suman 100%:
 
 ```
-composición del neto:  remunerativos + no remunerativos − descuentos = neto   → 100%
-composición del bruto: remunerativos + no remunerativos              = bruto  → 100%
+remunerativos + (no remunerativos − descuentos) = neto del mes   → 100%
 ```
+
+Los descuentos van **restados del no remunerativo**, que es donde se aplican. Sin restarlos, la
+suma pasaría de cien: remunerativos + no remunerativos es el **bruto**, y el neto es el bruto menos
+los descuentos. Por eso los descuentos no llevan porcentaje propio: ya están adentro del no
+remunerativo.
 
 Con los datos de ejemplo (dos cargos, 18 y 12 hs, zona 20%, antigüedad 5 años, con aguinaldo de
 junio):
 
-| Concepto | Importe | Sobre el neto | Sobre el bruto |
-|---|---|---|---|
-| Remunerativos | $ 1.170.477,36 | 69,5% | 61,2% |
-| No remunerativos | $ 741.950,92 | 44,0% | 38,8% |
-| Descuentos | $ 227.425,77 | −13,5% | 11,9% |
-| **Suma de la composición** | | **100,0%** | **100,0%** |
-| Aguinaldo (SAC) | $ 474.043,33 | 28,1% | — (no integra el bruto) |
-| **Neto del mes** | **$ 1.685.002,51** | | |
-| **Total de bolsillo (con aguinaldo)** | **$ 2.159.045,85** | | |
+| Concepto | Importe | Sobre el neto |
+|---|---|---|
+| Remunerativos | $ 1.170.477,36 | **69,5%** |
+| No remunerativos − descuentos | $ 514.525,15 | **30,5%** |
+| **Suma** | **$ 1.685.002,51** | **100%** |
+| Descuentos (restados arriba) | $ 227.425,77 | — |
+| Aguinaldo (SAC), aparte | $ 474.043,33 | 28,1% |
+| **Total de bolsillo (con aguinaldo)** | **$ 2.159.045,85** | |
 
-El aguinaldo no lleva porcentaje sobre el bruto a propósito: no forma parte de ese bruto.
+El aguinaldo no integra el sueldo del mes, así que no entra en la composición: se informa aparte.
 
 ### Por qué no hay barra de proporciones
 
@@ -71,7 +74,7 @@ fichas dicen 13,5% sobre el neto y 11,9% sobre el bruto. Tres números distintos
 confunden más de lo que explican.
 
 Si más adelante se quiere una barra, conviene que muestre la composición del neto con los mismos
-números que las fichas (69,5 + 44,0 − 13,5 = 100), y no una medida aparte.
+números que las fichas (69,5 + 30,5 = 100), y no una medida aparte.
 
 ## Opción B · Recibo minimalista
 
@@ -96,3 +99,7 @@ Quedan anotados porque son fáciles de repetir al implementarlo en el sitio:
    es parte del sueldo del mes.
 3. **Los porcentajes sumaban 78%.** Se usaba el total de bolsillo (que incluye el aguinaldo) como
    neto del mes.
+4. **Los porcentajes sumaban 100% del bruto, no del neto.** Se mostraban sobre el bruto
+   (61,2% + 38,8%), pero lo pedido era que sumaran 100% del neto. Como remunerativos + no
+   remunerativos es el bruto por definición, la única forma de que sumen 100% del neto sin falsear
+   los importes es restarle los descuentos al no remunerativo.
