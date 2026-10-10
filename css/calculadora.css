@@ -449,6 +449,25 @@ details.desplegable[open] summary::after {
     width: 100%;
 }
 
+/* Las opciones del selector de mes que se destacan.
+   --------------------------------------------------------------------------
+   El <select> lleva la clase .boton, que pone color de texto blanco. Las
+   opciones que no se destacan no se notan, porque su fondo por defecto es el
+   rojo oscuro del select. Pero las destacadas tienen fondo claro, y con el
+   blanco heredado quedaban ilegibles: había que decirles el color de texto.
+
+   El color va explicito en cada una y no se hereda, para que no vuelva a pasar
+   si cambia el color del select. */
+.select-mes option.opcion-aguinaldo {
+    background-color: #e8f5e9;
+    color: var(--negro);
+}
+
+.select-mes option.opcion-pauta {
+    background-color: #fff8e1;
+    color: var(--negro);
+}
+
 .cantidad-puestos {
     font-size: 1.4rem;
     margin-top: 0.5rem;
