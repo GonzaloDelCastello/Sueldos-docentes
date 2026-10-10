@@ -454,6 +454,11 @@ details.desplegable[open] summary::after {
     margin-top: 0.5rem;
 }
 
+/* Las tablas de conceptos llevan rótulo, importe y porcentaje. */
+.ficha-concepto .tabla-detalle td:last-child {
+    white-space: nowrap;
+}
+
 /* Tabla de desglose por cargo */
 .tabla-desglose th,
 .tabla-desglose td {
@@ -794,4 +799,54 @@ details.desplegable[open] summary::after {
 .ficha-concepto__pct {
     font-size: 1.1rem;
     color: #6b7280;
+}
+
+/* El neto, en su propia línea arriba del bruto y los descuentos: para quien no
+   sepa qué es cada cosa, verlo ahí le saca la duda. */
+.resultado-total__lineas .linea-neto {
+    flex: 1 1 100%;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--terciario);
+    color: var(--negro);
+    font-weight: bold;
+}
+
+.resultado-total__lineas .linea-neto strong {
+    color: var(--primario);
+    font-size: 1.5rem;
+}
+
+
+/* ==========================================================================
+   Los ítems de concepto con su porcentaje del bruto
+   --------------------------------------------------------------------------
+   Cada ítem muestra el rótulo, el importe y su porcentaje del bruto. El
+   porcentaje se separa del importe para que no se lean pegados, y va más chico
+   porque es secundario.
+
+   Estas reglas van dentro del media query de celular a propósito: la regla
+   general de las tablas (.tabla-detalle td { padding: 0.2rem 0 }) tiene más
+   especificidad, y afuera perdería.
+   ========================================================================== */
+@media (max-width: 768px) {
+    .ficha-concepto .tabla-detalle td:nth-child(2) {
+        margin-left: auto;
+        text-align: right;
+    }
+
+    .ficha-concepto .tabla-detalle td.celda-pct {
+        flex: 0 0 100%;
+        margin-left: 0;
+        padding-left: 0;
+        padding-right: 0.2rem;
+        font-size: 1.1rem;
+        line-height: 1.4;
+        text-align: right;
+        color: #6b7280;
+    }
+
+    /* El importe y su porcentaje, en renglones separados pero pegados. */
+    .ficha-concepto .tabla-detalle tr {
+        padding-bottom: 0.6rem;
+    }
 }

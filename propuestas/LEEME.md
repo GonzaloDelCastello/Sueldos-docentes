@@ -39,50 +39,46 @@ Confundir esto fue el error que hubo que corregir dos veces, y conviene tenerlo 
   los porcentajes hacía que los tres conceptos del mes sumaran 78% en vez de 100%.
 - El neto del mes es **bruto menos descuentos**, no el total de bolsillo.
 
-### La composición del neto
+### Qué se muestra
 
-Lo que se quiere visibilizar es **cuánto del neto es remunerativo y cuánto no remunerativo**. Como
-los dos conceptos son valores **del bruto** y los descuentos salen del bruto, para compararlos
-contra el neto se calcula la tasa de descuento y se le aplica pareja a los dos:
+**Los importes no se tocan: son los del recibo** (valores brutos). Lo que se agrega son porcentajes
+en dos niveles:
 
-```
-tasa = (bruto − neto) / bruto
-
-remunerativo neto    = remunerativos     × (1 − tasa)
-no remunerativo neto = no remunerativos  × (1 − tasa)
-```
-
-Así los dos importes que se muestran **suman el neto** y sus porcentajes dan **100%**. Y como la
-tasa es la misma para los dos, la proporción entre ellos queda igual a la del bruto.
+- **En el encabezado de cada concepto** (remunerativos, no remunerativos, aguinaldo): el porcentaje
+  **del neto**, aclarado en el texto.
+- **Dentro de cada desplegable**, en cada ítem: el porcentaje **del bruto**, también aclarado.
+- **En el bloque de totales**: el **neto en su propia línea, arriba** del bruto y los descuentos.
+  Aunque el neto ya esté en el total de bolsillo, verlo ahí le saca la duda a quien no sepa qué es
+  neto y qué es bruto.
 
 Con los datos de ejemplo (dos cargos, 18 y 12 hs, zona 20%, antigüedad 5 años, con aguinaldo de
 junio):
 
 | | Importe | |
 |---|---|---|
-| Remunerativos (bruto) | $ 1.170.477,36 | |
-| No remunerativos (bruto) | $ 741.950,92 | |
+| Remunerativos | $ 1.170.477,36 | **69,5% del neto** |
+| No remunerativos | $ 741.950,92 | **44,0% del neto** |
 | **Bruto** | **$ 1.912.428,28** | |
-| Descuentos | $ 227.425,77 | tasa **11,9%** del bruto |
+| Descuentos | $ 227.425,77 | |
 | **Neto del mes** | **$ 1.685.002,51** | |
+| Aguinaldo (SAC) de bolsillo | $ 474.043,33 | 28,1% del neto |
+| **Total de bolsillo** | **$ 2.159.045,85** | (neto del mes + aguinaldo) |
 
-| Concepto | Importe neto | Sobre el neto |
+Los porcentajes del neto **no suman 100**, y está bien: los conceptos son importes brutos y el neto
+es menor que el bruto. La suma da 141,6% en un mes con aguinaldo.
+
+Dentro de los desplegables, cada ítem lleva su porcentaje del bruto, y **esos sí suman 100%**:
+
+| Ítem | Importe | Del bruto |
 |---|---|---|
-| Remunerativos | $ 1.031.284,32 | **61,2%** |
-| No remunerativos | $ 653.718,20 | **38,8%** |
-| **Suma** | **$ 1.685.002,52** | **100%** |
-| Descuentos (repartidos arriba) | $ 227.425,77 | — |
-| Aguinaldo (SAC), aparte | $ 474.043,33 | 28,1% |
-| **Total de bolsillo (con aguinaldo)** | **$ 2.159.045,85** | |
+| Sueldo Básico | $ 508.903,20 | 26,6% |
+| Complemento Remunerativo | $ 661.574,16 | 34,6% |
+| Complemento No Remunerativo | $ 544.526,42 | 28,5% |
+| Suma No Remunerativa | $ 140.024,50 | 7,3% |
+| Incentivo Docente | $ 57.400,00 | 3,0% |
+| **Suma** | | **100,0%** |
 
-(La suma da un centavo más que el neto por redondeo de los dos importes mostrados.)
-
-El aguinaldo no integra el sueldo del mes, así que no entra en la composición: se informa aparte.
-
-**Ojo con una cosa:** en el recibo real los descuentos de ley se calculan sobre el remunerativo, no
-repartidos entre los dos. Acá se reparten a propósito, porque es la única forma de que los dos
-importes mostrados sumen el neto y se puedan comparar contra él. La página lo aclara con una nota,
-para que no parezca un error.
+La ficha de Descuentos no lleva porcentaje: no es un concepto que componga el bruto.
 
 ### Por qué no hay barra de proporciones
 
@@ -125,3 +121,6 @@ Quedan anotados porque son fáciles de repetir al implementarlo en el sitio:
    importe que se mostraba en el encabezado no era el número del que salía el porcentaje
    ($ 741.950,92 contra los $ 514.525,15 que se usaban). Se pasó a repartir la tasa de descuento
    entre los dos, así el importe y su porcentaje hablan del mismo monto y los dos suman el neto.
+6. **Se repartieron los descuentos entre los dos conceptos.** Los importes mostrados dejaban de ser
+   los del recibo, y eso no era lo pedido. Ahora los importes quedan como están en el recibo y lo
+   que se agrega son porcentajes: del neto en el encabezado y del bruto en cada ítem.

@@ -342,12 +342,13 @@
               <p class="cantidad-puestos" id="cantidadPuestos"></p>
 
               <p class="resultado-total__composicion">
-                Los importes de cada concepto ya tienen descontada la parte proporcional de
-                los descuentos, así que suman este neto. El aguinaldo es un pago aparte y no
-                integra el neto del mes: por eso el total de arriba puede ser mayor.
+                Los importes son los del recibo. Los porcentajes de cada concepto son sobre el
+                neto de abajo, y los de cada ítem, sobre el bruto. El aguinaldo es un pago
+                aparte y no integra el neto del mes: por eso el total de arriba es mayor.
               </p>
 
               <div class="resultado-total__lineas">
+                <span class="linea-neto">Neto: <strong id="netoDelMes">$0.00</strong></span>
                 <span>Bruto: <strong id="totalBruto">$0.00</strong></span>
                 <span>Descuentos: <strong id="totalDescuentos">$0.00</strong></span>
               </div>
@@ -387,44 +388,49 @@
 
             <details class="desplegable ficha-concepto">
 
-              <summary>🟢 Conceptos Remunerativos</summary>
+              <summary data-pct-items="remunerativos">🟢 Conceptos Remunerativos</summary>
 
               <p class="ficha-concepto__resumen">
-                <strong id="netoRemunerativo">$0.00</strong>
+                <strong id="totalCAportes">$0.00</strong>
                 <span class="ficha-concepto__pct" id="pctRemunerativos"></span>
               </p>
-
-              <span id="totalCAportes" hidden>$0.00</span>
 
               <table class="tabla-detalle">
 
                   <tr id="filaSueldoBasico" class="fila-resultado">
                     <td>Sueldo Básico</td>
                     <td id="resultadoSueldo">$0.00</td>
+                    <td class="celda-pct" data-pct-fila="resultadoSueldo"></td>
                   </tr>
                   <tr id="filaZona" class="fila-resultado">
                     <td>Pago por Zona</td>
                     <td id="pagoZona">$0.00</td>
+                    <td class="celda-pct" data-pct-fila="pagoZona"></td>
                   </tr>
                   <tr id="filaAntiguedad" class="fila-resultado">
                     <td>Pago por Antigüedad</td>
                     <td id="pagoAntiguedad">$0.00</td>
+                    <td class="celda-pct" data-pct-fila="pagoAntiguedad"></td>
                   </tr>
                   <tr id="filaComplementoRem" class="fila-resultado">
                     <td>Complemento Remunerativo</td>
                     <td id="complementoRemunerativo">$0.00</td>
+                    <td class="celda-pct" data-pct-fila="complementoRemunerativo"></td>
                   </tr>
                   <tr id="filaAdicionalCargo" class="fila-resultado">
                     <td>Adicional por Cargo</td>
                     <td id="adicionalPorCargo">$0.00</td>
+                    <td class="celda-pct" data-pct-fila="adicionalPorCargo"></td>
                   </tr>
                   <tr id="filaAdicionalPorDedicacion" class="fila-resultado">
                     <td>Adicional por Dedicación</td>
                     <td id="adicionalPorDedicacion">$0.00</td>
+                    <td class="celda-pct" data-pct-fila="adicionalPorDedicacion"></td>
                   </tr>
                   <tr id="filaEnseñanzaEnAula" class="fila-resultado">
                     <td>Enseñanza en Aula</td>
                     <td id="enseñanzaEnAula">$0.00</td>
+                    <td class="celda-pct" data-pct-fila="enseñanzaEnAula"></td>
                   </tr>
 
               </table>
@@ -433,32 +439,34 @@
 
             <details class="desplegable ficha-concepto">
 
-              <summary>🔵 Conceptos No Remunerativos</summary>
+              <summary data-pct-items="noremunerativos">🔵 Conceptos No Remunerativos</summary>
 
               <p class="ficha-concepto__resumen">
-                <strong id="netoNoRemunerativo">$0.00</strong>
+                <strong id="totalSAportes">$0.00</strong>
                 <span class="ficha-concepto__pct" id="pctNoRemunerativos"></span>
               </p>
-
-              <span id="totalSAportes" hidden>$0.00</span>
 
               <table class="tabla-detalle">
 
                   <tr id="filaComplementoNoRem" class="fila-resultado">
                     <td>Complemento No Remunerativo</td>
                     <td id="complementoNoRemunerativo">$0.00</td>
+                    <td class="celda-pct" data-pct-fila="complementoNoRemunerativo"></td>
                   </tr>
                   <tr id="filaSumaNoRem" class="fila-resultado">
                     <td>Suma No Remunerativa</td>
                     <td id="sumaNoRemunerativa">$0.00</td>
+                    <td class="celda-pct" data-pct-fila="sumaNoRemunerativa"></td>
                   </tr>
                   <tr id="filaIncentivoDocente" class="fila-resultado">
                     <td>Incentivo Docente</td>
                     <td id="incentivoDocente">$0.00</td>
+                    <td class="celda-pct" data-pct-fila="incentivoDocente"></td>
                   </tr>
                   <tr id="filaBonoExtraordinario" class="fila-resultado">
                     <td>Bono Extraordinario</td>
                     <td id="bonoExtraordinario">$0.00</td>
+                    <td class="celda-pct" data-pct-fila="bonoExtraordinario"></td>
                   </tr>
 
               </table>

@@ -401,26 +401,46 @@ function mostrarPorcentajes(resultado: ResultadoPluriempleo): void {
     return;
   }
 
-  const tasaDeDescuento = (bruto - netoDelMes) / bruto;
-  const porcentajeDe = (valor: number): string =>
+  // El neto del mes va en su propia línea, arriba del bruto y los descuentos.
+  setTexto("netoDelMes", netoDelMes);
+
+  const porcentajeDelNeto = (valor: number): string =>
     valor > 0 ? `${aPorcentaje((valor / netoDelMes) * 100)} del neto` : "";
 
-  const remunerativoNeto = conceptos.totalRemunerativo * (1 - tasaDeDescuento);
-  const noRemunerativoNeto = conceptos.totalNoRemunerativo * (1 - tasaDeDescuento);
-
-  // El importe del encabezado es el neto de descuentos, que es el mismo número
-  // del que sale el porcentaje. Así el importe y su porcentaje hablan del mismo
-  // monto y no hay que explicar de dónde salió cada uno.
-  setTexto("netoRemunerativo", remunerativoNeto);
-  setTexto("netoNoRemunerativo", noRemunerativoNeto);
-
-  escribir("pctRemunerativos", porcentajeDe(remunerativoNeto));
-  escribir("pctNoRemunerativos", porcentajeDe(noRemunerativoNeto));
-  // Los descuentos no llevan porcentaje propio: ya están repartidos adentro de
-  // los dos conceptos, y sumarlos aparte haría que la composición pase de cien.
+  // En el encabezado va el porcentaje del NETO, junto al importe del recibo.
+  escribir("pctRemunerativos", porcentajeDelNeto(conceptos.totalRemunerativo));
+  escribir("pctNoRemunerativos", porcentajeDelNeto(conceptos.totalNoRemunerativo));
+  escribir("pctAguinaldo", porcentajeDelNeto(aguinaldo.neto));
+  // Los descuentos no llevan porcentaje: no son un concepto que componga nada.
   escribir("pctDescuentos", "");
-  // El aguinaldo es aparte y sí se mide contra el neto del mes.
-  escribir("pctAguinaldo", porcentajeDe(aguinaldo.neto));
+
+  // Dentro de cada desplegable, cada ítem lleva su porcentaje del BRUTO.
+  mostrarPorcentajeDeCadaItem(conceptos, bruto);
+}
+
+/** El porcentaje del bruto de cada ítem de concepto, dentro de los desplegables. */
+function mostrarPorcentajeDeCadaItem(
+  conceptos: ResultadoPluriempleo["conceptos"],
+  bruto: number
+): void {
+  document.querySelectorAll<HTMLElement>("[data-pct-fila]").forEach((celda) => {
+    const idValor = celda.getAttribute("data-pct-fila");
+    if (!idValor) return;
+
+    const valor = document.getElementById(idValor);
+    if (!valor) return;
+
+    // El importe está escrito como "$ 508.903,20": se lee de vuelta a número.
+    const numero = Number(
+      valor.textContent.replace(/[^\d,-]/g, "").replace(/\./g, "").replace(",", ".")
+    );
+
+    if (bruto <= 0 || !Number.isFinite(numero) || numero <= 0) {
+      celda.textContent = "";
+      return;
+    }
+    celda.textContent = `${aPorcentaje((numero / bruto) * 100)} del bruto`;
+  });
 }
 
 /** Tabla con lo que aporta cada cargo al total. */
