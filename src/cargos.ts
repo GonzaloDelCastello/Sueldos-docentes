@@ -48,6 +48,19 @@ export const MES_DESDE_SUMA_FIJA = "2026-11";
 export const MES_DEL_BONO_FIN_DE_ANIO = "2026-12";
 
 /**
+ * Las horas de secundaria que se toman como un cargo completo, para prorratear
+ * la suma fija.
+ *
+ * La suma fija se cobra completa con un cargo de 15 hs de secundaria o más, y
+ * proporcional si el cargo es más chico. Tomar 15 hs como referencia es un
+ * SUPUESTO: lo que está confirmado es el tope (un cargo completo cobra $100.000
+ * y no más, aunque tenga varios cargos). Para los cargos que no se miden en
+ * horas (un preceptor, una maestra de grado) se usa su coeficiente sobre 15, que
+ * es la misma relación con la que se calculan sus básicos.
+ */
+export const HORAS_DE_UN_CARGO_COMPLETO = 15;
+
+/**
  * Si la suma fija mensual se liquida en el mes pedido.
  *
  * Es permanente desde noviembre de 2026 ("de ahí en más queda instalada"), así
@@ -61,6 +74,21 @@ export function correspondeSumaFija(periodo: string): boolean {
 /** Si el bono de fin de año se paga en el mes pedido. Es un pago único. */
 export function correspondeBonoFinDeAnio(periodo: string): boolean {
   return periodo === MES_DEL_BONO_FIN_DE_ANIO;
+}
+
+/**
+ * El tamaño del cargo, en "cargos completos".
+ *
+ * Un cargo de 15 hs de secundaria (o más) es 1. Un cargo de 7,5 hs es 0,5. Los
+ * cargos que no se miden en horas usan su coeficiente: el preceptor, por
+ * ejemplo, vale 14,1347 / 15.
+ */
+export function tamanoDelCargo(tipo: TipoCargo, cantHoras: number): number {
+  const definicion = definicionDe(tipo);
+  if (definicion.usaHoras) {
+    return cantHoras > 0 ? cantHoras / HORAS_DE_UN_CARGO_COMPLETO : 0;
+  }
+  return COEFICIENTES_CARGOS[tipo] / HORAS_DE_UN_CARGO_COMPLETO;
 }
 
 // ---------------------------------------------------------------------------
@@ -741,6 +769,28 @@ export interface ResultadoPluriempleo {
 }
 
 /**
+ * La suma fija del mes, prorrateada por el tamaño del cargo y con tope.
+ *
+ * El tope es el punto central: la suma fija se cobra UNA vez y completa con un
+ * cargo de 15 hs de secundaria o más. Tener más cargos no la multiplica, y un
+ * cargo más chico la cobra en proporción.
+ */
+export function sumaFijaDelMes(
+  puestos: readonly Puesto[],
+  configuraciones: ConfiguracionesDelMes
+): number {
+  if (!correspondeSumaFija(configuraciones.basica.fecha)) return 0;
+  const montoCompleto = configuraciones.basica.sumaFijaPorAgente ?? 0;
+  if (montoCompleto <= 0) return 0;
+
+  const proporcionDelCargoMasGrande = puestos.reduce(
+    (mayor, puesto) => Math.max(mayor, tamanoDelCargo(puesto.tipo, puesto.cantHoras)),
+    0
+  );
+  return montoCompleto * Math.min(proporcionDelCargoMasGrande, 1);
+}
+
+/**
  * Calcula todos los puestos y devuelve el recibo consolidado.
  * Los descuentos se aplican una sola vez sobre la suma, no puesto por puesto.
  *
@@ -763,12 +813,14 @@ export function calcularPluriempleo(
 
   const componentes = sumarComponentes(calculados.map((c) => c.conceptos));
 
-  // La suma fija y el bono de fin de año son montos POR AGENTE y por única vez,
+  // La suma fija y el bono de fin de año son montos por AGENTE y por única vez,
   // así que se suman una sola vez sobre el total y no en cada puesto: si se
   // sumaran por puesto, un docente con tres cargos cobraría los dos tres veces.
-  if (correspondeSumaFija(configuraciones.basica.fecha)) {
-    componentes.sumaFijaTrimestre += configuraciones.basica.sumaFijaPorAgente ?? 0;
-  }
+  //
+  // La suma fija además va prorrateada por el tamaño del cargo más grande, con
+  // tope en el monto completo: un cargo de 7,5 hs cobra la mitad, y dos cargos de
+  // 15 hs no cobran el doble.
+  componentes.sumaFijaTrimestre += sumaFijaDelMes(puestos, configuraciones);
   if (correspondeBonoFinDeAnio(configuraciones.basica.fecha)) {
     componentes.bonoFinDeAnio += configuraciones.basica.bonoFinDeAnioPorAgente ?? 0;
   }

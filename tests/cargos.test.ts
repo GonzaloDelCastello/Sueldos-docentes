@@ -678,16 +678,45 @@ describe("pauta del último trimestre de 2026", () => {
     casiIgual(r.conceptos.sumaFijaTrimestre, 100000);
   });
 
-  test("la suma fija no se multiplica por las horas cátedra", () => {
+  test("la suma fija es proporcional si el cargo es más chico que 15 hs", () => {
+    // 15 hs de secundaria es un cargo completo: 100.000. La mitad de horas, la
+    // mitad de la suma fija.
+    const completo = calcularPluriempleo([puesto("horaSecundaria", { cantHoras: 15 })], config("2026-11"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+    casiIgual(completo.conceptos.sumaFijaTrimestre, 100000);
+
+    const medio = calcularPluriempleo([puesto("horaSecundaria", { cantHoras: 7.5 })], config("2026-11"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+    casiIgual(medio.conceptos.sumaFijaTrimestre, 50000);
+
     const pocas = calcularPluriempleo([puesto("horaSecundaria", { cantHoras: 3 })], config("2026-11"), {
       ...comunes,
       incluirSAC: false,
     });
+    casiIgual(pocas.conceptos.sumaFijaTrimestre, 20000);
+  });
+
+  test("con más de 15 hs la suma fija se queda en 100.000", () => {
+    // El tope: no sigue subiendo con las horas.
     const muchas = calcularPluriempleo([puesto("horaSecundaria", { cantHoras: 30 })], config("2026-11"), {
       ...comunes,
       incluirSAC: false,
     });
-    casiIgual(pocas.conceptos.sumaFijaTrimestre, muchas.conceptos.sumaFijaTrimestre);
+    casiIgual(muchas.conceptos.sumaFijaTrimestre, 100000);
+  });
+
+  test("un cargo que no se mide en horas también se prorratea", () => {
+    // El preceptor no usa horas: se usa su coeficiente sobre 15.
+    const preceptor = calcularPluriempleo([puesto("preceptor")], config("2026-11"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+    const esperado = 100000 * (COEFICIENTES_CARGOS.preceptor / 15);
+    casiIgual(preceptor.conceptos.sumaFijaTrimestre, esperado);
   });
 
   test("el bono de fin de año es de $500.000 y sólo en diciembre", () => {

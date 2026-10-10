@@ -360,14 +360,9 @@
               </div>
             </div>
 
-            <!-- Conceptos de la pauta del último trimestre de 2026. Se muestran
-                 aparte del haber del mes porque el bono se paga en otra fecha. -->
-            <div class="concepto-pauta" id="bloqueSumaFija" hidden>
-              <span class="concepto-pauta__rotulo">Suma fija mensual (nuevo ítem, permanente)</span>
-              <strong class="concepto-pauta__monto" id="montoSumaFija">$0.00</strong>
-              <span class="concepto-pauta__pie" id="caracterSumaFija"></span>
-            </div>
-
+            <!-- El bono se muestra aparte del haber del mes, porque se paga en
+                 otra fecha. La suma fija no necesita bloque propio: figura en la
+                 lista de conceptos no remunerativos, como un ítem más. -->
             <div class="concepto-pauta" id="bloqueBono" hidden>
               <span class="concepto-pauta__rotulo">Bono de fin de año (pago único)</span>
               <strong class="concepto-pauta__monto" id="montoBono">$0.00</strong>
@@ -497,6 +492,16 @@
                   <tr id="filaBonoExtraordinario" class="fila-resultado">
                     <td>Bono Extraordinario</td>
                     <td id="bonoExtraordinario">$0.00</td>
+                  </tr>
+                  <!-- Conceptos de la pauta del último trimestre de 2026, que son
+                       no remunerativos: van en esta lista, como un ítem más. -->
+                  <tr id="filaSumaFijaTrimestre" class="fila-resultado">
+                    <td>Suma fija (pauta del último trimestre)</td>
+                    <td id="sumaFijaTrimestre">$0.00</td>
+                  </tr>
+                  <tr id="filaBonoFinDeAnio" class="fila-resultado">
+                    <td>Bono de fin de año</td>
+                    <td id="bonoFinDeAnio">$0.00</td>
                   </tr>
 
               </table>

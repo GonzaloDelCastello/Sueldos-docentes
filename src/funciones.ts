@@ -7,6 +7,7 @@ import {
   BONO_FIN_DE_ANIO_ES_REMUNERATIVO,
   ESCALA_ANTIGUEDAD,
   ETIQUETA_NIVEL,
+  HORAS_DE_UN_CARGO_COMPLETO,
   SUMA_FIJA_ES_REMUNERATIVA,
   ZONAS,
   calcularPluriempleo,
@@ -406,6 +407,12 @@ function mostrarResultados(resultado: ResultadoPluriempleo, incluirSAC: boolean)
   mostrarFilaSi("filaSumaNoRem", conceptos.sumaNoRemunerativa);
   mostrarFilaSi("filaIncentivoDocente", conceptos.incentivoDocente);
   mostrarFilaSi("filaBonoExtraordinario", conceptos.bonoExtraordinario);
+  // Los dos conceptos de la pauta son no remunerativos, así que van en esta
+  // misma lista, con su importe.
+  setTexto("sumaFijaTrimestre", conceptos.sumaFijaTrimestre);
+  setTexto("bonoFinDeAnio", conceptos.bonoFinDeAnio);
+  mostrarFilaSi("filaSumaFijaTrimestre", conceptos.sumaFijaTrimestre);
+  mostrarFilaSi("filaBonoFinDeAnio", conceptos.bonoFinDeAnio);
   mostrarFilaSi("filaDescuentoSindical", descuentos.sindical);
 
   const cantidad = document.getElementById("cantidadPuestos");
@@ -455,26 +462,19 @@ function mostrarPautaDelTrimestre(
       ? "Carácter: remunerativa (integraría la base de aportes y la del aguinaldo)."
       : "Carácter: NO remunerativa (no integra la base de aportes ni la del aguinaldo).";
 
-  // --- Suma fija ---
+  // La suma fija no necesita bloque propio: figura en la lista de conceptos no
+  // remunerativos, con su importe. Acá solo se arma el del bono, que se muestra
+  // aparte porque se paga en otra fecha.
   const haySumaFija = conceptos.sumaFijaTrimestre > 0;
-  mostrar("bloqueSumaFija", haySumaFija);
-  if (haySumaFija) {
-    setTexto("montoSumaFija", conceptos.sumaFijaTrimestre);
-    escribir(
-      "caracterSumaFija",
-      `Monto fijo por agente, no por hora cátedra. ${caracter(SUMA_FIJA_ES_REMUNERATIVA)}`
-    );
-  }
-
-  // --- Bono de fin de año ---
   const hayBono = conceptos.bonoFinDeAnio > 0;
   mostrar("bloqueBono", hayBono);
   if (hayBono) {
     setTexto("montoBono", conceptos.bonoFinDeAnio);
-    escribir(
-      "caracterBono",
-      `Pago único, por agente, aparte del haber del mes. ${caracter(BONO_FIN_DE_ANIO_ES_REMUNERATIVO)}`
-    );
+    const pie = document.getElementById("caracterBono");
+    if (pie) {
+      pie.textContent =
+        `Pago único, aparte del haber del mes. ${caracter(BONO_FIN_DE_ANIO_ES_REMUNERATIVO)}`;
+    }
   }
 
   // --- Supuestos ---
@@ -482,17 +482,17 @@ function mostrarPautaDelTrimestre(
 
   escribir(
     "supuestoSumaFija",
-    `Suma fija mensual de ${aPesos(PAUTA_TRIMESTRE_2026.sumaFijaMensual)}, permanente desde ` +
-      `noviembre de 2026 ("de ahí en más queda instalada"). Es un monto fijo POR AGENTE: no se ` +
-      `multiplica por la cantidad de horas cátedra. ` +
-      `SUMA_FIJA_ES_REMUNERATIVA = ${String(SUMA_FIJA_ES_REMUNERATIVA)}.`
+    `Suma fija mensual de ${aPesos(PAUTA_TRIMESTRE_2026.sumaFijaMensual)}, que se cobra con el ` +
+      `sueldo de noviembre y queda. Se cobra completa con un cargo de ${HORAS_DE_UN_CARGO_COMPLETO} ` +
+      `hs de secundaria o más. Si el cargo es más chico, se cobra en proporción: con la mitad de ` +
+      `las horas, la mitad.`
   );
 
   escribir(
     "supuestoBono",
-    `Bono de fin de año de ${aPesos(PAUTA_TRIMESTRE_2026.bonoFinDeAnio)}, pago único. ` +
-      `BONO_FIN_DE_ANIO_ES_REMUNERATIVO = ${String(BONO_FIN_DE_ANIO_ES_REMUNERATIVO)}. ` +
-      `Del carácter del bono no se informó nada, así que se toma como no remunerativo.`
+    `Con más de un cargo no se multiplica: se sigue cobrando ${aPesos(PAUTA_TRIMESTRE_2026.sumaFijaMensual)} ` +
+      `y no más, porque es un monto por persona. El bono de fin de año de ` +
+      `${aPesos(PAUTA_TRIMESTRE_2026.bonoFinDeAnio)} es un pago único y va aparte del haber del mes.`
   );
 
   const textoBaseSac = baseDelAguinaldo.periodo
@@ -503,10 +503,9 @@ function mostrarPautaDelTrimestre(
   escribir("supuestoBaseSAC", textoBaseSac);
   escribir(
     "supuestoDocente",
-    "Las dos comunicaciones oficiales son de administración pública provincial y no mencionan " +
-      "al sector docente, ni zona, ni complementos docentes, ni el Incentivo Docente Provincial. " +
-      "Se aplican a la escala docente como supuesto, no como dato confirmado. Noviembre y " +
-      "diciembre van con el mismo básico y la misma estructura que octubre."
+    "La pauta es de administración pública provincial y no menciona al sector docente. Se aplica " +
+      "a la escala docente como supuesto. Noviembre y diciembre van con el mismo básico y la misma " +
+      "estructura que octubre."
   );
 
   // --- Pendientes ---
@@ -516,29 +515,20 @@ function mostrarPautaDelTrimestre(
   const faltaBasico = conceptos.basico <= 0;
   const mesesPendientes = resultado.mesesSinBasico;
   const hayPendientes = faltaBasico || mesesPendientes.length > 0;
-  mostrar("supuestoBasico", true);
+  mostrar("supuestoBasico", hayPendientes);
 
   if (hayPendientes) {
     const partes: string[] = [];
     if (faltaBasico) {
-      partes.push(
-        "FALTA EL BÁSICO DE ESTE MES: todavía no hay recibo, así que el básico va en cero y no " +
-          "se estima aplicándole un porcentaje al mes anterior."
-      );
+      partes.push("Falta el básico de este mes: todavía no hay recibo del mes.");
     }
     if (mesesPendientes.length > 0) {
       partes.push(
-        `Todavía no tienen básico cargado: ${mesesPendientes.join(", ")}. La base del aguinaldo ` +
-          `se calcula con los meses que sí lo tienen, así que puede cambiar cuando se carguen.`
+        `Falta el básico de: ${mesesPendientes.join(", ")}. La base del aguinaldo se calcula con ` +
+          `los meses que sí lo tienen, así que puede cambiar cuando se carguen.`
       );
     }
     escribir("supuestoBasico", partes.join(" "));
-  } else {
-    escribir(
-      "supuestoBasico",
-      "Noviembre y diciembre van con el mismo básico y la misma estructura que octubre: no hay " +
-        "tramo de aumento en esos meses. Lo único que cambia es lo de la pauta."
-    );
   }
 
   mostrar("supuestoPagoBono", hayBono || haySumaFija);
