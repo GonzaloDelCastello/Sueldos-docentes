@@ -98,14 +98,14 @@ describe("valores del mes que usan los tests", () => {
     assert.equal(BASICA.fecha, MES);
     assert.equal(IFDC.fecha, MES);
     // Septiembre 2026 es el quinto tramo del 5% sobre los haberes de enero.
-    assert.equal(BASICA.basicoCargo_Hora, 19276.625);
+    assert.equal(BASICA.basicoCargo_Hora, 19276.63);
     assert.equal(IFDC.basicoCargo_Hora, 700048.41);
   });
 });
 
 describe("horas de secundaria", () => {
   test("el básico son las horas por el valor de la hora cátedra", () => {
-    casiIgual(calcular("horaSecundaria", { cantHoras: 15 }).basico, 15 * 19276.625);
+    casiIgual(calcular("horaSecundaria", { cantHoras: 15 }).basico, 15 * 19276.63);
   });
 
   test("zona y antigüedad se calculan sobre el básico", () => {
@@ -113,8 +113,8 @@ describe("horas de secundaria", () => {
     casiIgual(r.pagoDeZona, r.basico * 0.2);
     casiIgual(r.pagoAntiguedad, r.basico * 0.5);
     // Total remunerativo a mano para este caso:
-    // básico + complemento 140% + zona 20% + antigüedad 50%
-    casiIgual(r.totalRemunerativo, r.basico * (1 + 1.4 + 0.2 + 0.5));
+    // básico + complemento (145% desde septiembre 2026) + zona 20% + antigüedad 50%
+    casiIgual(r.totalRemunerativo, r.basico * (1 + 1.45 + 0.2 + 0.5));
   });
 
   test("las sumas fijas se pagan por hora", () => {
@@ -491,5 +491,41 @@ describe("catálogo y escalas", () => {
   test("un índice de antigüedad inexistente no rompe (devuelve 0)", () => {
     assert.equal(porcentajeAntiguedad(99), 0);
     assert.equal(porcentajeAntiguedad(-1), 0);
+  });
+});
+
+describe("el motor reproduce el recibo de septiembre 2026", () => {
+  // Recibo real de 3 hs cátedra de secundaria, zona 80% y 10 años de antigüedad
+  // (dependencia 32669). Es el caso que destapó que el reparto de los
+  // complementos había cambiado de 140/97 a 145/92 en septiembre: el valor del
+  // historial estaba viejo y los importes no cerraban contra el recibo.
+  const puesto: Puesto = {
+    id: 1,
+    tipo: "horaSecundaria" as TipoCargo,
+    cantHoras: 3,
+    zonaPct: 80,
+    presencialidad: "sin",
+  };
+  const opciones: OpcionesCalculo = { antiguedadPct: 0.5, afiliacion: "amet", incluirSAC: false };
+  const r = calcularConceptosDePuesto(puesto, CONFIGS, opciones);
+
+  test("los ítems del recibo, uno por uno", () => {
+    // La tolerancia es de un centavo: el motor calcula con toda la precisión y
+    // el recibo muestra cada ítem ya redondeado. Con la tolerancia por defecto
+    // (1e-6) fallaría por fracciones como 83.853,3405 contra 83.853,34.
+    const c = 0.01;
+    casiIgual(r.basico, 57829.89, c);                      // 007-20, 3 hs
+    casiIgual(r.complementoRemunerativo, 83853.34, c);     // 100-22, 145%
+    casiIgual(r.pagoDeZona, 46263.91, c);                  // 184-00, 80%
+    casiIgual(r.pagoAntiguedad, 28914.95, c);              // 102-11, 50%
+    casiIgual(r.complementoNoRemunerativo, 53203.50, c);   // 100-23, 92%
+    casiIgual(r.sumaNoRemunerativa, 14002.45, c);          // 099-41
+    casiIgual(r.incentivoDocente, 5740.00, c);             // 090-11
+  });
+
+  test("los subtotales del recibo", () => {
+    const c = 0.06; // la suma de los redondeos de cada ítem
+    casiIgual(r.totalRemunerativo, 216862.09, c);
+    casiIgual(r.totalNoRemunerativo, 72945.95, c);
   });
 });

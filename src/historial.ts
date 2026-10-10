@@ -233,10 +233,19 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
     // pero un decreto posterior movió los tramos de octubre y noviembre a
     // septiembre y octubre, que es como está cargado acá.
     descripcion: "Actualización Septiembre 2026 (5% de los haberes de enero)",
-    basicoCargo_Hora: 19276.625, 
+    // El valor exacto es 15.421,30 x 1,25 = 19.276,625, pero el recibo usa
+    // 19.276,63 y calcula desde ahí: con la milésima de más, cada ítem queda un
+    // centavo abajo y el total remunerativo 6 centavos abajo. Se usa el valor
+    // del recibo para reproducirlo exacto.
+    basicoCargo_Hora: 19276.63, 
+    // El reparto de los complementos pasa de 140/97 a 145/92: lo muestra el
+    // recibo de septiembre 2026 (3 hs cátedra, zona 80%, 10 años de antigüedad).
+    // El total sigue siendo 237% del básico, así que cambia el reparto entre
+    // remunerativo y no remunerativo, no la plata. Sin este cambio el total
+    // remunerativo queda 4.891,55 abajo y el no remunerativo 2.892,55 arriba.
     porcentajes: {
-        remunerativo: 1.40, 
-        noRemunerativo: 0.97, 
+        remunerativo: 1.45, 
+        noRemunerativo: 0.92, 
         adicionalCargo: 0.33
     },
     fonid: 1913.3333,
@@ -248,9 +257,12 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
     // Sexto tramo del 5% sobre los haberes de enero 2026: 15.421,30 x 1,30.
     descripcion: "Actualización Octubre 2026 (5% de los haberes de enero)",
     basicoCargo_Hora: 20047.69, 
+    // Se mantiene el reparto 145/92 de septiembre: el total sigue siendo 237%,
+    // así que la estructura no cambió, sólo el valor del básico. OJO: todavía no
+    // hay recibo de octubre que lo confirme.
     porcentajes: {
-        remunerativo: 1.40, 
-        noRemunerativo: 0.97, 
+        remunerativo: 1.45, 
+        noRemunerativo: 0.92, 
         adicionalCargo: 0.33
     },
     fonid: 1913.3333,

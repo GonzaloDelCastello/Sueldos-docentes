@@ -223,12 +223,27 @@ describe("decreto de julio 2026: calendario de aumentos", () => {
     }
   });
 
-  test("los porcentajes de complementos desde julio son 140% y 97% en obligatoria", () => {
-    // Art. 2.
-    for (const mes of ["2026-07", "2026-08", "2026-09", "2026-10"]) {
+  test("los porcentajes de complementos son 140/97 en julio y agosto, y 145/92 desde septiembre", () => {
+    // Art. 2. El decreto de julio fijó el reparto en 140/97. En septiembre el
+    // reparto cambia a 145/92 sin mover el total, que sigue siendo 237%: lo
+    // muestra el recibo de septiembre 2026 de 3 hs cátedra.
+    const esperado: Record<string, [number, number]> = {
+      "2026-07": [1.4, 0.97],
+      "2026-08": [1.4, 0.97],
+      "2026-09": [1.45, 0.92],
+      "2026-10": [1.45, 0.92],
+    };
+    for (const [mes, [remunerativo, noRemunerativo]] of Object.entries(esperado)) {
       const config = obtenerConfiguracionActual1(mes);
-      assert.equal(config.porcentajes.remunerativo, 1.4, `${mes} remunerativo`);
-      assert.equal(config.porcentajes.noRemunerativo, 0.97, `${mes} no remunerativo`);
+      assert.equal(config.porcentajes.remunerativo, remunerativo, `${mes} remunerativo`);
+      assert.equal(config.porcentajes.noRemunerativo, noRemunerativo, `${mes} no remunerativo`);
+      // El total del reparto no cambia: es lo que hace que la corrección no
+      // mueva el total de bolsillo, sólo la distribución entre los dos.
+      assert.equal(
+        config.porcentajes.remunerativo + config.porcentajes.noRemunerativo,
+        2.37,
+        `${mes}: el total del reparto tiene que seguir siendo 237%`
+      );
     }
   });
 
