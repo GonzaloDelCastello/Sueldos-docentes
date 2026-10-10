@@ -915,31 +915,6 @@ details.desplegable[open] summary::after {
     text-align: left;
 }
 
-.supuestos__lista {
-    margin: 0;
-    padding-left: 1.6rem;
-    text-align: left;
-}
-
-.supuestos__lista li {
-    font-size: 1.15rem;
-    line-height: 1.55;
-    color: #5f4d1a;
-    margin-bottom: 0.5rem;
-}
-
-.supuestos__lista li:last-child {
-    margin-bottom: 0;
-}
-
-.supuestos__bandera {
-    font-family: "Courier New", monospace;
-    font-size: 1.1rem;
-    background-color: rgba(0, 0, 0, 0.06);
-    padding: 0.1rem 0.4rem;
-    border-radius: 3px;
-}
-
 /* La nota del total, dentro del bloque de supuestos. */
 .supuestos__nota {
     margin: 0.8rem 0 0;
@@ -957,7 +932,6 @@ details.desplegable[open] summary::after {
    .concepto-pauta usa flex, y sin esto un bloque marcado como oculto se veria
    igual (ya paso con otras clases del proyecto). */
 .concepto-pauta[hidden],
-.supuestos[hidden],
-.supuestos__lista li[hidden] {
+.supuestos[hidden] {
     display: none !important;
 }
