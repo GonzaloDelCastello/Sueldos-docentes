@@ -733,7 +733,7 @@ describe("pauta del último trimestre de 2026", () => {
     casiIgual(diciembre.conceptos.bonoFinDeAnio, 500000);
   });
 
-  test("el bono es por agente: no se cobra una vez por cargo", () => {
+  test("el bono es por persona: no se cobra una vez por cargo", () => {
     const tres = [
       puesto("horaSecundaria", { cantHoras: 15 }),
       puesto("horaSecundaria", { cantHoras: 12 }),
@@ -741,6 +741,28 @@ describe("pauta del último trimestre de 2026", () => {
     ];
     const r = calcularPluriempleo(tres, config("2026-12"), { ...comunes, incluirSAC: false });
     casiIgual(r.conceptos.bonoFinDeAnio, 500000);
+  });
+
+  test("el bono se prorratea igual que la suma fija", () => {
+    // Misma regla que la suma fija: proporcional si el cargo es más chico que uno
+    // completo, y completo (sin multiplicarse) con un cargo o más.
+    const medio = calcularPluriempleo([puesto("horaSecundaria", { cantHoras: 7.5 })], config("2026-12"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+    casiIgual(medio.conceptos.bonoFinDeAnio, 250000);
+
+    const pocas = calcularPluriempleo([puesto("horaSecundaria", { cantHoras: 3 })], config("2026-12"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+    casiIgual(pocas.conceptos.bonoFinDeAnio, 100000);
+
+    const muchas = calcularPluriempleo([puesto("horaSecundaria", { cantHoras: 30 })], config("2026-12"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+    casiIgual(muchas.conceptos.bonoFinDeAnio, 500000);
   });
 
   test("con las banderas en false, los dos son no remunerativos", () => {

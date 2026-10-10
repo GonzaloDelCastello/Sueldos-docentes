@@ -769,18 +769,15 @@ export interface ResultadoPluriempleo {
 }
 
 /**
- * La suma fija del mes, prorrateada por el tamaño del cargo y con tope.
+ * Un monto que se cobra por persona, prorrateado por el tamaño del cargo y con
+ * tope.
  *
- * El tope es el punto central: la suma fija se cobra UNA vez y completa con un
- * cargo de 15 hs de secundaria o más. Tener más cargos no la multiplica, y un
- * cargo más chico la cobra en proporción.
+ * El tope es el punto central de la pauta del último trimestre: la suma fija y el
+ * bono se cobran UNA vez y completos con un cargo de 15 hs de secundaria (o su
+ * equivalente). Tener más cargos, o más horas, no los multiplica. Un cargo más
+ * chico los cobra en proporción.
  */
-export function sumaFijaDelMes(
-  puestos: readonly Puesto[],
-  configuraciones: ConfiguracionesDelMes
-): number {
-  if (!correspondeSumaFija(configuraciones.basica.fecha)) return 0;
-  const montoCompleto = configuraciones.basica.sumaFijaPorAgente ?? 0;
+function montoPorPersona(puestos: readonly Puesto[], montoCompleto: number): number {
   if (montoCompleto <= 0) return 0;
 
   const proporcionDelCargoMasGrande = puestos.reduce(
@@ -788,6 +785,28 @@ export function sumaFijaDelMes(
     0
   );
   return montoCompleto * Math.min(proporcionDelCargoMasGrande, 1);
+}
+
+/** La suma fija del mes, prorrateada por el tamaño del cargo y con tope. */
+export function sumaFijaDelMes(
+  puestos: readonly Puesto[],
+  configuraciones: ConfiguracionesDelMes
+): number {
+  if (!correspondeSumaFija(configuraciones.basica.fecha)) return 0;
+  return montoPorPersona(puestos, configuraciones.basica.sumaFijaPorAgente ?? 0);
+}
+
+/**
+ * El bono de fin de año, con la misma regla que la suma fija: proporcional si el
+ * cargo es más chico que uno completo, y completo (sin multiplicarse) si hay un
+ * cargo o más.
+ */
+export function bonoFinDeAnioDelMes(
+  puestos: readonly Puesto[],
+  configuraciones: ConfiguracionesDelMes
+): number {
+  if (!correspondeBonoFinDeAnio(configuraciones.basica.fecha)) return 0;
+  return montoPorPersona(puestos, configuraciones.basica.bonoFinDeAnioPorAgente ?? 0);
 }
 
 /**
@@ -813,17 +832,15 @@ export function calcularPluriempleo(
 
   const componentes = sumarComponentes(calculados.map((c) => c.conceptos));
 
-  // La suma fija y el bono de fin de año son montos por AGENTE y por única vez,
+  // La suma fija y el bono de fin de año son montos por PERSONA y por única vez,
   // así que se suman una sola vez sobre el total y no en cada puesto: si se
   // sumaran por puesto, un docente con tres cargos cobraría los dos tres veces.
   //
-  // La suma fija además va prorrateada por el tamaño del cargo más grande, con
-  // tope en el monto completo: un cargo de 7,5 hs cobra la mitad, y dos cargos de
-  // 15 hs no cobran el doble.
+  // Los dos van prorrateados por el tamaño del cargo más grande, con tope en el
+  // monto completo: un cargo de 7,5 hs cobra la mitad, y dos cargos de 15 hs no
+  // cobran el doble.
   componentes.sumaFijaTrimestre += sumaFijaDelMes(puestos, configuraciones);
-  if (correspondeBonoFinDeAnio(configuraciones.basica.fecha)) {
-    componentes.bonoFinDeAnio += configuraciones.basica.bonoFinDeAnioPorAgente ?? 0;
-  }
+  componentes.bonoFinDeAnio += bonoFinDeAnioDelMes(puestos, configuraciones);
 
   const conceptos = cerrarTotales(componentes);
   const descuentos = calcularDescuentos(

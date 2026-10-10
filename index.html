@@ -369,18 +369,13 @@
               <span class="concepto-pauta__pie" id="caracterBono"></span>
             </div>
 
-            <!-- Supuestos de la pauta del último trimestre de 2026, a la vista.
-                 Nada de esto queda escondido en el código. -->
+            <!-- Aviso de la pauta del último trimestre de 2026. Es uno solo, y
+                 sólo aparece en los meses en que se cobra (noviembre y
+                 diciembre). Lo llena el motor. -->
             <div class="supuestos" id="bloqueSupuestos" hidden>
-              <p class="supuestos__titulo">Supuestos de estos meses</p>
-              <ul class="supuestos__lista">
-                <li id="supuestoSumaFija"></li>
-                <li id="supuestoBono"></li>
-                <li id="supuestoBaseSAC"></li>
-                <li id="supuestoDocente"></li>
-                <li id="supuestoBasico" hidden></li>
-                <li id="supuestoPagoBono" hidden></li>
-              </ul>
+              <p class="supuestos__titulo">Sobre estos meses</p>
+              <p class="supuestos__nota" id="avisoPauta"></p>
+              <p class="supuestos__nota" id="avisoBono"></p>
               <p class="supuestos__nota" id="aNotaPct"></p>
             </div>
 
