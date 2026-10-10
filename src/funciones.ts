@@ -505,17 +505,20 @@ function mostrarPautaDelTrimestre(
     "supuestoDocente",
     "Las dos comunicaciones oficiales son de administración pública provincial y no mencionan " +
       "al sector docente, ni zona, ni complementos docentes, ni el Incentivo Docente Provincial. " +
-      "Se aplican a la escala docente como supuesto, no como dato confirmado."
+      "Se aplican a la escala docente como supuesto, no como dato confirmado. Noviembre y " +
+      "diciembre van con el mismo básico y la misma estructura que octubre."
   );
 
   // --- Pendientes ---
-  // El básico del mes calculado, y además los meses del semestre que todavía no
-  // lo tienen: esos afectan la base del aguinaldo, porque cuando se carguen la
-  // mayor remuneración del semestre podría ser una de ellos.
+  // Noviembre y diciembre van con el básico y la estructura de octubre, así que
+  // en esos meses no falta nada. El aviso queda por si algún mes del semestre se
+  // cargara sin básico: en ese caso la base del aguinaldo podría cambiar.
   const faltaBasico = conceptos.basico <= 0;
   const mesesPendientes = resultado.mesesSinBasico;
-  mostrar("supuestoBasico", faltaBasico || mesesPendientes.length > 0);
-  if (faltaBasico || mesesPendientes.length > 0) {
+  const hayPendientes = faltaBasico || mesesPendientes.length > 0;
+  mostrar("supuestoBasico", true);
+
+  if (hayPendientes) {
     const partes: string[] = [];
     if (faltaBasico) {
       partes.push(
@@ -529,10 +532,13 @@ function mostrarPautaDelTrimestre(
           `se calcula con los meses que sí lo tienen, así que puede cambiar cuando se carguen.`
       );
     }
-    partes.push(
-      "Los conceptos de la pauta sí están cargados, porque sus montos salieron del anuncio."
-    );
     escribir("supuestoBasico", partes.join(" "));
+  } else {
+    escribir(
+      "supuestoBasico",
+      "Noviembre y diciembre van con el mismo básico y la misma estructura que octubre: no hay " +
+        "tramo de aumento en esos meses. Lo único que cambia es lo de la pauta."
+    );
   }
 
   mostrar("supuestoPagoBono", hayBono || haySumaFija);

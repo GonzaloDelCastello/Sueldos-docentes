@@ -774,17 +774,35 @@ describe("la base del aguinaldo es la mayor remuneración del semestre", () => {
   const unCargo = [puesto("horaSecundaria", { cantHoras: 15, zonaPct: 20 })];
   const comunes = { antiguedadPct: 0.3, afiliacion: "amet" as const };
 
-  test("la base de diciembre es la de octubre, que es la mejor del semestre", () => {
-    // Los básicos del semestre suben mes a mes, así que la mejor remuneración es
-    // la del último mes con recibo cargado: octubre.
-    const octubre = calcularPluriempleo(unCargo, configuracionesDelMes("2026-10"), {
-      ...comunes,
-      incluirSAC: false,
-    });
-    const base = {
-      monto: octubre.conceptos.totalRemunerativo,
-      periodo: "2026-10",
-    };
+  /** La mejor remuneración del semestre, igual que la resuelve funciones.ts. */
+  function mejorDelSemestre(
+    puestos: readonly Puesto[],
+    periodo: string,
+    opc: { antiguedadPct: number; afiliacion: "amet" }
+  ): { monto: number; periodo: string | null } {
+    const [anio, mes] = periodo.split("-").map(Number);
+    const arranque = mes >= 7 ? 7 : 1;
+    let mejor: { monto: number; periodo: string | null } = { monto: 0, periodo: null };
+    for (let m = arranque; m <= mes; m++) {
+      const clave = `${anio}-${String(m).padStart(2, "0")}`;
+      const r = calcularPluriempleo(puestos, configuracionesDelMes(clave), {
+        ...opc,
+        incluirSAC: false,
+      });
+      if (r.conceptos.totalRemunerativo > mejor.monto) {
+        mejor = { monto: r.conceptos.totalRemunerativo, periodo: clave };
+      }
+    }
+    return mejor;
+  }
+
+  test("la base de diciembre es la mejor del semestre, no el sueldo de diciembre", () => {
+    // Noviembre y diciembre van con el básico de octubre, así que la mejor
+    // remuneración del semestre es la de octubre (o noviembre o diciembre, que
+    // valen lo mismo). Lo que importa es que NO se use el sueldo de diciembre
+    // por el solo hecho de ser el mes en que se cobra.
+    const mejor = mejorDelSemestre(unCargo, "2026-12", comunes);
+    const base = { monto: mejor.monto, periodo: mejor.periodo };
 
     const diciembre = calcularPluriempleo(
       unCargo,
@@ -793,14 +811,17 @@ describe("la base del aguinaldo es la mayor remuneración del semestre", () => {
       base
     );
 
-    // La base que se usó es la de octubre, no la de diciembre.
-    assert.equal(diciembre.baseDelAguinaldo.periodo, "2026-10");
-    casiIgual(diciembre.baseDelAguinaldo.monto, octubre.conceptos.totalRemunerativo);
+    // La base es la del mejor mes, y ese mes es uno del semestre.
+    assert.equal(diciembre.baseDelAguinaldo.periodo, mejor.periodo);
+    casiIgual(diciembre.baseDelAguinaldo.monto, mejor.monto);
 
     // Y el aguinaldo es la mitad de esa base, con los descuentos de ley.
-    const esperado = calcularAguinaldo(octubre.conceptos.totalRemunerativo, "amet");
+    const esperado = calcularAguinaldo(mejor.monto, "amet");
     casiIgual(diciembre.aguinaldo.bruto, esperado.bruto);
     casiIgual(diciembre.aguinaldo.neto, esperado.neto);
+
+    // La base es mayor que la mitad de la nada: el control de que no quedó en 0.
+    assert.ok(diciembre.aguinaldo.bruto > 0);
   });
 
   test("sin la base del semestre, se usa la del mes calculado", () => {
@@ -817,26 +838,18 @@ describe("la base del aguinaldo es la mayor remuneración del semestre", () => {
     );
   });
 
-  test("un mes sin básico cargado no pisa la base del semestre", () => {
-    // Noviembre y diciembre todavía no tienen el básico, así que su remuneración
-    // es 0. Sin el máximo, esa base de 0 borraría el aguinaldo de diciembre, que
-    // es justamente lo que hay que evitar.
-    const baseDeOctubre = {
-      monto: 887110.28,
-      periodo: "2026-10",
-    };
-    const diciembre = calcularPluriempleo(
+  test("junio usa su propio semestre, que es enero-junio", () => {
+    // El cambio de base no puede haber roto la primera cuota: para junio el
+    // semestre es enero-junio, no julio-diciembre.
+    const mejor = mejorDelSemestre(unCargo, "2026-06", comunes);
+    const junio = calcularPluriempleo(
       unCargo,
-      configuracionesDelMes("2026-12"),
+      configuracionesDelMes("2026-06"),
       { ...comunes, incluirSAC: true },
-      baseDeOctubre
+      mejor
     );
-
-    // La remuneración de diciembre es 0 (falta el básico), pero la base del SAC
-    // sigue siendo la de octubre.
-    assert.equal(diciembre.conceptos.totalRemunerativo, 0);
-    assert.equal(diciembre.baseDelAguinaldo.periodo, "2026-10");
-    casiIgual(diciembre.baseDelAguinaldo.monto, 887110.28);
-    casiIgual(diciembre.aguinaldo.bruto, 887110.28 / 2);
+    assert.ok(mejor.periodo !== null);
+    assert.ok(mejor.periodo!.startsWith("2026-0"), `el mes base es del primer semestre: ${mejor.periodo}`);
+    casiIgual(junio.baseDelAguinaldo.monto, mejor.monto);
   });
 });

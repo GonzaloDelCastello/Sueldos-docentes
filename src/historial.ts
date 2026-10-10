@@ -34,11 +34,6 @@ export interface ConfiguracionBase {
     sumaFijaPorAgente?: number;
     /** Bono de fin de año, pago único POR AGENTE. */
     bonoFinDeAnioPorAgente?: number;
-    /**
-     * Por qué el mes no tiene todavía los valores definitivos. Se muestra en la
-     * interfaz como supuesto visible, en lugar de quedar escondido en el código.
-     */
-    motivoPendiente?: string;
 }
 // Configuración Salarial Inicial, primaria y media
 export interface ConfiguracionSalarial1 extends ConfiguracionBase {
@@ -341,13 +336,11 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
 },
 {
     fecha: "2026-11",
-    // Sin tramo de aumento informado para noviembre. La pauta del trimestre
-    // agrega una suma fija, que no es un aumento del básico.
-    descripcion: "Noviembre 2026 (suma fija de la pauta del último trimestre)",
-    // PENDIENTE: falta el básico de noviembre. No se completa aplicándole un
-    // porcentaje al de octubre: se carga cuando esté el recibo del mes. Mientras
-    // tanto el cálculo muestra el básico en cero, y la interfaz lo avisa.
-    basicoCargo_Hora: 0,
+    // Noviembre no tiene tramo de aumento: va con el MISMO básico y la MISMA
+    // estructura salarial que octubre. Lo único que agrega es la suma fija de la
+    // pauta del último trimestre, que no es un aumento del básico.
+    descripcion: "Noviembre 2026 (igual que octubre, más la suma fija)",
+    basicoCargo_Hora: 20047.69,
     // Se mantiene el reparto 145/92 de septiembre.
     porcentajes: {
         remunerativo: 1.45, 
@@ -357,18 +350,14 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
     fonid: 1913.3333,
     sumaNoRemunerativa: 4667.48333,
     bonoExtraordinario: 0,
-    sumaFijaPorAgente: PAUTA_TRIMESTRE_2026.sumaFijaMensual,
-    motivoPendiente:
-        "Falta el básico de noviembre: se carga con el recibo del mes. La suma " +
-        "fija de $100.000 sí está cargada, porque el monto salió del anuncio."
+    sumaFijaPorAgente: PAUTA_TRIMESTRE_2026.sumaFijaMensual
 },
 {
     fecha: "2026-12",
-    // Sin tramo de aumento informado para diciembre. Diciembre suma el bono de
-    // fin de año, que se paga aparte del haber del mes.
-    descripcion: "Diciembre 2026 (bono de fin de año y suma fija)",
-    // PENDIENTE: falta el básico de diciembre, igual que el de noviembre.
-    basicoCargo_Hora: 0,
+    // Diciembre tampoco tiene tramo: mismo básico y misma estructura que octubre.
+    // Suma el bono de fin de año, que se paga aparte del haber del mes.
+    descripcion: "Diciembre 2026 (igual que octubre, más el bono y la suma fija)",
+    basicoCargo_Hora: 20047.69,
     porcentajes: {
         remunerativo: 1.45, 
         noRemunerativo: 0.92, 
@@ -378,10 +367,7 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
     sumaNoRemunerativa: 4667.48333,
     bonoExtraordinario: 0,
     sumaFijaPorAgente: PAUTA_TRIMESTRE_2026.sumaFijaMensual,
-    bonoFinDeAnioPorAgente: PAUTA_TRIMESTRE_2026.bonoFinDeAnio,
-    motivoPendiente:
-        "Falta el básico de diciembre: se carga con el recibo del mes. El bono " +
-        "de $500.000 y la suma fija sí están cargados."
+    bonoFinDeAnioPorAgente: PAUTA_TRIMESTRE_2026.bonoFinDeAnio
 }
 ];
 
@@ -546,12 +532,14 @@ export const HISTORIAL_IFDC: ConfiguracionSalarial2[] = [
 },
 {
     fecha: "2026-11",
-    // La pauta del trimestre no menciona al sector docente ni al Incentivo
-    // Docente Provincial: la suma fija alcanza a "todos los empleados públicos
-    // provinciales". Se aplica también acá como supuesto, y la interfaz lo avisa.
-    descripcion: "Noviembre 2026 (suma fija de la pauta del último trimestre)",
-    // PENDIENTE: falta el básico de noviembre del IFDC.
-    basicoCargo_Hora: 0,
+    // Igual que octubre: mismo básico y misma estructura. Lo único que agrega es
+    // la suma fija de la pauta del último trimestre.
+    //
+    // OJO: la pauta no menciona al sector docente ni al Incentivo Docente
+    // Provincial; alcanza a "todos los empleados públicos provinciales". Se
+    // aplica también acá como supuesto, y la interfaz lo avisa.
+    descripcion: "Noviembre 2026 (igual que octubre, más la suma fija)",
+    basicoCargo_Hora: 728050.34,
     porcentajes: {
         remunerativo: 0.70, 
         noRemunerativo: 0.25,  
@@ -560,14 +548,13 @@ export const HISTORIAL_IFDC: ConfiguracionSalarial2[] = [
     fonid: 57400, 
     sumaNoRemunerativa: 157894.07, 
     bonoExtraordinario: 0,
-    sumaFijaPorAgente: PAUTA_TRIMESTRE_2026.sumaFijaMensual,
-    motivoPendiente: "Falta el básico de noviembre del IFDC: se carga con el recibo del mes."
+    sumaFijaPorAgente: PAUTA_TRIMESTRE_2026.sumaFijaMensual
 },
 {
     fecha: "2026-12",
-    descripcion: "Diciembre 2026 (bono de fin de año y suma fija)",
-    // PENDIENTE: falta el básico de diciembre del IFDC.
-    basicoCargo_Hora: 0,
+    // Igual que octubre, más el bono de fin de año y la suma fija.
+    descripcion: "Diciembre 2026 (igual que octubre, más el bono y la suma fija)",
+    basicoCargo_Hora: 728050.34,
     porcentajes: {
         remunerativo: 0.70, 
         noRemunerativo: 0.25,  
@@ -577,8 +564,7 @@ export const HISTORIAL_IFDC: ConfiguracionSalarial2[] = [
     sumaNoRemunerativa: 157894.07, 
     bonoExtraordinario: 0,
     sumaFijaPorAgente: PAUTA_TRIMESTRE_2026.sumaFijaMensual,
-    bonoFinDeAnioPorAgente: PAUTA_TRIMESTRE_2026.bonoFinDeAnio,
-    motivoPendiente: "Falta el básico de diciembre del IFDC: se carga con el recibo del mes."
+    bonoFinDeAnioPorAgente: PAUTA_TRIMESTRE_2026.bonoFinDeAnio
 }
 
 ];
@@ -629,7 +615,11 @@ export const HISTORIAL_BASICO: Record<string, MesBasico> = {
     "2026-07": { valorHora: 17734.50 },
     "2026-08": { valorHora: 18505.56 },
     "2026-09": { valorHora: 19276.62 },
-    "2026-10": { valorHora: 20047.69 }
+    "2026-10": { valorHora: 20047.69 },
+    // Noviembre y diciembre van con el mismo básico que octubre: no hay tramo de
+    // aumento en esos meses.
+    "2026-11": { valorHora: 20047.69 },
+    "2026-12": { valorHora: 20047.69 }
 };
 
 // ---------------------------------------------------------------------------
@@ -683,4 +673,9 @@ export const SEGURO_OBLIGATORIO_POR_MES: Readonly<Record<string, number>> = {
     "2026-08": 5372.81,
     "2026-09": 5596.68,
     "2026-10": 5820.55,
+    // Noviembre y diciembre no tienen tramo de aumento, así que sigue valiendo el
+    // de octubre. Se ponen explícitos para que no quede como una deducción
+    // implícita del que "sigue valiendo hasta el próximo aumento".
+    "2026-11": 5820.55,
+    "2026-12": 5820.55,
 };

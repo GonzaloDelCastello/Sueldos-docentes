@@ -780,19 +780,19 @@ export function calcularPluriempleo(
     configuraciones.seguros
   );
 
-  // La base del SAC es la mayor remuneración del semestre. Nunca puede ser menor
-  // que la del mes calculado si el mes es el mejor, y si el mes calculado tiene
-  // una remuneración mayor que la que trajo quien llama, se usa la mayor.
-  //
   // Si el mes calculado todavía no tiene el básico cargado, su remuneración es 0
-  // y no puede pisar la base que vino del semestre: por eso el máximo, y no el
-  // mes calculado a secas.
+  // y no puede pisar la base que vino del semestre: por eso el máximo.
+  //
+  // El período se decide comparando, no por igualdad de montos: si el mes
+  // calculado empata con el mejor del semestre (pasa con noviembre y diciembre,
+  // que van con el básico de octubre), el que ganó la comparación es el del
+  // semestre, que es el que se recorrió primero.
   const baseDelSemestre = baseDelAguinaldo?.monto ?? 0;
   const montoBase = Math.max(baseDelSemestre, conceptos.totalRemunerativo);
-  const periodoBase =
-    montoBase === conceptos.totalRemunerativo
-      ? configuraciones.basica.fecha
-      : (baseDelAguinaldo?.periodo ?? null);
+  const ganaElMesCalculado = conceptos.totalRemunerativo > baseDelSemestre;
+  const periodoBase = ganaElMesCalculado
+    ? configuraciones.basica.fecha
+    : (baseDelAguinaldo?.periodo ?? configuraciones.basica.fecha);
 
   const aguinaldo = calcularAguinaldo(montoBase, opciones.afiliacion);
 
