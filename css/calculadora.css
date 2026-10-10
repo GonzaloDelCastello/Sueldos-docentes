@@ -77,15 +77,6 @@ input {
 }
 
 
-.resumen-total {
-    background-color: rgba(255, 255, 255, 0.15);
-    /* Transparencia blanca */
-    padding: 0.8rem 1.5rem;
-    border-radius: 20px;
-    font-size: 1.4rem;
-    display: inline-block;
-}
-
 /* 2. Acordeones (Details) */
 details.desplegable {
     background-color: var(--blanco);
@@ -698,4 +689,115 @@ details.desplegable[open] summary::after {
     #btnCalcularSueldo {
         margin: 0;
     }
+}
+
+
+/* ==========================================================================
+   Resultados: total protagonista y fichas por tipo de concepto
+   --------------------------------------------------------------------------
+   El total de bolsillo va primero y en grande, porque es lo que se viene a
+   ver. Debajo, los cuatro tipos de concepto en fichas plegables, cada una con
+   su subtotal y su porcentaje a la vista: así se entiende el armado del
+   recibo sin necesidad de abrir nada.
+
+   Los porcentajes los calcula dist/funciones.js y los escribe en los
+   elementos pct*. Las dos bases son:
+
+     composición del neto:  remu + no remu − descuentos = neto del mes  → 100%
+     composición del bruto: remu + no remu              = bruto del mes → 100%
+
+   El aguinaldo va aparte: es el sueldo anual complementario y no integra el
+   sueldo del mes, así que no entra en ninguna de las dos composiciones.
+   ========================================================================== */
+
+.resultado-total {
+    background-color: var(--blanco);
+    border: 1px solid var(--primarioClaro);
+    border-top: 4px solid var(--primario);
+    border-radius: 8px;
+    padding: 2rem 1.5rem 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.resultado-total__rotulo {
+    display: block;
+    font-size: 1.2rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--secundarioOscuro);
+    font-weight: bold;
+}
+
+.resultado-total__monto {
+    display: block;
+    /* clamp: se achica en pantallas chicas para que el símbolo y el número no
+       se separen en dos líneas. */
+    font-size: clamp(2.6rem, 9vw, 4rem);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin: 0.6rem 0 0.4rem;
+    color: var(--primario);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.resultado-total .cantidad-puestos {
+    font-size: 1.3rem;
+    color: var(--secundarioOscuro);
+}
+
+.resultado-total__composicion {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    color: #6b7280;
+    max-width: 42rem;
+    margin: 1rem auto 0;
+    text-align: center;
+}
+
+.resultado-total__lineas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem 2rem;
+    margin-top: 1.4rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--terciario);
+    font-size: 1.3rem;
+    color: var(--secundarioOscuro);
+}
+
+.resultado-total__lineas strong {
+    font-variant-numeric: tabular-nums;
+    color: var(--negro);
+}
+
+/* --- Las fichas por tipo de concepto --- */
+
+.ficha-concepto__resumen {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.2rem 1rem;
+    padding: 0 1.5rem 1.2rem;
+    margin: 0;
+}
+
+.ficha-concepto__resumen strong {
+    font-size: 1.5rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.ficha-concepto__pct {
+    font-size: 1.1rem;
+    color: #6b7280;
+}
+
+/* El porcentaje sobre el bruto va en su propio renglón, más claro, porque es
+   información secundaria. Se escribe desde el motor con un salto de línea. */
+.ficha-concepto__pct--bruto {
+    color: #9aa0a6;
 }

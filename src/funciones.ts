@@ -347,7 +347,65 @@ function mostrarResultados(resultado: ResultadoPluriempleo, incluirSAC: boolean)
   }
 
   renderizarDesglose(resultado);
+  mostrarPorcentajes(resultado);
   dibujarGrafico(resultado, incluirSAC);
+}
+
+// ---------------------------------------------------------------------------
+// Porcentajes por tipo de concepto
+// ---------------------------------------------------------------------------
+
+/** Formatea un porcentaje al estilo argentino, con un decimal. */
+function aPorcentaje(valor: number): string {
+  return valor.toLocaleString("es-AR", { maximumFractionDigits: 1 }) + "%";
+}
+
+/**
+ * Escribe, debajo del subtotal de cada tipo de concepto, qué porción representa
+ * sobre el neto del mes y sobre el bruto del mes.
+ *
+ * El neto del mes es el bruto menos los descuentos. No se usa el total de
+ * bolsillo porque ese total incluye el aguinaldo, y el aguinaldo no integra el
+ * sueldo del mes.
+ */
+function mostrarPorcentajes(resultado: ResultadoPluriempleo): void {
+  const { conceptos, descuentos, aguinaldo } = resultado;
+
+  const bruto = conceptos.totalBruto;
+  const netoDelMes = bruto - descuentos.total;
+  const aguinaldoNeto = aguinaldo.neto;
+
+  /** El texto de una ficha: una línea por cada base. Vacío si no se puede. */
+  function texto(subtotal: number): string {
+    if (subtotal <= 0) return "";
+    const lineas: string[] = [];
+    if (netoDelMes > 0) {
+      lineas.push(`${aPorcentaje((subtotal / netoDelMes) * 100)} del neto`);
+    }
+    if (bruto > 0) {
+      const sobreBruto = (subtotal / bruto) * 100;
+      // Una parte no puede ser más que el todo: si pasara, mejor no mostrarlo.
+      if (sobreBruto <= 100) lineas.push(`${aPorcentaje(sobreBruto)} del bruto`);
+    }
+    return lineas.join("<br>");
+  }
+
+  function escribir(id: string, contenido: string): void {
+    const elemento = document.getElementById(id);
+    if (elemento) elemento.innerHTML = contenido;
+  }
+
+  escribir("pctRemunerativos", texto(conceptos.totalRemunerativo));
+  escribir("pctNoRemunerativos", texto(conceptos.totalNoRemunerativo));
+  escribir("pctDescuentos", texto(descuentos.total));
+
+  // El aguinaldo sólo sobre el neto: no forma parte del bruto del mes.
+  escribir(
+    "pctAguinaldo",
+    aguinaldoNeto > 0 && netoDelMes > 0
+      ? `${aPorcentaje((aguinaldoNeto / netoDelMes) * 100)} del neto`
+      : ""
+  );
 }
 
 /** Tabla con lo que aporta cada cargo al total. */

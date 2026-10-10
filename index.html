@@ -155,13 +155,11 @@
           <p>¿Te sirvió la herramienta? Podés ayudar a mantenerla activa:</p>
 
 
-
           <a href="https://mpago.la/2dPdKPu" target="_blank" class="boton-mp">
 
             Aporte económico al proyecto ($1.000)
 
           </a>
-
 
 
           <p class="alias-texto mt-2">
@@ -175,7 +173,6 @@
         </div>
 
       </div>
-
 
 
     </details>
@@ -225,7 +222,6 @@
             </div>
 
           </details>
-
 
 
           <details class="acordeon-info">
@@ -337,26 +333,23 @@
 
           <!-- Fin del div del form -->
 
-          <div id="resultados" style="display:none;">
+                    <div id="resultados" style="display:none;">
 
-            <div class="tarjeta-total">
-
-              <h3>Total de Bolsillo</h3>
-
-              <p class="precio-gigante" id="totalBolsillo">$0.00</p>
-
+            <!-- Total de bolsillo: lo primero que se quiere ver -->
+            <div class="resultado-total">
+              <span class="resultado-total__rotulo">Total de bolsillo</span>
+              <strong class="resultado-total__monto" id="totalBolsillo">$0.00</strong>
               <p class="cantidad-puestos" id="cantidadPuestos"></p>
 
-              <div class="resumen-total">
+              <p class="resultado-total__composicion">
+                El neto del mes es el bruto menos los descuentos. El aguinaldo es un pago
+                aparte y no integra ese neto: por eso el total de arriba puede ser mayor.
+              </p>
 
+              <div class="resultado-total__lineas">
                 <span>Bruto: <strong id="totalBruto">$0.00</strong></span>
-
-                <span> | </span>
-
                 <span>Descuentos: <strong id="totalDescuentos">$0.00</strong></span>
-
               </div>
-
             </div>
 
             <details class="desplegable" open>
@@ -391,274 +384,159 @@
 
             </details>
 
-            <details class="desplegable">
+            <details class="desplegable ficha-concepto">
 
               <summary>🟢 Conceptos Remunerativos</summary>
 
+              <p class="ficha-concepto__resumen">
+                <strong id="totalCAportes">$0.00</strong>
+                <span class="ficha-concepto__pct" id="pctRemunerativos"></span>
+              </p>
+
               <table class="tabla-detalle">
 
-                <tr id="filaSueldoBasico" class="fila-resultado">
-
-                  <td>Sueldo Básico</td>
-
-                  <td id="resultadoSueldo">$0.00</td>
-
-                </tr>
-
-                <tr id="filaZona" class="fila-resultado">
-
-                  <td>Pago por Zona</td>
-
-                  <td id="pagoZona">$0.00</td>
-
-                </tr>
-
-                <tr id="filaAntiguedad" class="fila-resultado">
-
-                  <td>Pago por Antigüedad</td>
-
-                  <td id="pagoAntiguedad">$0.00</td>
-
-                </tr>
-
-                <tr id="filaComplementoRem" class="fila-resultado">
-
-                  <td>Complemento Remunerativo</td>
-
-                  <td id="complementoRemunerativo">$0.00</td>
-
-                </tr>
-
-                <tr id="filaAdicionalCargo" class="fila-resultado">
-
-                  <td>Adicional Por Cargo</td>
-
-                  <td id="adicionalPorCargo">$0.00</td>
-
-                </tr>
-
-                <tr id="filaAdicionalPorDedicacion" class="fila-resultado">
-
-                  <td>Adicional Por Dedicación (nivel superior)</td>
-
-                  <td id="adicionalPorDedicacion">$0.00</td>
-
-                </tr>
-
-                <tr id="filaEnseñanzaEnAula" class="fila-resultado">
-
-                  <td>Enseñanza en aula (presentismo)</td>
-
-                  <td id="enseñanzaEnAula">$0.00</td>
-
-                </tr>
-
-                <tr class="fila-subtotal">
-
-                  <th>Total Remunerativo</th>
-
-                  <th id="totalCAportes">$0.00</th>
-
-                </tr>
+                  <tr id="filaSueldoBasico" class="fila-resultado">
+                    <td>Sueldo Básico</td>
+                    <td id="resultadoSueldo">$0.00</td>
+                  </tr>
+                  <tr id="filaZona" class="fila-resultado">
+                    <td>Pago por Zona</td>
+                    <td id="pagoZona">$0.00</td>
+                  </tr>
+                  <tr id="filaAntiguedad" class="fila-resultado">
+                    <td>Pago por Antigüedad</td>
+                    <td id="pagoAntiguedad">$0.00</td>
+                  </tr>
+                  <tr id="filaComplementoRem" class="fila-resultado">
+                    <td>Complemento Remunerativo</td>
+                    <td id="complementoRemunerativo">$0.00</td>
+                  </tr>
+                  <tr id="filaAdicionalCargo" class="fila-resultado">
+                    <td>Adicional por Cargo</td>
+                    <td id="adicionalPorCargo">$0.00</td>
+                  </tr>
+                  <tr id="filaAdicionalPorDedicacion" class="fila-resultado">
+                    <td>Adicional por Dedicación</td>
+                    <td id="adicionalPorDedicacion">$0.00</td>
+                  </tr>
+                  <tr id="filaEnseñanzaEnAula" class="fila-resultado">
+                    <td>Enseñanza en Aula</td>
+                    <td id="enseñanzaEnAula">$0.00</td>
+                  </tr>
 
               </table>
 
             </details>
 
-            <details class="desplegable">
+            <details class="desplegable ficha-concepto">
 
               <summary>🔵 Conceptos No Remunerativos</summary>
 
+              <p class="ficha-concepto__resumen">
+                <strong id="totalSAportes">$0.00</strong>
+                <span class="ficha-concepto__pct" id="pctNoRemunerativos"></span>
+              </p>
+
               <table class="tabla-detalle">
 
-                <tr id="filaComplementoNoRem" class="fila-resultado">
-
-                  <td>Complemento No Remunerativo</td>
-
-                  <td id="complementoNoRemunerativo">$0.00</td>
-
-                </tr>
-
-                <tr id="filaSumaNoRem" class="fila-resultado">
-
-                  <td>Suma No Remunerativa</td>
-
-                  <td id="sumaNoRemunerativa">$0.00</td>
-
-                </tr>
-
-                <tr id="filaIncentivoDocente" class="fila-resultado">
-
-                  <td>Incentivo Docente</td>
-
-                  <td id="incentivoDocente">$0.00</td>
-
-                </tr>
-
-                <tr id="filaBonoExtraordinario" class="fila-resultado">
-
-                  <td>Bono Extraordinario por única vez</td>
-
-                  <td id="bonoExtraordinario">$0.00</td>
-
-                </tr>
-
-                <tr class="fila-subtotal">
-
-                  <th>Total No Remunerativo</th>
-
-                  <th id="totalSAportes">$0.00</th>
-
-                </tr>
+                  <tr id="filaComplementoNoRem" class="fila-resultado">
+                    <td>Complemento No Remunerativo</td>
+                    <td id="complementoNoRemunerativo">$0.00</td>
+                  </tr>
+                  <tr id="filaSumaNoRem" class="fila-resultado">
+                    <td>Suma No Remunerativa</td>
+                    <td id="sumaNoRemunerativa">$0.00</td>
+                  </tr>
+                  <tr id="filaIncentivoDocente" class="fila-resultado">
+                    <td>Incentivo Docente</td>
+                    <td id="incentivoDocente">$0.00</td>
+                  </tr>
+                  <tr id="filaBonoExtraordinario" class="fila-resultado">
+                    <td>Bono Extraordinario</td>
+                    <td id="bonoExtraordinario">$0.00</td>
+                  </tr>
 
               </table>
 
             </details>
 
-            <details class="desplegable">
+            <details class="desplegable ficha-concepto">
 
-              <summary>🔴 Descuentos </summary>
+              <summary>🔴 Descuentos</summary>
+
+              <p class="ficha-concepto__resumen">
+                <strong id="totalDescuentosTexto">$0.00</strong>
+                <span class="ficha-concepto__pct" id="pctDescuentos"></span>
+              </p>
 
               <table class="tabla-detalle">
 
-                <tr class="fila-resultado">
-
-                  <td>Jubilación (11%)</td>
-
-                  <td id="aporteJubilatorio">$0.00</td>
-
-                </tr>
-
-                <tr class="fila-resultado">
-
-                  <td>Jubilación Reg. Esp. (2%)</td>
-
-                  <td id="aporteJubilatorioEsp">$0.00</td>
-
-                </tr>
-
-                <tr class="fila-resultado">
-
-                  <td>Obra Social (6%)</td>
-
-                  <td id="obraSocial">$0.00</td>
-
-                </tr>
-
-                <tr id="filaDescuentoSindical" class="fila-resultado">
-
-                  <td>Afiliación Sindical</td>
-
-                  <td id="descuentoSindical">$0.00</td>
-
-                </tr>
-
-                <tr class="fila-resultado">
-
-                  <td>Seguro Obligatorio</td>
-
-                  <td id="seguroObligatorio">$0.00</td>
-
-                </tr>
-
-                <tr class="fila-resultado">
-
-                  <td>Seguro Social</td>
-
-                  <td id="seguroSocial">$0.00</td>
-
-                </tr>
-
-                <tr class="fila-resultado">
-
-                  <td>Seguro Mutual</td>
-
-                  <td id="seguroMutual">$0.00</td>
-
-                </tr>
-
-                <tr class="fila-subtotal">
-
-                  <th>Total Descuentos</th>
-
-                  <th id="totalDescuentosTexto">$0.00</th>
-
-                </tr>
+                  <tr id="filaJubilacion" class="fila-resultado">
+                    <td>Jubilación (11%)</td>
+                    <td id="aporteJubilatorio">$0.00</td>
+                  </tr>
+                  <tr id="filaJubilacionEsp" class="fila-resultado">
+                    <td>Jubilación Reg. Esp.</td>
+                    <td id="aporteJubilatorioEsp">$0.00</td>
+                  </tr>
+                  <tr id="filaObraSocial" class="fila-resultado">
+                    <td>Obra Social (6%)</td>
+                    <td id="obraSocial">$0.00</td>
+                  </tr>
+                  <tr id="filaDescuentoSindical" class="fila-resultado">
+                    <td>Afiliación Sindical</td>
+                    <td id="descuentoSindical">$0.00</td>
+                  </tr>
+                  <tr id="filaSeguroObligatorio" class="fila-resultado">
+                    <td>Seguro Obligatorio</td>
+                    <td id="seguroObligatorio">$0.00</td>
+                  </tr>
+                  <tr id="filaSeguroSocial" class="fila-resultado">
+                    <td>Seguro Social</td>
+                    <td id="seguroSocial">$0.00</td>
+                  </tr>
+                  <tr id="filaSeguroMutual" class="fila-resultado">
+                    <td>Seguro Mutual</td>
+                    <td id="seguroMutual">$0.00</td>
+                  </tr>
 
               </table>
 
             </details>
 
-            <details class="desplegable">
+            <details class="desplegable ficha-concepto">
 
-              <summary>🎄 Aguinaldo (SAC) Estimado</summary>
+              <summary>🟡 Aguinaldo (SAC)</summary>
+
+              <p class="ficha-concepto__resumen">
+                <strong id="sacNeto">$0.00</strong>
+                <span class="ficha-concepto__pct" id="pctAguinaldo"></span>
+              </p>
 
               <table class="tabla-detalle">
 
-                <tr class="fila-resultado">
-
-                  <td>SAC Bruto (50% Remunerativo)</td>
-
-                  <td id="sacBruto">$0.00</td>
-
-                </tr>
-
-                <tr class="fila-resultado" style="color: #dc3545;">
-
-                  <td>Descuentos de Ley (Jub. + Obra Soc.)</td>
-
-                  <td id="sacDescuentos">-$0.00</td>
-
-                </tr>
-
-                <tr class="fila-subtotal" style="background-color: #d4edda; color: #155724;">
-
-                  <th>SAC de Bolsillo (A Cobrar)</th>
-
-                  <th id="sacNeto">$0.00</th>
-
-                </tr>
-
-                <tr>
-
-                  <td colspan="2" style="font-size: 0.85rem; color: #666; padding: 8px; font-style: italic;">
-
-                    * No incluye sumas fijas (FONID/Conectividad) ni descuentos de seguros fijos.
-
-                  </td>
-
-                </tr>
+                  <tr id="filaSacBruto" class="fila-resultado">
+                    <td>SAC Bruto</td>
+                    <td id="sacBruto">$0.00</td>
+                  </tr>
+                  <tr id="filaSacDescuentos" class="fila-resultado">
+                    <td>Descuentos de Ley</td>
+                    <td id="sacDescuentos">$0.00</td>
+                  </tr>
 
               </table>
 
             </details>
 
-          </div>
+            <button type="button" class="boton" id="botonGraficos">
+              📊 Ver gráfico de proporciones sobre el sueldo bruto.
+            </button>
 
-          <div class="contenedorGraficos" id="botonGraficos">
+            <div id="contenedorGrafico">
 
-            <details style="margin: 20px auto; text-align: center;">
+              <canvas id="miGrafico"></canvas>
 
-
-
-              <summary
-                style="cursor: pointer; padding: 12px; background-color: #e9ecef; border-radius: 8px; font-weight: bold; list-style: none; display: inline-block;">
-
-                📊 Ver gráfico de proporciones sobre el sueldo bruto.
-
-              </summary>
-
-
-
-              <div style="max-width: 480px; margin: 20px auto;">
-
-                <canvas id="miGrafico"></canvas>
-
-              </div>
-
-
-
-            </details>
+            </div>
 
           </div>
 
@@ -734,7 +612,6 @@
   <script type="module" src="dist/main.js"></script>
 
 </body>
-
 
 
 </html>

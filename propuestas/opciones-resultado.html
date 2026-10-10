@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Prototipo: dos formas de mostrar el resultado</title>
+<style>
+  /* ===== Paleta de ATEBA, para que el prototipo sea fiel ===== */
+  :root {
+    --primario: #a33b32;
+    --primario-oscuro: #7d2c25;
+    --primario-claro: #f9f7f2;
+    --arena: #d9c5b2;
+    --tinta: #212529;
+    --gris: #6b7280;
+    --linea: #e6e2dc;
+    --blanco: #ffffff;
+    --amarillo: #fff9e8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f2f0ed;
+    color: var(--tinta);
+    padding: 20px;
+  }
+
+  .aviso {
+    max-width: 780px;
+    margin: 0 auto 22px;
+    padding: 12px 16px;
+    background: var(--blanco);
+    border-left: 4px solid var(--primario);
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .aviso strong { color: var(--primario); }
+
+  .escenario {
+    display: flex;
+    justify-content: center;
+    gap: 26px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .marco {
+    width: 372px;
+    background: #e8e5e1;
+    border-radius: 12px;
+    padding: 10px;
+  }
+
+  .marco > h2 {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gris);
+    margin-bottom: 8px;
+    padding-left: 2px;
+  }
+
+  .pantalla {
+    background: var(--primario-claro);
+    border-radius: 8px;
+    padding: 16px;
+    min-height: 640px;
+  }
+
+  /* ==========================================================================
+     OPCIÓN A · Total protagonista + fichas con subtotal
+     ========================================================================== */
+
+  .a__total {
+    text-align: center;
+    padding: 22px 12px 18px;
+  }
+  .a__rotulo {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gris);
+    font-weight: bold;
+  }
+  .a__monto {
+    display: block;
+    font-family: "Courier New", monospace;
+    /* clamp: se achica en pantallas chicas para que el símbolo y el número no
+       se separen en dos líneas. */
+    font-size: clamp(26px, 9vw, 40px);
+    font-weight: bold;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin: 6px 0 4px;
+    color: var(--primario);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .a__detalle {
+    font-size: 12px;
+    color: var(--gris);
+  }
+
+  /* Fichas */
+  .fichas { display: grid; gap: 10px; margin-top: 18px; }
+
+  .ficha {
+    background: var(--blanco);
+    border: 1px solid var(--linea);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .ficha > summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 52px;
+    padding: 12px 14px;
+    cursor: pointer;
+    list-style: none;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .ficha > summary::-webkit-details-marker { display: none; }
+  .ficha__punto {
+    width: 9px; height: 9px; border-radius: 50%;
+    flex: 0 0 auto;
+  }
+  .ficha__nombre { flex: 1; }
+  /* El importe y su porcentaje, apilados a la derecha de la ficha. */
+  .ficha__montos {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1px;
+    flex: 0 0 auto;
+  }
+  .ficha__sub {
+    font-family: "Courier New", monospace;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .ficha__pct {
+    font-size: 11px;
+    color: var(--gris);
+    white-space: nowrap;
+    /* En sans y no en monoespaciada: es un texto, no una columna de números
+       que tenga que alinearse con la de arriba. */
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  /* El porcentaje sobre el bruto es información secundaria: va más claro. */
+  .ficha__pct--bruto {
+    color: #9aa0a6;
+  }
+  .ficha__pct:empty {
+    display: none;
+  }
+  .ficha__flecha {
+    flex: 0 0 auto;
+    width: 9px; height: 9px;
+    border-right: 2px solid var(--gris);
+    border-bottom: 2px solid var(--gris);
+    transform: rotate(45deg);
+    transition: transform 0.15s;
+  }
+  .ficha[open] .ficha__flecha { transform: rotate(-135deg); }
+  .ficha[open] > summary { border-bottom: 1px solid var(--linea); }
+
+  .ficha__cuerpo { padding: 4px 14px 10px; }
+
+  /* Filas de conceptos, en las dos opciones */
+  .fila {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--linea);
+    font-size: 13.5px;
+  }
+  .fila:last-child { border-bottom: none; }
+  .fila__rotulo { color: var(--gris); }
+  .fila__monto {
+    font-family: "Courier New", monospace;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    text-align: right;
+  }
+  .fila--total {
+    border-top: 2px solid var(--tinta);
+    border-bottom: none;
+    margin-top: 4px;
+    font-weight: bold;
+  }
+  .ficha .fila--total { border-top: 1px solid var(--linea); }
+
+  .color-rem { background: #3f9d63; }
+  .color-norem { background: #3f7fd0; }
+  .color-desc { background: #c0392b; }
+  .color-sac { background: #d9a13b; }
+
+  .baja { color: var(--primario-oscuro); }
+
+  /* ==========================================================================
+     OPCIÓN B · Recibo minimalista
+     ========================================================================== */
+
+  .b__recibo {
+    background: var(--blanco);
+    border: 1px solid var(--linea);
+    border-radius: 4px;
+    padding: 18px 16px;
+  }
+
+  .b__encabezado {
+    border-bottom: 2px solid var(--tinta);
+    padding-bottom: 10px;
+    margin-bottom: 4px;
+  }
+  .b__titulo {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gris);
+  }
+  .b__periodo {
+    font-size: 15px;
+    font-weight: bold;
+    margin-top: 2px;
+  }
+
+  .b__seccion {
+    margin-top: 18px;
+  }
+  .b__seccion-titulo {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gris);
+    font-weight: bold;
+    margin-bottom: 2px;
+  }
+
+  .b__neto {
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 2px solid var(--tinta);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .b__neto-rotulo {
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: bold;
+    /* Que no se parta en dos líneas: se achica la letra antes que partir. */
+    white-space: nowrap;
+  }
+  .b__neto-monto {
+    font-family: "Courier New", monospace;
+    font-size: clamp(18px, 6.5vw, 26px);
+    font-weight: bold;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .b__nota {
+    margin-top: 10px;
+    font-size: 11.5px;
+    color: var(--gris);
+    line-height: 1.5;
+  }
+
+  /* ===== Controles del prototipo ===== */
+  .panel {
+    max-width: 780px;
+    margin: 0 auto 18px;
+    padding: 12px 16px;
+    background: var(--blanco);
+    border-radius: 6px;
+    font-size: 13px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+  .panel button {
+    font: inherit;
+    font-weight: bold;
+    padding: 9px 16px;
+    border: none;
+    border-radius: 4px;
+    background: var(--primario);
+    color: #fff;
+    cursor: pointer;
+  }
+  .panel button.secundario {
+    background: #ddd8d2;
+    color: var(--tinta);
+  }
+  #estado { color: var(--gris); }
+
+  /* ===== Motor oculto: acá corre el cálculo de verdad ===== */
+  #motor { position: absolute; left: -9999px; width: 800px; }
+</style>
+</head>
+<body>
+
+<div class="aviso">
+  <strong>Prototipo.</strong> Los dos diseños de abajo usan <strong>el cálculo real</strong> de la
+  calculadora: el motor corre en esta misma página y los importes están volcados desde ahí.
+  Cambiá los datos y apretá «Recalcular» para ver cómo se comportan con otros números.
+</div>
+
+<div class="panel">
+  <button id="btnRecalcular">Recalcular con otros datos</button>
+  <button id="btnAlternar" class="secundario">Alternar los detalles</button>
+  <span id="estado">esperando…</span>
+</div>
+
+<div class="escenario">
+
+  <!-- ===================== OPCIÓN A ===================== -->
+  <div class="marco">
+    <h2>Opción A · Total protagonista + fichas</h2>
+    <div class="pantalla" id="pantallaA">
+
+      <div class="a__total">
+        <span class="a__rotulo">Total de bolsillo</span>
+        <strong class="a__monto" data-campo="totalBolsillo">—</strong>
+        <span class="a__detalle" data-campo="cantidadPuestos"></span>
+        <span class="a__detalle" id="aNotaPct"></span>
+      </div>
+
+      <div class="fichas">
+
+        <details class="ficha" data-ficha="remunerativos">
+          <summary>
+            <span class="ficha__punto color-rem"></span>
+            <span class="ficha__nombre">Conceptos remunerativos</span>
+            <span class="ficha__montos">
+              <span class="ficha__sub" data-campo="totalRemunerativo">—</span>
+              <span class="ficha__pct" data-pct="remunerativos"></span>
+              <span class="ficha__pct ficha__pct--bruto" data-pct-bruto="remunerativos"></span>
+            </span>
+            <span class="ficha__flecha"></span>
+          </summary>
+          <div class="ficha__cuerpo" data-filas="remunerativos"></div>
+        </details>
+
+        <details class="ficha" data-ficha="noremunerativos">
+          <summary>
+            <span class="ficha__punto color-norem"></span>
+            <span class="ficha__nombre">Conceptos no remunerativos</span>
+            <span class="ficha__montos">
+              <span class="ficha__sub" data-campo="totalNoRemunerativo">—</span>
+              <span class="ficha__pct" data-pct="noremunerativos"></span>
+              <span class="ficha__pct ficha__pct--bruto" data-pct-bruto="noremunerativos"></span>
+            </span>
+            <span class="ficha__flecha"></span>
+          </summary>
+          <div class="ficha__cuerpo" data-filas="noremunerativos"></div>
+        </details>
+
+        <details class="ficha" data-ficha="descuentos">
+          <summary>
+            <span class="ficha__punto color-desc"></span>
+            <span class="ficha__nombre">Descuentos</span>
+            <span class="ficha__montos">
+              <span class="ficha__sub baja" data-campo="totalDescuentosTexto">—</span>
+              <span class="ficha__pct" data-pct="descuentos"></span>
+              <span class="ficha__pct ficha__pct--bruto" data-pct-bruto="descuentos"></span>
+            </span>
+            <span class="ficha__flecha"></span>
+          </summary>
+          <div class="ficha__cuerpo" data-filas="descuentos"></div>
+        </details>
+
+        <details class="ficha" data-ficha="sac">
+          <summary>
+            <span class="ficha__punto color-sac"></span>
+            <span class="ficha__nombre">Aguinaldo (SAC)</span>
+            <span class="ficha__montos">
+              <span class="ficha__sub" data-campo="sacNeto">—</span>
+              <span class="ficha__pct" data-pct="sac"></span>
+              <span class="ficha__pct ficha__pct--bruto" data-pct-bruto="sac"></span>
+            </span>
+            <span class="ficha__flecha"></span>
+          </summary>
+          <div class="ficha__cuerpo" data-filas="sac"></div>
+        </details>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== OPCIÓN B ===================== -->
+  <div class="marco">
+    <h2>Opción B · Recibo minimalista</h2>
+    <div class="pantalla" id="pantallaB">
+
+      <div class="b__recibo">
+        <div class="b__encabezado">
+          <div class="b__titulo">Liquidación estimada</div>
+          <div class="b__periodo" id="bPeriodo">—</div>
+        </div>
+
+        <div class="b__seccion">
+          <div class="b__seccion-titulo">Haberes remunerativos</div>
+          <div data-filas="remunerativos"></div>
+          <div class="fila fila--total">
+            <span class="fila__rotulo">Subtotal</span>
+            <span class="fila__monto" data-campo="totalRemunerativo">—</span>
+          </div>
+        </div>
+
+        <div class="b__seccion">
+          <div class="b__seccion-titulo">Haberes no remunerativos</div>
+          <div data-filas="noremunerativos"></div>
+          <div class="fila fila--total">
+            <span class="fila__rotulo">Subtotal</span>
+            <span class="fila__monto" data-campo="totalNoRemunerativo">—</span>
+          </div>
+        </div>
+
+        <div class="b__seccion">
+          <div class="b__seccion-titulo">Descuentos</div>
+          <div data-filas="descuentos"></div>
+          <div class="fila fila--total">
+            <span class="fila__rotulo">Subtotal</span>
+            <span class="fila__monto baja" data-campo="totalDescuentosTexto">—</span>
+          </div>
+        </div>
+
+        <div class="b__neto">
+          <span class="b__neto-rotulo">Neto a cobrar</span>
+          <span class="b__neto-monto" data-campo="totalBolsillo">—</span>
+        </div>
+
+        <p class="b__nota">
+          Estimación sobre la liquidación docente de San Luis. Puede diferir en centavos
+          del recibo oficial.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ==========================================================================
+     Motor de cálculo real, oculto. Se arma con los mismos identificadores que
+     espera la calculadora del sitio, así corre el mismo código.
+     ========================================================================== -->
+<div id="motor" aria-hidden="true">
+  <div id="formularioCalculo">
+    <div id="contenedorPuestos" class="contenedorPuestos"></div>
+    <button type="button" id="btnAgregarPuesto">agregar</button>
+    <fieldset>
+      <select id="antiguedad"></select>
+      <select id="afiliacionSindical"></select>
+    </fieldset>
+    <select id="mesCalculo">
+      <option value="2026-05">Mayo 2026</option>
+      <option value="2026-06">Junio 2026</option>
+      <option value="2026-06-SAC" selected>Junio 2026 (+ Aguinaldo)</option>
+      <option value="2026-07">Julio 2026</option>
+      <option value="2026-08">Agosto 2026</option>
+      <option value="2026-09">Septiembre 2026</option>
+    </select>
+    <button type="button" id="btnCalcularSueldo">calcular</button>
+  </div>
+
+  <div id="resultados" style="display:none">
+    <p id="totalBolsillo"></p>
+    <p id="cantidadPuestos"></p>
+    <strong id="totalBruto"></strong>
+    <strong id="totalDescuentos"></strong>
+    <table class="tabla-detalle">
+      <tr id="filaSueldoBasico"><td>Sueldo Básico</td><td id="resultadoSueldo"></td></tr>
+      <tr id="filaZona"><td>Pago por Zona</td><td id="pagoZona"></td></tr>
+      <tr id="filaAntiguedad"><td>Pago por Antigüedad</td><td id="pagoAntiguedad"></td></tr>
+      <tr id="filaComplementoRem"><td>Complemento remunerativo</td><td id="complementoRemunerativo"></td></tr>
+      <tr id="filaAdicionalCargo"><td>Adicional por cargo</td><td id="adicionalPorCargo"></td></tr>
+      <tr id="filaAdicionalPorDedicacion"><td>Adicional por dedicación</td><td id="adicionalPorDedicacion"></td></tr>
+      <tr id="filaEnseñanzaEnAula"><td>Enseñanza en aula</td><td id="enseñanzaEnAula"></td></tr>
+      <tr class="fila-subtotal"><th>Total Remunerativo</th><th id="totalCAportes"></th></tr>
+
+      <tr id="filaComplementoNoRem"><td>Complemento no remunerativo</td><td id="complementoNoRemunerativo"></td></tr>
+      <tr id="filaSumaNoRem"><td>Suma no remunerativa</td><td id="sumaNoRemunerativa"></td></tr>
+      <tr id="filaIncentivoDocente"><td>Incentivo docente</td><td id="incentivoDocente"></td></tr>
+      <tr id="filaBonoExtraordinario"><td>Bono extraordinario</td><td id="bonoExtraordinario"></td></tr>
+      <tr class="fila-subtotal"><th>Total No Remunerativo</th><th id="totalSAportes"></th></tr>
+
+      <tr><td>Jubilación (11%)</td><td id="aporteJubilatorio"></td></tr>
+      <tr><td>Jubilación Reg. Esp.</td><td id="aporteJubilatorioEsp"></td></tr>
+      <tr><td>Obra social (6%)</td><td id="obraSocial"></td></tr>
+      <tr id="filaDescuentoSindical"><td>Afiliación sindical</td><td id="descuentoSindical"></td></tr>
+      <tr><td>Seguro obligatorio</td><td id="seguroObligatorio"></td></tr>
+      <tr><td>Seguro social</td><td id="seguroSocial"></td></tr>
+      <tr><td>Seguro mutual</td><td id="seguroMutual"></td></tr>
+      <tr class="fila-subtotal"><th>Total Descuentos</th><th id="totalDescuentosTexto"></th></tr>
+
+      <tr><td>SAC bruto</td><td id="sacBruto"></td></tr>
+      <tr><td>Descuentos de ley</td><td id="sacDescuentos"></td></tr>
+      <tr class="fila-subtotal"><th>SAC de bolsillo</th><th id="sacNeto"></th></tr>
+    </table>
+    <div id="botonGraficos" class="oculto"><canvas id="miGrafico"></canvas></div>
+  </div>
+</div>
+
+<script type="module">
+  // ==========================================================================
+  // Puente con el motor real: se calcula y se vuelca el resultado en los dos
+  // diseños. No hay ningún importe escrito a mano.
+  //
+  // Se importa del mismo módulo que usa la calculadora del sitio, en vez de
+  // esperar que exponga algo en window: no lo hace.
+  // ==========================================================================
+  import { inicializarCalculadora } from "/dist/funciones.js";
+
+    /** Formatea un número como lo muestra la calculadora de ATEBA. */
+    function plata(valor) {
+      return "$ " + valor.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    /** Convierte el texto de un importe ("$ 1.073.145,64") en número. */
+    function anumero(texto) {
+      var limpio = String(texto).replace(/[^\d,-]/g, "").replace(/\./g, "").replace(",", ".");
+      var n = parseFloat(limpio);
+      return isNaN(n) ? 0 : n;
+    }
+
+    function texto(id) {
+      var el = document.getElementById(id);
+      return el ? el.textContent.trim() : "";
+    }
+
+    /**
+     * Arma las filas de una sección a partir de las filas reales del motor.
+     * Se clonan para no vaciar el original: si se vaciara, el próximo cálculo
+     * del motor no tendría dónde escribir.
+     */
+    function filasDesde(idsResultado) {
+      var filas = [];
+      idsResultado.forEach(function (idFila) {
+        var fila = document.getElementById(idFila);
+        if (!fila) return;
+        var celdas = fila.querySelectorAll("td");
+        if (celdas.length < 2) return;
+        var rotulo = celdas[0].textContent.trim();
+        var valor = celdas[1].textContent.trim();
+        if (!valor || anumero(valor) === 0) return; // no se muestran los ceros
+        filas.push({ rotulo: rotulo, valor: valor });
+      });
+      return filas;
+    }
+
+    var SECCIONES = {
+      remunerativos: ["filaSueldoBasico", "filaZona", "filaAntiguedad", "filaComplementoRem",
+                      "filaAdicionalCargo", "filaAdicionalPorDedicacion", "filaEnseñanzaEnAula"],
+      noremunerativos: ["filaComplementoNoRem", "filaSumaNoRem", "filaIncentivoDocente",
+                        "filaBonoExtraordinario"],
+      descuentos: ["filaDescuentoSindical"],
+      sac: []
+    };
+
+    // Los descuentos de ley no tienen fila con id, así que se leen por su texto.
+    function descuentosDeLey() {
+      var tabla = document.getElementById("aporteJubilatorio");
+      if (!tabla) return [];
+      var filas = [];
+      ["aporteJubilatorio", "aporteJubilatorioEsp", "obraSocial", "descuentoSindical",
+       "seguroObligatorio", "seguroSocial", "seguroMutual"].forEach(function (id) {
+        var celda = document.getElementById(id);
+        if (!celda) return;
+        var tr = celda.closest("tr");
+        if (!tr) return;
+        var rotulo = tr.querySelector("td");
+        var valor = celda.textContent.trim();
+        if (!valor || anumero(valor) === 0) return;
+        filas.push({ rotulo: rotulo ? rotulo.textContent.trim() : id, valor: valor });
+      });
+      return filas;
+    }
+
+    function sacFilas() {
+      var filas = [];
+      [["sacBruto", "SAC bruto"], ["sacDescuentos", "Descuentos de ley"]].forEach(function (par) {
+        var el = document.getElementById(par[0]);
+        if (!el) return;
+        var valor = el.textContent.trim();
+        if (!valor || anumero(valor) === 0) return;
+        filas.push({ rotulo: par[1], valor: valor });
+      });
+      return filas;
+    }
+
+    function pintarFilas(contenedor, filas) {
+      contenedor.innerHTML = "";
+      filas.forEach(function (f) {
+        var div = document.createElement("div");
+        div.className = "fila";
+        var r = document.createElement("span");
+        r.className = "fila__rotulo";
+        r.textContent = f.rotulo;
+        var m = document.createElement("span");
+        m.className = "fila__monto";
+        m.textContent = f.valor;
+        div.appendChild(r);
+        div.appendChild(m);
+        contenedor.appendChild(div);
+      });
+    }
+
+    function volcar() {
+      var conjuntos = {
+        remunerativos: filasDesde(SECCIONES.remunerativos),
+        noremunerativos: filasDesde(SECCIONES.noremunerativos),
+        descuentos: descuentosDeLey(),
+        sac: sacFilas(),
+      };
+
+      // Se pintan las filas en TODOS los lugares que las piden (las dos opciones).
+      document.querySelectorAll("[data-filas]").forEach(function (contenedor) {
+        var clave = contenedor.getAttribute("data-filas");
+        pintarFilas(contenedor, conjuntos[clave] || []);
+      });
+
+      // Totales y montos.
+      var bolsillo = texto("totalBolsillo");
+      var bruto = texto("totalBruto");
+      var descuentos = texto("totalDescuentos");
+
+      document.querySelectorAll('[data-campo="totalBolsillo"]').forEach(function (el) {
+        el.textContent = bolsillo;
+      });
+      document.querySelectorAll('[data-campo="cantidadPuestos"]').forEach(function (el) {
+        el.textContent = texto("cantidadPuestos");
+      });
+      document.querySelectorAll('[data-campo="totalRemunerativo"]').forEach(function (el) {
+        el.textContent = texto("totalCAportes");
+      });
+      document.querySelectorAll('[data-campo="totalNoRemunerativo"]').forEach(function (el) {
+        el.textContent = texto("totalSAportes");
+      });
+      document.querySelectorAll('[data-campo="totalDescuentosTexto"]').forEach(function (el) {
+        el.textContent = texto("totalDescuentosTexto");
+      });
+      document.querySelectorAll('[data-campo="sacNeto"]').forEach(function (el) {
+        el.textContent = texto("sacNeto");
+      });
+
+      // Porcentajes de cada tipo de concepto.
+      //
+      // El aguinaldo es el sueldo anual complementario: se paga aparte y NO
+      // integra el neto del mes. Por eso la composición del neto son tres
+      // conceptos, y el aguinaldo se informa por separado:
+      //
+      //   remunerativos + no remunerativos - descuentos = neto     → 100%
+      //   remunerativos + no remunerativos              = bruto    → 100%
+      //
+      // Se muestran las dos bases. El aguinaldo sólo lleva la del neto, que es
+      // donde se lee: equivale a medio sueldo.
+      // Ojo con esto: el "total de bolsillo" que muestra la calculadora
+      // INCLUYE el aguinaldo ($ 2.159.045,85 contra $ 1.685.002,51 del neto del
+      // mes). Usarlo como base hacía que los tres conceptos del mes sumaran
+      // 78% en vez de 100%. El neto del mes es el bruto menos los descuentos.
+      var nBruto = anumero(bruto);                  // bruto del mes
+      var nDescuentos = anumero(texto("totalDescuentosTexto"));
+      var nAguinaldo = anumero(texto("sacNeto"));
+      var nBolsillo = nBruto - nDescuentos;         // neto del mes, sin aguinaldo
+
+      /** El porcentaje, como número, sin formatear. 0 si no se puede calcular. */
+      function pctDe(subtotal, base) {
+        if (base <= 0 || subtotal <= 0) return 0;
+        return (subtotal / base) * 100;
+      }
+
+      function formatearPct(pct, base) {
+        if (pct <= 0) return "";
+        return pct.toLocaleString("es-AR", { maximumFractionDigits: 1 }) + "% del " + base;
+      }
+
+      var subtotales = {
+        remunerativos: anumero(texto("totalCAportes")),
+        noremunerativos: anumero(texto("totalSAportes")),
+        descuentos: anumero(texto("totalDescuentosTexto")),
+        sac: nAguinaldo,
+      };
+
+      var sobreNeto = {}, sobreBruto = {};
+      Object.keys(subtotales).forEach(function (clave) {
+        sobreNeto[clave] = formatearPct(pctDe(subtotales[clave], nBolsillo), "neto");
+        // El aguinaldo no forma parte del bruto del mes, así que no tiene
+        // porcentaje sobre el bruto: se deja vacío a propósito.
+        sobreBruto[clave] = clave === "sac"
+          ? ""
+          : formatearPct(pctDe(subtotales[clave], nBruto), "bruto");
+      });
+
+      document.querySelectorAll("[data-pct]").forEach(function (el) {
+        el.textContent = sobreNeto[el.getAttribute("data-pct")] || "";
+      });
+      document.querySelectorAll("[data-pct-bruto]").forEach(function (el) {
+        el.textContent = sobreBruto[el.getAttribute("data-pct-bruto")] || "";
+      });
+
+      // Período, para el encabezado del recibo.
+      var mes = document.getElementById("mesCalculo");
+      var periodo = document.getElementById("bPeriodo");
+      if (mes && periodo) {
+        var opcion = mes.options[mes.selectedIndex];
+        periodo.textContent = opcion ? opcion.textContent.trim() : "—";
+      }
+
+      // Se aclara qué compone qué, que es la duda obvia al ver los porcentajes.
+      var nota = document.getElementById("aNotaPct");
+      if (nota) {
+        nota.textContent = "El neto del mes se compone de remunerativos más no " +
+          "remunerativos menos descuentos. El aguinaldo es un pago aparte y no integra " +
+          "ese neto: por eso el total de arriba es mayor que el neto del mes.";
+      }
+
+      document.getElementById("estado").textContent =
+        "calculado · " + bolsillo + " de bolsillo";
+    }
+
+    // ==========================================================================
+    // Arranque: se puebla el formulario como lo hace la calculadora real.
+    // ==========================================================================
+  // El módulo se ejecuta después de que el documento esté listo, así que se
+  // puede arrancar directamente.
+  {
+      inicializarCalculadora();
+
+      // Dos cargos, para que el prototipo muestre un caso realista.
+      document.getElementById("btnAgregarPuesto").click();
+
+      function cargarDatos() {
+        ["cantHs-1", "cantHs-2"].forEach(function (id, i) {
+          var campo = document.getElementById(id);
+          if (campo) campo.value = i === 0 ? "18" : "12";
+        });
+        var zona2 = document.getElementById("zona-2");
+        if (zona2) zona2.value = "20";
+        var antig = document.getElementById("antiguedad");
+        if (antig) antig.value = "5";
+        var afil = document.getElementById("afiliacionSindical");
+        if (afil) afil.value = "amet";
+        document.getElementById("mesCalculo").value = "2026-06-SAC";
+      }
+
+      cargarDatos();
+      document.getElementById("btnCalcularSueldo").click();
+
+      // Recién después de calcular se mueven los campos a las fichas, porque el
+      // motor lee los datos desde el formulario.
+      document.querySelectorAll("[data-filas]").forEach(function (c) { c.innerHTML = ""; });
+      volcar();
+
+      document.getElementById("btnRecalcular").addEventListener("click", function () {
+        cargarDatos();
+        document.getElementById("btnCalcularSueldo").click();
+        volcar();
+      });
+
+      document.getElementById("btnAlternar").addEventListener("click", function () {
+        document.querySelectorAll(".ficha").forEach(function (f) {
+          f.open = !f.open;
+        });
+      });
+  }
+</script>
+</body>
+</html>
