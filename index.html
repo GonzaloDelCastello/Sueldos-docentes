@@ -342,9 +342,9 @@
               <p class="cantidad-puestos" id="cantidadPuestos"></p>
 
               <p class="resultado-total__composicion">
-                El neto del mes se compone de los conceptos remunerativos más los no
-                remunerativos, menos los descuentos. El aguinaldo es un pago aparte y no
-                integra ese neto: por eso el total de arriba puede ser mayor.
+                Los importes de cada concepto ya tienen descontada la parte proporcional de
+                los descuentos, así que suman este neto. El aguinaldo es un pago aparte y no
+                integra el neto del mes: por eso el total de arriba puede ser mayor.
               </p>
 
               <div class="resultado-total__lineas">
@@ -390,9 +390,11 @@
               <summary>🟢 Conceptos Remunerativos</summary>
 
               <p class="ficha-concepto__resumen">
-                <strong id="totalCAportes">$0.00</strong>
+                <strong id="netoRemunerativo">$0.00</strong>
                 <span class="ficha-concepto__pct" id="pctRemunerativos"></span>
               </p>
+
+              <span id="totalCAportes" hidden>$0.00</span>
 
               <table class="tabla-detalle">
 
@@ -434,9 +436,11 @@
               <summary>🔵 Conceptos No Remunerativos</summary>
 
               <p class="ficha-concepto__resumen">
-                <strong id="totalSAportes">$0.00</strong>
+                <strong id="netoNoRemunerativo">$0.00</strong>
                 <span class="ficha-concepto__pct" id="pctNoRemunerativos"></span>
               </p>
+
+              <span id="totalSAportes" hidden>$0.00</span>
 
               <table class="tabla-detalle">
 

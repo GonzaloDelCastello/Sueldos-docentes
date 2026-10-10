@@ -361,14 +361,23 @@ function aPorcentaje(valor: number): string {
 }
 
 /**
- * Escribe, debajo del subtotal de cada tipo de concepto, qué porción representa
- * sobre el neto del mes.
+ * Muestra cuánto del neto del mes es remunerativo y cuánto no remunerativo.
  *
- * El criterio es que remunerativos y no remunerativos sumen 100% del neto. Para
- * que eso sea cierto sin falsear los importes, los descuentos van restados del
- * no remunerativo, que es donde se aplican:
+ * Los descuentos salen del bruto, así que para comparar los dos conceptos
+ * contra el neto se calcula la tasa de descuento y se le aplica pareja a los
+ * dos:
  *
- *   remunerativos + (no remunerativos − descuentos) = neto del mes
+ *   tasa = (bruto − neto) / bruto
+ *   neto de cada concepto = importe × (1 − tasa)
+ *
+ * Así los dos importes mostrados suman el neto del mes y sus porcentajes dan
+ * 100%. Como la tasa es la misma para los dos, la proporción entre ellos queda
+ * igual a la del bruto.
+ *
+ * Ojo, esto es distinto de cómo se liquida de verdad: en el recibo los
+ * descuentos de ley se calculan sobre el remunerativo, no repartidos. Acá se
+ * reparten a propósito, porque lo que se quiere mostrar es la composición del
+ * neto. Por eso la página lo aclara con una nota.
  *
  * El neto del mes es el bruto menos los descuentos. No se usa el total de
  * bolsillo porque ese total incluye el aguinaldo, y el aguinaldo no integra el
@@ -377,34 +386,41 @@ function aPorcentaje(valor: number): string {
 function mostrarPorcentajes(resultado: ResultadoPluriempleo): void {
   const { conceptos, descuentos, aguinaldo } = resultado;
 
-  const netoDelMes = conceptos.totalBruto - descuentos.total;
-  const aguinaldoNeto = aguinaldo.neto;
+  const bruto = conceptos.totalBruto;
+  const netoDelMes = bruto - descuentos.total;
 
   function escribir(id: string, contenido: string): void {
     const elemento = document.getElementById(id);
     if (elemento) elemento.textContent = contenido;
   }
 
-  if (netoDelMes <= 0) {
+  if (bruto <= 0 || netoDelMes <= 0) {
     ["pctRemunerativos", "pctNoRemunerativos", "pctDescuentos", "pctAguinaldo"].forEach((id) =>
       escribir(id, "")
     );
     return;
   }
 
+  const tasaDeDescuento = (bruto - netoDelMes) / bruto;
   const porcentajeDe = (valor: number): string =>
     valor > 0 ? `${aPorcentaje((valor / netoDelMes) * 100)} del neto` : "";
 
-  // Al no remunerativo se le restan los descuentos: son los que se aplican
-  // sobre él, y sin restarlos la suma pasaría de cien.
-  const noRemunerativoNeto = conceptos.totalNoRemunerativo - descuentos.total;
+  const remunerativoNeto = conceptos.totalRemunerativo * (1 - tasaDeDescuento);
+  const noRemunerativoNeto = conceptos.totalNoRemunerativo * (1 - tasaDeDescuento);
 
-  escribir("pctRemunerativos", porcentajeDe(conceptos.totalRemunerativo));
+  // El importe del encabezado es el neto de descuentos, que es el mismo número
+  // del que sale el porcentaje. Así el importe y su porcentaje hablan del mismo
+  // monto y no hay que explicar de dónde salió cada uno.
+  setTexto("netoRemunerativo", remunerativoNeto);
+  setTexto("netoNoRemunerativo", noRemunerativoNeto);
+
+  escribir("pctRemunerativos", porcentajeDe(remunerativoNeto));
   escribir("pctNoRemunerativos", porcentajeDe(noRemunerativoNeto));
-  // Los descuentos ya están restados adentro del no remunerativo: si se
-  // mostraran como porcentaje propio, la composición sumaría de más.
+  // Los descuentos no llevan porcentaje propio: ya están repartidos adentro de
+  // los dos conceptos, y sumarlos aparte haría que la composición pase de cien.
   escribir("pctDescuentos", "");
-  escribir("pctAguinaldo", porcentajeDe(aguinaldoNeto));
+  // El aguinaldo es aparte y sí se mide contra el neto del mes.
+  escribir("pctAguinaldo", porcentajeDe(aguinaldo.neto));
 }
 
 /** Tabla con lo que aporta cada cargo al total. */
