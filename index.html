@@ -317,6 +317,12 @@
 
                 <option value="2026-10">Octubre 2026</option>
 
+                <option value="2026-11" style="background-color: #fff8e1;">Noviembre 2026 (+ Suma fija $100.000)</option>
+
+                <option value="2026-12" style="background-color: #fff8e1;">Diciembre 2026 (sin aguinaldo, + Suma fija)</option>
+
+                <option value="2026-12-SAC" style="background-color: #e8f5e9;">Diciembre 2026 (con aguinaldo, + Suma fija)</option>
+
               </select>
 
               <button type="button" id="btnCalcularSueldo" class="boton">
@@ -352,6 +358,35 @@
                 <span>Bruto: <strong id="totalBruto">$0.00</strong></span>
                 <span>Descuentos: <strong id="totalDescuentos">$0.00</strong></span>
               </div>
+            </div>
+
+            <!-- Conceptos de la pauta del último trimestre de 2026. Se muestran
+                 aparte del haber del mes porque el bono se paga en otra fecha. -->
+            <div class="concepto-pauta" id="bloqueSumaFija" hidden>
+              <span class="concepto-pauta__rotulo">Suma fija mensual (nuevo ítem, permanente)</span>
+              <strong class="concepto-pauta__monto" id="montoSumaFija">$0.00</strong>
+              <span class="concepto-pauta__pie" id="caracterSumaFija"></span>
+            </div>
+
+            <div class="concepto-pauta" id="bloqueBono" hidden>
+              <span class="concepto-pauta__rotulo">Bono de fin de año (pago único)</span>
+              <strong class="concepto-pauta__monto" id="montoBono">$0.00</strong>
+              <span class="concepto-pauta__pie" id="caracterBono"></span>
+            </div>
+
+            <!-- Supuestos de la pauta del último trimestre de 2026, a la vista.
+                 Nada de esto queda escondido en el código. -->
+            <div class="supuestos" id="bloqueSupuestos" hidden>
+              <p class="supuestos__titulo">Supuestos de estos meses</p>
+              <ul class="supuestos__lista">
+                <li id="supuestoSumaFija"></li>
+                <li id="supuestoBono"></li>
+                <li id="supuestoBaseSAC"></li>
+                <li id="supuestoDocente"></li>
+                <li id="supuestoBasico" hidden></li>
+                <li id="supuestoPagoBono" hidden></li>
+              </ul>
+              <p class="supuestos__nota" id="aNotaPct"></p>
             </div>
 
             <details class="desplegable" open>

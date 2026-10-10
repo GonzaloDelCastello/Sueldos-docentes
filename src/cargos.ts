@@ -20,6 +20,50 @@ import type { ConfiguracionBase } from "./historial.js";
  */
 
 // ---------------------------------------------------------------------------
+// Pauta salarial del último trimestre de 2026
+// ---------------------------------------------------------------------------
+//
+// Los dos conceptos que se agregan con los haberes de noviembre y diciembre de
+// 2026 (ver PAUTA_TRIMESTRE_2026 en historial.ts, con las fuentes).
+//
+// Las dos banderas de abajo son el supuesto central de esta parte del cálculo:
+// deciden si cada concepto integra la base de aportes (y por lo tanto si lo
+// alcanzan el 11% de jubilación, el 2% de reg. esp. y el 6% de obra social) y si
+// entra en la base del aguinaldo, que se calcula sobre el total remunerativo.
+//
+// Los dos están en false porque es lo que se anunció: el gobernador presentó la
+// suma fija como "no remunerativa", y del bono no se informó el carácter. La
+// ministra, en cambio, habló de un "nuevo ítem" sin repetir que sea no
+// remunerativa, así que el carácter NO está confirmado.
+//
+// Pasar una a true tiene que ser esta sola línea. Si cambia, se mueve sola la
+// base de aportes, el monto de los descuentos y la base del aguinaldo.
+export const SUMA_FIJA_ES_REMUNERATIVA = false;
+export const BONO_FIN_DE_ANIO_ES_REMUNERATIVO = false;
+
+/** La suma fija rige desde este mes, y sigue en los meses sucesivos. */
+export const MES_DESDE_SUMA_FIJA = "2026-11";
+
+/** El bono se paga una sola vez, este mes. */
+export const MES_DEL_BONO_FIN_DE_ANIO = "2026-12";
+
+/**
+ * Si la suma fija mensual se liquida en el mes pedido.
+ *
+ * Es permanente desde noviembre de 2026 ("de ahí en más queda instalada"), así
+ * que alcanza con comparar los períodos como texto, que es el formato que usan
+ * las series del historial.
+ */
+export function correspondeSumaFija(periodo: string): boolean {
+  return periodo >= MES_DESDE_SUMA_FIJA;
+}
+
+/** Si el bono de fin de año se paga en el mes pedido. Es un pago único. */
+export function correspondeBonoFinDeAnio(periodo: string): boolean {
+  return periodo === MES_DEL_BONO_FIN_DE_ANIO;
+}
+
+// ---------------------------------------------------------------------------
 // Coeficientes y descuentos fijos
 // ---------------------------------------------------------------------------
 
@@ -333,6 +377,10 @@ export interface ConfiguracionesDelMes {
  * Los ítems del recibo que se suman. Se separan de los totales a propósito:
  * los totales se calculan SIEMPRE a partir de estos, así la tabla nunca
  * puede mostrar una suma que no coincida con su total.
+ *
+ * Los dos últimos son los conceptos de la pauta del último trimestre de 2026
+ * (ver PAUTA_TRIMESTRE_2026 en historial.ts). A diferencia de los demás, son
+ * montos fijos POR AGENTE: no se multiplican por horas ni por cargo.
  */
 export interface ComponentesCargo {
   basico: number;
@@ -346,6 +394,10 @@ export interface ComponentesCargo {
   sumaNoRemunerativa: number;
   incentivoDocente: number;
   bonoExtraordinario: number;
+  /** Suma fija mensual de la pauta del último trimestre de 2026. */
+  sumaFijaTrimestre: number;
+  /** Bono de fin de año, pago único y separado del haber del mes. */
+  bonoFinDeAnio: number;
 }
 
 export const CAMPOS_COMPONENTES: readonly (keyof ComponentesCargo)[] = [
@@ -360,6 +412,8 @@ export const CAMPOS_COMPONENTES: readonly (keyof ComponentesCargo)[] = [
   "sumaNoRemunerativa",
   "incentivoDocente",
   "bonoExtraordinario",
+  "sumaFijaTrimestre",
+  "bonoFinDeAnio",
 ];
 
 export interface ConceptosCargo extends ComponentesCargo {
@@ -413,11 +467,29 @@ export function componentesEnCero(): ComponentesCargo {
     sumaNoRemunerativa: 0,
     incentivoDocente: 0,
     bonoExtraordinario: 0,
+    sumaFijaTrimestre: 0,
+    bonoFinDeAnio: 0,
   };
 }
 
-/** Cierra los totales a partir de los componentes (siempre por suma). */
+/**
+ * Cierra los totales a partir de los componentes (siempre por suma).
+ *
+ * La suma fija y el bono van al subtotal que les corresponde según su carácter
+ * (ver PAUTA_TRIMESTRE_2026): si son no remunerativos, no integran la base de
+ * aportes ni la del aguinaldo, porque el aguinaldo se calcula sobre el total
+ * remunerativo.
+ */
 export function cerrarTotales(componentes: ComponentesCargo): ConceptosCargo {
+  // La suma fija y el bono pueden no venir (objetos armados antes de que
+  // existieran, o meses sin esos conceptos): se tratan como cero. Sin esto, un
+  // componente ausente contagiaba NaN a los tres totales.
+  const sumaFija = componentes.sumaFijaTrimestre ?? 0;
+  const bono = componentes.bonoFinDeAnio ?? 0;
+
+  const sumaFijaRemunerativa = sumaFija * (SUMA_FIJA_ES_REMUNERATIVA ? 1 : 0);
+  const bonoRemunerativo = bono * (BONO_FIN_DE_ANIO_ES_REMUNERATIVO ? 1 : 0);
+
   const totalRemunerativo =
     componentes.basico +
     componentes.complementoRemunerativo +
@@ -425,16 +497,22 @@ export function cerrarTotales(componentes: ComponentesCargo): ConceptosCargo {
     componentes.adicionalPorDedicacion +
     componentes.pagoDeZona +
     componentes.pagoAntiguedad +
-    componentes.enseñanzaEnAula;
+    componentes.enseñanzaEnAula +
+    sumaFijaRemunerativa +
+    bonoRemunerativo;
 
   const totalNoRemunerativo =
     componentes.complementoNoRemunerativo +
     componentes.sumaNoRemunerativa +
     componentes.incentivoDocente +
-    componentes.bonoExtraordinario;
+    componentes.bonoExtraordinario +
+    (sumaFija - sumaFijaRemunerativa) +
+    (bono - bonoRemunerativo);
 
   return {
     ...componentes,
+    sumaFijaTrimestre: sumaFija,
+    bonoFinDeAnio: bono,
     totalRemunerativo,
     totalNoRemunerativo,
     totalBruto: totalRemunerativo + totalNoRemunerativo,
@@ -553,6 +631,10 @@ export function calcularConceptosDePuesto(
   componentes.pagoDeZona = componentes.basico * coefZona;
   componentes.pagoAntiguedad = componentes.basico * coefAntiguedad;
 
+  // OJO: la suma fija y el bono NO se asignan acá. Son montos POR AGENTE, y este
+  // método corre una vez por cargo: asignarlos acá los multiplicaría por la
+  // cantidad de cargos. Se suman una sola vez en calcularPluriempleo.
+
   return cerrarTotales(componentes);
 }
 
@@ -614,14 +696,21 @@ export interface Aguinaldo {
 }
 
 /**
- * Aguinaldo (SAC): la mitad del remunerativo del semestre, con los descuentos
- * de ley pero sin los seguros fijos (esos no se descuentan del aguinaldo).
+ * Aguinaldo (SAC): la mitad de la MAYOR remuneración mensual del semestre, con
+ * los descuentos de ley pero sin los seguros fijos (esos no se descuentan del
+ * aguinaldo).
+ *
+ * La base NO es el sueldo del mes en que se cobra: el SAC se calcula sobre la
+ * mejor remuneración devengada en el semestre. Para la segunda cuota de 2026 el
+ * semestre es julio-diciembre, así que si octubre resultó la mejor remuneración,
+ * la base es octubre. Por eso esta función recibe la base ya resuelta y quien
+ * llama es el que la busca en el semestre (ver mejorRemuneracionDelSemestre).
  */
 export function calcularAguinaldo(
-  totalRemunerativo: number,
+  baseRemunerativa: number,
   afiliacion: Afiliacion
 ): Aguinaldo {
-  const bruto = totalRemunerativo / 2;
+  const bruto = baseRemunerativa / 2;
   const descuentos = bruto * (0.19 + (afiliacion === "no" ? 0 : 0.015));
   return { bruto, descuentos, neto: bruto - descuentos };
 }
@@ -640,17 +729,32 @@ export interface ResultadoPluriempleo {
   conceptos: ConceptosCargo;
   descuentos: Descuentos;
   aguinaldo: Aguinaldo;
+  /** La remuneración que se usó como base del SAC, y de qué mes salió. */
+  baseDelAguinaldo: { monto: number; periodo: string | null };
+  /**
+   * Meses del semestre que todavía no tienen el básico cargado. Si hay alguno, la
+   * base del SAC puede cambiar cuando se cargue: la mayor remuneración del
+   * semestre podría ser uno de esos meses.
+   */
+  mesesSinBasico: string[];
   totalBolsillo: number;
 }
 
 /**
  * Calcula todos los puestos y devuelve el recibo consolidado.
  * Los descuentos se aplican una sola vez sobre la suma, no puesto por puesto.
+ *
+ * `baseDelAguinaldo` es la mayor remuneración del semestre. Si no se pasa, se
+ * usa la del mes calculado, que es el comportamiento de antes de la pauta del
+ * último trimestre de 2026; quien conoce el semestre (funciones.ts) la resuelve
+ * y la pasa. Se deja opcional para no romper a los que llaman con un solo mes.
  */
 export function calcularPluriempleo(
   puestos: readonly Puesto[],
   configuraciones: ConfiguracionesDelMes,
-  opciones: OpcionesCalculo
+  opciones: OpcionesCalculo,
+  baseDelAguinaldo?: { monto: number; periodo: string | null },
+  mesesSinBasico: readonly string[] = []
 ): ResultadoPluriempleo {
   const calculados: PuestoCalculado[] = puestos.map((puesto) => ({
     puesto,
@@ -658,16 +762,50 @@ export function calcularPluriempleo(
   }));
 
   const componentes = sumarComponentes(calculados.map((c) => c.conceptos));
+
+  // La suma fija y el bono de fin de año son montos POR AGENTE y por única vez,
+  // así que se suman una sola vez sobre el total y no en cada puesto: si se
+  // sumaran por puesto, un docente con tres cargos cobraría los dos tres veces.
+  if (correspondeSumaFija(configuraciones.basica.fecha)) {
+    componentes.sumaFijaTrimestre += configuraciones.basica.sumaFijaPorAgente ?? 0;
+  }
+  if (correspondeBonoFinDeAnio(configuraciones.basica.fecha)) {
+    componentes.bonoFinDeAnio += configuraciones.basica.bonoFinDeAnioPorAgente ?? 0;
+  }
+
   const conceptos = cerrarTotales(componentes);
   const descuentos = calcularDescuentos(
     conceptos.totalRemunerativo,
     opciones.afiliacion,
     configuraciones.seguros
   );
-  const aguinaldo = calcularAguinaldo(conceptos.totalRemunerativo, opciones.afiliacion);
+
+  // La base del SAC es la mayor remuneración del semestre. Nunca puede ser menor
+  // que la del mes calculado si el mes es el mejor, y si el mes calculado tiene
+  // una remuneración mayor que la que trajo quien llama, se usa la mayor.
+  //
+  // Si el mes calculado todavía no tiene el básico cargado, su remuneración es 0
+  // y no puede pisar la base que vino del semestre: por eso el máximo, y no el
+  // mes calculado a secas.
+  const baseDelSemestre = baseDelAguinaldo?.monto ?? 0;
+  const montoBase = Math.max(baseDelSemestre, conceptos.totalRemunerativo);
+  const periodoBase =
+    montoBase === conceptos.totalRemunerativo
+      ? configuraciones.basica.fecha
+      : (baseDelAguinaldo?.periodo ?? null);
+
+  const aguinaldo = calcularAguinaldo(montoBase, opciones.afiliacion);
 
   let totalBolsillo = conceptos.totalBruto - descuentos.total;
   if (opciones.incluirSAC) totalBolsillo += aguinaldo.neto;
 
-  return { puestos: calculados, conceptos, descuentos, aguinaldo, totalBolsillo };
+  return {
+    puestos: calculados,
+    conceptos,
+    descuentos,
+    aguinaldo,
+    baseDelAguinaldo: { monto: montoBase, periodo: periodoBase },
+    mesesSinBasico: [...mesesSinBasico],
+    totalBolsillo,
+  };
 }

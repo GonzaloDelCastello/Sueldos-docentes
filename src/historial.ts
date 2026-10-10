@@ -12,7 +12,13 @@
 export interface ConfiguracionBase {
     fecha: string;
     descripcion: string;
-    basicoCargo_Hora: number; // EL VALOR CLAVE
+    /**
+     * EL VALOR CLAVE. Sale del recibo del mes: en los meses del último trimestre
+     * de 2026 que todavía no tienen recibo vale 0, y el cálculo muestra el básico
+     * en cero en lugar de estimarlo. NO se completa aplicándole el porcentaje al
+     * mes anterior.
+     */
+    basicoCargo_Hora: number;
     porcentajes: {
         remunerativo: number;    // Ítem 100-22
         noRemunerativo: number;  // Ítem 100-23
@@ -21,6 +27,18 @@ export interface ConfiguracionBase {
     fonid: number;          // Valor por hora/cargo
     sumaNoRemunerativa: number;   // Valor por hora/cargo;
     bonoExtraordinario: number;   // Valor por hora/cargo;
+    /**
+     * Suma fija mensual POR AGENTE de la pauta del último trimestre de 2026
+     * (ver PAUTA_TRIMESTRE_2026). No se multiplica por horas ni por cargo.
+     */
+    sumaFijaPorAgente?: number;
+    /** Bono de fin de año, pago único POR AGENTE. */
+    bonoFinDeAnioPorAgente?: number;
+    /**
+     * Por qué el mes no tiene todavía los valores definitivos. Se muestra en la
+     * interfaz como supuesto visible, en lugar de quedar escondido en el código.
+     */
+    motivoPendiente?: string;
 }
 // Configuración Salarial Inicial, primaria y media
 export interface ConfiguracionSalarial1 extends ConfiguracionBase {
@@ -52,6 +70,58 @@ export interface ConfiguracionSalarial2 extends ConfiguracionBase {
 }
 
 
+
+// ---------------------------------------------------------------------------
+// Pauta salarial del último trimestre de 2026
+// ---------------------------------------------------------------------------
+//
+// Los dos importes de abajo son de la pauta provincial anunciada en octubre de
+// 2026. Las citas son textuales y las dos comunicaciones son concordantes.
+//
+// Fuentes:
+//   ANSL, 7/10/2026 — anuncio del gobernador Claudio Poggi.
+//   ANSL, 9/10/2026 — rueda de prensa de la ministra de Hacienda e
+//   Infraestructura Pública, Eugenia Sosa Herrera.
+//
+// Lo que dicen, textual:
+//   Gobernador: "A partir de noviembre, ya con el salario de ese mes, se
+//   incorpora un nuevo incremento salarial de una suma fija no remunerativa
+//   mensual de $100.000 para todos los empleados públicos provinciales, es
+//   decir, desde noviembre y en los meses sucesivos."
+//   Ministra: "Se agrega como un nuevo ítem a todos los existentes en el recibo
+//   de sueldo. No se elimina ninguno ni se acumula a los existentes. Es una suma
+//   fija que se comienza a pagar con el sueldo de noviembre y de ahí en más queda
+//   instalada."
+//
+// De ahí salen las tres propiedades del concepto: es permanente desde noviembre,
+// es un MONTO FIJO POR AGENTE (no por hora: no se multiplica por la cantidad de
+// horas cátedra), y no es absorbible (no elimina ni se acumula a los conceptos
+// que ya existían).
+export const PAUTA_TRIMESTRE_2026 = {
+  /** Suma fija mensual, para todos los empleados públicos provinciales. */
+  sumaFijaMensual: 100_000,
+
+  /** Bono de fin de año, pago único. */
+  bonoFinDeAnio: 500_000,
+
+  /** El bono se paga el viernes 4/12/2026, Día del Empleado Público. */
+  fechaDePagoBono: "2026-12-04",
+
+  /**
+   * El sueldo de noviembre se paga el 30/11 y el de diciembre el 29/12; la
+   * segunda cuota del SAC, el 22/12. Fechas de las dos comunicaciones.
+   */
+  fechaDePagoSueldoNoviembre: "2026-11-30",
+  fechaDePagoSAC: "2026-12-22",
+  fechaDePagoSueldoDiciembre: "2026-12-29",
+
+  /**
+   * El bono de $500.000 es para los empleados públicos provinciales. El personal
+   * del Plan de Inclusión Social cobra $250.000, que no aplica a docentes y por
+   * eso no está modelado.
+   */
+  comentarioPlanDeInclusion: "El Plan de Inclusión Social cobra $250.000; no aplica a docentes.",
+} as const;
 
 // FUNCIÓN HELPER PARA OBTENER CONFIGURACIÓN DE INICIAL PRIMARIA Y MEDIA
 export function obtenerConfiguracionActual1(fecha: string): ConfiguracionBase {
@@ -268,6 +338,50 @@ export const HISTORIAL_BASICA: ConfiguracionSalarial1[] = [
     fonid: 1913.3333,
     sumaNoRemunerativa: 4667.48333,
     bonoExtraordinario: 0 
+},
+{
+    fecha: "2026-11",
+    // Sin tramo de aumento informado para noviembre. La pauta del trimestre
+    // agrega una suma fija, que no es un aumento del básico.
+    descripcion: "Noviembre 2026 (suma fija de la pauta del último trimestre)",
+    // PENDIENTE: falta el básico de noviembre. No se completa aplicándole un
+    // porcentaje al de octubre: se carga cuando esté el recibo del mes. Mientras
+    // tanto el cálculo muestra el básico en cero, y la interfaz lo avisa.
+    basicoCargo_Hora: 0,
+    // Se mantiene el reparto 145/92 de septiembre.
+    porcentajes: {
+        remunerativo: 1.45, 
+        noRemunerativo: 0.92, 
+        adicionalCargo: 0.33
+    },
+    fonid: 1913.3333,
+    sumaNoRemunerativa: 4667.48333,
+    bonoExtraordinario: 0,
+    sumaFijaPorAgente: PAUTA_TRIMESTRE_2026.sumaFijaMensual,
+    motivoPendiente:
+        "Falta el básico de noviembre: se carga con el recibo del mes. La suma " +
+        "fija de $100.000 sí está cargada, porque el monto salió del anuncio."
+},
+{
+    fecha: "2026-12",
+    // Sin tramo de aumento informado para diciembre. Diciembre suma el bono de
+    // fin de año, que se paga aparte del haber del mes.
+    descripcion: "Diciembre 2026 (bono de fin de año y suma fija)",
+    // PENDIENTE: falta el básico de diciembre, igual que el de noviembre.
+    basicoCargo_Hora: 0,
+    porcentajes: {
+        remunerativo: 1.45, 
+        noRemunerativo: 0.92, 
+        adicionalCargo: 0.33
+    },
+    fonid: 1913.3333,
+    sumaNoRemunerativa: 4667.48333,
+    bonoExtraordinario: 0,
+    sumaFijaPorAgente: PAUTA_TRIMESTRE_2026.sumaFijaMensual,
+    bonoFinDeAnioPorAgente: PAUTA_TRIMESTRE_2026.bonoFinDeAnio,
+    motivoPendiente:
+        "Falta el básico de diciembre: se carga con el recibo del mes. El bono " +
+        "de $500.000 y la suma fija sí están cargados."
 }
 ];
 
@@ -429,6 +543,42 @@ export const HISTORIAL_IFDC: ConfiguracionSalarial2[] = [
     sumaNoRemunerativa: 157894.07, 
     bonoExtraordinario: 0 
 
+},
+{
+    fecha: "2026-11",
+    // La pauta del trimestre no menciona al sector docente ni al Incentivo
+    // Docente Provincial: la suma fija alcanza a "todos los empleados públicos
+    // provinciales". Se aplica también acá como supuesto, y la interfaz lo avisa.
+    descripcion: "Noviembre 2026 (suma fija de la pauta del último trimestre)",
+    // PENDIENTE: falta el básico de noviembre del IFDC.
+    basicoCargo_Hora: 0,
+    porcentajes: {
+        remunerativo: 0.70, 
+        noRemunerativo: 0.25,  
+        adicionalCargo: 0.34999 
+    },
+    fonid: 57400, 
+    sumaNoRemunerativa: 157894.07, 
+    bonoExtraordinario: 0,
+    sumaFijaPorAgente: PAUTA_TRIMESTRE_2026.sumaFijaMensual,
+    motivoPendiente: "Falta el básico de noviembre del IFDC: se carga con el recibo del mes."
+},
+{
+    fecha: "2026-12",
+    descripcion: "Diciembre 2026 (bono de fin de año y suma fija)",
+    // PENDIENTE: falta el básico de diciembre del IFDC.
+    basicoCargo_Hora: 0,
+    porcentajes: {
+        remunerativo: 0.70, 
+        noRemunerativo: 0.25,  
+        adicionalCargo: 0.34999 
+    },
+    fonid: 57400, 
+    sumaNoRemunerativa: 157894.07, 
+    bonoExtraordinario: 0,
+    sumaFijaPorAgente: PAUTA_TRIMESTRE_2026.sumaFijaMensual,
+    bonoFinDeAnioPorAgente: PAUTA_TRIMESTRE_2026.bonoFinDeAnio,
+    motivoPendiente: "Falta el básico de diciembre del IFDC: se carga con el recibo del mes."
 }
 
 ];

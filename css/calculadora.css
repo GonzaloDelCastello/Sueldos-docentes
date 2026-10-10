@@ -834,3 +834,111 @@ details.desplegable[open] summary::after {
     color: var(--secundarioOscuro);
     white-space: nowrap;
 }
+
+
+/* ==========================================================================
+   Conceptos de la pauta del ultimo trimestre de 2026
+   --------------------------------------------------------------------------
+   La suma fija y el bono se muestran aparte del haber del mes, porque el bono
+   se paga en otra fecha y ninguno de los dos se suma al sueldo del mes como si
+   fuera un concepto mas.
+   ========================================================================== */
+
+.concepto-pauta {
+    background-color: var(--blanco);
+    border: 1px solid var(--primarioClaro);
+    border-left: 5px solid var(--primario);
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.2rem 1rem;
+}
+
+.concepto-pauta__rotulo {
+    font-size: 1.3rem;
+    color: var(--secundarioOscuro);
+}
+
+.concepto-pauta__monto {
+    font-size: 1.8rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.concepto-pauta__pie {
+    flex: 1 1 100%;
+    font-size: 1.1rem;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+/* --- Los supuestos, a la vista --- */
+
+.supuestos {
+    background-color: #fff8e1;
+    border: 1px solid #f0e0b0;
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.supuestos__titulo {
+    font-size: 1.2rem;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8a6d1f;
+    margin: 0 0 0.8rem;
+    text-align: left;
+}
+
+.supuestos__lista {
+    margin: 0;
+    padding-left: 1.6rem;
+    text-align: left;
+}
+
+.supuestos__lista li {
+    font-size: 1.15rem;
+    line-height: 1.55;
+    color: #5f4d1a;
+    margin-bottom: 0.5rem;
+}
+
+.supuestos__lista li:last-child {
+    margin-bottom: 0;
+}
+
+.supuestos__bandera {
+    font-family: "Courier New", monospace;
+    font-size: 1.1rem;
+    background-color: rgba(0, 0, 0, 0.06);
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+}
+
+/* La nota del total, dentro del bloque de supuestos. */
+.supuestos__nota {
+    margin: 0.8rem 0 0;
+    font-size: 1.15rem;
+    line-height: 1.55;
+    color: #5f4d1a;
+    text-align: left;
+}
+
+.supuestos__nota:empty {
+    display: none;
+}
+
+/* El atributo hidden tiene que ganarle a cualquier display de estas clases:
+   .concepto-pauta usa flex, y sin esto un bloque marcado como oculto se veria
+   igual (ya paso con otras clases del proyecto). */
+.concepto-pauta[hidden],
+.supuestos[hidden],
+.supuestos__lista li[hidden] {
+    display: none !important;
+}

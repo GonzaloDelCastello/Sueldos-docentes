@@ -4,8 +4,10 @@
  */
 import {
   AFILIACIONES,
+  BONO_FIN_DE_ANIO_ES_REMUNERATIVO,
   ESCALA_ANTIGUEDAD,
   ETIQUETA_NIVEL,
+  SUMA_FIJA_ES_REMUNERATIVA,
   ZONAS,
   calcularPluriempleo,
   cargosDelNivel,
@@ -13,11 +15,11 @@ import {
   montoEnseñanzaEnAula,
   porcentajeAntiguedad,
 } from "./cargos.js";
-import type { Afiliacion, Nivel, ResultadoPluriempleo, TipoCargo } from "./cargos.js";
+import type { Afiliacion, Nivel, Puesto, ResultadoPluriempleo, TipoCargo } from "./cargos.js";
 import { htmlPuesto, resumenPuesto } from "./formulario.js";
 import type { CatalogoFormulario, PuestoFormulario } from "./formulario.js";
-import { configuracionesDelMes } from "./configuracion.js";
-import { HISTORIAL_BASICO } from "./historial.js";
+import { configuracionesDelMes, mesesSinBasicoDelSemestre } from "./configuracion.js";
+import { HISTORIAL_BASICA, HISTORIAL_BASICO, PAUTA_TRIMESTRE_2026 } from "./historial.js";
 import { HISTORIAL_INFLACION } from "./inflacion.js";
 import { calcularInflacionAcumulada, calcularVariacionSalarial } from "./calculos.js";
 
@@ -220,6 +222,69 @@ function actualizarResumenPuesto(puesto: PuestoFormulario): void {
  * Lee el mes elegido, calcula todos los puestos y muestra el recibo consolidado.
  * La cantidad de horas se valida acá y no en el medio del cálculo.
  */
+/**
+ * Los meses del semestre al que pertenece el período, hasta el período mismo.
+ *
+ * El aguinaldo se calcula sobre la mayor remuneración devengada en el semestre,
+ * y para la segunda cuota el semestre es julio-diciembre. Se corta en el mes
+ * pedido para no mirar meses que todavía no pasaron.
+ */
+function mesesDelSemestre(periodo: string): string[] {
+  const [anioTexto, mesTexto] = periodo.split("-");
+  const anio = Number(anioTexto);
+  const mes = Number(mesTexto);
+  if (!Number.isFinite(anio) || !Number.isFinite(mes)) return [periodo];
+
+  // El segundo semestre va de julio a diciembre; el primero, de enero a junio.
+  const arranque = mes >= 7 ? 7 : 1;
+  const meses: string[] = [];
+  for (let m = arranque; m <= mes; m++) {
+    meses.push(`${anio}-${String(m).padStart(2, "0")}`);
+  }
+  return meses;
+}
+
+/**
+ * La mayor remuneración mensual del semestre, que es la base del SAC.
+ *
+ * Esto es lo que suele estar mal: el SAC NO es la mitad del sueldo del mes en
+ * que se cobra, es la mitad de la MEJOR remuneración del semestre. Si octubre
+ * resultó la mejor, la base es octubre aunque el aguinaldo se cobre en diciembre.
+ *
+ * Se recorre el semestre recalculando cada mes con los mismos puestos, la misma
+ * zona, la misma antigüedad y la misma afiliación. Se comparan los totales
+ * REMUNERATIVOS, porque la suma fija y el bono no entran en la base del SAC.
+ */
+function mejorRemuneracionDelSemestre(
+  puestos: readonly Puesto[],
+  periodo: string,
+  opciones: { antiguedadPct: number; afiliacion: Afiliacion }
+): { monto: number; periodo: string | null } {
+  let mejorMonto = 0;
+  let mejorPeriodo: string | null = null;
+
+  for (const mes of mesesDelSemestre(periodo)) {
+    const calculado = calcularPluriempleo(puestos, configuracionesDelMes(mes), {
+      antiguedadPct: opciones.antiguedadPct,
+      afiliacion: opciones.afiliacion,
+      incluirSAC: false,
+    });
+    if (calculado.conceptos.totalRemunerativo > mejorMonto) {
+      mejorMonto = calculado.conceptos.totalRemunerativo;
+      mejorPeriodo = mes;
+    }
+  }
+
+  return { monto: mejorMonto, periodo: mejorPeriodo };
+}
+
+/**
+ * Calcula y muestra el recibo del mes elegido.
+ *
+ * El mes sale del selector, que para los meses con aguinaldo trae la opción con
+ * el sufijo "-SAC" (por ejemplo "2026-12-SAC"): así se puede ver diciembre con y
+ * sin aguinaldo sin duplicar el resto del cálculo.
+ */
 export function calcularYMostrar(): void {
   const selectMes = document.getElementById("mesCalculo") as HTMLSelectElement | null;
   if (!selectMes) return;
@@ -234,15 +299,20 @@ export function calcularYMostrar(): void {
     return;
   }
 
+  const puestosParaCalcular = puestos.map(({ tipo, cantHoras, zonaPct, presencialidad }) => ({
+    tipo,
+    cantHoras,
+    zonaPct,
+    presencialidad,
+  }));
+  const antiguedadPct = porcentajeAntiguedad(antiguedadIndice);
+
   const resultado = calcularPluriempleo(
-    puestos.map(({ tipo, cantHoras, zonaPct, presencialidad }) => ({
-      tipo,
-      cantHoras,
-      zonaPct,
-      presencialidad,
-    })),
+    puestosParaCalcular,
     configuracionesDelMes(periodo),
-    { antiguedadPct: porcentajeAntiguedad(antiguedadIndice), afiliacion, incluirSAC }
+    { antiguedadPct, afiliacion, incluirSAC },
+    mejorRemuneracionDelSemestre(puestosParaCalcular, periodo, { antiguedadPct, afiliacion }),
+    mesesSinBasicoDelSemestre(periodo)
   );
 
   mostrarResultados(resultado, incluirSAC);
@@ -348,7 +418,155 @@ function mostrarResultados(resultado: ResultadoPluriempleo, incluirSAC: boolean)
 
   renderizarDesglose(resultado);
   mostrarPorcentajes(resultado);
+  mostrarPautaDelTrimestre(resultado, incluirSAC);
   dibujarGrafico(resultado, incluirSAC);
+}
+
+// ---------------------------------------------------------------------------
+// Pauta del último trimestre de 2026
+// ---------------------------------------------------------------------------
+
+/**
+ * Muestra la suma fija, el bono de fin de año y los supuestos con los que se
+ * calcularon.
+ *
+ * Los dos conceptos van aparte del haber del mes, y los supuestos a la vista:
+ * el carácter remunerativo de cada uno, la base del aguinaldo, el monto fijo por
+ * agente, y que la pauta es de administración pública provincial y no menciona
+ * al sector docente.
+ */
+function mostrarPautaDelTrimestre(
+  resultado: ResultadoPluriempleo,
+  incluirSAC: boolean
+): void {
+  const { conceptos, aguinaldo, baseDelAguinaldo } = resultado;
+
+  function mostrar(id: string, visible: boolean): void {
+    const el = document.getElementById(id);
+    if (el) el.hidden = !visible;
+  }
+  function escribir(id: string, contenido: string): void {
+    const el = document.getElementById(id);
+    if (el) el.textContent = contenido;
+  }
+
+  const caracter = (esRemunerativa: boolean): string =>
+    esRemunerativa
+      ? "Carácter: remunerativa (integraría la base de aportes y la del aguinaldo)."
+      : "Carácter: NO remunerativa (no integra la base de aportes ni la del aguinaldo).";
+
+  // --- Suma fija ---
+  const haySumaFija = conceptos.sumaFijaTrimestre > 0;
+  mostrar("bloqueSumaFija", haySumaFija);
+  if (haySumaFija) {
+    setTexto("montoSumaFija", conceptos.sumaFijaTrimestre);
+    escribir(
+      "caracterSumaFija",
+      `Monto fijo por agente, no por hora cátedra. ${caracter(SUMA_FIJA_ES_REMUNERATIVA)}`
+    );
+  }
+
+  // --- Bono de fin de año ---
+  const hayBono = conceptos.bonoFinDeAnio > 0;
+  mostrar("bloqueBono", hayBono);
+  if (hayBono) {
+    setTexto("montoBono", conceptos.bonoFinDeAnio);
+    escribir(
+      "caracterBono",
+      `Pago único, por agente, aparte del haber del mes. ${caracter(BONO_FIN_DE_ANIO_ES_REMUNERATIVO)}`
+    );
+  }
+
+  // --- Supuestos ---
+  mostrar("bloqueSupuestos", true);
+
+  escribir(
+    "supuestoSumaFija",
+    `Suma fija mensual de ${aPesos(PAUTA_TRIMESTRE_2026.sumaFijaMensual)}, permanente desde ` +
+      `noviembre de 2026 ("de ahí en más queda instalada"). Es un monto fijo POR AGENTE: no se ` +
+      `multiplica por la cantidad de horas cátedra. ` +
+      `SUMA_FIJA_ES_REMUNERATIVA = ${String(SUMA_FIJA_ES_REMUNERATIVA)}.`
+  );
+
+  escribir(
+    "supuestoBono",
+    `Bono de fin de año de ${aPesos(PAUTA_TRIMESTRE_2026.bonoFinDeAnio)}, pago único. ` +
+      `BONO_FIN_DE_ANIO_ES_REMUNERATIVO = ${String(BONO_FIN_DE_ANIO_ES_REMUNERATIVO)}. ` +
+      `Del carácter del bono no se informó nada, así que se toma como no remunerativo.`
+  );
+
+  const textoBaseSac = baseDelAguinaldo.periodo
+    ? `Base del aguinaldo: ${aPesos(baseDelAguinaldo.monto)} de ${baseDelAguinaldo.periodo}, ` +
+      `que es la mayor remuneración del semestre julio-diciembre. No es el 50% del sueldo de ` +
+      `diciembre.`
+    : "Base del aguinaldo: sin datos.";
+  escribir("supuestoBaseSAC", textoBaseSac);
+  escribir(
+    "supuestoDocente",
+    "Las dos comunicaciones oficiales son de administración pública provincial y no mencionan " +
+      "al sector docente, ni zona, ni complementos docentes, ni el Incentivo Docente Provincial. " +
+      "Se aplican a la escala docente como supuesto, no como dato confirmado."
+  );
+
+  // --- Pendientes ---
+  // El básico del mes calculado, y además los meses del semestre que todavía no
+  // lo tienen: esos afectan la base del aguinaldo, porque cuando se carguen la
+  // mayor remuneración del semestre podría ser una de ellos.
+  const faltaBasico = conceptos.basico <= 0;
+  const mesesPendientes = resultado.mesesSinBasico;
+  mostrar("supuestoBasico", faltaBasico || mesesPendientes.length > 0);
+  if (faltaBasico || mesesPendientes.length > 0) {
+    const partes: string[] = [];
+    if (faltaBasico) {
+      partes.push(
+        "FALTA EL BÁSICO DE ESTE MES: todavía no hay recibo, así que el básico va en cero y no " +
+          "se estima aplicándole un porcentaje al mes anterior."
+      );
+    }
+    if (mesesPendientes.length > 0) {
+      partes.push(
+        `Todavía no tienen básico cargado: ${mesesPendientes.join(", ")}. La base del aguinaldo ` +
+          `se calcula con los meses que sí lo tienen, así que puede cambiar cuando se carguen.`
+      );
+    }
+    partes.push(
+      "Los conceptos de la pauta sí están cargados, porque sus montos salieron del anuncio."
+    );
+    escribir("supuestoBasico", partes.join(" "));
+  }
+
+  mostrar("supuestoPagoBono", hayBono || haySumaFija);
+  if (hayBono || haySumaFija) {
+    escribir(
+      "supuestoPagoBono",
+      `Fechas de pago: el bono el ${PAUTA_TRIMESTRE_2026.fechaDePagoBono}, la segunda cuota del ` +
+        `SAC el ${PAUTA_TRIMESTRE_2026.fechaDePagoSAC}, el sueldo de diciembre el ` +
+        `${PAUTA_TRIMESTRE_2026.fechaDePagoSueldoDiciembre} y el de noviembre el ` +
+        `${PAUTA_TRIMESTRE_2026.fechaDePagoSueldoNoviembre}.`
+    );
+  }
+
+  // El cartel del total cambia cuando hay aguinaldo, para que no confunda.
+  const nota = document.getElementById("aNotaPct");
+  if (!nota) return;
+
+  if (incluirSAC) {
+    nota.textContent =
+      `El total incluye el aguinaldo (${aPesos(aguinaldo.neto)} neto), calculado sobre la ` +
+      `mayor remuneración del semestre. El bono de fin de año va aparte y se paga el ` +
+      `${PAUTA_TRIMESTRE_2026.fechaDePagoBono}.`;
+    return;
+  }
+
+  if (faltaBasico) {
+    // No se puede decir "son los del recibo" cuando el básico todavía no está
+    // cargado: los importes del mes están incompletos a propósito.
+    nota.textContent =
+      "OJO: los importes de este mes están incompletos, porque falta el básico. Lo que sí " +
+      "está completo son los conceptos de la pauta y el aguinaldo, que no dependen de él.";
+  } else {
+    nota.textContent = "";
+  }
 }
 
 // ---------------------------------------------------------------------------

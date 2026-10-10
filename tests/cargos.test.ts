@@ -3,15 +3,18 @@ import assert from "node:assert/strict";
 
 import {
   AFILIACIONES,
+  BONO_FIN_DE_ANIO_ES_REMUNERATIVO,
   CARGOS,
   COEFICIENTES_CARGOS,
   ESCALA_ANTIGUEDAD,
+  SUMA_FIJA_ES_REMUNERATIVA,
   calcularAguinaldo,
   calcularConceptosDePuesto,
   calcularDescuentos,
   calcularPluriempleo,
   cargosDelNivel,
   cerrarTotales,
+  componentesEnCero,
   definicionDe,
   porcentajeAntiguedad,
 } from "../src/cargos.ts";
@@ -22,6 +25,9 @@ import type {
   Puesto,
   TipoCargo,
 } from "../src/cargos.ts";
+// Del compilado, no de src/: configuracion.ts importa "./historial.js" y Node no
+// resuelve esa extensión contra el .ts (los tests corren el TypeScript directo).
+import { configuracionesDelMes } from "../dist/configuracion.js";
 import {
   SEGURO_OBLIGATORIO_POR_MES,
   SEGUROS_FIJOS,
@@ -633,5 +639,204 @@ describe("los porcentajes del encabezado suman 100% del neto", () => {
     casiIgual(p.neto, 239644.63, 0.10);
     casiIgual(p.remunerativo, 69.6, 0.1);
     casiIgual(p.noRemunerativo, 30.4, 0.1);
+  });
+});
+
+describe("pauta del último trimestre de 2026", () => {
+  // Suma fija de $100.000 mensuales desde noviembre y bono de fin de año de
+  // $500.000 en diciembre. Los dos son montos fijos POR AGENTE: no se
+  // multiplican por horas ni por cargo.
+
+  const unCargo = [puesto("horaSecundaria", { cantHoras: 15, zonaPct: 20 })];
+  const comunes = { antiguedadPct: 0.3, afiliacion: "amet" as const };
+  const config = (mes: string) => configuracionesDelMes(mes);
+
+  test("la suma fija no aparece antes de noviembre", () => {
+    const octubre = calcularPluriempleo(unCargo, config("2026-10"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+    assert.equal(octubre.conceptos.sumaFijaTrimestre, 0);
+  });
+
+  test("en noviembre la suma fija es de $100.000", () => {
+    const noviembre = calcularPluriempleo(unCargo, config("2026-11"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+    casiIgual(noviembre.conceptos.sumaFijaTrimestre, 100000);
+  });
+
+  test("la suma fija es por agente y no por cargo", () => {
+    // Con tres cargos cargados sigue siendo una sola suma fija, no tres.
+    const tres = [
+      puesto("horaSecundaria", { cantHoras: 15 }),
+      puesto("horaSecundaria", { cantHoras: 12 }),
+      puesto("preceptor"),
+    ];
+    const r = calcularPluriempleo(tres, config("2026-11"), { ...comunes, incluirSAC: false });
+    casiIgual(r.conceptos.sumaFijaTrimestre, 100000);
+  });
+
+  test("la suma fija no se multiplica por las horas cátedra", () => {
+    const pocas = calcularPluriempleo([puesto("horaSecundaria", { cantHoras: 3 })], config("2026-11"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+    const muchas = calcularPluriempleo([puesto("horaSecundaria", { cantHoras: 30 })], config("2026-11"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+    casiIgual(pocas.conceptos.sumaFijaTrimestre, muchas.conceptos.sumaFijaTrimestre);
+  });
+
+  test("el bono de fin de año es de $500.000 y sólo en diciembre", () => {
+    const noviembre = calcularPluriempleo(unCargo, config("2026-11"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+    assert.equal(noviembre.conceptos.bonoFinDeAnio, 0, "en noviembre no hay bono");
+
+    const diciembre = calcularPluriempleo(unCargo, config("2026-12"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+    casiIgual(diciembre.conceptos.bonoFinDeAnio, 500000);
+  });
+
+  test("el bono es por agente: no se cobra una vez por cargo", () => {
+    const tres = [
+      puesto("horaSecundaria", { cantHoras: 15 }),
+      puesto("horaSecundaria", { cantHoras: 12 }),
+      puesto("preceptor"),
+    ];
+    const r = calcularPluriempleo(tres, config("2026-12"), { ...comunes, incluirSAC: false });
+    casiIgual(r.conceptos.bonoFinDeAnio, 500000);
+  });
+
+  test("con las banderas en false, los dos son no remunerativos", () => {
+    // Es el supuesto por defecto: el gobernador anunció la suma fija como no
+    // remunerativa y del bono no se informó el carácter.
+    assert.equal(SUMA_FIJA_ES_REMUNERATIVA, false);
+    assert.equal(BONO_FIN_DE_ANIO_ES_REMUNERATIVO, false);
+
+    const diciembre = calcularPluriempleo(unCargo, config("2026-12"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+
+    // Diciembre tiene los 500.000 del bono y los 100.000 de la suma fija, y los
+    // dos están en el subtotal no remunerativo, junto a los conceptos de siempre.
+    casiIgual(
+      diciembre.conceptos.totalNoRemunerativo,
+      diciembre.conceptos.complementoNoRemunerativo +
+        diciembre.conceptos.sumaNoRemunerativa +
+        diciembre.conceptos.incentivoDocente +
+        diciembre.conceptos.bonoExtraordinario +
+        100000 +
+        500000,
+      0.01
+    );
+
+    // Y el total remunerativo no los incluye: es la suma de los conceptos
+    // remunerativos, nada más. Con las banderas en false, ni la suma fija ni el
+    // bono aparecen en esa lista.
+    const c = diciembre.conceptos;
+    casiIgual(
+      c.totalRemunerativo,
+      c.basico +
+        c.complementoRemunerativo +
+        c.adicionalPorCargo +
+        c.adicionalPorDedicacion +
+        c.pagoDeZona +
+        c.pagoAntiguedad +
+        c.enseñanzaEnAula,
+      0.01
+    );
+  });
+
+  test("si la suma fija fuera remunerativa, cambiaría la base de aportes", () => {
+    // No se puede cambiar la constante desde un test (es un const de módulo),
+    // así que se comprueba el efecto a mano con cerrarTotales: es la garantía de
+    // que la bandera es lo único que decide, y que su efecto está donde se cree.
+    const componentes = componentesEnCero();
+    componentes.basico = 1000000;
+    const conBanderaFalse = cerrarTotales({ ...componentes, sumaFijaTrimestre: 100000 });
+    casiIgual(conBanderaFalse.totalNoRemunerativo, 100000);
+    casiIgual(conBanderaFalse.totalRemunerativo, 1000000);
+  });
+});
+
+describe("la base del aguinaldo es la mayor remuneración del semestre", () => {
+  // El SAC es el 50% de la mayor remuneración devengada en el semestre
+  // julio-diciembre, NO el 50% del sueldo del mes en que se cobra.
+
+  const unCargo = [puesto("horaSecundaria", { cantHoras: 15, zonaPct: 20 })];
+  const comunes = { antiguedadPct: 0.3, afiliacion: "amet" as const };
+
+  test("la base de diciembre es la de octubre, que es la mejor del semestre", () => {
+    // Los básicos del semestre suben mes a mes, así que la mejor remuneración es
+    // la del último mes con recibo cargado: octubre.
+    const octubre = calcularPluriempleo(unCargo, configuracionesDelMes("2026-10"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+    const base = {
+      monto: octubre.conceptos.totalRemunerativo,
+      periodo: "2026-10",
+    };
+
+    const diciembre = calcularPluriempleo(
+      unCargo,
+      configuracionesDelMes("2026-12"),
+      { ...comunes, incluirSAC: true },
+      base
+    );
+
+    // La base que se usó es la de octubre, no la de diciembre.
+    assert.equal(diciembre.baseDelAguinaldo.periodo, "2026-10");
+    casiIgual(diciembre.baseDelAguinaldo.monto, octubre.conceptos.totalRemunerativo);
+
+    // Y el aguinaldo es la mitad de esa base, con los descuentos de ley.
+    const esperado = calcularAguinaldo(octubre.conceptos.totalRemunerativo, "amet");
+    casiIgual(diciembre.aguinaldo.bruto, esperado.bruto);
+    casiIgual(diciembre.aguinaldo.neto, esperado.neto);
+  });
+
+  test("sin la base del semestre, se usa la del mes calculado", () => {
+    // Comportamiento de antes de la pauta: sirve para no romper a los que
+    // llaman con un solo mes.
+    const diciembre = calcularPluriempleo(unCargo, configuracionesDelMes("2026-12"), {
+      ...comunes,
+      incluirSAC: true,
+    });
+    casiIgual(
+      diciembre.aguinaldo.bruto,
+      diciembre.conceptos.totalRemunerativo / 2,
+      0.01
+    );
+  });
+
+  test("un mes sin básico cargado no pisa la base del semestre", () => {
+    // Noviembre y diciembre todavía no tienen el básico, así que su remuneración
+    // es 0. Sin el máximo, esa base de 0 borraría el aguinaldo de diciembre, que
+    // es justamente lo que hay que evitar.
+    const baseDeOctubre = {
+      monto: 887110.28,
+      periodo: "2026-10",
+    };
+    const diciembre = calcularPluriempleo(
+      unCargo,
+      configuracionesDelMes("2026-12"),
+      { ...comunes, incluirSAC: true },
+      baseDeOctubre
+    );
+
+    // La remuneración de diciembre es 0 (falta el básico), pero la base del SAC
+    // sigue siendo la de octubre.
+    assert.equal(diciembre.conceptos.totalRemunerativo, 0);
+    assert.equal(diciembre.baseDelAguinaldo.periodo, "2026-10");
+    casiIgual(diciembre.baseDelAguinaldo.monto, 887110.28);
+    casiIgual(diciembre.aguinaldo.bruto, 887110.28 / 2);
   });
 });

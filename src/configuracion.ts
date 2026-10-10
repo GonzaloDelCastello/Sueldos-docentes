@@ -45,3 +45,28 @@ export function seguroObligatorioDelMes(periodo: string): number {
   }
   return SEGURO_OBLIGATORIO_POR_MES[elegido]!;
 }
+
+/**
+ * Los meses del semestre al que pertenece el período que todavía no tienen el
+ * básico cargado (están en 0).
+ *
+ * Sirve para la base del aguinaldo: si un mes del semestre no tiene básico, su
+ * remuneración es 0 y no puede ser la mejor, así que la base del SAC se calcula
+ * con los meses que sí tienen datos. Pero eso hay que avisarlo, porque cuando se
+ * cargue el básico de ese mes la base podría cambiar.
+ */
+export function mesesSinBasicoDelSemestre(periodo: string): string[] {
+  const [anioTexto, mesTexto] = periodo.split("-");
+  const anio = Number(anioTexto);
+  const mes = Number(mesTexto);
+  if (!Number.isFinite(anio) || !Number.isFinite(mes)) return [];
+
+  // El segundo semestre va de julio a diciembre; el primero, de enero a junio.
+  const arranque = mes >= 7 ? 7 : 1;
+  const sinBasico: string[] = [];
+  for (let m = arranque; m <= mes; m++) {
+    const clave = `${anio}-${String(m).padStart(2, "0")}`;
+    if (obtenerConfiguracionActual1(clave).basicoCargo_Hora <= 0) sinBasico.push(clave);
+  }
+  return sinBasico;
+}
