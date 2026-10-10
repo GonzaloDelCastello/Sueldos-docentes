@@ -56,18 +56,36 @@ en dos niveles:
 Lo que se quiere mostrar es **qué parte del neto es remunerativa y qué parte no remunerativa**, y
 las dos juntas tienen que dar 100%, porque entre las dos forman el neto.
 
-No alcanza con dividir el importe bruto de cada concepto por el neto: **remunerativos + no
-remunerativos es el BRUTO**, que es mayor que el neto, así que esa cuenta da 113,5%. Para que sumen
-100 hay que comparar la **parte del neto** que aporta cada concepto, o sea descontarle a cada uno su
-parte proporcional de las retenciones:
+La clave es **de dónde salen los descuentos**: salen del **remunerativo**, que es como se liquidan
+de verdad (en `cargos.ts`, las alícuotas de jubilación, reg. esp., obra social y sindical se aplican
+sobre el total remunerativo). Lo no remunerativo no tiene retenciones.
 
 ```
-tasa              = (bruto − neto) / bruto
-parte del neto    = importe bruto × (1 − tasa)
-porcentaje        = parte del neto / neto del mes
+neto remunerativo    = remunerativos − descuentos
+neto no remunerativo = no remunerativos            (sin retenciones)
+porcentaje           = neto del concepto / neto del mes
 ```
 
-Así los dos porcentajes suman 100% y las dos partes suman el neto del mes exacto.
+Con un ejemplo simple se ve por qué da distinto que el porcentaje del bruto:
+
+```
+R: 60   NR: 40   descuento: 10 sobre un bruto de 100
+Neto: 90, y de ese neto aportan 50 lo remunerativo y 40 lo no remunerativo
+→ R = 55,6% del neto   y   NR = 44,4% del neto      (suman 100%)
+```
+
+Mientras que **sobre el bruto** la proporción es 60% y 40%. El remunerativo aporta **menos** al neto
+que al bruto, justamente porque es el que paga los descuentos.
+
+**Ojo con un error fácil de cometer:** si en vez de restarle los descuentos al remunerativo se los
+prorratea entre los dos conceptos, la cuenta se cancela y devuelve exactamente el mismo número que
+el porcentaje del bruto:
+
+```
+(importe × neto/bruto) / neto  =  importe / bruto
+```
+
+Los dos valores quedarían idénticos, que es justamente lo que no tiene que pasar.
 
 **El aguinaldo queda afuera de esa cuenta.** Es el sueldo anual complementario y se paga aparte, no
 integra el neto del mes, así que se mide contra el neto sin descontarle nada.
@@ -75,18 +93,20 @@ integra el neto del mes, así que se mide contra el neto sin descontarle nada.
 Con los datos de ejemplo (dos cargos, 18 y 12 hs, zona 20%, antigüedad 5 años, con aguinaldo de
 junio):
 
-| | Importe | Parte del neto | |
-|---|---|---|---|
-| Remunerativos | $ 1.170.477,36 | $ 1.031.284,32 | **61,2% del neto** |
-| No remunerativos | $ 741.950,92 | $ 653.718,19 | **38,8% del neto** |
-| **Suma** | | **$ 1.685.002,51** | **100,0%** |
-| **Bruto** | **$ 1.912.428,28** | | |
-| Descuentos | $ 227.425,77 | (ya descontados arriba) | |
-| Aguinaldo (SAC) de bolsillo | $ 474.043,33 | | 28,1% del neto |
-| **Total de bolsillo** | **$ 2.159.045,85** | | (neto del mes + aguinaldo) |
+| | Importe | Aporta al neto | Encabezado | Adentro |
+|---|---|---|---|---|
+| Remunerativos | $ 1.170.477,36 | $ 943.051,59 | **56,0% del neto** | 61,2% del bruto |
+| No remunerativos | $ 741.950,92 | $ 741.950,92 | **44,0% del neto** | 38,8% del bruto |
+| **Suma** | | **$ 1.685.002,51** | **100,0%** | **100,0%** |
+| **Bruto** | **$ 1.912.428,28** | | | |
+| Descuentos | $ 227.425,77 | (todos del remunerativo) | | |
+| Aguinaldo (SAC) de bolsillo | $ 474.043,33 | | 28,1% del neto | — |
+| **Total de bolsillo** | **$ 2.159.045,85** | | | (neto del mes + aguinaldo) |
 
-Los dos porcentajes suman 100% y las dos partes del neto suman el neto del mes exacto. Sin el
-prorrateo de las retenciones, la suma daría 113,5% (el bruto sobre el neto).
+Los dos porcentajes del encabezado suman 100% y los dos aportes suman el neto del mes exacto. El
+remunerativo aporta **menos** al neto (56,0%) que al bruto (61,2%), porque es el que paga los
+descuentos. En el recibo de septiembre 2026 la diferencia es más grande todavía, porque ahí los
+descuentos pesan más: 69,6% del neto contra 74,8% del bruto.
 
 Dentro de los desplegables, cada ítem lleva su porcentaje del bruto, y **esos sí suman 100%**:
 
@@ -148,3 +168,7 @@ Quedan anotados porque son fáciles de repetir al implementarlo en el sitio:
 7. **El porcentaje del encabezado se medía sobre el importe bruto.** Daba 113,5% entre los dos
    conceptos, cuando lo que se quiere mostrar es qué parte del neto aporta cada uno. Ahora se le
    descuenta a cada concepto su parte proporcional de las retenciones, y los dos suman 100%.
+8. **Se prorrateaban los descuentos entre los dos conceptos.** La cuenta se cancelaba y devolvía el
+   mismo número que el porcentaje del bruto, así que los dos valores coincidían. Los descuentos
+   salen del remunerativo, no repartidos: restándoselos solo a él, su aporte al neto baja y los dos
+   números pasan a ser distintos.

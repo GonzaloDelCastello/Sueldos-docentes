@@ -411,18 +411,24 @@ function mostrarPorcentajes(resultado: ResultadoPluriempleo): void {
   // aporta ese concepto. Remunerativos y no remunerativos suman 100%, porque
   // entre los dos forman el neto.
   //
-  // No se puede usar el importe bruto directamente: remunerativos + no
-  // remunerativos es el BRUTO, que es mayor que el neto, así que la suma daría
-  // 113,5%. Se le descuenta a cada uno su parte proporcional de las
-  // retenciones, y esa parte del neto es la que se compara.
-  const tasaDeRetenciones = bruto > 0 ? (bruto - netoDelMes) / bruto : 0;
-  const parteDelNeto = (importeBruto: number): number =>
-    importeBruto * (1 - tasaDeRetenciones);
+  // Los descuentos salen del REMUNERATIVO, que es como se liquidan de verdad
+  // (ver calcularDescuentos en cargos.ts: las alícuotas se aplican sobre el
+  // total remunerativo). Así, del neto, una parte la aporta lo remunerativo ya
+  // descontado y otra lo no remunerativo, que no tiene retenciones.
+  //
+  // Ejemplo con R 60, NR 40 y un descuento de 10 sobre un bruto de 100: el neto
+  // es 90, y de ese neto aportan 50 lo remunerativo y 40 lo no remunerativo, o
+  // sea 55,6% y 44,4%.
+  //
+  // Antes se prorrateaban los descuentos entre los dos, y eso hacía que la
+  // cuenta se cancelara y devolviera el mismo número que el porcentaje del
+  // bruto. Por eso los dos valores coincidían.
+  const netoRemunerativo = Math.max(conceptos.totalRemunerativo - descuentos.total, 0);
 
   escribir("pctNetoRemunerativos",
-    porcentajeSobre(parteDelNeto(conceptos.totalRemunerativo), netoDelMes, "del neto"));
+    porcentajeSobre(netoRemunerativo, netoDelMes, "del neto"));
   escribir("pctNetoNoRemunerativos",
-    porcentajeSobre(parteDelNeto(conceptos.totalNoRemunerativo), netoDelMes, "del neto"));
+    porcentajeSobre(conceptos.totalNoRemunerativo, netoDelMes, "del neto"));
   // El aguinaldo no integra el neto del mes (es el sueldo anual complementario,
   // que se paga aparte), así que se mide contra el neto sin descontarle nada.
   escribir("pctNetoAguinaldo",
