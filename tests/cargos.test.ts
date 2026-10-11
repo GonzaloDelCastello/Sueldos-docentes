@@ -678,6 +678,56 @@ describe("pauta del último trimestre de 2026", () => {
     casiIgual(r.conceptos.sumaFijaTrimestre, 100000);
   });
 
+  test("el proporcional usa la SUMA de las horas, no el cargo más grande", () => {
+    // Este es el caso que estaba mal: 10 hs en un cargo y 8 en otro son 18 hs
+    // entre los dos, o sea más de un cargo completo. Tomando sólo el cargo más
+    // grande daban 10 hs (dos tercios) y pagaba $66.666,67.
+    const dos = [
+      puesto("horaSecundaria", { cantHoras: 10 }),
+      puesto("horaSecundaria", { cantHoras: 8 }),
+    ];
+    const r = calcularPluriempleo(dos, config("2026-11"), { ...comunes, incluirSAC: false });
+    casiIgual(r.conceptos.sumaFijaTrimestre, 100000, 0.01);
+  });
+
+  test("dos cargos que sumados no llegan a uno completo se prorratean", () => {
+    // 5 + 4 = 9 hs de 15, o sea el 60%: $60.000. Con el cargo más grande habrían
+    // sido 5 hs y hubiera pagado un tercio.
+    const dos = [
+      puesto("horaSecundaria", { cantHoras: 5 }),
+      puesto("horaSecundaria", { cantHoras: 4 }),
+    ];
+    const r = calcularPluriempleo(dos, config("2026-11"), { ...comunes, incluirSAC: false });
+    casiIgual(r.conceptos.sumaFijaTrimestre, 60000, 0.01);
+  });
+
+  test("el proporcional del bono también usa la suma", () => {
+    const dos = [
+      puesto("horaSecundaria", { cantHoras: 10 }),
+      puesto("horaSecundaria", { cantHoras: 8 }),
+    ];
+    const r = calcularPluriempleo(dos, config("2026-12"), { ...comunes, incluirSAC: false });
+    casiIgual(r.conceptos.bonoFinDeAnio, 500000, 0.01);
+
+    const chicos = [
+      puesto("horaSecundaria", { cantHoras: 5 }),
+      puesto("horaSecundaria", { cantHoras: 4 }),
+    ];
+    const r2 = calcularPluriempleo(chicos, config("2026-12"), { ...comunes, incluirSAC: false });
+    casiIgual(r2.conceptos.bonoFinDeAnio, 300000, 0.01);
+  });
+
+  test("la suma de las horas no hace que el monto se multiplique", () => {
+    // Dos cargos de 15 hs suman 30, o sea dos veces un cargo completo. El monto
+    // tiene tope, así que se cobra una sola vez.
+    const dos = [
+      puesto("horaSecundaria", { cantHoras: 15 }),
+      puesto("horaSecundaria", { cantHoras: 15 }),
+    ];
+    const r = calcularPluriempleo(dos, config("2026-11"), { ...comunes, incluirSAC: false });
+    casiIgual(r.conceptos.sumaFijaTrimestre, 100000, 0.01);
+  });
+
   test("la suma fija es proporcional si el cargo es más chico que 15 hs", () => {
     // 15 hs de secundaria es un cargo completo: 100.000. La mitad de horas, la
     // mitad de la suma fija.

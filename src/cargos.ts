@@ -769,22 +769,25 @@ export interface ResultadoPluriempleo {
 }
 
 /**
- * Un monto que se cobra por persona, prorrateado por el tamaño del cargo y con
+ * Un monto que se cobra por persona, prorrateado por la cantidad de cargos y con
  * tope.
  *
- * El tope es el punto central de la pauta del último trimestre: la suma fija y el
- * bono se cobran UNA vez y completos con un cargo de 15 hs de secundaria (o su
- * equivalente). Tener más cargos, o más horas, no los multiplica. Un cargo más
- * chico los cobra en proporción.
+ * El parámetro es la SUMA de los tamaños de todos los cargos, no el más grande.
+ * Con 10 hs en un cargo y 8 en otro son 18 hs, que ya superan las 15 de un cargo
+ * completo, así que se cobra el monto entero. Tomar sólo el cargo más grande
+ * daba 10 hs y pagaba dos tercios, que es el error que tenía.
+ *
+ * El tope es el otro punto central de la pauta: el monto se cobra UNA vez y no se
+ * multiplica por tener varios cargos.
  */
 function montoPorPersona(puestos: readonly Puesto[], montoCompleto: number): number {
   if (montoCompleto <= 0) return 0;
 
-  const proporcionDelCargoMasGrande = puestos.reduce(
-    (mayor, puesto) => Math.max(mayor, tamanoDelCargo(puesto.tipo, puesto.cantHoras)),
+  const cargosCompletos = puestos.reduce(
+    (suma, puesto) => suma + tamanoDelCargo(puesto.tipo, puesto.cantHoras),
     0
   );
-  return montoCompleto * Math.min(proporcionDelCargoMasGrande, 1);
+  return montoCompleto * Math.min(cargosCompletos, 1);
 }
 
 /** La suma fija del mes, prorrateada por el tamaño del cargo y con tope. */
