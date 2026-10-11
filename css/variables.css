@@ -11,8 +11,4 @@
     /* Gris claro para bordes */
     --blanco: #ffffff;
     --negro: #212529;
-    --fuenteTitulo: "Fredericka the Great", serif;
-    /* Altura de capas. La barra del mes queda pegada abajo en el celular y
-       tiene que pasar por encima del contenido, pero por debajo de los menús. */
-    --z-barra: 30;
-}
+    --fuenteTitulo: "Fredericka the Great", serif;}
