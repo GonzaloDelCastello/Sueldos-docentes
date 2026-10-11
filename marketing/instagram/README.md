@@ -1,6 +1,6 @@
 # Placas de Instagram
 
-Cuatro carruseles listos para publicar en la cuenta de ATEBA - Lista Roja N°4,
+Cinco carruseles listos para publicar en la cuenta de ATEBA - Lista Roja N°4,
 difundiendo el sitio `trabajadoresedu-sanluis.ar`.
 
 Cada carpeta es **una publicación** y cada `placa-0N.png` es **una imagen de esa
@@ -11,10 +11,17 @@ es solo para mirar el carrusel completo de un vistazo (no se publica).
 
 | Publicación | Placas | De qué habla |
 | --- | --- | --- |
-| `carrusel-01-que-es-ateba` | 5 | Quiénes somos y qué herramientas hay en la web |
+| `carrusel-01-calculadora-novedades` | 5 | Lo nuevo que ya se puede calcular: pauta del último trimestre, cargos nuevos y lo que viene |
 | `carrusel-02-calculadora-de-sueldos` | 5 | La calculadora: cargos, qué muestra y cómo se usa |
 | `carrusel-03-sueldo-vs-inflacion` | 5 | La comparación del salario contra el IPC |
 | `carrusel-04-recursos-y-colaboracion` | 5 | Normativa, portales oficiales y cómo colaborar |
+| `carrusel-05-dentro-de-la-calculadora` | 5 | Qué hace la calculadora más allá del total: varios cargos, descuentos y desglose |
+
+El carrusel 01 anterior —"Qué es ATEBA y qué hay en la web"— está en
+`_historico-carrusel-01-presentacion-ateba/`. Se sacó de la serie el 2026-10-11:
+la presentación de la agrupación quedó cubierta por la firma de cada placa, y ese
+lugar del calendario rinde más anunciando lo que la herramienta ya permite hacer.
+Las placas se conservan ahí porque el script las pisa al regenerar.
 
 Todas las imágenes son de **1080 x 1350 px** (4:5), el formato vertical que más
 espacio ocupa en el feed. La placa 5 de cada carrusel tiene el código QR del sitio.
@@ -36,19 +43,26 @@ El script pisa las imágenes de `marketing/instagram/`. Los archivos que se baja
 
 Están escritos para copiar y pegar. Se puede (y conviene) cambiarles el tono.
 
-### 1. Qué es ATEBA y qué hay en la web
+### 1. Novedades de la calculadora
 
-> Entender el recibo de sueldo es un paso para defender nuestras condiciones
-> laborales.
+> Esto ya lo podés calcular.
 >
-> Por eso construimos esta web: una calculadora de sueldos docentes de San Luis,
-> una comparación del salario contra la inflación y un espacio de recursos y
-> normativa. Todo gratis, sin fines de lucro y hecho por docentes.
+> La calculadora está actualizada a las liquidaciones informadas al 09/10/2026 e
+> incluye la pauta del último trimestre: la suma fija no remunerativa de $100.000
+> desde el sueldo de noviembre, y el bono de fin de año de $500.000, que se paga
+> el viernes 4 de diciembre.
 >
-> Entrá y guardala en favoritos 👉 trabajadoresedu-sanluis.ar
+> Ojo con un detalle que confunde a muchxs: la suma fija y el bono se cobran una
+> sola vez, por el cargo más grande. Sumar cargos no los multiplica; un cargo de
+> 12 horas cobra el 80%.
 >
-> #DocentesDeSanLuis #ATEBA #ListaRoja #AMET #SueldosDocentes #EducaciónPública
-> #SanLuis #TrabajadoresDeLaEducación #TransparenciaSindical
+> También sumamos los cargos que faltaban: Asesor/a Pedagógico (417p), Auxiliar
+> docente (217p), Inicial completo y todo el Nivel Superior (IFDC), de 10 a 40 hs.
+>
+> Calculá tu mes 👉 trabajadoresedu-sanluis.ar
+>
+> #SueldosDocentes #DocentesDeSanLuis #ATEBA #ListaRoja #AMET #SalarioDocente
+> #ParitariaDocente #BonoDeFinDeAño #SanLuis #EducaciónPública
 
 ### 2. Calculadora de sueldos
 
@@ -99,8 +113,37 @@ Están escritos para copiar y pegar. Se puede (y conviene) cambiarles el tono.
 > #RecursosDocentes #EstatutoDocente #DocentesDeSanLuis #ATEBA #ListaRoja #AMET
 > #EducaciónPública #SanLuis
 
+### 5. Qué hay dentro de la calculadora
+
+> La calculadora hace más de lo que parece.
+>
+> Podés cargar todos tus cargos juntos —de distintos niveles y de distintas
+> zonas— y el cálculo sale en una sola cuenta. Los descuentos de ley y los
+> seguros fijos se aplican una sola vez sobre el total, igual que en el recibo,
+> no cargo por cargo.
+>
+> Además te muestra el desglose por cargo, los porcentajes de cada grupo de
+> conceptos contra el neto y el bruto, el SAC estimado aparte y los meses con
+> bono o suma fija.
+>
+> Entrá desde el celular y probala con tus propios cargos 👉 trabajadoresedu-sanluis.ar
+>
+> #SueldosDocentes #CalculadoraSalarial #DocentesDeSanLuis #ATEBA #ListaRoja
+> #AMET #Pluriempleo #SalarioDocente #SanLuis
+
 ## Una idea de calendario
 
-Se pueden publicar uno por semana, en este orden: primero la presentación, después
-la calculadora (que es la herramienta que más engancha), luego la comparación con
-la inflación y al final recursos + convocatoria a colaborar.
+Se pueden publicar uno por semana, en este orden:
+
+1. **Novedades de la calculadora** — es lo que la gente quiere saber hoy: la suma
+   fija, el bono y los cargos nuevos.
+2. **Calculadora de sueldos** — cómo se usa, para quien llegó con la primera.
+3. **Recursos y colaboración** — los trámites y la convocatoria a aportar recibos.
+4. **Sueldo vs. inflación** — el comparador, que es lo más técnico y sostiene el
+   reclamo.
+5. **Qué hay dentro de la calculadora** — funciona mejor cuando ya hay audiencia
+   que conoce la herramienta.
+
+Ojo con el 3 y el 4: el comparador todavía dice medir "sueldos" cuando en realidad
+mide el valor de la hora cátedra (ver `docs/backlog.md`, bloque 2b). Conviene
+publicarlos después de corregir ese texto.

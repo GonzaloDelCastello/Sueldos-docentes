@@ -912,62 +912,67 @@ def render(carruseles: list[dict]) -> None:
 
 CARRUSELES = [
     {
-        "slug": "que-es-ateba",
-        "titulo": "Qué es ATEBA y qué hay en la web",
+        "slug": "calculadora-novedades",
+        "titulo": "Novedades de la calculadora",
         "placas": [
             {
                 "tipo": "portada",
-                "kicker": "ATEBA · LISTA ROJA N°4 · AMET",
-                "titulo": ["Docentes de San Luis:", "estas herramientas", "son nuestras"],
+                "kicker": "Calculadora de sueldos · San Luis",
+                "titulo": ["Esto ya lo", "podés calcular"],
                 "destacado": 1,
-                "bajada": "Calculadora de sueldos, comparativa con la inflación y recursos, "
-                          "en un solo lugar. Gratis y sin fines de lucro.",
+                "bajada": "La suma fija de $100.000, el bono de $500.000 y todos los cargos nuevos. "
+                          "Actualizada a las liquidaciones informadas al 09/10/2026, para todos los niveles.",
             },
             {
                 "tipo": "lista",
-                "kicker": "Quiénes somos",
-                "titulo": ["Una agrupación", "de base"],
+                "kicker": "Los meses que se vienen",
+                "titulo": ["La pauta del", "último trimestre,", "cargada"],
                 "destacado": 1,
-                "bajada": "ATEBA es la Agrupación de Trabajadores de la Educación de Base, "
-                          "dentro de AMET. Somos la Lista Roja N°4.",
                 "items": [
-                    {"icono": "check", "titulo": "Docentes, no dirigentes",
-                     "texto": "Integrada por docentes de toda la provincia, con los pies en la escuela."},
-                    {"icono": "documento", "titulo": "Años de trabajo territorial",
-                     "texto": "Analizamos recibos en las salas de profesores y dimos la discusión técnica en cada asamblea."},
-                    {"icono": "calculadora", "titulo": "Herramientas digitales propias",
-                     "texto": "Convertimos ese trabajo en instrumentos para que cada colega entienda y defienda lo que le corresponde."},
+                    {"icono": "sueldo", "titulo": "$100.000 de suma fija",
+                     "texto": "No remunerativa, desde el sueldo de noviembre y en los meses siguientes: queda instalada como un ítem más del recibo."},
+                    {"icono": "calendario", "titulo": "$500.000 de bono de fin de año",
+                     "texto": "Pago único, el viernes 4 de diciembre, Día del Empleado Público. La calculadora lo muestra aparte del haber del mes."},
+                    {"icono": "check", "titulo": "Elegís el mes y aparece solo",
+                     "texto": "Noviembre y diciembre traen los conceptos de la pauta; los meses anteriores se calculan como siempre, sin esos ítems."},
                 ],
+                "bajada": "",
+            },
+            {
+                "tipo": "lista",
+                "kicker": "Cargos que antes no estaban",
+                "titulo": ["Sumamos", "lo que faltaba"],
+                "destacado": 0,
+                "items": [
+                    {"icono": "check", "titulo": "Asesor/a Pedagógico (417p)",
+                     "texto": "Nivel Medio y Nivel Primario."},
+                    {"icono": "check", "titulo": "Auxiliar docente (217p)",
+                     "texto": "Nivel Primario y Nivel Inicial."},
+                    {"icono": "check", "titulo": "Inicial completo",
+                     "texto": "Maestrx de Jardín, Educación Especial Inicial (258p) y Maestrx Especial de Jardín (183p)."},
+                    {"icono": "check", "titulo": "Superior (IFDC)",
+                     "texto": "Full time 40 hs, tiempo completo 30 hs, semiexclusivo 25 hs y dedicación simple 10 hs."},
+                ],
+                "bajada": "Los coeficientes y los porcentajes salen del instructivo de pre-liquidación, "
+                          "y se verifican todos los meses.",
             },
             {
                 "tipo": "destacada",
-                "kicker": "Por qué lo hacemos",
-                "etiqueta": "Transparencia sindical",
-                "titulo": ["Entender el recibo", "es un paso para", "defender el salario"],
+                "kicker": "Cómo se cobra",
+                "etiqueta": "Ojo con esto",
+                "titulo": ["La suma fija", "se cobra", "una sola vez"],
                 "destacado": 1,
                 "tam_titulo": 76,
-                "bajada": "Este sitio no es solo una página web: es una herramienta de organización. "
-                          "La información deja de ser un misterio y pasa a ser un argumento.",
-            },
-            {
-                "tipo": "lista",
-                "kicker": "Qué encontrás",
-                "titulo": ["Tres herramientas,", "una sola web"],
-                "destacado": 0,
-                "items": [
-                    {"icono": "calculadora", "titulo": "Calculadora de sueldos",
-                     "texto": "Elegís nivel, cargo, zona, antigüedad y el mes: te muestra el total de bolsillo y el detalle ítem por ítem."},
-                    {"icono": "grafico", "titulo": "Sueldo vs. inflación",
-                     "texto": "Compara la evolución de la hora cátedra contra el IPC del INDEC y te dice si ganaste o perdiste poder de compra."},
-                    {"icono": "documento", "titulo": "Recursos y normativa",
-                     "texto": "Estatuto Docente, calendario escolar, D.J. 02, L.R. 01 y los portales oficiales, todos reunidos."},
-                ],
+                "bajada": "No se multiplica por la cantidad de cargos ni por las horas: cuenta el cargo más grande. "
+                          "Un cargo de 15 horas cobra el monto completo; uno de 12 horas, el 80%. "
+                          "Sumar cargos no duplica la suma fija ni el bono.",
             },
             {
                 "tipo": "cierre",
-                "kicker": "Entrá ahora",
-                "titulo": ["Todo esto,", "en tu celular"],
-                "bajada": "Andá a la web y guardala en favoritos. Es gratis y la construimos entre todxs.",
+                "kicker": "Probalo ahora",
+                "titulo": ["Calculá", "tu mes"],
+                "bajada": "Elegí tus cargos y el mes, y mirá el detalle completo. Gratis, sin fines de lucro "
+                          "y hecho por docentes. Lo que viene: traducir el sueldo a canastas básicas.",
             },
         ],
     },
@@ -1149,6 +1154,70 @@ CARRUSELES = [
                 "kicker": "Sumate",
                 "titulo": ["La web", "es de todxs"],
                 "bajada": "Entrá, usala, compartila. Y si podés, sumá tu aporte para que siga creciendo.",
+            },
+        ],
+    },
+    {
+        "slug": "dentro-de-la-calculadora",
+        "titulo": "Qué hay dentro de la calculadora",
+        "placas": [
+            {
+                "tipo": "portada",
+                "kicker": "Calculadora de sueldos · San Luis",
+                "titulo": ["No es solo", "un número", "final"],
+                "destacado": 2,
+                "bajada": "La calculadora hace cosas que casi nadie usa. "
+                          "Estas cinco, en un minuto.",
+            },
+            {
+                "tipo": "lista",
+                "kicker": "Lo primero",
+                "titulo": ["Todos tus cargos,", "en la misma cuenta"],
+                "destacado": 1,
+                "items": [
+                    {"icono": "check", "titulo": "Uno o varios cargos",
+                     "texto": "Apretás «Agregar otro cargo» y cargás cada uno con su nivel, su tipo y su zona."},
+                    {"icono": "check", "titulo": "Uno o varios niveles",
+                     "texto": "Medio, Primario, Inicial y Superior (IFDC) se pueden mezclar en el mismo cálculo."},
+                    {"icono": "check", "titulo": "Horas en zonas distintas",
+                     "texto": "Las horas de secundaria van en un cargo por zona: una escuela de zona 1 y otra de zona 4 son dos cargos."},
+                    {"icono": "check", "titulo": "Antigüedad y afiliación, una sola vez",
+                     "texto": "Son las mismas para todos tus cargos, así que se cargan una vez abajo de todo."},
+                ],
+                "bajada": "",
+            },
+            {
+                "tipo": "destacada",
+                "kicker": "El detalle que cambia todo",
+                "etiqueta": "Como en el recibo",
+                "titulo": ["Los descuentos", "van una sola vez"],
+                "destacado": 1,
+                "tam_titulo": 76,
+                "bajada": "Los descuentos de ley se aplican sobre el total y no cargo por cargo. "
+                          "Los seguros fijos son por agente: no se multiplican. "
+                          "Un docente con dos cargos cobra menos descuentos que la suma de dos recibos separados.",
+            },
+            {
+                "tipo": "lista",
+                "kicker": "Qué más te muestra",
+                "titulo": ["Qué más", "te muestra,", "sin hacer cuentas"],
+                "destacado": 2,
+                "items": [
+                    {"icono": "grafico", "titulo": "Desglose por cargo",
+                     "texto": "Una tabla aparte con lo que aporta cada cargo al bruto: las horas, la zona, lo remunerativo y lo no remunerativo."},
+                    {"icono": "check", "titulo": "Los porcentajes, ya calculados",
+                     "texto": "Cada grupo de conceptos medido contra el neto y contra el bruto, para ver de un vistazo dónde se va la plata."},
+                    {"icono": "calendario", "titulo": "SAC y meses con extras",
+                     "texto": "El aguinaldo aparece aparte, porque se paga en otra fecha. El bono y la suma fija, como un ítem propio del mes en que se cobran."},
+                ],
+                "bajada": "",
+            },
+            {
+                "tipo": "cierre",
+                "kicker": "Probalo",
+                "titulo": ["Tu recibo", "entero, en el celu"],
+                "bajada": "Entrá desde el teléfono, cargá tus cargos y guardala en favoritos. "
+                          "Actualizada a las liquidaciones informadas al 09/10/2026.",
             },
         ],
     },
