@@ -11,20 +11,45 @@ es solo para mirar el carrusel completo de un vistazo (no se publica).
 
 | Publicación | Placas | De qué habla |
 | --- | --- | --- |
-| `carrusel-01-calculadora-novedades` | 5 | Lo nuevo que ya se puede calcular: pauta del último trimestre, cargos nuevos y lo que viene |
+| `carrusel-01-calculadora-salarial` | 6 | Preguntas que responde la calculadora: ítems del recibo, cargos u horas, antigüedad, aguinaldo y porcentajes |
 | `carrusel-02-calculadora-de-sueldos` | 5 | La calculadora: cargos, qué muestra y cómo se usa |
 | `carrusel-03-sueldo-vs-inflacion` | 5 | La comparación del salario contra el IPC |
 | `carrusel-04-recursos-y-colaboracion` | 5 | Normativa, portales oficiales y cómo colaborar |
 | `carrusel-05-dentro-de-la-calculadora` | 5 | Qué hace la calculadora más allá del total: varios cargos, descuentos y desglose |
 
-El carrusel 01 anterior —"Qué es ATEBA y qué hay en la web"— está en
-`_historico-carrusel-01-presentacion-ateba/`. Se sacó de la serie el 2026-10-11:
-la presentación de la agrupación quedó cubierta por la firma de cada placa, y ese
-lugar del calendario rinde más anunciando lo que la herramienta ya permite hacer.
-Las placas se conservan ahí porque el script las pisa al regenerar.
+El carrusel 01 es el único de seis placas: sigue el guion dictado por Gonzalo el
+2026-10-11 (pregunta, pregunta, porcentajes, quiénes lo hacemos, por qué, y cierre
+con link y QR).
+
+Dos versiones anteriores del 01 quedaron archivadas —**no se publican**:
+
+| Carpeta | Qué era |
+| --- | --- |
+| `_historico-carrusel-01-presentacion-ateba/` | La presentación original de la agrupación |
+| `_historico-carrusel-01-novedades-octubre/` | El anuncio de la pauta del último trimestre |
+
+Las placas archivadas se conservan porque el script pisa las imágenes de las
+carpetas activas al regenerar.
 
 Todas las imágenes son de **1080 x 1350 px** (4:5), el formato vertical que más
-espacio ocupa en el feed. La placa 5 de cada carrusel tiene el código QR del sitio.
+espacio ocupa en el feed.
+
+## El link al sitio, en la imagen
+
+**Instagram no permite enlaces clickeables dentro de un carrusel del feed.** Las
+imágenes del feed no llevan link: los enlaces viven en la bio, en las Stories
+(sticker de enlace) y en los Reels. Lo único que habilita links en publicaciones
+es pago y con cupo mensual (Meta One desde Advanced, y la prueba de links en el
+caption para Meta Verified). Así que el link se resuelve en la imagen:
+
+- **Todas las placas** llevan la dirección `trabajadoresedu-sanluis.ar` escrita en
+  el pie, a la derecha, donde el ojo la busca.
+- **Las placas del medio** llevan además un **QR chico** abajo a la izquierda, para
+  escanear desde el feed sin abrir la publicación. La portada no lo lleva: ahí
+  manda el impacto. La placa de cierre tampoco, porque ya tiene el QR grande.
+- **El caption** repite la dirección. No es clickeable, pero se copia y se pega.
+- Si además se publica el carrusel como **Story**, ahí sí se le puede pegar el
+  sticker de enlace: es el único lugar donde el link se toca.
 
 ## Cómo volver a generarlas
 
@@ -43,26 +68,24 @@ El script pisa las imágenes de `marketing/instagram/`. Los archivos que se baja
 
 Están escritos para copiar y pegar. Se puede (y conviene) cambiarles el tono.
 
-### 1. Novedades de la calculadora
+### 1. Calculadora salarial: entender el recibo
 
-> Esto ya lo podés calcular.
+> ¿Querés entender los ítems que componen tu sueldo docente en San Luis? ¿Querés
+> saber cuánto te van a pagar por ese cargo o esas horas, si las ganás?
 >
-> La calculadora está actualizada a las liquidaciones informadas al 09/10/2026 e
-> incluye la pauta del último trimestre: la suma fija no remunerativa de $100.000
-> desde el sueldo de noviembre, y el bono de fin de año de $500.000, que se paga
-> el viernes 4 de diciembre.
+> ¿Querés saber de cuánto será tu aguinaldo con este sueldo? ¿O cuánto cobrarías
+> con cierta antigüedad? ¿Cuál es el porcentaje remunerativo de tu sueldo y cuál
+> el no remunerativo?
 >
-> Ojo con un detalle que confunde a muchxs: la suma fija y el bono se cobran una
-> sola vez, por el cargo más grande. Sumar cargos no los multiplica; un cargo de
-> 12 horas cobra el 80%.
+> Desde ATEBa construimos una calculadora salarial de trabajadores de la educación
+> para la provincia de San Luis. Porque creemos que conocer y entender la
+> liquidación de nuestro salario es un paso para defender nuestras condiciones
+> laborales.
 >
-> También sumamos los cargos que faltaban: Asesor/a Pedagógico (417p), Auxiliar
-> docente (217p), Inicial completo y todo el Nivel Superior (IFDC), de 10 a 40 hs.
->
-> Calculá tu mes 👉 trabajadoresedu-sanluis.ar
+> Calculadora salarial dinámica, actualizada y fácil de usar 👉 trabajadoresedu-sanluis.ar
 >
 > #SueldosDocentes #DocentesDeSanLuis #ATEBA #ListaRoja #AMET #SalarioDocente
-> #ParitariaDocente #BonoDeFinDeAño #SanLuis #EducaciónPública
+> #LiquidaciónDeSueldos #Aguinaldo #SanLuis #EducaciónPública
 
 ### 2. Calculadora de sueldos
 
@@ -135,8 +158,8 @@ Están escritos para copiar y pegar. Se puede (y conviene) cambiarles el tono.
 
 Se pueden publicar uno por semana, en este orden:
 
-1. **Novedades de la calculadora** — es lo que la gente quiere saber hoy: la suma
-   fija, el bono y los cargos nuevos.
+1. **Calculadora salarial: entender el recibo** — abre con las preguntas, que es
+   lo que la gente se pregunta de verdad. Es la presentación del proyecto.
 2. **Calculadora de sueldos** — cómo se usa, para quien llegó con la primera.
 3. **Recursos y colaboración** — los trámites y la convocatoria a aportar recibos.
 4. **Sueldo vs. inflación** — el comparador, que es lo más técnico y sostiene el

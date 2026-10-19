@@ -45,7 +45,10 @@ ANCHO_UTIL = ANCHO - 2 * MARGEN
 
 CREMA = (249, 247, 242)        # --primarioClaro
 ROJO = (163, 59, 50)           # --primario
-ROJO_VIVO = (211, 86, 70)      # el rojo, aclarado para que se lea sobre pizarra
+# El rojo de marca no se lee sobre la pizarra: da 2,8:1 de contraste. Aclarado
+# hasta acá llega a 4,4:1, que es el mínimo para texto grande (WCAG AA), y el
+# halo de tiza que se dibuja debajo lo separa todavía más del fondo.
+ROJO_VIVO = (241, 129, 105)
 ROJO_OSCURO = (126, 42, 35)
 GRAFITO = (52, 58, 64)         # --secundarioOscuro
 GRIS = (108, 113, 118)
@@ -453,12 +456,47 @@ def encabezado(d: ImageDraw.ImageDraw, kicker: str, indice: int, total: int, cla
     d.line([MARGEN, 132, ANCHO - MARGEN, 132], fill=regla, width=2)
 
 
+def qr_sello(im: Image.Image, x: float, y: float, lado: int = 108) -> None:
+    """
+    El QR chico del pie, para escanear desde el feed sin abrir la publicación.
+
+    Instagram no admite enlaces clickeables dentro de un carrusel del feed, así
+    que la única forma de que alguien llegue al sitio desde la imagen es que el
+    link esté escrito y que el QR esté a la vista. Va sobre tarjeta blanca porque
+    el QR necesita fondo claro para leerse sobre la pizarra y sobre el rojo.
+    """
+    tarjeta = Image.new("RGBA", (lado + 20, lado + 20), (0, 0, 0, 0))
+    dt = ImageDraw.Draw(tarjeta)
+    dt.rounded_rectangle([0, 0, lado + 19, lado + 19], radius=16, fill=(255, 255, 255, 255))
+    tarjeta.paste(qr_imagen(lado), (10, 10))
+    pegar(im, tarjeta, (x, y), ancla="la")
+
+
 def pie(d: ImageDraw.ImageDraw, indice: int, total: int, claro: bool) -> None:
     color = TIZA_APAGADA if claro else GRIS
     d.line([MARGEN, 1188, ANCHO - MARGEN, 1188], fill=color, width=2)
     texto_espaciado(d, (MARGEN, 1216), FIRMA, montserrat(24, 600), color, tracking=2)
     texto_espaciado(d, (ANCHO - MARGEN, 1216), SITIO, montserrat(24, 700), color, tracking=0, alineacion="r")
     puntos(d, indice, total, 1288, ROJO_VIVO if claro else ROJO, color)
+
+
+def pie_con_sello(im: Image.Image, d: ImageDraw.ImageDraw, indice: int, total: int, claro: bool) -> None:
+    """
+    El pie de siempre más el QR chico, para las placas del medio.
+
+    La placa de cierre ya tiene su QR grande, así que usa `pie` a secas.
+
+    El reparto de la línea es: QR a la izquierda, firma al medio, dirección a la
+    derecha. El QR se ancla 24 px por encima de la regla para no invadir los
+    puntitos del índice, que van más abajo y centrados.
+    """
+    color = TIZA_APAGADA if claro else GRIS
+    d.line([MARGEN, 1188, ANCHO - MARGEN, 1188], fill=color, width=2)
+    texto_espaciado(d, (MARGEN + 180, 1216), FIRMA, montserrat(24, 600), color, tracking=2)
+    texto_espaciado(d, (ANCHO - MARGEN, 1216), SITIO, montserrat(24, 700), color, tracking=0, alineacion="r")
+
+    qr_sello(im, MARGEN + 6, 1178)
+    puntos(d, indice, total, 1290, ROJO_VIVO if claro else ROJO, color)
 
 
 def puntos(d: ImageDraw.ImageDraw, indice: int, total: int, y: float, activo, inactivo) -> None:
@@ -491,6 +529,40 @@ def senal_deslizar(d: ImageDraw.ImageDraw, y: float, color) -> None:
 # Tipos de placa
 # --------------------------------------------------------------------------
 
+def texto_tiza(
+    im: Image.Image,
+    xy: tuple,
+    texto: str,
+    fuente: ImageFont.FreeTypeFont,
+    color,
+    anchor: str = "ma",
+    halo: int = 5,
+) -> None:
+    """
+    Dibuja texto sobre la pizarra con un halo de tiza debajo.
+
+    Por qué: el rojo de marca, aclarado, llega justo al mínimo de contraste sobre
+    el fondo oscuro. El halo —varias pasadas desplazadas alrededor, translúcidas—
+    engrosa el trazo y separa la letra del fondo sin cambiar el color ni el estilo
+    dibujado a mano. Se dibuja en una capa aparte para que las pasadas no se
+    apilen opacas y quede un borde sucio.
+    """
+    capa = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    dc = ImageDraw.Draw(capa)
+
+    # El halo es más ancho cuanto más chica es la letra: en un texto grande, un
+    # borde del mismo grosor se pierde.
+    pasos = max(1, round(halo * 34 / max(fuente.size, 1)))
+    for dx in range(-pasos, pasos + 1):
+        for dy in range(-pasos, pasos + 1):
+            if dx == 0 and dy == 0:
+                continue
+            dc.text((xy[0] + dx, xy[1] + dy), texto, font=fuente, fill=(238, 235, 226, 150), anchor=anchor)
+
+    im.paste(capa, (0, 0), capa)
+    ImageDraw.Draw(im).text(xy, texto, font=fuente, fill=color, anchor=anchor)
+
+
 def placa_portada(p: dict, indice: int, total: int) -> Image.Image:
     """La primera placa: logo grande, título y una bajada. Fondo de pizarra."""
     im = fondo_pizarra()
@@ -507,8 +579,10 @@ def placa_portada(p: dict, indice: int, total: int) -> Image.Image:
     # El bloque se centra entre el logo (termina cerca de 470) y el "deslizá" (1108).
     y = 470 + max(0, (1080 - 470 - alto) // 2)
     for i, linea in enumerate(p["titulo"]):
-        color = ROJO_VIVO if i == p.get("destacado", -1) else TIZA
-        d.text((ANCHO / 2, y), linea, font=fredericka(tam), fill=color, anchor="ma")
+        if i == p.get("destacado", -1):
+            texto_tiza(im, (ANCHO / 2, y), linea, fredericka(tam), ROJO_VIVO)
+        else:
+            d.text((ANCHO / 2, y), linea, font=fredericka(tam), fill=TIZA, anchor="ma")
         y += interlinea
 
     if lineas_bajada:
@@ -542,7 +616,7 @@ def placa_lista(p: dict, indice: int, total: int) -> Image.Image:
         y = parrafo(d, p["bajada"], montserrat(34, 500), GRIS, (MARGEN, y + 22), ANCHO_UTIL, interlinea=1.34)
 
     bloque_items(d, p["items"], max(y + 54, 520), 1140)
-    pie(d, indice, total, claro=False)
+    pie_con_sello(im, d, indice, total, claro=False)
     return im
 
 
@@ -566,12 +640,16 @@ def placa_destacada(p: dict, indice: int, total: int) -> Image.Image:
     y = 200 + max(0, (940 - alto) // 2)
 
     if p.get("etiqueta"):
+        # Sin halo: Bebas en mayúsculas ya tiene el trazo grueso, y el contorno le
+        # tapa los huecos internos de las letras y la vuelve ilegible.
         texto_espaciado(d, (ANCHO / 2, y), p["etiqueta"].upper(), bebas(40), ROJO_VIVO, tracking=6, alineacion="c")
         y += 90
 
     for i, linea in enumerate(p["titulo"]):
-        color = ROJO_VIVO if i == p.get("destacado", -1) else TIZA
-        d.text((ANCHO / 2, y), linea, font=fredericka(tam), fill=color, anchor="ma")
+        if i == p.get("destacado", -1):
+            texto_tiza(im, (ANCHO / 2, y), linea, fredericka(tam), ROJO_VIVO)
+        else:
+            d.text((ANCHO / 2, y), linea, font=fredericka(tam), fill=TIZA, anchor="ma")
         y += interlinea
     if p.get("destacado", -1) >= 0:
         ancho_linea = fredericka(tam).getlength(p["titulo"][p["destacado"]])
@@ -586,7 +664,7 @@ def placa_destacada(p: dict, indice: int, total: int) -> Image.Image:
     if p.get("dibujo") == "grafico":
         dibujar_grafico(d, y + 40)
 
-    pie(d, indice, total, claro=True)
+    pie_con_sello(im, d, indice, total, claro=True)
     return im
 
 
@@ -638,7 +716,7 @@ def placa_pasos(p: dict, indice: int, total: int) -> Image.Image:
 
     pasos = [dict(paso, numero=str(i)) for i, paso in enumerate(p["pasos"], start=1)]
     bloque_items(d, pasos, max(y + 64, 540), 1140, numeros=True)
-    pie(d, indice, total, claro=False)
+    pie_con_sello(im, d, indice, total, claro=False)
     return im
 
 
@@ -698,7 +776,7 @@ def placa_recibo(p: dict, indice: int, total: int) -> Image.Image:
         parrafo(d, p["nota"], montserrat(30, 600, cursiva=True), TIZA_APAGADA,
                 (ANCHO / 2, arriba + alto_tarjeta + 34), ANCHO_UTIL, interlinea=1.3, alineacion="c")
 
-    pie(d, indice, total, claro=True)
+    pie_con_sello(im, d, indice, total, claro=True)
     return im
 
 
@@ -738,7 +816,7 @@ def placa_enlaces(p: dict, indice: int, total: int) -> Image.Image:
             ty += 40
         y += alto + 28
 
-    pie(d, indice, total, claro=True)
+    pie_con_sello(im, d, indice, total, claro=True)
     return im
 
 
@@ -912,67 +990,64 @@ def render(carruseles: list[dict]) -> None:
 
 CARRUSELES = [
     {
-        "slug": "calculadora-novedades",
-        "titulo": "Novedades de la calculadora",
+        "slug": "calculadora-salarial",
+        "titulo": "Calculadora salarial: entender el recibo",
         "placas": [
             {
                 "tipo": "portada",
-                "kicker": "Calculadora de sueldos · San Luis",
-                "titulo": ["Esto ya lo", "podés calcular"],
+                "kicker": "Calculadora salarial · San Luis",
+                "titulo": ["¿Querés entender los ítems", "que componen tu sueldo", "docente en San Luis?"],
                 "destacado": 1,
-                "bajada": "La suma fija de $100.000, el bono de $500.000 y todos los cargos nuevos. "
-                          "Actualizada a las liquidaciones informadas al 09/10/2026, para todos los niveles.",
+                "bajada": "¿Querés saber cuánto te van a pagar por ese cargo o esas horas, si las ganás?",
+            },
+            {
+                "tipo": "portada",
+                "kicker": "Aguinaldo y antigüedad",
+                "titulo": ["¿Querés saber de cuánto", "será tu aguinaldo", "con este sueldo?"],
+                "destacado": 1,
+                "bajada": "¿O cuánto cobrarías con cierta antigüedad?",
             },
             {
                 "tipo": "lista",
-                "kicker": "Los meses que se vienen",
-                "titulo": ["La pauta del", "último trimestre,", "cargada"],
+                "kicker": "Remunerativo y no remunerativo",
+                "titulo": ["¿Cuál es el", "porcentaje remunerativo", "de tu sueldo?"],
                 "destacado": 1,
                 "items": [
-                    {"icono": "sueldo", "titulo": "$100.000 de suma fija",
-                     "texto": "No remunerativa, desde el sueldo de noviembre y en los meses siguientes: queda instalada como un ítem más del recibo."},
-                    {"icono": "calendario", "titulo": "$500.000 de bono de fin de año",
-                     "texto": "Pago único, el viernes 4 de diciembre, Día del Empleado Público. La calculadora lo muestra aparte del haber del mes."},
-                    {"icono": "check", "titulo": "Elegís el mes y aparece solo",
-                     "texto": "Noviembre y diciembre traen los conceptos de la pauta; los meses anteriores se calculan como siempre, sin esos ítems."},
+                    {"icono": "check", "titulo": "El porcentaje remunerativo",
+                     "texto": "Los conceptos que sí aportan a jubilación y obra social, medidos sobre tu neto."},
+                    {"icono": "check", "titulo": "El porcentaje no remunerativo",
+                     "texto": "Los que no aportan, como el Incentivo Docente y las sumas fijas, que cada vez pesan más."},
+                    {"icono": "check", "titulo": "Los dos, ya calculados",
+                     "texto": "La calculadora los muestra sobre el neto y sobre el bruto: no tenés que sacar ninguna cuenta."},
                 ],
                 "bajada": "",
             },
             {
-                "tipo": "lista",
-                "kicker": "Cargos que antes no estaban",
-                "titulo": ["Sumamos", "lo que faltaba"],
+                "tipo": "destacada",
+                "kicker": "Quiénes lo hacemos",
+                "etiqueta": "Nuestra herramienta",
+                "titulo": ["Desde ATEBa", "construimos una", "calculadora salarial"],
                 "destacado": 0,
-                "items": [
-                    {"icono": "check", "titulo": "Asesor/a Pedagógico (417p)",
-                     "texto": "Nivel Medio y Nivel Primario."},
-                    {"icono": "check", "titulo": "Auxiliar docente (217p)",
-                     "texto": "Nivel Primario y Nivel Inicial."},
-                    {"icono": "check", "titulo": "Inicial completo",
-                     "texto": "Maestrx de Jardín, Educación Especial Inicial (258p) y Maestrx Especial de Jardín (183p)."},
-                    {"icono": "check", "titulo": "Superior (IFDC)",
-                     "texto": "Full time 40 hs, tiempo completo 30 hs, semiexclusivo 25 hs y dedicación simple 10 hs."},
-                ],
-                "bajada": "Los coeficientes y los porcentajes salen del instructivo de pre-liquidación, "
-                          "y se verifican todos los meses.",
+                "tam_titulo": 72,
+                "bajada": "Para la provincia de San Luis. Gratis, sin fines de lucro y hecha por docentes "
+                          "que están frente al aula.",
             },
             {
                 "tipo": "destacada",
-                "kicker": "Cómo se cobra",
-                "etiqueta": "Ojo con esto",
-                "titulo": ["La suma fija", "se cobra", "una sola vez"],
-                "destacado": 1,
-                "tam_titulo": 76,
-                "bajada": "No se multiplica por la cantidad de cargos ni por las horas: cuenta el cargo más grande. "
-                          "Un cargo de 15 horas cobra el monto completo; uno de 12 horas, el 80%. "
-                          "Sumar cargos no duplica la suma fija ni el bono.",
+                "kicker": "Por qué lo hacemos",
+                "etiqueta": "Para defender el salario",
+                "titulo": ["Conocer y entender", "la liquidación", "es un paso para defender", "lo nuestro"],
+                "destacado": 3,
+                "tam_titulo": 68,
+                "bajada": "Saber de dónde sale cada peso cambia la conversación: deja de ser una queja "
+                          "y pasa a ser un argumento.",
             },
             {
                 "tipo": "cierre",
-                "kicker": "Probalo ahora",
-                "titulo": ["Calculá", "tu mes"],
-                "bajada": "Elegí tus cargos y el mes, y mirá el detalle completo. Gratis, sin fines de lucro "
-                          "y hecho por docentes. Lo que viene: traducir el sueldo a canastas básicas.",
+                "kicker": "Entrá ahora",
+                "titulo": ["Calculadora", "salarial"],
+                "bajada": "Calculadora salarial dinámica, actualizada y fácil de usar. "
+                          "Entrá desde el celular y guardala en favoritos.",
             },
         ],
     },
