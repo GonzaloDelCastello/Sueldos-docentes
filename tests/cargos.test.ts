@@ -769,6 +769,60 @@ describe("pauta del último trimestre de 2026", () => {
     casiIgual(preceptor.conceptos.sumaFijaTrimestre, esperado);
   });
 
+  test("un cargo de tiempo completo del IFDC cobra la suma fija entera", () => {
+    // El coeficiente del IFDC ya está expresado en CARGOS (1 = tiempo completo),
+    // no en puntos sobre 15. Dividirlo por 15 liquidaba la suma fija quince
+    // veces más chica: 6.666,67 en vez de 100.000.
+    const r = calcularPluriempleo([puesto("ifdcTiempoCompleto")], config("2026-11"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+    casiIgual(r.conceptos.sumaFijaTrimestre, 100000);
+  });
+
+  test("un cargo completo vale lo mismo en la básica y en el IFDC", () => {
+    // Esta es la comprobación que faltaba: comparar las dos escalas entre sí. Un
+    // cargo completo es un cargo completo, sea de 15 hs de secundaria o de
+    // tiempo completo en el superior.
+    const secundaria = calcularPluriempleo([puesto("horaSecundaria", { cantHoras: 15 })], config("2026-11"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+    const ifdc = calcularPluriempleo([puesto("ifdcTiempoCompleto")], config("2026-11"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+    casiIgual(ifdc.conceptos.sumaFijaTrimestre, secundaria.conceptos.sumaFijaTrimestre);
+  });
+
+  test("la dedicación simple del IFDC cobra en proporción a su coeficiente", () => {
+    // 0,426285 de un cargo de tiempo completo.
+    const simple = calcularPluriempleo([puesto("ifdcDedicacionSimple10")], config("2026-11"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+    casiIgual(
+      simple.conceptos.sumaFijaTrimestre,
+      100000 * COEFICIENTES_CARGOS.ifdcDedicacionSimple10
+    );
+  });
+
+  test("el semi-exclusivo del IFDC cobra las 25 de 30 horas", () => {
+    const semi = calcularPluriempleo([puesto("ifdcSemiExclusivo")], config("2026-11"), {
+      ...comunes,
+      incluirSAC: false,
+    });
+    casiIgual(semi.conceptos.sumaFijaTrimestre, 100000 * (25 / 30), 1);
+  });
+
+  test("las dos escalas tienen el mismo monto cargado", () => {
+    // El motor toma el monto de la escala básica. Si alguna vez se cargan valores
+    // distintos, el IFDC quedaría con el de la básica sin que nadie se entere.
+    const c = config("2026-12");
+    assert.equal(c.basica.sumaFijaPorAgente, c.ifdc.sumaFijaPorAgente);
+    assert.equal(c.basica.bonoFinDeAnioPorAgente, c.ifdc.bonoFinDeAnioPorAgente);
+  });
+
   test("el bono de fin de año es de $500.000 y sólo en diciembre", () => {
     const noviembre = calcularPluriempleo(unCargo, config("2026-11"), {
       ...comunes,

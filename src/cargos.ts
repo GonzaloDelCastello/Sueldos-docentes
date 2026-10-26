@@ -79,16 +79,24 @@ export function correspondeBonoFinDeAnio(periodo: string): boolean {
 /**
  * El tamaño del cargo, en "cargos completos".
  *
- * Un cargo de 15 hs de secundaria (o más) es 1. Un cargo de 7,5 hs es 0,5. Los
- * cargos que no se miden en horas usan su coeficiente: el preceptor, por
- * ejemplo, vale 14,1347 / 15.
+ * Un cargo de 15 hs de secundaria (o más) es 1. Un cargo de 7,5 hs es 0,5.
+ *
+ * OJO con los coeficientes: NO están todos en la misma unidad, y de ahí salió un
+ * error. Los de la escala básica están en PUNTOS, y 15 puntos son un cargo
+ * completo (15 hs de secundaria). Los del IFDC ya están expresados en CARGOS: 1
+ * es el cargo de tiempo completo, de 30 hs.
+ *
+ * Por eso cada escala se normaliza distinto. Dividir el coeficiente del IFDC por
+ * 15 lo trataba como si midiera horas de secundaria (1 / 15 = 0,0667) y le
+ * liquidaba la suma fija quince veces más chica.
  */
 export function tamanoDelCargo(tipo: TipoCargo, cantHoras: number): number {
   const definicion = definicionDe(tipo);
   if (definicion.usaHoras) {
     return cantHoras > 0 ? cantHoras / HORAS_DE_UN_CARGO_COMPLETO : 0;
   }
-  return COEFICIENTES_CARGOS[tipo] / HORAS_DE_UN_CARGO_COMPLETO;
+  const coeficiente = COEFICIENTES_CARGOS[tipo];
+  return definicion.escala === "ifdc" ? coeficiente : coeficiente / HORAS_DE_UN_CARGO_COMPLETO;
 }
 
 // ---------------------------------------------------------------------------
